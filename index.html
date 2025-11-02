@@ -33,33 +33,33 @@
                 </div>
 
                 <div class="hidden md:flex space-x-6 lg:space-x-8 items-center">
-                    <a href="#pricing" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Pricing</a>
-                    <a href="#services" class="text-indigo-600 font-bold transition duration-150 border-b-2 border-indigo-600">Services</a>
+                    <a href="#pricing" data-key="nav_pricing" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Prix</a>
+                    <a href="#services" data-key="nav_services" class="text-indigo-600 font-bold transition duration-150 border-b-2 border-indigo-600">Services</a>
                     
                     <div class="relative">
                         <button id="explore-btn" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-gray-100 focus:outline-none">
-                            Explore
+                            <span data-key="nav_explore">Explorer</span>
                             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div id="explore-menu" class="hidden absolute right-0 mt-2 w-60 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
                             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="explore-btn">
                                 <a href="#blog" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
-                                    <span class="font-semibold">Blog</span><br><span class="text-xs text-gray-500">Nos dernières nouvelles et mises à jour</span>
+                                    <span class="font-semibold" data-key="menu_blog">Blog</span><br><span class="text-xs text-gray-500" data-key="desc_blog">Nos dernières nouvelles et mises à jour</span>
                                 </a>
                                 <a href="#features" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
-                                    <span class="font-semibold">Fonctionnalités et outils</span><br><span class="text-xs text-gray-500">Dernières versions et caractéristiques des produits</span>
+                                    <span class="font-semibold" data-key="menu_features">Fonctionnalités et outils</span><br><span class="text-xs text-gray-500" data-key="desc_features">Dernières versions et caractéristiques des produits</span>
                                 </a>
                                 <a href="#story" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
-                                    <span class="font-semibold">Notre histoire</span><br><span class="text-xs text-gray-500">D'où nous venons et où nous allons</span>
+                                    <span class="font-semibold" data-key="menu_story">Notre histoire</span><br><span class="text-xs text-gray-500" data-key="desc_story">D'où nous venons et où nous allons</span>
                                 </a>
                                 <a href="#clients" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
-                                    <span class="font-semibold">Histoires de clients</span><br><span class="text-xs text-gray-500">Les succès de nos clients sont nos histoires préférées</span>
+                                    <span class="font-semibold" data-key="menu_clients">Histoires de clients</span><br><span class="text-xs text-gray-500" data-key="desc_clients">Les succès de nos clients sont nos histoires préférées</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     
-                    <a href="#support" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Support</a>
+                    <a href="#support" data-key="nav_support" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Aide</a>
                     
                     <div class="relative">
                         <button id="lang-btn" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-gray-100 focus:outline-none">
@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    <a href="#account" class="ml-4 px-4 py-2 text-white bg-indigo-600 rounded-lg font-semibold hover:bg-indigo-700 transition duration-150">Mon compte</a>
+                    <a href="#account" data-key="nav_account" class="ml-4 px-4 py-2 text-white bg-indigo-600 rounded-lg font-semibold hover:bg-indigo-700 transition duration-150">Mon compte</a>
                 </div>
 
                 <div class="md:hidden">
@@ -104,12 +104,12 @@
                 <div class="text-blue-600 mb-4">
                     <span class="text-5xl">🖥️</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre Informatique Avancé</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
-                    Accès internet haut débit, impression, scanning, maintenance informatique et cours de programmation pour tous les niveaux.
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_1">Centre Informatique Avancé</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_1">
+                    Accès internet haut débit, impression, scanning, photocopie, conversion de format de fichier (PDF/Word, MP4/MP3, etc.), maintenance informatique et cours d'informatique pour tous les niveaux.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="centre-informatique.html" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                    <a href="#informatique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -122,12 +122,12 @@
                 <div class="text-red-600 mb-4">
                     <span class="text-5xl">🇬🇧</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_2">Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_2">
                     Des programmes intensifs et personnalisés pour maîtriser l'anglais, le swahili, le français des affaires, académique ou conversationnel.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#langues" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#langues" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -140,12 +140,12 @@
                 <div class="text-purple-600 mb-4">
                     <span class="text-5xl">🎙️</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Studio d'Enregistrement Podcast</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_3">Studio d'Enregistrement Podcast</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_3">
                     Espace insonorisé équipé pour l'enregistrement, le montage et la diffusion de podcasts de qualité professionnelle.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#podcast" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#podcast" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -158,12 +158,12 @@
                 <div class="text-indigo-600 mb-4">
                     <span class="text-5xl">🎧</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Studio d'Enregistrement Musical</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_4">Studio d'Enregistrement Musical</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_4">
                     Studio moderne pour l'enregistrement, le mixage et le mastering de vos productions musicales (artiste, beatmaker, jingle).
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#musique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#musique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -176,12 +176,12 @@
                 <div class="text-yellow-600 mb-4">
                     <span class="text-5xl">📄</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Formation en Bureautique</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_5">Formation en Bureautique</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_5">
                     Cours pratiques sur les outils de productivité (Word, Excel, PowerPoint) essentiels pour le monde professionnel.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#bureautique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#bureautique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -194,12 +194,12 @@
                 <div class="text-green-600 mb-4">
                     <span class="text-5xl">🏠</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Agence Immobilière (Achat/Vente)</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_6">Agence Immobilière (Achat/Vente)</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_6">
                     Conseils et transactions pour la location, l'achat ou la vente de propriétés résidentielles et commerciales à Kinshasa.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#immobilier" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#immobilier" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -207,17 +207,17 @@
                     </a>
                 </div>
             </div>
-            
+
             <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-amber-100">
                 <div class="text-amber-600 mb-4">
                     <span class="text-5xl">📸</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Service de Photographie</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_7">Service de Photographie</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_7">
                     Reportages événementiels, portraits professionnels, photos de produits et séances créatives. Matériel haut de gamme et post-traitement inclus.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#photographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-amber-600 rounded-lg shadow-md hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#photographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-amber-600 rounded-lg shadow-md hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -230,12 +230,12 @@
                 <div class="text-cyan-600 mb-4">
                     <span class="text-5xl">🎥</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Service de Vidéographie</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_8">Service de Vidéographie</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_8">
                     Production de clips musicaux, vidéos corporatives, documentaires et publicités. De la conception à la post-production professionnelle.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#videographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-700 rounded-lg shadow-md hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#videographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-700 rounded-lg shadow-md hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -248,12 +248,12 @@
                 <div class="text-red-600 mb-4">
                     <span class="text-5xl">🛵</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Livraison Rapide à Domicile</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_9">Livraison Rapide à Domicile</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_9">
                     Service de livraison rapide et fiable pour tous types de colis et de repas à travers Kinshasa. Suivi en temps réel et support client.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#livraison" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-700 rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#livraison" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-700 rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -266,12 +266,12 @@
                 <div class="text-pink-600 mb-4">
                     <span class="text-5xl">🌱</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre de Développement Personnel</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_10">Centre de Développement Personnel</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_10">
                     Ateliers, coaching et séminaires pour renforcer le leadership, la confiance en soi et l'atteinte des objectifs personnels et professionnels.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#developpement-perso" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-pink-600 rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#developpement-perso" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-pink-600 rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -284,12 +284,12 @@
                 <div class="text-orange-600 mb-4">
                     <span class="text-5xl">🧭</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre de l'Autonomie</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_11">Centre de l'Autonomie</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_11">
                     Programmes et ressources dédiés à l'indépendance financière, professionnelle et personnelle, notamment pour les jeunes entrepreneurs.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#autonomie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-orange-600 rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#autonomie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-orange-600 rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -302,12 +302,12 @@
                 <div class="text-lime-600 mb-4">
                     <span class="text-5xl">💵</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Bureau de Change d'Argent</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_12">Bureau de Change d'Argent</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_12">
                     Services de change de devises rapides et sécurisés avec des taux compétitifs, facilitant vos transactions internationales et locales.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#change" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-lime-600 rounded-lg shadow-md hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#change" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-lime-600 rounded-lg shadow-md hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -316,16 +316,34 @@
                 </div>
             </div>
             
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-sky-200">
+                <div class="text-sky-600 mb-4">
+                    <span class="text-5xl">💬</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_13">Service de Traduction Professionnelle</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_13">
+                    Traduction audio, vidéo, de documents et en personne dans 10 langues clés (français, anglais, swahili, chinois, lingala, portugais, japonais, sona, malgache, espagnol) et autres sur demande.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#traduction" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-sky-700 rounded-lg shadow-md hover:bg-sky-800 focus:outline-none focus:ring-4 focus:ring-sky-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
             <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-teal-100">
                 <div class="text-teal-600 mb-4">
                     <span class="text-5xl">📱</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Vente Services Réseaux Mobiles RDC</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_14">Vente Services Réseaux Mobiles RDC</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_14">
                     Cabine de vente de crédits, forfaits, cartes SIM et services de transfert d'argent mobile pour tous les réseaux en RDC.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#mobile" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-teal-600 rounded-lg shadow-md hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#mobile" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-teal-600 rounded-lg shadow-md hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -338,12 +356,12 @@
                 <div class="text-cyan-600 mb-4">
                     <span class="text-5xl">💧</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Production d'Eau et Jus Naturels</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_15">Production d'Eau et Jus Naturels</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_15">
                     Agence de fabrication et de vente de jus de fruits frais et d'eau pure, privilégiant les ingrédients naturels et locaux de qualité.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#jus-eau" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-600 rounded-lg shadow-md hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#jus-eau" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-600 rounded-lg shadow-md hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -356,12 +374,12 @@
                 <div class="text-rose-600 mb-4">
                     <span class="text-5xl">🍔</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Nourriture Fast Food (Kinshasa)</h3>
-                <p class="text-gray-600 mb-6 flex-grow">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" data-key="service_title_16">Nourriture Fast Food (Kinshasa)</h3>
+                <p class="text-gray-600 mb-6 flex-grow" data-key="service_desc_16">
                     Vente de plats rapides et savoureux, préparés localement à Kinshasa, pour une pause déjeuner ou un dîner rapide et gourmand.
                 </p>
                 <div class="flex space-x-3 mt-4">
-                    <a href="#fast-food" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-rose-600 rounded-lg shadow-md hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                    <a href="#fast-food" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-rose-600 rounded-lg shadow-md hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
                         Découvrir
                     </a>
                     <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
@@ -380,25 +398,25 @@
                 
                 <div>
                     <h4 class="text-3xl font-extrabold text-indigo-400 mb-4">BANIKI LABS</h4>
-                    <p class="text-gray-400 text-sm max-w-xs">
+                    <p class="text-gray-400 text-sm max-w-xs" data-key="footer_desc">
                         Le hub d'innovation et de services multiples au cœur de la RDC. Nous connectons la technologie, la formation et les services essentiels.
                     </p>
                 </div>
                 
                 <div>
-                    <h5 class="text-lg font-semibold text-white mb-4">Navigation Rapide</h5>
+                    <h5 class="text-lg font-semibold text-white mb-4" data-key="footer_nav_title">Navigation Rapide</h5>
                     <ul class="space-y-2">
-                        <li><a href="#explore" class="text-gray-400 hover:text-white transition duration-150">Explore</a></li>
-                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition duration-150">Pricing</a></li>
-                        <li><a href="#support" class="text-gray-400 hover:text-white transition duration-150">Support</a></li>
-                        <li><a href="#account" class="text-gray-400 hover:text-white transition duration-150">Mon compte</a></li>
+                        <li><a href="#explore" class="text-gray-400 hover:text-white transition duration-150" data-key="nav_explore">Explorer</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition duration-150" data-key="nav_pricing">Prix</a></li>
+                        <li><a href="#support" class="text-gray-400 hover:text-white transition duration-150" data-key="nav_support">Aide</a></li>
+                        <li><a href="#account" class="text-gray-400 hover:text-white transition duration-150" data-key="nav_account">Mon compte</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h5 class="text-lg font-semibold text-white mb-4">Connectez-vous & Payez</h5>
+                    <h5 class="text-lg font-semibold text-white mb-4" data-key="footer_contact_title">Connectez-vous & Payez</h5>
                     
-                    <p class="text-gray-400 mb-3">Réseaux Sociaux :</p>
+                    <p class="text-gray-400 mb-3" data-key="footer_social">Réseaux Sociaux :</p>
                     <div class="flex space-x-4 mb-6">
                         <a href="#" class="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-full text-white hover:bg-blue-700 transition duration-150 text-xl font-bold" aria-label="Facebook">f</a>
                         <a href="#" class="w-8 h-8 flex items-center justify-center bg-pink-600 rounded-full text-white hover:bg-pink-700 transition duration-150 text-xl font-bold" aria-label="Instagram">i</a>
@@ -406,7 +424,7 @@
                         <a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full text-gray-900 hover:bg-gray-300 transition duration-150 text-xl font-bold" aria-label="X">X</a>
                     </div>
 
-                    <p class="text-gray-400 mb-3">Modes de Paiement Acceptés :</p>
+                    <p class="text-gray-400 mb-3" data-key="footer_payments">Modes de Paiement Acceptés :</p>
                     <div class="flex flex-wrap items-center space-x-4 space-y-2 pt-2">
                         <span class="text-xl text-white bg-blue-600 px-2 py-1 rounded-md shadow font-bold inline-block">VISA</span>
                         <span class="text-xl text-white bg-red-600 px-2 py-1 rounded-md shadow font-bold inline-block">MC</span>
@@ -420,47 +438,141 @@
             </div>
 
             <div class="mt-8 text-center text-gray-500 text-sm">
-                &copy; 2025 BANIKI LABS. Tous droits réservés.
+                &copy; 2025 BANIKI LABS. <span data-key="footer_copyright">Tous droits réservés.</span>
             </div>
         </div>
     </footer>
 
     <script>
         // --- LOGIQUE DE TRADUCTION SIMULÉE ---
-        // Mapping pour la simulation des traductions
+        // Mapping pour la traduction de l'ensemble de la page
         const translations = {
             'fr': {
-                nav_lang: 'Français',
-                title: 'Nos Services Diversifiés | BANIKI LABS',
-                subtitle: 'Un hub complet au cœur de Kinshasa : de la technologie à l\'alimentation, en passant par la formation et les services essentiels.',
+                nav_lang: 'Français', nav_pricing: 'Prix', nav_services: 'Services', nav_explore: 'Explorer', nav_support: 'Aide', nav_account: 'Mon compte',
+                menu_blog: 'Blog', desc_blog: 'Nos dernières nouvelles et mises à jour', menu_features: 'Fonctionnalités et outils', desc_features: 'Dernières versions et caractéristiques des produits',
+                menu_story: 'Notre histoire', desc_story: 'D\'où nous venons et où nous allons', menu_clients: 'Histoires de clients', desc_clients: 'Les succès de nos clients sont nos histoires préférées',
+                title: 'Nos Services Diversifiés | BANIKI LABS', subtitle: 'Un hub complet au cœur de Kinshasa : de la technologie à l\'alimentation, en passant par la formation et les services essentiels.',
+                btn_discover: 'Découvrir',
+                service_title_1: 'Centre Informatique Avancé', service_desc_1: 'Accès internet haut débit, impression, scanning, photocopie, conversion de format de fichier (PDF/Word, MP4/MP3, etc.), maintenance informatique et cours d\'informatique pour tous les niveaux.',
+                service_title_2: 'Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)', service_desc_2: 'Des programmes intensifs et personnalisés pour maîtriser l\'anglais, le swahili, le français des affaires, académique ou conversationnel.',
+                service_title_3: 'Studio d\'Enregistrement Podcast', service_desc_3: 'Espace insonorisé équipé pour l\'enregistrement, le montage et la diffusion de podcasts de qualité professionnelle.',
+                service_title_4: 'Studio d\'Enregistrement Musical', service_desc_4: 'Studio moderne pour l\'enregistrement, le mixage et le mastering de vos productions musicales (artiste, beatmaker, jingle).',
+                service_title_5: 'Formation en Bureautique', service_desc_5: 'Cours pratiques sur les outils de productivité (Word, Excel, PowerPoint) essentiels pour le monde professionnel.',
+                service_title_6: 'Agence Immobilière (Achat/Vente)', service_desc_6: 'Conseils et transactions pour la location, l\'achat ou la vente de propriétés résidentielles et commerciales à Kinshasa.',
+                service_title_7: 'Service de Photographie', service_desc_7: 'Reportages événementiels, portraits professionnels, photos de produits et séances créatives. Matériel haut de gamme et post-traitement inclus.',
+                service_title_8: 'Service de Vidéographie', service_desc_8: 'Production de clips musicaux, vidéos corporatives, documentaires et publicités. De la conception à la post-production professionnelle.',
+                service_title_9: 'Livraison Rapide à Domicile', service_desc_9: 'Service de livraison rapide et fiable pour tous types de colis et de repas à travers Kinshasa. Suivi en temps réel et support client.',
+                service_title_10: 'Centre de Développement Personnel', service_desc_10: 'Ateliers, coaching et séminaires pour renforcer le leadership, la confiance en soi et l\'atteinte des objectifs personnels et professionnels.',
+                service_title_11: 'Centre de l\'Autonomie', service_desc_11: 'Programmes et ressources dédiés à l\'indépendance financière, professionnelle et personnelle, notamment pour les jeunes entrepreneurs.',
+                service_title_12: 'Bureau de Change d\'Argent', service_desc_12: 'Services de change de devises rapides et sécurisés avec des taux compétitifs, facilitant vos transactions internationales et locales.',
+                service_title_13: 'Service de Traduction Professionnelle', service_desc_13: 'Traduction audio, vidéo, de documents et en personne dans 10 langues clés (français, anglais, swahili, chinois, lingala, portugais, japonais, sona, malgache, espagnol) et autres sur demande.',
+                service_title_14: 'Vente Services Réseaux Mobiles RDC', service_desc_14: 'Cabine de vente de crédits, forfaits, cartes SIM et services de transfert d\'argent mobile pour tous les réseaux en RDC.',
+                service_title_15: 'Production d\'Eau et Jus Naturels', service_desc_15: 'Agence de fabrication et de vente de jus de fruits frais et d\'eau pure, privilégiant les ingrédients naturels et locaux de qualité.',
+                service_title_16: 'Nourriture Fast Food (Kinshasa)', service_desc_16: 'Vente de plats rapides et savoureux, préparés localement à Kinshasa, pour une pause déjeuner ou un dîner rapide et gourmand.',
+                footer_desc: 'Le hub d\'innovation et de services multiples au cœur de la RDC. Nous connectons la technologie, la formation et les services essentiels.',
+                footer_nav_title: 'Navigation Rapide', footer_contact_title: 'Connectez-vous & Payez', footer_social: 'Réseaux Sociaux :', footer_payments: 'Modes de Paiement Acceptés :', footer_copyright: 'Tous droits réservés.'
             },
             'en': {
-                nav_lang: 'English',
-                title: 'Our Diversified Services | BANIKI LABS',
-                subtitle: 'A complete hub in the heart of Kinshasa: from technology to food, training, and essential services.',
+                nav_lang: 'English', nav_pricing: 'Pricing', nav_services: 'Services', nav_explore: 'Explore', nav_support: 'Support', nav_account: 'My account',
+                menu_blog: 'Blog', desc_blog: 'Our latest news and updates', menu_features: 'Features and tools', desc_features: 'Latest product releases and features',
+                menu_story: 'Our story', desc_story: 'Where we come from and where we are going', menu_clients: 'Client stories', desc_clients: 'Our clients\' successes are our favorite stories',
+                title: 'Our Diversified Services | BANIKI LABS', subtitle: 'A complete hub in the heart of Kinshasa: from technology to food, training, and essential services.',
+                btn_discover: 'Discover',
+                service_title_1: 'Advanced IT Center', service_desc_1: 'High-speed internet access, printing, scanning, photocopying, file format conversion (PDF/Word, MP4/MP3, etc.), computer maintenance, and computer courses for all levels.',
+                service_title_2: 'Language Courses (ENGLISH, SWAHILI, FRENCH)', service_desc_2: 'Intensive and personalized programs to master business, academic, or conversational English, Swahili, and French.',
+                service_title_3: 'Podcast Recording Studio', service_desc_3: 'Soundproof space equipped for recording, editing, and broadcasting professional-quality podcasts.',
+                service_title_4: 'Music Recording Studio', service_desc_4: 'Modern studio for recording, mixing, and mastering your musical productions (artist, beatmaker, jingle).',
+                service_title_5: 'Office Automation Training', service_desc_5: 'Practical courses on essential productivity tools (Word, Excel, PowerPoint) for the professional world.',
+                service_title_6: 'Real Estate Agency (Buy/Sell)', service_desc_6: 'Advice and transactions for renting, buying, or selling residential and commercial properties in Kinshasa.',
+                service_title_7: 'Photography Service', service_desc_7: 'Event coverage, professional portraits, product photos, and creative sessions. High-end equipment and post-processing included.',
+                service_title_8: 'Videography Service', service_desc_8: 'Production of music videos, corporate videos, documentaries, and advertisements. From concept to professional post-production.',
+                service_title_9: 'Fast Home Delivery', service_desc_9: 'Fast and reliable delivery service for all types of packages and meals across Kinshasa. Real-time tracking and customer support.',
+                service_title_10: 'Personal Development Center', service_desc_10: 'Workshops, coaching, and seminars to strengthen leadership, self-confidence, and achieving personal and professional goals.',
+                service_title_11: 'Autonomy Center', service_desc_11: 'Programs and resources dedicated to financial, professional, and personal independence, especially for young entrepreneurs.',
+                service_title_12: 'Currency Exchange Office', service_desc_12: 'Fast and secure currency exchange services with competitive rates, facilitating your international and local transactions.',
+                service_title_13: 'Professional Translation Service', service_desc_13: 'Audio, video, document, and in-person translation in 10 key languages (French, English, Swahili, Chinese, Lingala, Portuguese, Japanese, Sona, Malagasy, Spanish) and others upon request.',
+                service_title_14: 'DRC Mobile Network Services Sale', service_desc_14: 'Sales booth for airtime, bundles, SIM cards, and mobile money transfer services for all networks in the DRC.',
+                service_title_15: 'Water and Natural Juice Production', service_desc_15: 'Agency for the manufacturing and sale of fresh fruit juices and pure water, prioritizing natural and quality local ingredients.',
+                service_title_16: 'Fast Food (Kinshasa)', service_desc_16: 'Sale of fast and tasty dishes, prepared locally in Kinshasa, for a quick and gourmet lunch or dinner break.',
+                footer_desc: 'The hub for innovation and multiple services in the heart of the DRC. We connect technology, training, and essential services.',
+                footer_nav_title: 'Quick Navigation', footer_contact_title: 'Connect & Pay', footer_social: 'Social Networks:', footer_payments: 'Accepted Payment Methods:', footer_copyright: 'All rights reserved.'
             },
             'sw': {
-                nav_lang: 'Swahili',
-                title: 'Huduma Zetu Mbalimbali | BANIKI LABS',
-                subtitle: 'Kitovu kamili Kinshasa: kutoka teknolojia hadi chakula, mafunzo na huduma muhimu.',
+                nav_lang: 'Swahili', nav_pricing: 'Bei', nav_services: 'Huduma', nav_explore: 'Chunguza', nav_support: 'Msaada', nav_account: 'Akaunti Yangu',
+                menu_blog: 'Blog', desc_blog: 'Habari na masasisho yetu ya hivi punde', menu_features: 'Vipengele na zana', desc_features: 'Matoleo mapya ya bidhaa na vipengele',
+                menu_story: 'Hadithi yetu', desc_story: 'Tunatoka wapi na tunaelekea wapi', menu_clients: 'Hadithi za wateja', desc_clients: 'Mafanikio ya wateja wetu ni hadithi tunazopenda zaidi',
+                title: 'Huduma Zetu Mbalimbali | BANIKI LABS', subtitle: 'Kitovu kamili Kinshasa: kutoka teknolojia hadi chakula, mafunzo na huduma muhimu.',
+                btn_discover: 'Gundua',
+                service_title_1: 'Kituo cha Juu cha TEHAMA', service_desc_1: 'Mtandao wa kasi, kuchapa, kuchanganua, kunakili, ubadilishaji wa umbizo la faili (PDF/Word, MP4/MP3, n.k.), matengenezo ya kompyuta, na kozi za kompyuta kwa viwango vyote.',
+                service_title_2: 'Kozi za Lugha (KINGEREZA, KISWAHILI, KIFARANSA)', service_desc_2: 'Programu za kina na maalum za kujifunza Kingereza, Kiswahili, na Kifaransa cha kibiashara, kitaaluma au mazungumzo.',
+                service_title_3: 'Studio cha Kurekodi Podcast', service_desc_3: 'Nafasi iliyotengwa kwa kurekodi, kuhariri, na kupeperusha podcast za ubora wa kitaalamu.',
+                service_title_4: 'Studio cha Kurekodi Muziki', service_desc_4: 'Studio ya kisasa kwa kurekodi, kuchanganya, na kuweka sawa uzalishaji wako wa muziki (msanii, beatmaker, jingle).',
+                service_title_5: 'Mafunzo ya Uendeshaji Ofisi', service_desc_5: 'Kozi za vitendo kuhusu zana muhimu za tija (Word, Excel, PowerPoint) kwa ulimwengu wa kitaaluma.',
+                service_title_6: 'Wakala wa Mali isiyohamishika (Kununua/Kuuza)', service_desc_6: 'Ushauri na shughuli za kukodisha, kununua au kuuza mali za makazi na biashara Kinshasa.',
+                service_title_7: 'Huduma ya Upigaji Picha', service_desc_7: 'Ripoti za matukio, picha za kitaalamu, picha za bidhaa, na vipindi vya ubunifu. Vifaa vya hali ya juu na usindikaji wa baada ya picha vimejumuishwa.',
+                service_title_8: 'Huduma ya Kurekodi Video', service_desc_8: 'Uzalishaji wa video za muziki, video za ushirika, makala, na matangazo. Kuanzia dhana hadi uzalishaji wa baada ya video wa kitaalamu.',
+                service_title_9: 'Uwasilishaji wa Haraka Nyumbani', service_desc_9: 'Huduma ya utoaji wa haraka na ya kuaminika kwa kila aina ya vifurushi na chakula kote Kinshasa. Ufuatiliaji wa wakati halisi na msaada kwa wateja.',
+                service_title_10: 'Kituo cha Maendeleo ya Kibinafsi', service_desc_10: 'Warsha, kufundisha, na semina za kuimarisha uongozi, kujiamini, na kufikia malengo ya kibinafsi na kitaaluma.',
+                service_title_11: 'Kituo cha Uhuru', service_desc_11: 'Programu na rasilimali zinazojitolea kwa uhuru wa kifedha, kitaaluma, na kibinafsi, haswa kwa wajasiriamali wachanga.',
+                service_title_12: 'Ofisi ya Kubadilishana Fedha', service_desc_12: 'Huduma za kubadilishana fedha za haraka na salama na viwango vya ushindani, kuwezesha shughuli zako za kimataifa na za ndani.',
+                service_title_13: 'Huduma ya Utafsiri wa Kitaalamu', service_desc_13: 'Utafsiri wa sauti, video, hati, na ana kwa ana katika lugha 10 muhimu (Kifaransa, Kingereza, Kiswahili, Kichina, Kilingala, Kireno, Kijapani, Kisoma, Kimadagaska, Kihispania) na zingine kwa ombi.',
+                service_title_14: 'Uuzaji wa Huduma za Mtandao wa Simu wa DRC', service_desc_14: 'Kibanda cha uuzaji wa muda wa maongezi, vifurushi, kadi za SIM, na huduma za kutuma pesa kwa simu kwa mitandao yote nchini DRC.',
+                service_title_15: 'Uzalishaji wa Maji na Juisi Asilia', service_desc_15: 'Wakala wa utengenezaji na uuzaji wa juisi za matunda safi na maji safi, ukipa kipaumbele viungo asili na vya ubora wa ndani.',
+                service_title_16: 'Chakula cha Haraka (Kinshasa)', service_desc_16: 'Uuzaji wa vyakula vya haraka na vitamu, vilivyoandaliwa Kinshasa, kwa mapumziko ya chakula cha mchana au chakula cha jioni cha haraka na kitamu.',
+                footer_desc: 'Kitovu cha uvumbuzi na huduma nyingi katikati ya DRC. Tunaunganisha teknolojia, mafunzo na huduma muhimu.',
+                footer_nav_title: 'Urambazaji wa Haraka', footer_contact_title: 'Ungana & Lipa', footer_social: 'Mitandao ya Kijamii:', footer_payments: 'Njia za Malipo Zinazokubaliwa:', footer_copyright: 'Haki zote zimehifadhiwa.'
             }
         };
         let currentLang = 'fr'; // Langue par défaut
 
         const updateContent = (lang) => {
-            // 1. Mise à jour du bouton de navigation (texte du bouton)
+            // Mise à jour de l'attribut lang sur la balise html
+            document.documentElement.lang = lang;
+            
+            // 1. Mise à jour du bouton de langue (texte du bouton)
             const langButton = document.getElementById('lang-btn');
-            // Trouver le nœud de texte (peut être le premier enfant ou pas, on parcourt)
-            let textNode = Array.from(langButton.childNodes).find(node => node.nodeType === 3); 
+            // Cibler le nœud de texte à l'intérieur du bouton (le texte lui-même, pas l'icône)
+            let textNode = Array.from(langButton.childNodes).find(node => node.nodeType === 3);
             if (textNode) {
                 textNode.textContent = translations[lang].nav_lang;
             } else {
                  langButton.textContent = translations[lang].nav_lang; // Fallback
             }
-
-            // 2. Mise à jour des titres de la section principale (traduction simulée)
-            document.querySelector('[data-key="title"]').textContent = translations[lang].title;
-            document.querySelector('[data-key="subtitle"]').textContent = translations[lang].subtitle;
+            
+            // 2. Mise à jour de tous les éléments avec un attribut data-key
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    // Pour les liens qui ont un sous-texte (comme le menu Explore), on gère le innerHTML
+                    if (key.startsWith('menu_') || key.startsWith('desc_')) {
+                        // Pour les éléments dans le menu Explore qui ont un <span>. 
+                        // On suppose que le format <span class="font-semibold">TITLE</span><br><span class="text-xs text-gray-500">DESC</span> est utilisé
+                        // C'est mieux de séparer titre et description pour le menu explore.
+                        if (key.includes('menu_')) {
+                             // Tente de trouver le span de titre (premier span)
+                             const titleSpan = element.querySelector('.font-semibold');
+                             if (titleSpan) {
+                                 titleSpan.textContent = translations[lang][key];
+                             } else {
+                                 // S'il n'y a pas de span, on met le contenu directement
+                                 element.textContent = translations[lang][key];
+                             }
+                        } else if (key.includes('desc_')) {
+                            // Tente de trouver le span de description (deuxième span)
+                            const descSpan = element.querySelector('.text-xs');
+                            if (descSpan) {
+                                descSpan.textContent = translations[lang][key];
+                            }
+                        } else {
+                            // Par défaut, utilise textContent si le format est simple
+                            element.textContent = translations[lang][key];
+                        }
+                    } else {
+                        // Pour tous les autres éléments (titres, descriptions simples)
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
 
             // 3. Mise à jour de l'état "actif" dans le menu déroulant
             document.querySelectorAll('.lang-option').forEach(option => {
@@ -515,6 +627,7 @@
             document.querySelectorAll('.lang-option').forEach(option => {
                 option.addEventListener('click', (e) => {
                     e.preventDefault();
+                    // On cherche l'élément le plus proche avec l'attribut data-lang pour éviter de cliquer sur le <span> interne
                     const newLang = e.target.closest('.lang-option').getAttribute('data-lang');
                     updateContent(newLang);
                     langMenu.classList.add('hidden'); // Fermer le menu après la sélection
@@ -530,6 +643,9 @@
                     langMenu.classList.add('hidden');
                 }
             });
+            
+            // Initialisation de la traduction au chargement
+            updateContent(currentLang);
         });
     </script>
 </body>
