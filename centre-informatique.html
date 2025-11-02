@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS - Centre Informatique Avancé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configuration de la police Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles personnalisés pour l'effet sur le bouton */
+        .btn-discover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.5), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+        }
+        /* Style pour masquer/afficher les menus déroulants */
+        .hidden { display: none; }
+        /* Style spécifique aux cartes */
+        .feature-card:hover {
+            border-color: rgba(30, 64, 175, 1); /* blue-700 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-indigo-600 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+            <a href="index.html" class="text-2xl font-black text-white tracking-wider">BANIKI LABS</a>
+            <span class="ml-4 text-white">/ Centre Informatique Avancé</span>
+        </div>
+    </nav>
+
+    <div id="service-center" class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+                Centre Informatique Avancé
+            </h1>
+            <p class="mt-4 text-xl text-gray-600 max-w-4xl mx-auto">
+                Votre hub technologique à Kinshasa : connectivité, productivité et formation.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16">
+
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-blue-100 flex flex-col">
+                <div class="text-blue-600 mb-4">
+                    <span class="text-5xl">💻</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900 mb-4">Internet Haut Débit & Espace de Travail</h3>
+                
+                <img 
+                    src="https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=600&h=400" 
+                    alt="Espace de travail ou salle de classe moderne avec des ordinateurs portables." 
+                    class="w-full h-auto object-cover rounded-xl mb-6 shadow-lg hover:shadow-xl transition duration-300"
+                >
+
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Profitez d'un accès à Internet ultra-rapide et stable pour le télétravail, la recherche ou les communications. Nos postes sont équipés de logiciels professionnels dans un cadre confortable et climatisé.
+                </p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Connexion fibre optique dédiée.</li>
+                    <li>Postes de travail ergonomiques.</li>
+                    <li>Location à l'heure ou forfaits journaliers.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-red-100 flex flex-col">
+                <div class="text-red-600 mb-4">
+                    <span class="text-5xl">🖨️</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900 mb-4">Impression, Scanning & Copie Pro</h3>
+
+                <img 
+                    src="https://img.freepik.com/premium-photo/high-angle-shot-of-a-female-hand-holding-documents-over-white-surface_32078000.jpg?w=600" 
+                    alt="Femme tenant des papiers et des documents, symbolisant la gestion des copies et l'impression." 
+                    class="w-full h-auto object-cover rounded-xl mb-6 shadow-lg hover:shadow-xl transition duration-300"
+                >
+                
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Nous offrons des services d'impression couleur et noir/blanc de haute qualité, ainsi que des solutions rapides pour le scanning de documents et la copie grand volume.
+                </p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Formats variés (A4, A3, Légal).</li>
+                    <li>Scanning vers email ou clé USB.</li>
+                    <li>Options de reliure et de plastification.</li>
+                </ul>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-purple-100 flex flex-col">
+                <div class="text-purple-600 mb-4">
+                    <span class="text-5xl">🔧</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900 mb-4">Maintenance & Réparation Informatique</h3>
+
+                <img 
+                    src="https://images.pexels.com/photos/1714205/pexels-photo-1714205.jpeg?auto=compress&cs=tinysrgb&w=600&h=400" 
+                    alt="Un technicien réparant un ordinateur portable sur un établi." 
+                    class="w-full h-auto object-cover rounded-xl mb-6 shadow-lg hover:shadow-xl transition duration-300"
+                >
+                
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Nos techniciens certifiés prennent en charge la réparation de vos

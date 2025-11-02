@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS - Nos Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configuration de la police Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles personnalisés pour l'effet sur le bouton */
+        .btn-discover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.5), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+        }
+        /* Style pour masquer/afficher les menus déroulants */
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                
+                <div class="flex-shrink-0 flex items-center">
+                    <div class="text-3xl font-extrabold text-indigo-600 mr-2">
+                        <span class="text-2xl font-black tracking-wider">BANIKI LABS</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex space-x-6 lg:space-x-8 items-center">
+                    <a href="#pricing" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Pricing</a>
+                    <a href="#services" class="text-indigo-600 font-bold transition duration-150 border-b-2 border-indigo-600">Services</a>
+                    
+                    <div class="relative">
+                        <button id="explore-btn" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-gray-100 focus:outline-none">
+                            Explore
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="explore-menu" class="hidden absolute right-0 mt-2 w-60 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="explore-btn">
+                                <a href="#blog" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                    <span class="font-semibold">Blog</span><br><span class="text-xs text-gray-500">Nos dernières nouvelles et mises à jour</span>
+                                </a>
+                                <a href="#features" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                    <span class="font-semibold">Fonctionnalités et outils</span><br><span class="text-xs text-gray-500">Dernières versions et caractéristiques des produits</span>
+                                </a>
+                                <a href="#story" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                    <span class="font-semibold">Notre histoire</span><br><span class="text-xs text-gray-500">D'où nous venons et où nous allons</span>
+                                </a>
+                                <a href="#clients" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">
+                                    <span class="font-semibold">Histoires de clients</span><br><span class="text-xs text-gray-500">Les succès de nos clients sont nos histoires préférées</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#support" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Support</a>
+                    
+                    <div class="relative">
+                        <button id="lang-btn" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-gray-100 focus:outline-none">
+                            Français
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="lang-menu" class="hidden absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="lang-btn">
+                                <a href="#" data-lang="fr" class="lang-option block px-4 py-2 text-sm text-indigo-700 font-bold bg-indigo-50">Français</a>
+                                <a href="#" data-lang="en" class="lang-option block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">English</a>
+                                <a href="#" data-lang="sw" class="lang-option block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Swahili</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#account" class="ml-4 px-4 py-2 text-white bg-indigo-600 rounded-lg font-semibold hover:bg-indigo-700 transition duration-150">Mon compte</a>
+                </div>
+
+                <div class="md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="services" class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight" data-key="title">
+                Nos Services Diversifiés | BANIKI LABS
+            </h1>
+            <p class="mt-4 text-xl text-gray-600 max-w-4xl mx-auto" data-key="subtitle">
+                Un hub complet au cœur de Kinshasa : de la technologie à l'alimentation, en passant par la formation et les services essentiels.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-10">
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-blue-100">
+                <div class="text-blue-600 mb-4">
+                    <span class="text-5xl">🖥️</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre Informatique Avancé</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Accès internet haut débit, impression, scanning, maintenance informatique et cours de programmation pour tous les niveaux.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="centre-informatique.html" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-red-100">
+                <div class="text-red-600 mb-4">
+                    <span class="text-5xl">🇬🇧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Des programmes intensifs et personnalisés pour maîtriser l'anglais, le swahili, le français des affaires, académique ou conversationnel.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#langues" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-purple-100">
+                <div class="text-purple-600 mb-4">
+                    <span class="text-5xl">🎙️</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Studio d'Enregistrement Podcast</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Espace insonorisé équipé pour l'enregistrement, le montage et la diffusion de podcasts de qualité professionnelle.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#podcast" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-indigo-100">
+                <div class="text-indigo-600 mb-4">
+                    <span class="text-5xl">🎧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Studio d'Enregistrement Musical</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Studio moderne pour l'enregistrement, le mixage et le mastering de vos productions musicales (artiste, beatmaker, jingle).
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#musique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-yellow-100">
+                <div class="text-yellow-600 mb-4">
+                    <span class="text-5xl">📄</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Formation en Bureautique</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Cours pratiques sur les outils de productivité (Word, Excel, PowerPoint) essentiels pour le monde professionnel.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#bureautique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-yellow-600 rounded-lg shadow-md hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-green-100">
+                <div class="text-green-600 mb-4">
+                    <span class="text-5xl">🏠</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Agence Immobilière (Achat/Vente)</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Conseils et transactions pour la location, l'achat ou la vente de propriétés résidentielles et commerciales à Kinshasa.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#immobilier" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-amber-100">
+                <div class="text-amber-600 mb-4">
+                    <span class="text-5xl">📸</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Service de Photographie</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Reportages événementiels, portraits professionnels, photos de produits et séances créatives. Matériel haut de gamme et post-traitement inclus.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#photographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-amber-600 rounded-lg shadow-md hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-cyan-200">
+                <div class="text-cyan-600 mb-4">
+                    <span class="text-5xl">🎥</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Service de Vidéographie</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Production de clips musicaux, vidéos corporatives, documentaires et publicités. De la conception à la post-production professionnelle.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#videographie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-700 rounded-lg shadow-md hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-red-200">
+                <div class="text-red-600 mb-4">
+                    <span class="text-5xl">🛵</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Livraison Rapide à Domicile</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Service de livraison rapide et fiable pour tous types de colis et de repas à travers Kinshasa. Suivi en temps réel et support client.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#livraison" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-red-700 rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-pink-100">
+                <div class="text-pink-600 mb-4">
+                    <span class="text-5xl">🌱</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre de Développement Personnel</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Ateliers, coaching et séminaires pour renforcer le leadership, la confiance en soi et l'atteinte des objectifs personnels et professionnels.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#developpement-perso" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-pink-600 rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-orange-100">
+                <div class="text-orange-600 mb-4">
+                    <span class="text-5xl">🧭</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Centre de l'Autonomie</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Programmes et ressources dédiés à l'indépendance financière, professionnelle et personnelle, notamment pour les jeunes entrepreneurs.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#autonomie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-orange-600 rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-lime-100">
+                <div class="text-lime-600 mb-4">
+                    <span class="text-5xl">💵</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Bureau de Change d'Argent</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Services de change de devises rapides et sécurisés avec des taux compétitifs, facilitant vos transactions internationales et locales.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#change" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-lime-600 rounded-lg shadow-md hover:bg-lime-700 focus:outline-none focus:ring-4 focus:ring-lime-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-teal-100">
+                <div class="text-teal-600 mb-4">
+                    <span class="text-5xl">📱</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Vente Services Réseaux Mobiles RDC</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Cabine de vente de crédits, forfaits, cartes SIM et services de transfert d'argent mobile pour tous les réseaux en RDC.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#mobile" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-teal-600 rounded-lg shadow-md hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-cyan-100">
+                <div class="text-cyan-600 mb-4">
+                    <span class="text-5xl">💧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Production d'Eau et Jus Naturels</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Agence de fabrication et de vente de jus de fruits frais et d'eau pure, privilégiant les ingrédients naturels et locaux de qualité.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#jus-eau" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-cyan-600 rounded-lg shadow-md hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-white p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-rose-100">
+                <div class="text-rose-600 mb-4">
+                    <span class="text-5xl">🍔</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Nourriture Fast Food (Kinshasa)</h3>
+                <p class="text-gray-600 mb-6 flex-grow">
+                    Vente de plats rapides et savoureux, préparés localement à Kinshasa, pour une pause déjeuner ou un dîner rapide et gourmand.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#fast-food" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-white bg-rose-600 rounded-lg shadow-md hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-500 focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <footer class="bg-gray-900 mt-16 pt-12 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-gray-700 pb-8">
+                
+                <div>
+                    <h4 class="text-3xl font-extrabold text-indigo-400 mb-4">BANIKI LABS</h4>
+                    <p class="text-gray-400 text-sm max-w-xs">
+                        Le hub d'innovation et de services multiples au cœur de la RDC. Nous connectons la technologie, la formation et les services essentiels.
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Navigation Rapide</h5>
+                    <ul class="space-y-2">
+                        <li><a href="#explore" class="text-gray-400 hover:text-white transition duration-150">Explore</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition duration-150">Pricing</a></li>
+                        <li><a href="#support" class="text-gray-400 hover:text-white transition duration-150">Support</a></li>
+                        <li><a href="#account" class="text-gray-400 hover:text-white transition duration-150">Mon compte</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Connectez-vous & Payez</h5>
+                    
+                    <p class="text-gray-400 mb-3">Réseaux Sociaux :</p>
+                    <div class="flex space-x-4 mb-6">
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-full text-white hover:bg-blue-700 transition duration-150 text-xl font-bold" aria-label="Facebook">f</a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-pink-600 rounded-full text-white hover:bg-pink-700 transition duration-150 text-xl font-bold" aria-label="Instagram">i</a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-blue-800 rounded-full text-white hover:bg-blue-900 transition duration-150 text-lg font-bold" aria-label="LinkedIn">in</a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full text-gray-900 hover:bg-gray-300 transition duration-150 text-xl font-bold" aria-label="X">X</a>
+                    </div>
+
+                    <p class="text-gray-400 mb-3">Modes de Paiement Acceptés :</p>
+                    <div class="flex flex-wrap items-center space-x-4 space-y-2 pt-2">
+                        <span class="text-xl text-white bg-blue-600 px-2 py-1 rounded-md shadow font-bold inline-block">VISA</span>
+                        <span class="text-xl text-white bg-red-600 px-2 py-1 rounded-md shadow font-bold inline-block">MC</span>
+                        
+                        <span class="text-xl text-white bg-red-500 px-2 py-1 rounded-md shadow font-bold inline-block">AIRTEL M</span>
+                        <span class="text-xl text-white bg-orange-500 px-2 py-1 rounded-md shadow font-bold inline-block">ORANGE M</span>
+                        <span class="text-xl text-white bg-green-500 px-2 py-1 rounded-md shadow font-bold inline-block">M-PESA</span>
+                        <span class="text-xl text-white bg-blue-700 px-2 py-1 rounded-md shadow font-bold inline-block">VODACOM</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-gray-500 text-sm">
+                &copy; 2025 BANIKI LABS. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- LOGIQUE DE TRADUCTION SIMULÉE ---
+        // Mapping pour la simulation des traductions
+        const translations = {
+            'fr': {
+                nav_lang: 'Français',
+                title: 'Nos Services Diversifiés | BANIKI LABS',
+                subtitle: 'Un hub complet au cœur de Kinshasa : de la technologie à l\'alimentation, en passant par la formation et les services essentiels.',
+            },
+            'en': {
+                nav_lang: 'English',
+                title: 'Our Diversified Services | BANIKI LABS',
+                subtitle: 'A complete hub in the heart of Kinshasa: from technology to food, training, and essential services.',
+            },
+            'sw': {
+                nav_lang: 'Swahili',
+                title: 'Huduma Zetu Mbalimbali | BANIKI LABS',
+                subtitle: 'Kitovu kamili Kinshasa: kutoka teknolojia hadi chakula, mafunzo na huduma muhimu.',
+            }
+        };
+        let currentLang = 'fr'; // Langue par défaut
+
+        const updateContent = (lang) => {
+            // 1. Mise à jour du bouton de navigation (texte du bouton)
+            const langButton = document.getElementById('lang-btn');
+            // Trouver le nœud de texte (peut être le premier enfant ou pas, on parcourt)
+            let textNode = Array.from(langButton.childNodes).find(node => node.nodeType === 3); 
+            if (textNode) {
+                textNode.textContent = translations[lang].nav_lang;
+            } else {
+                 langButton.textContent = translations[lang].nav_lang; // Fallback
+            }
+
+            // 2. Mise à jour des titres de la section principale (traduction simulée)
+            document.querySelector('[data-key="title"]').textContent = translations[lang].title;
+            document.querySelector('[data-key="subtitle"]').textContent = translations[lang].subtitle;
+
+            // 3. Mise à jour de l'état "actif" dans le menu déroulant
+            document.querySelectorAll('.lang-option').forEach(option => {
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.remove('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-600');
+                    option.classList.add('text-indigo-700', 'font-bold', 'bg-indigo-50');
+                } else {
+                    option.classList.remove('text-indigo-700', 'font-bold', 'bg-indigo-50');
+                    option.classList.add('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-600');
+                }
+            });
+
+            currentLang = lang;
+        };
+
+
+        // --- LOGIQUE DES MENUS DÉROULANTS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const exploreBtn = document.getElementById('explore-btn');
+            const exploreMenu = document.getElementById('explore-menu');
+            const langBtn = document.getElementById('lang-btn');
+            const langMenu = document.getElementById('lang-menu');
+
+            // Fonction de bascule générique
+            const toggleMenu = (button, menu) => {
+                const isHidden = menu.classList.contains('hidden');
+                // Cacher tous les menus pour éviter les superpositions
+                document.querySelectorAll('.relative > div').forEach(m => {
+                    if (m !== menu) m.classList.add('hidden');
+                });
+                
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                } else {
+                    menu.classList.add('hidden');
+                }
+            };
+
+            // Événement pour le menu Explore
+            exploreBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(exploreBtn, exploreMenu);
+            });
+
+            // Événement pour le sélecteur de Langue
+            langBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(langBtn, langMenu);
+            });
+
+            // Événement pour la sélection d'une langue
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const newLang = e.target.closest('.lang-option').getAttribute('data-lang');
+                    updateContent(newLang);
+                    langMenu.classList.add('hidden'); // Fermer le menu après la sélection
+                });
+            });
+
+            // Cacher les menus quand on clique à l'extérieur
+            document.addEventListener('click', (e) => {
+                if (!exploreBtn.contains(e.target) && !exploreMenu.contains(e.target)) {
+                    exploreMenu.classList.add('hidden');
+                }
+                if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+                    langMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
