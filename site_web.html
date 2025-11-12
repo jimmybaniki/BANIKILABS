@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="title">BANIKI LABS - Création de Site Web Sur Mesure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configuration de la police Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles personnalisés pour l'effet sur le bouton */
+        .btn-discover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.5), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+        }
+        /* Style pour masquer/afficher les menus déroulants */
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                
+                <div class="flex-shrink-0 flex items-center">
+                    <div class="text-3xl font-extrabold text-indigo-600 mr-2">
+                        <span class="text-2xl font-black tracking-wider">BANIKI LABS</span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4 lg:space-x-8 items-center">
+                    <div class="relative">
+                        <button id="langBtn" class="flex items-center text-gray-600 hover:text-indigo-600 font-medium transition duration-150">
+                            <span id="currentLangDisplay">FR</span> 
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="langMenu" class="absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 hidden">
+                            <a href="#" class="lang-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="fr">Français (FR)</a>
+                            <a href="#" class="lang-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">English (EN)</a>
+                            <a href="#" class="lang-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="sw">Kiswahili (SW)</a>
+                        </div>
+                    </div>
+                    
+                    <a href="index.html" data-key="nav_back_services" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150">Retour aux Services</a>
+                    <a href="#demande-personnalisee" data-key="nav_request_quote" class="px-4 py-2 text-white bg-blue-600 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">Demande de Devis</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+
+        <header class="text-center mb-16">
+            <h1 data-key="header_title" class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+                Création de Site Web Sur Mesure
+            </h1>
+            <p data-key="header_subtitle" class="mt-4 text-xl text-gray-600 max-w-4xl mx-auto">
+                Votre présence en ligne commence ici. Nous concevons et développons des solutions web puissantes, optimisées pour la performance et le mobile.
+            </p>
+        </header>
+
+        <section id="portfolio" class="mb-20">
+            <h2 data-key="portfolio_title" class="text-3xl font-bold text-gray-900 mb-10 border-b-2 border-blue-500 pb-3 text-center">
+                Notre Portfolio par Type de Site
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden transform transition duration-300 hover:scale-[1.02]">
+                    <img src="vitrine.jpeg" alt="Exemple de site vitrine" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span data-key="type1_category" class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full mb-3">Le Classique</span>
+                        <h3 data-key="type1_title" class="text-xl font-bold text-gray-900 mb-2">Site Vitrine / Institutionnel</h3>
+                        <p data-key="type1_desc" class="text-gray-600 mb-4">
+                            Présentez votre entreprise, vos services et vos contacts. Parfait pour les PME et les organisations à Kinshasa.
+                        </p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li data-key="type1_feat1">Design Responsive (Mobile-Friendly)</li>
+                            <li data-key="type1_feat2">Formulaire de Contact Sécurisé</li>
+                            <li data-key="type1_feat3">Optimisation SEO de base</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden transform transition duration-300 hover:scale-[1.02]">
+                    <img src="ecomerce.jpeg" alt="Exemple de boutique en ligne" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span data-key="type2_category" class="inline-block bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full mb-3">La Vente</span>
+                        <h3 data-key="type2_title" class="text-xl font-bold text-gray-900 mb-2">Boutique en Ligne / E-commerce</h3>
+                        <p data-key="type2_desc" class="text-gray-600 mb-4">
+                            Vendez vos produits et services en ligne 24/7. Intégration de paiement et gestion de stock.
+                        </p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li data-key="type2_feat1">Système de Panier et Checkout</li>
+                            <li data-key="type2_feat2">Gestion des Stocks et Commandes</li>
+                            <li data-key="type2_feat3">Passerelles de Paiement Locales/Globales</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden transform transition duration-300 hover:scale-[1.02]">
+                    <img src="blog.jpeg" alt="Exemple de blog ou plateforme média" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span data-key="type3_category" class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-1 rounded-full mb-3">Le Média</span>
+                        <h3 data-key="type3_title" class="text-xl font-bold text-gray-900 mb-2">Blog / Site de Publication Média</h3>
+                        <p data-key="type3_desc" class="text-gray-600 mb-4">
+                            Partagez vos idées, actualités et connaissances avec une audience large et engagée.
+                        </p>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li data-key="type3_feat1">Système de Gestion de Contenu (CMS)</li>
+                            <li data-key="type3_feat2">Fonctionnalités de Commentaires</li>
+                            <li data-key="type3_feat3">Vitesse de Chargement Optimale</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="demande-personnalisee" class="bg-blue-600 text-white p-12 rounded-2xl shadow-2xl text-center">
+            <h2 data-key="cta_title" class="text-4xl font-extrabold mb-4">
+                Décrivez votre Projet Web Personnalisé
+            </h2>
+            <p data-key="cta_subtitle" class="text-xl font-light mb-8 max-w-2xl mx-auto">
+                Utilisez le champ ci-dessous pour nous donner un maximum de détails sur le site web que vous souhaitez créer.
+            </p>
+
+            <div class="max-w-3xl mx-auto">
+                <form id="whatsappForm" onsubmit="sendToWhatsApp(event)">
+                    <textarea id="projectDescription"
+                              rows="6"
+                              data-key-placeholder="textarea_placeholder"
+                              placeholder="Je souhaite créer un site e-commerce pour vendre des vêtements. J'aimerais qu'il ait un catalogue de produits, un système de paiement par Mobile Money, et qu'il soit livré en 3 semaines. Mon budget est de X..."
+                              class="w-full p-4 mb-6 rounded-lg text-gray-900 border-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-70 shadow-inner"
+                              required></textarea>
+
+                    <button type="submit"
+                            data-key="btn_submit"
+                            class="btn-discover inline-flex items-center justify-center w-full md:w-auto px-10 py-4 text-xl font-bold text-blue-600 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition duration-150 ease-in-out">
+                        <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-3-3 1.41-1.41L10 14.17l5.59-5.59L17 10l-7 7z"/></svg>
+                        Soumettre la Demande (WhatsApp)
+                    </button>
+                </form>
+            </div>
+
+            <p data-key="cta_footer" class="mt-4 text-sm font-semibold text-blue-200">
+                Nous vous répondrons dans les plus brefs délais au +243 978 415 814.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 mt-16 pt-12 pb-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">BANIKI LABS</h3>
+                    <p class="text-gray-400 text-sm">
+                        Votre partenaire numérique en RDC.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-indigo-400 transition duration-150" data-key="nav_back_services">Services Principaux</a></li>
+                        <li><a href="#demande-personnalisee" class="text-gray-400 hover:text-indigo-400 transition duration-150" data-key="nav_request_quote">Demander un Devis</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400">📞 +243 978 415 814</span></li>
+                        <li><a href="mailto:banikimukishijimmy@gmail.com" class="text-gray-400 hover:text-indigo-400 transition duration-150">📧 info@banikilabs.com</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Légal</h4>
+                    <p class="text-gray-400 text-sm">© 2024 BANIKI LABS.</p>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-800 pt-8">
+                <p class="text-center text-sm text-gray-400">&copy; 2024 BANIKI LABS. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Définition des traductions
+        const translations = {
+            fr: {
+                title: "BANIKI LABS - Création de Site Web Sur Mesure",
+                nav_back_services: "Retour aux Services",
+                nav_request_quote: "Demande de Devis",
+                header_title: "Création de Site Web Sur Mesure",
+                header_subtitle: "Votre présence en ligne commence ici. Nous concevons et développons des solutions web puissantes, optimisées pour la performance et le mobile.",
+                portfolio_title: "Notre Portfolio par Type de Site",
+                type1_category: "Le Classique",
+                type1_title: "Site Vitrine / Institutionnel",
+                type1_desc: "Présentez votre entreprise, vos services et vos contacts. Parfait pour les PME et les organisations à Kinshasa.",
+                type1_feat1: "Design Responsive (Mobile-Friendly)",
+                type1_feat2: "Formulaire de Contact Sécurisé",
+                type1_feat3: "Optimisation SEO de base",
+                type2_category: "La Vente",
+                type2_title: "Boutique en Ligne / E-commerce",
+                type2_desc: "Vendez vos produits et services en ligne 24/7. Intégration de paiement et gestion de stock.",
+                type2_feat1: "Système de Panier et Checkout",
+                type2_feat2: "Gestion des Stocks et Commandes",
+                type2_feat3: "Passerelles de Paiement Locales/Globales",
+                type3_category: "Le Média",
+                type3_title: "Blog / Site de Publication Média",
+                type3_desc: "Partagez vos idées, actualités et connaissances avec une audience large et engagée.",
+                type3_feat1: "Système de Gestion de Contenu (CMS)",
+                type3_feat2: "Fonctionnalités de Commentaires",
+                type3_feat3: "Vitesse de Chargement Optimale",
+                cta_title: "Décrivez votre Projet Web Personnalisé",
+                cta_subtitle: "Utilisez le champ ci-dessous pour nous donner un maximum de détails sur le site web que vous souhaitez créer.",
+                textarea_placeholder: "Je souhaite créer un site e-commerce pour vendre des vêtements. J'aimerais qu'il ait un catalogue de produits, un système de paiement par Mobile Money, et qu'il soit livré en 3 semaines. Mon budget est de X...",
+                btn_submit: "Soumettre la Demande (WhatsApp)",
+                cta_footer: "Nous vous répondrons dans les plus brefs délais au +243 978 415 814.",
+                whatsapp_intro: "Bonjour BANIKI LABS, j'ai une demande de devis pour un site web personnalisé. Voici la description de mon projet :",
+            },
+            en: {
+                title: "BANIKI LABS - Custom Website Creation",
+                nav_back_services: "Back to Services",
+                nav_request_quote: "Request a Quote",
+                header_title: "Custom Website Creation",
+                header_subtitle: "Your online presence starts here. We design and develop powerful web solutions, optimized for performance and mobile.",
+                portfolio_title: "Our Portfolio by Site Type",
+                type1_category: "The Classic",
+                type1_title: "Showcase / Institutional Website",
+                type1_desc: "Present your business, services, and contacts. Perfect for SMEs and organizations in Kinshasa.",
+                type1_feat1: "Responsive Design (Mobile-Friendly)",
+                type1_feat2: "Secure Contact Form",
+                type1_feat3: "Basic SEO Optimization",
+                type2_category: "Sales",
+                type2_title: "Online Store / E-commerce",
+                type2_desc: "Sell your products and services online 24/7. Payment integration and inventory management.",
+                type2_feat1: "Cart and Checkout System",
+                type2_feat2: "Stock and Order Management",
+                type2_feat3: "Local/Global Payment Gateways",
+                type3_category: "Media",
+                type3_title: "Blog / Media Publication Site",
+                type3_desc: "Share your ideas, news, and knowledge with a wide and engaged audience.",
+                type3_feat1: "Content Management System (CMS)",
+                type3_feat2: "Commenting Features",
+                type3_feat3: "Optimal Loading Speed",
+                cta_title: "Describe your Custom Web Project",
+                cta_subtitle: "Use the field below to give us maximum details about the website you want to create.",
+                textarea_placeholder: "I want to create an e-commerce site to sell clothes. I would like it to have a product catalog, a Mobile Money payment system, and be delivered in 3 weeks. My budget is X...",
+                btn_submit: "Submit Request (WhatsApp)",
+                cta_footer: "We will respond as soon as possible to +243 978 415 814.",
+                whatsapp_intro: "Hello BANIKI LABS, I have a quote request for a custom website. Here is the description of my project:",
+            },
+            sw: {
+                title: "BANIKI LABS - Ujenzi wa Tovuti Maalum",
+                nav_back_services: "Rudi kwa Huduma",
+                nav_request_quote: "Omba Nukuu",
+                header_title: "Ujenzi wa Tovuti Maalum",
+                header_subtitle: "Uwepo wako mtandaoni unaanzia hapa. Tunabuni na kuendeleza suluhisho za wavuti zenye nguvu, zilizoboreshwa kwa utendaji na simu za mkononi.",
+                portfolio_title: "Portfolio Yetu kwa Aina ya Tovuti",
+                type1_category: "Ya Kawaida",
+                type1_title: "Tovuti ya Maonyesho / Kitaasisi",
+                type1_desc: "Onesha biashara yako, huduma na anwani zako. Inafaa kwa biashara ndogo na za kati (PME) na mashirika huko Kinshasa.",
+                type1_feat1: "Ubunifu unaoitikia (Rafiki kwa Simu)",
+                type1_feat2: "Fomu Salama ya Mawasiliano",
+                type1_feat3: "Uboreshaji wa Msingi wa SEO",
+                type2_category: "Mauzo",
+                type2_title: "Duka la Mtandaoni / E-commerce",
+                type2_desc: "Uza bidhaa na huduma zako mtandaoni 24/7. Kuunganisha malipo na usimamizi wa hesabu.",
+                type2_feat1: "Mfumo wa Kikapu na Malipo",
+                type2_feat2: "Usimamizi wa Hisa na Maagizo",
+                type2_feat3: "Njia za Malipo za Ndani/Kimataifa",
+                type3_category: "Vyombo vya Habari",
+                type3_title: "Blogu / Tovuti ya Kuchapisha Habari",
+                type3_desc: "Shiriki mawazo yako, habari na maarifa na hadhira kubwa na inayohusika.",
+                type3_feat1: "Mfumo wa Kusimamia Maudhui (CMS)",
+                type3_feat2: "Vipengele vya Maoni",
+                type3_feat3: "Kasi Bora ya Kupakia",
+                cta_title: "Eleza Mradi Wako Maalum wa Tovuti",
+                cta_subtitle: "Tumia nafasi iliyo hapa chini kutupa maelezo kamili kuhusu tovuti unayotaka kuunda.",
+                textarea_placeholder: "Ninataka kuunda tovuti ya e-commerce ya kuuza nguo. Ningependa iwe na orodha ya bidhaa, mfumo wa malipo kwa Mobile Money, na ikamilishwe ndani ya wiki 3. Bajeti yangu ni X...",
+                btn_submit: "Tuma Ombi (WhatsApp)",
+                cta_footer: "Tutajibu haraka iwezekanavyo kwa +243 978 415 814.",
+                whatsapp_intro: "Habari BANIKI LABS, nina ombi la nukuu ya tovuti maalum. Huu hapa maelezo ya mradi wangu:",
+            }
+        };
+
+        // Variable globale pour la langue courante (par défaut: Français)
+        let currentLang = 'fr';
+
+        // Fonction pour mettre à jour le contenu de la page
+        function updateContent(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            // 1. Mise à jour des textes simples (data-key)
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            // 2. Mise à jour des placeholders (data-key-placeholder)
+            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-key-placeholder');
+                if (t[key]) {
+                    element.setAttribute('placeholder', t[key]);
+                }
+            });
+
+            // 3. Mise à jour du titre de la page
+            document.title = t.title || translations.fr.title;
+
+            // 4. Mise à jour de l'affichage de la langue
+            document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
+
+            // Optionnel: Mettre à jour l'attribut lang de la balise HTML
+            document.documentElement.lang = lang;
+        }
+
+        // Fonction pour envoyer la demande sur WhatsApp
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+
+            const description = document.getElementById('projectDescription').value.trim();
+            const phoneNumber = '243978415814'; 
+
+            if (description === "") {
+                alert("Veuillez décrire votre projet avant de soumettre.");
+                return;
+            }
+
+            // Récupère l'introduction du message dans la langue courante
+            const whatsappIntro = translations[currentLang].whatsapp_intro || translations.fr.whatsapp_intro;
+            
+            // Construit le message complet et l'encode
+            const fullMessage = `${whatsappIntro}\n\n${description}`;
+            const encodedMessage = encodeURIComponent(fullMessage);
+
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappURL, '_blank');
+        }
+
+        // Initialisation des événements et du contenu au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            const langBtn = document.getElementById('langBtn');
+            const langMenu = document.getElementById('langMenu');
+
+            // Événement pour le sélecteur de Langue
+            langBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                langMenu.classList.toggle('hidden');
+            });
+
+            // Événement pour la sélection d'une langue
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const newLang = e.target.closest('.lang-option').getAttribute('data-lang');
+                    updateContent(newLang);
+                    langMenu.classList.add('hidden'); // Fermer le menu après la sélection
+                });
+            });
+
+            // Cacher le menu quand on clique à l'extérieur
+            document.addEventListener('click', (e) => {
+                if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+                    langMenu.classList.add('hidden');
+                }
+            });
+            
+            // Initialisation de la traduction (par défaut en Français)
+            updateContent(currentLang);
+        });
+    </script>
+</body>
+</html>
