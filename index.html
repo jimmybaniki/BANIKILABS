@@ -1,1333 +1,801 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNOTES - Shared Note Taking</title>
+    <title>BANIKI LABS - Nos Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <style>
+        /* Configuration de la police Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles personnalisés pour l'effet sur le bouton */
+        .btn-discover:hover {
+            /* Utilisation d'une ombre or/jaune foncée pour simuler l'effet 'brillant' */
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(180, 150, 50, 0.5), 0 4px 6px -2px rgba(180, 150, 50, 0.05);
+        }
+        /* Style pour masquer/afficher les menus déroulants */
+        .hidden { display: none; }
+        /* NOUVEAU: Couleur d'accent OR/Jaune-Orange */
+        .text-gold-accent { color: #FFD700; } /* Couleur Or (hex) */
+        .bg-gold-accent { background-color: #FFD700; } /* Couleur Or (hex) */
+        .border-gold-accent { border-color: #FFD700; } /* Couleur Or (hex) */
+        .hover\:bg-gold-dark:hover { background-color: #CCAA00; } /* Or foncé pour le survol */
+        .hover\:text-gold-dark:hover { color: #CCAA00; } /* Or foncé pour le survol */
+    </style>
     <script>
         tailwind.config = {
             theme: {
-                extend: {},
-            },
-            safelist: [
-                'tag-work',
-                'tag-personal',
-                'tag-ideas',
-                'tag-important',
-                'tag-study',
-                'tag-cuisine', /* Exemple de tag personnalisé */
-            ]
+                extend: {
+                    colors: {
+                        'gold-accent': '#FFD700', // Or
+                        'gold-dark': '#CCAA00',   // Or foncé
+                        'dark-bg': '#1a1a1a',     // Arrière-plan foncé
+                        'dark-card': '#262626',   // Couleur de carte plus sombre
+                        'text-light': '#f3f4f6',  // Texte gris très clair
+                    }
+                }
+            }
         }
     </script>
-    
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        
-        /* Animation for note cards */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .note-card {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        
-        /* Tag colors - utilisés pour les cartes de notes */
-        .tag-work { background-color: #FFD700; }
-        .tag-personal { background-color: #90EE90; }
-        .tag-ideas { background-color: #ADD8E6; }
-        .tag-important { background-color: #FFA07A; }
-        .tag-study { background-color: #D8BFD8; }
-
-        /* Styles for the new Content Editable Editor */
-        #noteContentEditor {
-            min-height: 200px;
-            border: 1px solid #e5e7eb; /* gray-200 */
-            padding: 1rem;
-            border-radius: 0.375rem; /* rounded-md */
-            line-height: 1.5;
-            overflow-y: auto;
-            /* Empêche les images insérées de devenir trop grandes */
-            word-wrap: break-word;
-        }
-        
-        /* Style pour les éléments média insérés */
-        #noteContentEditor img,
-        #noteContentEditor video,
-        #noteContentEditor audio {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-            border-radius: 5px;
-        }
-
-        #noteContentEditor a {
-            color: #3b82f6; /* blue-500 */
-            text-decoration: underline;
-        }
-        
-        /* Styles pour la nouvelle barre d'outils de formatage */
-        #fontColorPicker {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            margin: 0;
-            vertical-align: middle;
-        }
-        #fontColorPicker::-webkit-color-swatch {
-            border: none;
-            border-radius: 50%;
-        }
-        #fontColorPicker::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        #formattingToolbar button, 
-        #formattingToolbar select {
-            /* S'assurer que les boutons ne sont pas trop grands */
-            min-height: 30px; 
-            line-height: 1;
-        }
-
-    </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-white shadow-sm sticky top-0 z-10">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fas fa-sticky-note text-green-500 text-2xl"></i>
-                <h1 class="text-xl font-bold text-gray-800">BNOTES</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="relative">
-                    <input type="text" placeholder="Search notes..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-                </div>
-                <div id="authContainer">
-                    <div id="signInButton">
-                        <button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-                            <i class="fab fa-facebook-f"></i> <span>Sign in with Facebook</span>
-                        </button>
+<body class="bg-dark-bg min-h-screen text-text-light">
+
+    <nav class="bg-dark-card shadow-xl sticky top-0 z-10 border-b border-gold-accent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20"> <div class="flex-shrink-0 flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gold-accent rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-black text-dark-bg">BL</span> 
                     </div>
-                    <div id="signedInContainer" class="relative group hidden">
-                        <img id="userPhoto" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full cursor-pointer">
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
-                            <div class="px-4 py-2 text-gray-800 font-medium" id="userName">User Name</div>
-                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
-                            <a href="#" id="signOutButton" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign out</a>
-                        </div>
+                    <div class="text-3xl font-extrabold text-gold-accent">
+                        <span class="text-2xl font-black tracking-wider">BANIKI LABS</span>
                     </div>
                 </div>
-            </div>
-        </div>
-    </header>
 
-    <div class="container mx-auto px-4 py-6 flex flex-col md:flex-row">
-        <aside class="w-full md:w-64 mb-6 md:mb-0 md:mr-6">
-            <div class="bg-white rounded-lg shadow p-4">
-                <button id="createNoteBtn" class="fixed bottom-6 right-6 md:relative md:bottom-auto md:right-auto w-14 h-14 md:w-full md:h-auto md:py-2 md:px-4 bg-green-500 hover:bg-green-600 text-white rounded-full md:rounded-lg flex items-center justify-center mb-4 transition duration-200 shadow-lg">
-                    <i class="fas fa-plus text-xl md:text-base"></i>
-                    <span class="hidden md:inline ml-2">New Note</span>
-                </button>
-                
-                <div class="space-y-1">
-                    <a href="#" class="sidebar-link flex items-center px-3 py-2 text-gray-700 rounded-lg bg-gray-100" data-filter="all">
-                        <i class="fas fa-home mr-3 text-gray-500"></i> All Notes
-                    </a>
-                    <a href="#" class="sidebar-link flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100" data-filter="starred">
-                        <i class="fas fa-star mr-3 text-yellow-500"></i> Starred
-                    </a>
-                    <a href="#" class="sidebar-link flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100" data-filter="shared">
-                        <i class="fas fa-users mr-3 text-blue-500"></i> Shared with me
-                    </a>
-                    <a href="#" class="sidebar-link flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100" data-filter="public">
-                        <i class="fas fa-globe mr-3 text-green-500"></i> Public Notes
-                    </a>
-                    <a href="#" id="trashLink" class="sidebar-link flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100" data-filter="trash">
-                        <i class="fas fa-trash mr-3 text-red-500"></i> Trash
-                    </a>
-                </div>
-                
-                <div class="mt-6">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Tags</h3>
-                    <div class="space-y-1" id="tagsList">
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="flex-1">
-            <div class="mb-6 flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800" id="pageTitle">My Notes</h2>
-                <div class="flex space-x-2">
-                    <button id="gridViewBtn" class="p-2 rounded-full hover:bg-gray-200 bg-gray-200">
-                        <i class="fas fa-th-large text-gray-600"></i>
-                    </button>
-                    <button id="listViewBtn" class="p-2 rounded-full hover:bg-gray-200">
-                        <i class="fas fa-list text-gray-600"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="notesGrid">
-                </div>
-        </main>
-    </div>
-
-    <template id="noteTemplate">
-        <div class="note-card bg-white rounded-lg shadow p-4 hover:shadow-md transition duration-200 cursor-pointer" data-id="">
-            <div class="flex justify-between items-start mb-2">
-                <h3 class="font-medium text-gray-800 truncate"></h3>
-                <button class="text-gray-400 hover:text-yellow-500 note-star">
-                    <i class="far fa-star"></i>
-                </button>
-            </div>
-            <p class="text-gray-600 mb-3 whitespace-pre-wrap line-clamp-4"></p>
-            <div class="flex justify-between items-center text-xs text-gray-500">
-                <span class="px-2 py-1 rounded-full text-xs text-gray-800 font-medium note-tag-display"></span>
-                <span class="note-last-edited"></span>
-            </div>
-        </div>
-    </template>
-
-    <div id="noteEditorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl h-full md:max-h-[90vh] flex flex-col">
-            <div class="px-6 py-4 border-b flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <select id="noteTag" class="text-xs rounded-full px-3 py-1 border focus:outline-none">
-                        </select>
-                    <button id="addCustomTagBtn" class="text-gray-500 hover:text-green-500 p-1 rounded-full" title="Add Custom Tag">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                    <span id="noteStatus" class="text-xs bg-gray-100 px-2 py-1 rounded">Private</span>
-                </div>
-                <div class="flex space-x-2">
-                    <button id="togglePublicBtn" class="text-gray-500 hover:text-gray-700" title="Toggle Public/Private">
-                        <i class="fas fa-globe"></i>
-                    </button>
-                    <button id="shareNoteBtn" class="text-gray-500 hover:text-gray-700" title="Share Note">
-                        <i class="fas fa-user-plus"></i>
-                    </button>
-                    <button id="closeEditorBtn" class="text-gray-500 hover:text-gray-700" title="Close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="px-6 py-4 flex-1 overflow-y-auto relative" id="editorScrollContainer">
-                <input type="text" id="noteTitle" placeholder="Title" class="w-full text-2xl font-bold mb-4 focus:outline-none">
-                
-                <div id="formattingToolbar" class="absolute hidden bg-white border border-gray-300 rounded-lg shadow-xl p-1 z-50 transform -translate-x-1/2 flex items-center space-x-1 whitespace-nowrap">
-                    <button class="format-btn p-1 rounded hover:bg-gray-100 text-gray-700" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
-                    <button class="format-btn p-1 rounded hover:bg-gray-100 text-gray-700" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
-                    <button class="format-btn p-1 rounded hover:bg-gray-100 text-gray-700" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                <div class="hidden md:flex space-x-6 lg:space-x-8 items-center">
+                    <a href="#pricing" data-key="nav_pricing" class="text-text-light hover:text-gold-accent font-medium transition duration-150">Prix</a>
+                    <a href="#services" data-key="nav_services" class="text-gold-accent font-bold transition duration-150 border-b-2 border-gold-accent">Services</a>
                     
-                    <span class="mx-1 text-gray-300">|</span>
-                    
-                    <select id="fontSizeSelect" class="text-sm px-1 py-0.5 rounded border border-gray-200 focus:ring-0 focus:border-gray-400">
-                        <option value="1">Small</option>
-                        <option value="3" selected>Normal</option>
-                        <option value="5">Large</option>
-                        <option value="7">Huge</option>
-                    </select>
-                    
-                    <input type="color" id="fontColorPicker" class="w-6 h-6 p-0 border-0 cursor-pointer align-middle" value="#000000" title="Font Color">
-                </div>
-
-                <div 
-                    id="noteContentEditor" 
-                    contenteditable="true" 
-                    class="focus:outline-none" 
-                    placeholder="Start writing..."
-                ></div>
-                <div id="collaboratorsSection" class="mt-6 border-t pt-4 hidden">
-                    <h3 class="text-sm font-semibold text-gray-500 mb-2">Collaborators</h3>
-                    <div class="flex flex-wrap gap-2">
-                        <div class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-6 h-6 rounded-full mr-2">
-                            <span class="text-sm">John Doe</span>
-                            <button class="ml-2 text-gray-400 hover:text-gray-600 remove-collaborator">
-                                <i class="fas fa-times text-xs"></i>
-                            </button>
-                        </div>
-                        <div class="relative">
-                            <input type="text" placeholder="Add email..." class="text-sm px-3 py-1 border rounded-full focus:outline-none w-40">
-                            <button class="absolute right-2 top-1.5 text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="px-6 py-4 border-t flex justify-between items-center flex-wrap gap-3">
-                <div class="text-xs text-gray-500">
-                    Last edited: <span id="lastEdited">Just now</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="downloadPdfBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md transition duration-200 text-sm">
-                        <i class="fas fa-file-pdf mr-1"></i> Download PDF
-                    </button>
-
-                    <button id="deleteNoteBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md transition duration-200 text-sm">
-                        <i class="fas fa-trash mr-1"></i> Trash
-                    </button>
-                    <div class="flex space-x-1">
-                        <button class="attachment-btn p-2 rounded-full hover:bg-gray-100" data-type="image" title="Add Image">
-                            <i class="fas fa-image text-gray-500 hover:text-blue-500"></i>
+                    <div class="relative">
+                        <button id="explore-btn" class="text-text-light hover:text-gold-accent font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-dark-bg focus:outline-none">
+                            <span data-key="nav_explore">Explorer</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <button class="attachment-btn p-2 rounded-full hover:bg-gray-100" data-type="video" title="Add Video">
-                            <i class="fas fa-video text-gray-500 hover:text-red-500"></i>
-                        </button>
-                        <button class="attachment-btn p-2 rounded-full hover:bg-gray-100" data-type="audio" title="Add Voice Note">
-                            <i class="fas fa-microphone text-gray-500 hover:text-green-500"></i>
-                        </button>
-                        <button class="attachment-btn p-2 rounded-full hover:bg-gray-100" data-type="document" title="Add File">
-                            <i class="fas fa-file-alt text-gray-500 hover:text-purple-500"></i>
-                        </button>
-                    </div>
-                    <button id="saveNoteBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                        Save
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div class="px-6 py-4 border-b flex justify-between items-center">
-                <h3 class="text-lg font-semibold">Share Note</h3>
-                <button id="closeShareModalBtn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="px-6 py-4">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Share with</label>
-                    <div class="flex">
-                        <input type="email" placeholder="Enter email" class="flex-1 px-3 py-2 border rounded-l focus:outline-none">
-                        <button class="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600">Send</button>
-                    </div>
-                </div>
-                <div class="border-t pt-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">Shared with</h4>
-                    <div class="space-y-2" id="sharedWithList">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="User" class="w-8 h-8 rounded-full mr-2">
-                                <span>jane.smith@example.com</span>
+                        <div id="explore-menu" class="hidden absolute right-0 mt-2 w-60 rounded-md shadow-lg bg-dark-card ring-1 ring-gold-accent ring-opacity-50 z-20">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="explore-btn">
+                                <a href="#blog" class="block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">
+                                    <span class="font-semibold" data-key="menu_blog">Blog</span><br><span class="text-xs text-gray-400" data-key="desc_blog">Nos dernières nouvelles et mises à jour</span>
+                                </a>
+                                <a href="#features" class="block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">
+                                    <span class="font-semibold" data-key="menu_features">Fonctionnalités et outils</span><br><span class="text-xs text-gray-400" data-key="desc_features">Dernières versions et caractéristiques des produits</span>
+                                </a>
+                                <a href="#story" class="block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">
+                                    <span class="font-semibold" data-key="menu_story">Notre histoire</span><br><span class="text-xs text-gray-400" data-key="desc_story">D'où nous venons et où nous allons</span>
+                                </a>
+                                <a href="#clients" class="block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">
+                                    <span class="font-semibold" data-key="menu_clients">Histoires de clients</span><br><span class="text-xs text-gray-400" data-key="desc_clients">Les succès de nos clients sont nos histoires préférées</span>
+                                </a>
                             </div>
-                            <select class="text-xs border rounded px-2 py-1 focus:outline-none">
-                                <option>Can edit</option>
-                                <option>Can view</option>
-                            </select>
                         </div>
                     </div>
+                    
+                    <a href="#support" data-key="nav_support" class="text-text-light hover:text-gold-accent font-medium transition duration-150">Aide</a>
+                    
+                    <div class="relative">
+                        <button id="lang-btn" class="text-text-light hover:text-gold-accent font-medium transition duration-150 flex items-center p-2 rounded-lg hover:bg-dark-bg focus:outline-none">
+                            Français
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="lang-menu" class="hidden absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-dark-card ring-1 ring-gold-accent ring-opacity-50 z-20">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="lang-btn">
+                                <a href="#" data-lang="fr" class="lang-option block px-4 py-2 text-sm text-gold-accent font-bold bg-dark-bg">Français</a>
+                                <a href="#" data-lang="en" class="lang-option block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">English</a>
+                                <a href="#" data-lang="sw" class="lang-option block px-4 py-2 text-sm text-text-light hover:bg-gold-dark hover:text-dark-bg">Swahili</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#account" data-key="nav_account" class="ml-4 px-4 py-2 text-dark-bg bg-gold-accent rounded-lg font-semibold hover:bg-gold-dark transition duration-150">Mon compte</a>
+                </div>
+
+                <div class="md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-dark-bg hover:bg-gold-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gold-accent">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
                 </div>
             </div>
         </div>
+    </nav>
+
+    <div id="services" class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gold-accent leading-tight" data-key="title">
+                Nos Services Diversifiés | BANIKI LABS
+            </h1>
+            <p class="mt-4 text-xl text-gray-400 max-w-4xl mx-auto" data-key="subtitle">
+                Un hub complet au cœur de Kinshasa : de la technologie à l'alimentation, en passant par la formation et les services essentiels.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-10">
+            
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-gold-accent">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Site Web]
+                </div>
+                <div class="text-blue-400 mb-4">
+                    <span class="text-5xl">🌐</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_0">Création de Site Web</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_0">
+                    Conception et développement de sites web professionnels (vitrine, e-commerce, blog) sur mesure, optimisés pour mobile et le référencement (SEO).
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="site_web.html" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+    Découvrir
+</a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-blue-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Centre Informatique]
+                </div>
+                <div class="text-blue-500 mb-4">
+                    <span class="text-5xl">🖥️</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_1">Centre Informatique Avancé</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_1">
+                    Accès internet haut débit, impression, scanning, photocopie, conversion de format de fichier (PDF/Word, MP4/MP3, etc.), maintenance informatique et cours d'informatique pour tous les niveaux.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#informatique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-red-500">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Cours de Langue]
+                </div>
+                <div class="text-red-500 mb-4">
+                    <span class="text-5xl">🇬🇧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_2">Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_2">
+                    Des programmes intensifs et personnalisés pour maîtriser l'anglais, le swahili, le français des affaires, académique ou conversationnel.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#langues" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-purple-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Studio Podcast]
+                </div>
+                <div class="text-purple-500 mb-4">
+                    <span class="text-5xl">🎙️</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_3">Studio d'Enregistrement Podcast</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_3">
+                    Espace insonorisé équipé pour l'enregistrement, le montage et la diffusion de podcasts de qualité professionnelle.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#podcast" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-indigo-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Studio Musical]
+                </div>
+                <div class="text-indigo-500 mb-4">
+                    <span class="text-5xl">🎧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_4">Studio d'Enregistrement Musical</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_4">
+                    Studio moderne pour l'enregistrement, le mixage et le mastering de vos productions musicales (artiste, beatmaker, jingle).
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#musique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-yellow-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Formation Bureautique]
+                </div>
+                <div class="text-yellow-500 mb-4">
+                    <span class="text-5xl">📄</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_5">Formation en Bureautique</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_5">
+                    Cours pratiques sur les outils de productivité (Word, Excel, PowerPoint) essentiels pour le monde professionnel.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#bureautique" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-green-500">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Agence Immobilière]
+                </div>
+                <div class="text-green-500 mb-4">
+                    <span class="text-5xl">🏠</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_6">Agence Immobilière (Achat/Vente)</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_6">
+                    Conseils et transactions pour la location, l'achat ou la vente de propriétés résidentielles et commerciales à Kinshasa.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#immobilier" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-amber-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Service de Photographie]
+                </div>
+                <div class="text-amber-500 mb-4">
+                    <span class="text-5xl">📸</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_7">Service de Photographie</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_7">
+                    Couverture d'événements, portraits professionnels, photos de produits et séances créatives. Matériel haut de gamme et post-traitement inclus.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#photo" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-teal-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Service de Vidéographie]
+                </div>
+                <div class="text-teal-500 mb-4">
+                    <span class="text-5xl">🎥</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_8">Service de Vidéographie</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_8">
+                    Production de clips musicaux, vidéos d'entreprise, documentaires et publicités. Du concept à la post-production professionnelle.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#video" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-cyan-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Livraison]
+                </div>
+                <div class="text-cyan-500 mb-4">
+                    <span class="text-5xl">📦</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_9">Livraison Rapide à Domicile</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_9">
+                    Service de livraison rapide et fiable de tous types de colis et repas à travers Kinshasa. Suivi en temps réel et support client.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#livraison" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-pink-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Développement Personnel]
+                </div>
+                <div class="text-pink-500 mb-4">
+                    <span class="text-5xl">🌱</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_10">Centre de Développement Personnel</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_10">
+                    Ateliers, coaching et séminaires pour renforcer le leadership, la confiance en soi et l'atteinte des objectifs personnels et professionnels.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#developpement-perso" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-gray-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Centre d'Autonomie]
+                </div>
+                <div class="text-gray-500 mb-4">
+                    <span class="text-5xl">💡</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_11">Centre d'Autonomie</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_11">
+                    Programmes et ressources dédiés à l'indépendance financière, professionnelle et personnelle, notamment pour les jeunes entrepreneurs.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#autonomie" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-orange-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Bureau de Change]
+                </div>
+                <div class="text-orange-500 mb-4">
+                    <span class="text-5xl">💰</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_12">Bureau de Change d'Argent</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_12">
+                    Services de change de devises rapides et sécurisés avec des taux compétitifs, facilitant vos transactions internationales et locales.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#change" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-sky-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Service de Traduction]
+                </div>
+                <div class="text-sky-500 mb-4">
+                    <span class="text-5xl">💬</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_13">Service de Traduction Professionnelle</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_13">
+                    Traduction audio, vidéo, de documents et en personne dans 10 langues clés (français, anglais, swahili, chinois, lingala, portugais, japonais, sona, malgache, espagnol) et autres sur demande.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="https://jimmybaniki.github.io/translate/" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-lime-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Services Réseaux Mobiles]
+                </div>
+                <div class="text-lime-500 mb-4">
+                    <span class="text-5xl">📱</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_14">Vente Services Réseaux Mobiles RDC</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_14">
+                    Cabine de vente de crédits, forfaits, cartes SIM et services de transfert d'argent mobile pour tous les réseaux en RDC.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#reseaux" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-fuchsia-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Production Eau et Jus]
+                </div>
+                <div class="text-fuchsia-500 mb-4">
+                    <span class="text-5xl">💧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_15">Production d'Eau et Jus Naturels</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_15">
+                    Agence de fabrication et de vente de jus de fruits frais et d'eau pure, privilégiant les ingrédients naturels et locaux de qualité.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#jus" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-rose-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Fast Food]
+                </div>
+                <div class="text-rose-500 mb-4">
+                    <span class="text-5xl">🍔</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_16">Nourriture Fast Food (Kinshasa)</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_16">
+                    Vente de plats rapides et savoureux, préparés localement à Kinshasa, pour une pause déjeuner ou un dîner rapide et gourmand.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="https://jimmybaniki.github.io/FASTFOOD/" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-teal-500">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Service d'Entraide]
+                </div>
+                <div class="text-teal-600 mb-4">
+                    <span class="text-5xl">🤝</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_17">Service d'Entraide</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_17">
+                    Plateforme communautaire de soutien mutuel et de partage de ressources, visant à connecter les individus ayant des besoins similaires à Kinshasa.
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#entraide" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-dark-card p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-2xl border border-red-400">
+                <div class="mb-6 h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500 font-semibold text-sm">
+                    [Photo Service de Transport]
+                </div>
+                <div class="text-red-500 mb-4">
+                    <span class="text-5xl">🚐</span>
+                </div>
+                <h3 class="text-2xl font-bold text-text-light mb-3" data-key="service_title_18">Service de Transport Fiable</h3>
+                <p class="text-gray-400 mb-6 flex-grow" data-key="service_desc_18">
+                    Transport fiable et sécurisé à Kinshasa pour les écoles, églises, universités, et événements spéciaux (mariages, funérailles, excursions, etc.).
+                </p>
+                <div class="flex space-x-3 mt-4">
+                    <a href="#transport" class="btn-discover flex-grow px-4 py-3 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center" data-key="btn_discover">
+                        Découvrir
+                    </a>
+                    <a href="https://wa.me/243978415814" target="_blank" title="Contactez-nous via WhatsApp" class="flex items-center justify-center w-14 h-[52px] text-xl font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150">
+                        📞
+                    </a>
+                </div>
+            </div>
+
+        </div> 
     </div>
 
+    <div id="support" class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <header class="text-center mb-10">
+            <h2 class="text-4xl sm:text-4xl font-extrabold text-gold-accent leading-tight">
+                DANS AIDE
+            </h2>
+            <p class="mt-2 text-xl text-gray-400 max-w-4xl mx-auto">
+                Contactez notre direction pour toute demande de service urgente.
+            </p>
+        </header>
 
+        <div class="max-w-lg mx-auto p-8 bg-dark-card rounded-2xl shadow-xl border border-gold-accent">
+            <h3 class="text-2xl font-bold text-text-light mb-6 text-center">Contact Direct CEO</h3>
+            
+            <a href="mailto:banikimukishijimmy@gmail.com?subject=Demande%20d'assistance%20pour%20un%20service&body=j'aimerai%20payer%20un%20services%20pouvais%20vous%20m'assister" 
+               target="_blank"
+               class="flex items-center justify-center w-full px-8 py-4 text-lg font-semibold text-dark-bg bg-gold-accent rounded-lg shadow-md hover:bg-gold-dark focus:outline-none focus:ring-4 focus:ring-gold-dark focus:ring-opacity-50 transition ease-in-out duration-150 text-center">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-2 4v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path></svg>
+                Envoyer un Email Direct au CEO
+            </a>
+            <p class="mt-4 text-sm text-gray-500 text-center">
+                Cliquer ouvrira votre client de messagerie avec le message pré-rempli.
+            </p>
+        </div>
+    </div>
+    <footer class="bg-gray-900 mt-16 pt-12 pb-8 border-t border-gold-accent">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-gold-accent mb-4">BANIKI LABS</h3>
+					<p class="text-gray-400 text-sm mb-4">
+    18 Avenue Salongo, Quartier Makelele, Commune de Bandalungwa, Ville de Kinshasa, Province de Kinshasa, RDC
+</p>
+                    <p class="text-gray-400 text-sm" data-key="footer_desc">
+                        Kitovu cha uvumbuzi na huduma nyingi katikati ya DRC. Tunaunganisha teknolojia, mafunzo na huduma muhimu.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gold-accent mb-4" data-key="footer_nav_title">Navigation de Base</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#services" class="text-gray-400 hover:text-gold-accent transition duration-150">Services</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-gold-accent transition duration-150">Prix</a></li>
+                        <li><a href="#support" class="text-gray-400 hover:text-gold-accent transition duration-150">Aide</a></li>
+                        <li><a href="#account" class="text-gray-400 hover:text-gold-accent transition duration-150">Mon Compte</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gold-accent mb-4" data-key="footer_contact_title">Contact & Paiement</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400">📞 +243 978 415 814</span></li>
+                        <li><a href="mailto:banikimukishijimmy@gmail.com" class="text-gray-400 hover:text-gold-accent transition duration-150">📧 info@banikilabs.com</a></li>
+                        <li><span class="text-gray-400">📍 Kinshasa, RDC</span></li>
+                        <li><span class="text-gray-400">💳 Paiements acceptés</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gold-accent mb-4" data-key="footer_social">Réseaux Sociaux</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://facebook.com/banikilabs" target="_blank" class="text-gray-400 hover:text-gold-accent transition duration-150" title="Facebook">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 10h3v4h-3v7h-4v-7h-3v-4h3v-2.5c0-3.6 1.8-5.5 5.5-5.5h3.5v4h-3c-1.4 0-1.5.5-1.5 1.5v2z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/banikilabs" target="_blank" class="text-gray-400 hover:text-gold-accent transition duration-150" title="Twitter">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.46 6c-.8.37-1.74.62-2.73.74.92-.55 1.6-1.42 1.93-2.46-.86.5-1.8.84-2.83 1.03-.83-.88-2.02-1.43-3.32-1.43-2.51 0-4.55 2.04-4.55 4.55 0 .36.04.7.12 1.03-3.78-.19-7.14-2-9.4-4.75-.38.66-.59 1.43-.59 2.25 0 1.58.8 2.97 2.01 3.79-.74-.02-1.44-.23-2.05-.57v.06c0 2.21 1.58 4.05 3.68 4.47-.38.1-.77.16-1.18.16-.29 0-.57-.03-.84-.08.58 1.83 2.26 3.16 4.24 3.2-1.57 1.23-3.56 1.96-5.72 1.96-.37 0-.74-.02-1.1-.06 2.03 1.3 4.44 2.07 7.02 2.07 8.41 0 13.01-6.97 13.01-13.01 0-.2 0-.4-.01-.6.9-.65 1.7-1.45 2.33-2.37z"/></svg>
+                        </a>
+                        <a href="https://instagram.com/banikilabs" target="_blank" class="text-gray-400 hover:text-gold-accent transition duration-150" title="Instagram">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c2.75 0 3.14.01 4.23.06 1.08.06 1.76.22 2.45.51.7.3 1.3.73 1.87 1.3.57.58 1.01 1.17 1.3 1.87.29.69.45 1.37.51 2.45.05 1.09.06 1.48.06 4.23s-.01 3.14-.06 4.23c-.06 1.08-.22 1.76-.51 2.45-.3.7-.73 1.3-1.3 1.87-.58.57-1.17 1.01-1.87 1.3-.69.29-1.37.45-2.45.51-1.09.05-1.48.06-4.23.06s-3.14-.01-4.23-.06c-1.08-.06-1.76-.22-2.45-.51-.7-.3-1.3-.73-1.87-1.3-.57-.58-1.01-1.17-1.3-1.87-.29-.69-.45-1.37-.51-2.45-.05-1.09-.06-1.48-.06-4.23s.01-3.14.06-4.23c.06-1.08.22-1.76.51-2.45.3-.7.73-1.3 1.3-1.87.58-.57 1.17-1.01 1.87-1.3.69-.29 1.37-.45 2.45-.51 1.09-.05 1.48-.06 4.23-.06zm0-2c-2.82 0-3.17.01-4.29.07-1.1.06-1.84.24-2.49.53-.66.29-1.22.68-1.82 1.28-.6.6-.99 1.16-1.28 1.82-.29.65-.47 1.39-.53 2.49-.06 1.12-.07 1.47-.07 4.29s.01 3.17.07 4.29c.06 1.1.24 1.84.53 2.49.29.66.68 1.22 1.28 1.82.6.6.99 1.16 1.82 1.28.65.29 1.39.47 2.49.53 1.12.06 1.47.07 4.29.07s3.17-.01 4.29-.07c1.1-.06 1.84-.24 2.49-.53.66-.29 1.22-.68 1.82-1.28.6-.6.99-1.16 1.28-1.82.29-.65.47-1.39.53-2.49.06-1.12.07-1.47.07-4.29s-.01-3.17-.07-4.29c-.06-1.1-.24-1.84-.53-2.49-.29-.66-.68-1.22-1.28-1.82-.6-.6-.99-1.16-1.82-1.28-.65-.29-1.39-.47-2.49-.53-1.12-.06-1.47-.07-4.29-.07zm0 4a4 4 0 100 8 4 4 0 000-8zm0 6a2 2 0 110-4 2 2 0 010 4zm6.5-7.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
+                        </a>
+                        </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-800 pt-8">
+                <p class="text-center text-sm text-gray-400">&copy; 2024 BANIKI LABS. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+    
     <script>
-        // Data et State Management
-        let currentNote = null;
-        let savedRange = null; // Variable pour sauvegarder la position du curseur
-        let predefinedTags = ['work', 'personal', 'ideas', 'important', 'study']; // Tags pour la couleur/base
-        let currentFilter = { type: 'all', value: null }; // { type: 'all', 'tag', 'starred', 'trash', value: 'tag-name' }
-        let notes = [
-            {
-                id: 1,
-                title: 'Plan de projet BNOTES (avec média)',
-                content: 'Définir les fonctionnalités clés, créer les maquettes et établir le calendrier de développement. Priorité : Authentification et CRUD de base.<p>Ici, un emplacement pour une image :</p>',
-                tag: 'work',
-                starred: true,
-                public: false,
-                lastEdited: '30 Nov 2025, 10:00 AM',
-                deleted: false
-            },
-            {
-                id: 2,
-                title: 'Liste de courses',
-                content: 'Lait, œufs, pain complet, épinards, poulet. N\'oubliez pas la nouvelle marque de café!',
-                tag: 'personal',
-                starred: false,
-                public: false,
-                lastEdited: '30 Nov 2025, 1:00 PM',
-                deleted: false
-            },
-            {
-                id: 3,
-                title: 'Idée de startup: Chatbot IA',
-                content: "Un chatbot qui peut interagir de manière fluide et gérer des tâches complexes grâce à l'intégration d'API multiples.",
-                tag: 'ideas',
-                starred: false,
-                public: true,
-                lastEdited: '29 Nov 2025, 9:00 AM',
-                deleted: false
-            },
-            {
-                id: 4,
-                title: 'Nouvelle Recette',
-                content: "Essayer cette recette de curry de légumes avec du lait de coco.",
-                tag: 'cuisine', // Custom tag
-                starred: true,
-                public: false,
-                lastEdited: '29 Nov 2025, 9:00 AM',
-                deleted: false
-            },
-        ];
-        let viewMode = 'grid'; // 'grid' or 'list'
-
-        // =========================================================
-        // NOUVELLE LOGIQUE D'AUTHENTIFICATION FIREBASE
-        // =========================================================
-        
-        // CORRECTION: CONFIGURATION FIREBASE AVEC VOS VALEURS RÉELLES
-        const firebaseConfig = {
-            apiKey: "AIzaSyAmJ73TSbxCR7amDDleoL2fb2Lhq5m-nAs", // CLÉ API CORRIGÉE
-            authDomain: "bnotes-243.firebaseapp.com", // DOMAINE D'AUTHENTIFICATION
-            projectId: "bnotes-243", // ID DU PROJET
-            storageBucket: "bnotes-243.firebasestorage.app", // CORRECTION: Utilisation du domaine .firebasestorage.app
-            messagingSenderId: "105359848932", // ID DE L'EXPÉDITEUR CORRIGÉ
-            appId: "1:105359848932:web:c9a532483739e17e0343f1" // ID DE L'APPLICATION CORRIGÉ
-        };
-
-        // Initialiser Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const FacebookProvider = new firebase.auth.FacebookAuthProvider();
-        
-        // CORRECTION DE L'ERREUR FACEBOOK 'Invalid Scopes: email'
-        FacebookProvider.addScope('email'); 
-        
-        // Demander le nom d'utilisateur public (public_profile est suffisant)
-        FacebookProvider.addScope('public_profile');
-        
-        /**
-         * Met à jour l'interface utilisateur en fonction de l'état de l'utilisateur Firebase.
-         * @param {firebase.User} user L'objet utilisateur de Firebase.
-         */
-        function updateUserUI(user) {
-            const signInBtnContainer = document.getElementById('signInButton');
-            const signedInContainer = document.getElementById('signedInContainer');
-            const userPhoto = document.getElementById('userPhoto');
-            const userNameEl = document.getElementById('userName');
-
-            if (user) {
-                // Utilisateur connecté
-                signInBtnContainer.classList.add('hidden');
-                signedInContainer.classList.remove('hidden');
-                // Récupérer les infos de l'utilisateur Facebook
-                userNameEl.textContent = user.displayName || 'Utilisateur';
-                userPhoto.src = user.photoURL || 'https://via.placeholder.com/40';
-                showToast(`Connecté en tant que ${user.displayName || 'Utilisateur'}!`);
-            } else {
-                // Utilisateur déconnecté
-                signInBtnContainer.classList.remove('hidden');
-                signedInContainer.classList.add('hidden');
-            }
-        }
-        
-        /**
-         * Gère la connexion avec Facebook via popup.
-         */
-        function handleFacebookSignIn() {
-            auth.signInWithPopup(FacebookProvider)
-                .then((result) => {
-                    // La fonction updateUserUI (via onAuthStateChanged) s'occupera de l'affichage
-                })
-                .catch((error) => {
-                    console.error("Erreur de connexion Facebook:", error);
-                    let errorMessage = error.message;
-                    // Tenter de rendre l'erreur plus lisible
-                    if (error.code === 'auth/popup-closed-by-user') {
-                        errorMessage = 'Connexion annulée par l\'utilisateur.';
-                    } else if (error.code === 'auth/network-request-failed') {
-                        errorMessage = 'Échec de la connexion réseau.';
-                    } else if (error.code === 'auth/operation-not-allowed') {
-                        errorMessage = 'Opération non autorisée. Vérifiez la configuration de Facebook dans la Console Firebase.';
-                    } else if (error.code === 'auth/unauthorized-domain') {
-                        // Ajout d'une gestion pour l'erreur de domaine non autorisé
-                        errorMessage = 'Ce domaine n\'est pas autorisé pour l\'authentification OAuth. Veuillez ajouter "jimmybaniki.github.io" dans les "Domaines autorisés" de votre console Firebase (Authentication > Settings).';
-                    } else if (error.code === 'auth/api-key-not-valid') {
-                        errorMessage = 'Clé API invalide. Veuillez vérifier votre configuration Firebase.';
-                    }
-                    showToast(`Échec de la connexion: ${errorMessage}`, true);
-                });
-        }
-        
-        /**
-         * Gère la déconnexion.
-         */
-        function handleSignOut(e) {
-            e.preventDefault();
-            auth.signOut()
-                .then(() => {
-                    showToast('Déconnecté.');
-                })
-                .catch((error) => {
-                    console.error("Erreur de déconnexion:", error);
-                    showToast(`Échec de la déconnexion: ${error.message}`, true);
-                });
-        }
-
-        // =========================================================
-        // FIN LOGIQUE AUTHENTIFICATION
-        // =========================================================
-
-
-        // --- Utility Functions pour la gestion du curseur et des tags ---
-
-        /**
-         * Sauvegarde la position actuelle du curseur (la sélection).
-         */
-        function saveSelection() {
-            const editor = document.getElementById('noteContentEditor');
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0 && editor.contains(selection.getRangeAt(0).commonAncestorContainer)) {
-                // Créer une copie du Range et le sauvegarder
-                savedRange = selection.getRangeAt(0).cloneRange(); 
-            }
-        }
-        
-        /**
-         * Gère la sélection dans l'éditeur : sauvegarde et affiche la barre d'outils.
-         */
-        function handleEditorSelection() {
-            saveSelection();
-            showToolbar();
-        }
-
-        /**
-         * Restaure la position du curseur sauvegardée.
-         */
-        function restoreSelection() {
-            if (savedRange) {
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.add(savedRange);
-                // S'assurer que l'éditeur a le focus après la restauration
-                document.getElementById('noteContentEditor').focus(); 
-            }
-        }
-
-        /**
-         * Formate la taille du fichier.
-         * @param {number} bytes 
-         */
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        /**
-         * Met à jour la classe du tag et son texte dans une carte de note.
-         */
-        function updateNoteCardTag(noteCard, note) {
-            const tagEl = noteCard.querySelector('.note-tag-display');
-            // Réinitialiser les classes de tag pour éviter les conflits de couleur
-            tagEl.className = 'px-2 py-1 rounded-full text-xs text-gray-800 font-medium note-tag-display'; 
-            
-            // Si le tag est un tag "pré-stylé" ou un tag personnalisé
-            const tagClass = `tag-${note.tag.toLowerCase().replace(/[^a-z0-9]/g, '-')}`; 
-            
-            // Ajouter la classe basée sur le tag pour la couleur
-            tagEl.classList.add(tagClass);
-            tagEl.textContent = note.tag.charAt(0).toUpperCase() + note.tag.slice(1);
-        }
-
-        /**
-         * Extrait tous les tags uniques des notes, y compris les tags personnalisés.
-         * Met à jour predefinedTags si des tags custom sont trouvés dans les notes.
-         * @returns {Array<string>} Liste unique et triée des tags.
-         */
-        function getAllTags() {
-            let allTags = new Set(predefinedTags); 
-
-            notes.forEach(note => {
-                if (note.tag) {
-                    allTags.add(note.tag);
-                }
-            });
-
-            // Mettre à jour predefinedTags avec tous les tags uniques pour une gestion simple
-            // Assurez-vous que la liste est un tableau unique et trié
-            predefinedTags = Array.from(allTags).filter(tag => tag && tag.trim() !== '').map(tag => tag.toLowerCase()).sort();
-            
-            return predefinedTags;
-        }
-
-        /**
-         * Rend les liens de tags dans la barre latérale.
-         */
-        function renderSidebarTags() {
-            const tagsList = document.getElementById('tagsList');
-            tagsList.innerHTML = '';
-            
-            const allUniqueTags = getAllTags();
-
-            allUniqueTags.forEach(tag => {
-                let colorClass = '';
-                // Utiliser des couleurs basées sur les classes CSS prédéfinies si disponibles
-                switch(tag.toLowerCase()) {
-                    case 'work': colorClass = 'bg-yellow-500'; break;
-                    case 'personal': colorClass = 'bg-green-500'; break;
-                    case 'ideas': colorClass = 'bg-blue-500'; break;
-                    case 'important': colorClass = 'bg-red-500'; break;
-                    case 'study': colorClass = 'bg-purple-500'; break;
-                    default: colorClass = 'bg-gray-500'; // Couleur par défaut pour les tags personnalisés
-                }
-
-                const tagDisplayName = tag.charAt(0).toUpperCase() + tag.slice(1);
-                
-                const link = document.createElement('a');
-                link.href = `#tag/${tag}`;
-                link.className = `tag-link flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100`;
-                link.setAttribute('data-tag', tag);
-                link.innerHTML = `<span class="w-3 h-3 rounded-full ${colorClass} mr-3"></span> ${tagDisplayName}`;
-                
-                // Add active state if this tag is the current filter
-                if (currentFilter.type === 'tag' && currentFilter.value === tag) {
-                    // Supprimer l'état actif des liens principaux
-                    document.querySelectorAll('aside a.sidebar-link').forEach(l => l.classList.remove('bg-gray-100'));
-                    link.classList.add('bg-gray-100');
-                }
-
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    filterNotesByTag(tag);
-                });
-
-                tagsList.appendChild(link);
-            });
-        }
-
-        /**
-         * Définit le filtre par tag, met à jour la barre latérale et re-rend les notes.
-         * @param {string} tag Le tag par lequel filtrer.
-         */
-        function filterNotesByTag(tag) {
-            currentFilter = { type: 'tag', value: tag };
-            
-            // 1. Mettre à jour l'état actif des liens principaux
-            document.querySelectorAll('aside a.sidebar-link').forEach(l => l.classList.remove('bg-gray-100'));
-
-            // 2. Re-rendre les tags (pour mettre en évidence le tag actif)
-            renderSidebarTags();
-            
-            // 3. Re-rendre les notes
-            renderNotes();
-            showToast(`Filtering by tag: ${tag.charAt(0).toUpperCase() + tag.slice(1)}`);
-        }
-        
-        /**
-         * Gère l'ajout d'un nouveau tag personnalisé.
-         */
-        function handleAddNewTag() {
-            const newTagName = prompt("Enter the name for the new custom tag:");
-            
-            if (newTagName && newTagName.trim() !== '') {
-                const cleanTagName = newTagName.trim().toLowerCase();
-                
-                // Vérifier si le tag existe déjà (case-insensitive)
-                if (getAllTags().includes(cleanTagName)) {
-                    showToast(`Tag "${newTagName}" already exists.`);
-                    return;
-                }
-
-                // 1. Ajouter le nouveau tag à la liste principale (predefinedTags est mis à jour par getAllTags)
-                predefinedTags.push(cleanTagName);
-                predefinedTags.sort(); 
-
-                // 2. Mettre à jour la liste déroulante du modal
-                const tagSelect = document.getElementById('noteTag');
-                tagSelect.innerHTML = getAllTags().map(tag => {
-                    const displayName = tag.charAt(0).toUpperCase() + tag.slice(1);
-                    return `<option value="${tag}" ${tag === cleanTagName ? 'selected' : ''}>${displayName}</option>`;
-                }).join('');
-                tagSelect.value = cleanTagName;
-                
-                // 3. Appliquer ce tag à la note courante
-                if (currentNote) {
-                    currentNote.tag = cleanTagName;
-                }
-
-                // 4. Mettre à jour la barre latérale
-                renderSidebarTags();
-                
-                showToast(`Custom tag "${newTagName}" added and selected.`);
-            }
-        }
-
-
-        // --- Toolbar Functions ---
-        
-        /**
-         * Executes a formatting command on the current selection.
-         * Uses execCommand for simplicity in contenteditable.
-         * @param {string} command The execCommand command (e.g., 'bold', 'foreColor', 'fontSize').
-         * @param {string|number} value The value for the command (e.g., 'red', '3').
-         */
-        function applyFormat(command, value = null) {
-            // Use the core execCommand for formatting
-            document.execCommand(command, false, value);
-
-            // After formatting, hide the toolbar
-            hideToolbar();
-            
-            // Ensure the focus remains on the editor or is restored
-            document.getElementById('noteContentEditor').focus();
-            saveSelection(); // Resave the selection after formatting
-        }
-        
-        /**
-         * Shows and positions the formatting toolbar near the current selection.
-         */
-        function showToolbar() {
-            const editor = document.getElementById('noteContentEditor');
-            const toolbar = document.getElementById('formattingToolbar');
-            const selection = window.getSelection();
-
-            // Vérifie s'il y a du texte sélectionné et si la sélection est à l'intérieur de l'éditeur
-            if (!selection.isCollapsed && editor.contains(selection.anchorNode)) {
-                // Obtient le rectangle englobant de la sélection
-                const range = selection.getRangeAt(0);
-                const rect = range.getBoundingClientRect();
-                
-                // Obtient le rectangle englobant du conteneur parent défilable
-                const scrollContainer = document.getElementById('editorScrollContainer');
-                const scrollContainerRect = scrollContainer.getBoundingClientRect();
-                
-                // Calcul de la position X relative au scrollContainer: centre de la sélection
-                // - scrollContainerRect.left déplace la position relative au début du conteneur.
-                const x = rect.left + (rect.width / 2) - scrollContainerRect.left;
-                
-                // Calcul de la position Y relative au scrollContainer: au-dessus de la sélection
-                // rect.top - scrollContainerRect.top : position relative sans le scroll.
-                // + scrollContainer.scrollTop : ajustement pour le défilement.
-                const toolbarHeight = 40; 
-                const y = rect.top - scrollContainerRect.top + scrollContainer.scrollTop - toolbarHeight - 5; // -5px de marge
-                
-                // Positionne et affiche la barre d'outils
-                toolbar.style.left = `${x}px`;
-                toolbar.style.top = `${y}px`; 
-                
-                toolbar.classList.remove('hidden');
-
-            } else {
-                hideToolbar();
-            }
-        }
-
-        /**
-         * Hides the formatting toolbar.
-         */
-        function hideToolbar() {
-            document.getElementById('formattingToolbar').classList.add('hidden');
-        }
-
-        // --- Notes Management ---
-
-        /**
-         * Détermine le titre de la page en fonction du filtre actuel.
-         */
-        function getCurrentPageTitle() {
-            switch (currentFilter.type) {
-                case 'all': return 'My Notes';
-                case 'starred': return 'Starred Notes';
-                case 'trash': return 'Trash';
-                case 'shared': return 'Shared with me';
-                case 'public': return 'Public Notes';
-                case 'tag': 
-                    const tagName = currentFilter.value.charAt(0).toUpperCase() + currentFilter.value.slice(1);
-                    return `${tagName} Notes`;
-                default: return 'My Notes';
-            }
-        }
-
-
-        /**
-         * Rend toutes les notes actives dans la grille, en appliquant le filtre actuel.
-         */
-        function renderNotes() {
-            const grid = document.getElementById('notesGrid');
-            grid.innerHTML = '';
-            
-            document.getElementById('pageTitle').textContent = getCurrentPageTitle();
-
-            let filteredNotes = notes;
-
-            // 1. Filtrer par état (Deleted)
-            filteredNotes = filteredNotes.filter(note => {
-                if (currentFilter.type === 'trash') {
-                    return note.deleted;
-                } else {
-                    return !note.deleted; // N'affiche que les notes actives (non supprimées) pour les autres vues
-                }
-            });
-
-            // 2. Appliquer les filtres spécifiques
-            if (currentFilter.type === 'tag' && currentFilter.value) {
-                filteredNotes = filteredNotes.filter(note => note.tag === currentFilter.value);
-            } else if (currentFilter.type === 'starred') {
-                filteredNotes = filteredNotes.filter(note => note.starred);
-            }
-            
-            // Note: 'shared' and 'public' filters are not fully implemented in the mock data,
-            // but the logic for 'all', 'tag', 'starred', and 'trash' is solid.
-
-            filteredNotes.forEach(note => {
-                const template = document.getElementById('noteTemplate');
-                const clone = template.content.cloneNode(true);
-                const noteCard = clone.querySelector('.note-card');
-                
-                noteCard.setAttribute('data-id', note.id);
-                noteCard.querySelector('h3').textContent = note.title || 'Untitled Note';
-                
-                // Récupère un aperçu du contenu (texte seulement, ignore les balises HTML/média)
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = note.content;
-                const contentPreview = tempDiv.textContent;
-
-                noteCard.querySelector('p').textContent = contentPreview.substring(0, 150) + (contentPreview.length > 150 ? '...' : '');
-                
-                noteCard.querySelector('.note-last-edited').textContent = note.lastEdited;
-
-                // Tag and Star
-                updateNoteCardTag(noteCard, note);
-                const starIcon = noteCard.querySelector('.note-star i');
-                if (note.starred) {
-                    starIcon.classList.replace('far', 'fas');
-                    starIcon.classList.add('text-yellow-500');
-                } else {
-                    starIcon.classList.replace('fas', 'far');
-                    starIcon.classList.remove('text-yellow-500');
-                }
-                
-                // Event Listeners
-                noteCard.addEventListener('click', () => openEditor(note));
-                noteCard.querySelector('.note-star').addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleStar(this, note);
-                });
-                
-                grid.appendChild(noteCard);
-            });
-            setViewMode(viewMode);
-        }
-
-        /**
-         * Crée une nouvelle note.
-         */
-        function createNewNote(e) {
-            e.preventDefault();
-            const newNote = {
-                id: Date.now(),
-                title: 'New Note',
-                content: 'Start writing here...',
-                tag: 'work',
-                starred: false,
-                public: false,
-                lastEdited: new Date().toLocaleString(),
-                deleted: false
-            };
-            
-            notes.unshift(newNote);
-            currentNote = newNote;
-            
-            // Réinitialiser le filtre pour montrer la nouvelle note
-            currentFilter = { type: 'all', value: null };
-            document.querySelectorAll('aside a.sidebar-link').forEach(l => l.classList.remove('bg-gray-100'));
-            document.querySelector('.sidebar-link[data-filter="all"]').classList.add('bg-gray-100');
-
-            renderSidebarTags();
-            renderNotes();
-            openEditor(newNote);
-            
-            setTimeout(() => {
-                document.getElementById('noteTitle').focus();
-            }, 100);
-        }
-
-        /**
-         * Sauvegarde la note actuellement ouverte.
-         */
-        function saveNote() {
-            if (!currentNote) return;
-            
-            const newTag = document.getElementById('noteTag').value;
-
-            currentNote.title = document.getElementById('noteTitle').value || 'Untitled Note';
-            // Utilise innerHTML pour capturer le contenu riche (texte + balises média)
-            currentNote.content = document.getElementById('noteContentEditor').innerHTML;
-            currentNote.tag = newTag;
-            currentNote.lastEdited = new Date().toLocaleString();
-            
-            // S'assurer que la barre latérale est à jour si un nouveau tag a été utilisé
-            getAllTags(); 
-            renderSidebarTags(); 
-
-            renderNotes(); // Mettre à jour la grille
-            closeEditor();
-            
-            showToast('Note saved successfully!');
-        }
-
-        /**
-         * Déplace la note vers la corbeille.
-         */
-        function deleteNote() {
-            if (!currentNote) return;
-            
-            currentNote.deleted = true;
-            currentNote.deletedAt = new Date().toISOString();
-            
-            const noteCard = document.querySelector(`[data-id="${currentNote.id}"]`);
-            if (noteCard) noteCard.remove(); 
-
-            closeEditor();
-            showToast('Note moved to trash');
-            renderNotes(); 
-        }
-
-        /**
-         * Bascule le statut public/privé de la note.
-         */
-        function togglePublic() {
-            if (!currentNote) return;
-            currentNote.public = !currentNote.public;
-            document.getElementById('noteStatus').textContent = currentNote.public ? 'Public' : 'Private';
-            showToast(`Note set to ${currentNote.public ? 'Public' : 'Private'}`);
-        }
-
-        /**
-         * Bascule l'étoile (starred) de la note.
-         */
-        function toggleStar(starBtn, note) {
-            const icon = starBtn.querySelector('i');
-            note.starred = !note.starred;
-            if (note.starred) {
-                icon.classList.replace('far', 'fas');
-                icon.classList.add('text-yellow-500');
-                showToast('Note starred!');
-            } else {
-                icon.classList.replace('fas', 'far');
-                icon.classList.remove('text-yellow-500');
-                showToast('Note unstarred!');
-            }
-            // Mettre à jour la vue si on est dans le filtre "Starred"
-            if (currentFilter.type === 'starred') {
-                 renderNotes();
-            }
-        }
-
-        // --- Editor Modal ---
-
-        /**
-         * Ouvre le modal de l'éditeur.
-         * @param {object} note L'objet note à éditer.
-         */
-        function openEditor(note) {
-            currentNote = note;
-            const editor = document.getElementById('noteContentEditor');
-            const tagSelect = document.getElementById('noteTag');
-            
-            document.getElementById('noteTitle').value = note.title;
-            editor.innerHTML = note.content; // Charge le contenu riche (HTML)
-            
-            // Remplir le select de tags avec tous les tags uniques (y compris ceux de cette note)
-            tagSelect.innerHTML = getAllTags().map(tag => {
-                const displayName = tag.charAt(0).toUpperCase() + tag.slice(1);
-                return `<option value="${tag}" ${note.tag === tag ? 'selected' : ''}>${displayName}</option>`;
-            }).join('');
-            
-            tagSelect.value = note.tag; // S'assurer que le bon tag est sélectionné
-            
-            document.getElementById('noteStatus').textContent = note.public ? 'Public' : 'Private';
-            document.getElementById('lastEdited').textContent = note.lastEdited;
-            document.getElementById('noteEditorModal').classList.remove('hidden');
-            
-            document.getElementById('collaboratorsSection').classList.add('hidden');
-
-            // Ajout des listeners pour la gestion du curseur et de la barre d'outils
-            editor.addEventListener('mouseup', handleEditorSelection);
-            editor.addEventListener('keyup', handleEditorSelection);
-            editor.focus();
-            
-            // Initialisation de la sélection au chargement (curseur à la fin)
-            setTimeout(() => {
-                const range = document.createRange();
-                range.selectNodeContents(editor);
-                range.collapse(false); // Curseur à la fin
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.add(range);
-                saveSelection();
-            }, 50);
-        }
-        
-        /**
-         * Ferme le modal de l'éditeur.
-         */
-        function closeEditor() {
-            document.getElementById('noteEditorModal').classList.add('hidden');
-            document.getElementById('noteContentEditor').removeEventListener('mouseup', handleEditorSelection);
-            document.getElementById('noteContentEditor').removeEventListener('keyup', handleEditorSelection);
-            hideToolbar();
-            currentNote = null;
-            savedRange = null;
-        }
-
-        // --- Attachments (Mise à jour pour l'insertion au curseur plus robuste) ---
-
-        /**
-         * Gère la sélection des fichiers et l'insertion dans le contenu au curseur.
-         * @param {string} type Le type d'attachement.
-         */
-        function handleAttachment(type) {
-            if (!currentNote) return;
-            
-            // Si savedRange n'est pas défini, l'utilisateur n'a pas placé le curseur
-            if (!savedRange) {
-                showToast("Veuillez cliquer dans l'éditeur de notes pour placer le curseur.");
-                return;
-            }
-
-            const input = document.createElement('input');
-            input.type = 'file';
-            
-            switch(type) {
-                case 'image': input.accept = 'image/*'; break;
-                case 'video': input.accept = 'video/*'; break;
-                case 'audio': input.accept = 'audio/*'; break;
-                case 'document': input.accept = '.pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx'; break;
-                default: input.accept = '*';
-            }
-            
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const dataURL = event.target.result;
-                    let htmlToInsert = '';
-                    const fileName = file.name;
-
-                    // Création de l'élément HTML à insérer
-                    switch (type) {
-                        case 'image':
-                            // Encapsulé dans <p> pour une meilleure mise en page et un saut de ligne
-                            htmlToInsert = `<p><img src="${dataURL}" alt="${fileName}" style="max-width:100%; height:auto; display:block;" title="${fileName}"></p>`;
-                            break;
-                        case 'video':
-                            htmlToInsert = `<p><video controls style="max-width:100%; height:auto; display:block;"><source src="${dataURL}" type="${file.type}"></video></p>`;
-                            break;
-                        case 'audio':
-                            htmlToInsert = `<p><audio controls src="${dataURL}" style="width:100%;"></audio></p>`;
-                            break;
-                        case 'document':
-                            // Pour les documents, nous insérons un lien hypertexte avec un style
-                            htmlToInsert = `<p class="bg-gray-100 p-2 rounded-md"><i class="fas fa-file-alt text-purple-500 mr-2"></i> Document: <a href="${dataURL}" download="${fileName}" target="_blank" style="text-decoration:underline; color:#3b82f6;">${fileName} (${formatFileSize(file.size)})</a></p>`;
-                            break;
-                        default:
-                            return;
-                    }
-
-                    // *** LOGIQUE D'INSERTION ROBUSTE UTILISANT L'API RANGE ***
-                    
-                    // 1. Créer un DocumentFragment à partir de notre HTML
-                    const fragment = savedRange.createContextualFragment(htmlToInsert);
-                    
-                    // 2. Récupérer le dernier nœud inséré (pour positionner le curseur)
-                    const lastNode = fragment.lastChild; 
-                    
-                    // 3. Supprimer le contenu actuel de la sélection et insérer le nouveau contenu
-                    savedRange.deleteContents();
-                    savedRange.insertNode(fragment);
-                    
-                    // 4. Mettre à jour la position du curseur (juste après le dernier nœud inséré)
-                    if (lastNode) {
-                        // Positionner le curseur juste après le dernier nœud inséré
-                        savedRange.setStartAfter(lastNode);
-                    }
-                    savedRange.collapse(false); // S'assurer que la fin est la position du curseur
-                    
-                    // 5. Appliquer la nouvelle plage à la sélection du navigateur
-                    const selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.add(savedRange);
-                    
-                    // 6. S'assurer que l'éditeur a le focus après l'insertion
-                    document.getElementById('noteContentEditor').focus();
-
-                    showToast(`${fileName} inserted at cursor!`);
-                };
-                reader.readAsDataURL(file);
-            };
-            
-            // Déclenche l'ouverture de la boîte de dialogue de sélection de fichier
-            input.click();
-        }
-
-
-        /**
-         * Télécharge la note actuelle au format PDF.
-         * Utilise html2canvas pour convertir le contenu HTML en image, puis jsPDF pour créer le fichier.
-         */
-        function downloadNoteAsPDF() {
-            if (!currentNote) return;
-
-            const title = currentNote.title || 'Untitled Note';
-            const contentElement = document.getElementById('noteContentEditor');
-
-            showToast('Generating PDF...');
-
-            // Utiliser html2canvas pour rendre le contenu HTML en image
-            html2canvas(contentElement, {
-                scale: 2, // Améliore la qualité (2x)
-                useCORS: true // Nécessaire si des images externes sont utilisées
-            }).then(canvas => {
-                const { jsPDF } = window.jspdf;
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' size
-                
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                // 1. Ajouter le titre de la note en haut
-                pdf.setFontSize(24);
-                pdf.text(title, 10, 20); // x=10, y=20 (mm)
-
-                // Ajouter une ligne de séparation
-                pdf.setLineWidth(0.5);
-                pdf.line(10, 25, 200, 25); 
-
-                // Définir la position de départ de l'image du contenu
-                position = 30; // 30mm après le titre/séparateur
-                
-                // 2. Ajouter l'image du contenu
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= (pageHeight - position); // Combien il reste après la première page
-
-                // Gérer le contenu sur plusieurs pages
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                
-                // 3. Sauvegarder le fichier
-                pdf.save(`${title}.pdf`);
-                showToast('PDF downloaded!');
-            }).catch(error => {
-                console.error("PDF generation failed:", error);
-                showToast("Failed to generate PDF. Check console for details.", true);
-            });
-        }
-
-        // --- View & Sidebar ---
-
-        /**
-         * Change le mode d'affichage des notes ('grid' ou 'list').
-         */
-        function setViewMode(mode) {
-            viewMode = mode;
-            const grid = document.getElementById('notesGrid');
-            const gridBtn = document.getElementById('gridViewBtn');
-            const listBtn = document.getElementById('listViewBtn');
-
-            // Mettre à jour les classes de grille
-            grid.classList.remove('grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
-            if (mode === 'grid') {
-                grid.classList.add('grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
-                gridBtn.classList.add('bg-gray-200');
-                listBtn.classList.remove('bg-gray-200');
-            } else { // list view
-                grid.classList.add('grid-cols-1');
-                listBtn.classList.add('bg-gray-200');
-                gridBtn.classList.remove('bg-gray-200');
-            }
-        }
-
-        /**
-         * Fonction pour gérer les liens de la barre latérale (All Notes, Starred, Trash, etc.).
-         */
-        function handleSidebarLink(e) {
-            e.preventDefault();
-            const filterType = this.getAttribute('data-filter');
-
-            // 1. Mettre à jour l'état du filtre
-            currentFilter = { type: filterType, value: null };
-            
-            // 2. Mettre à jour l'état actif des liens principaux
-            document.querySelectorAll('aside a.sidebar-link').forEach(l => l.classList.remove('bg-gray-100'));
-            this.classList.add('bg-gray-100');
-            
-            // 3. Réinitialiser l'état actif des tags
-            renderSidebarTags();
-            
-            // 4. Re-rendre les notes avec le nouveau filtre
-            renderNotes(); 
-            
-            showToast(`Viewing ${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`);
-        }
-
-        // --- Share Modal ---
-
-        function openShareModal() {
-            document.getElementById('shareModal').classList.remove('hidden');
-            document.getElementById('collaboratorsSection').classList.remove('hidden'); 
-        }
-        
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.add('hidden');
-        }
-
-        // --- Toast Notification ---
-
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            const colorClass = isError ? 'bg-red-600' : 'bg-gray-800';
-            toast.className = `fixed bottom-4 right-4 ${colorClass} text-white px-4 py-2 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 z-50`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            // Fade in
-            setTimeout(() => {
-                toast.classList.remove('opacity-0');
-            }, 10);
-
-            // Fade out and remove
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-                toast.addEventListener('transitionend', () => toast.remove());
-            }, 3000);
-        }
-
-        // --- Initialization and Event Listeners ---
-
         document.addEventListener('DOMContentLoaded', () => {
+            const exploreBtn = document.getElementById('explore-btn');
+            const exploreMenu = document.getElementById('explore-menu');
+            const langBtn = document.getElementById('lang-btn');
+            const langMenu = document.getElementById('lang-menu');
             
-            // L'écouteur d'état de Firebase met à jour l'UI dès que l'état d'auth change
-            auth.onAuthStateChanged(updateUserUI);
-            
-            renderSidebarTags(); 
-            renderNotes();
+            let currentLang = 'fr'; // Langue par défaut
 
-            // Note Editor Modal Controls
-            document.getElementById('createNoteBtn').addEventListener('click', createNewNote);
-            document.getElementById('closeEditorBtn').addEventListener('click', closeEditor);
-            document.getElementById('saveNoteBtn').addEventListener('click', saveNote);
-            document.getElementById('deleteNoteBtn').addEventListener('click', deleteNote);
-            document.getElementById('togglePublicBtn').addEventListener('click', togglePublic);
-            document.getElementById('shareNoteBtn').addEventListener('click', openShareModal);
-            document.getElementById('downloadPdfBtn').addEventListener('click', downloadNoteAsPDF);
+            function toggleMenu(button, menu) {
+                const isHidden = menu.classList.contains('hidden');
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden')); // Fermer tous les autres menus
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                } else {
+                    menu.classList.add('hidden');
+                }
+            }
             
-            // View Toggle Buttons
-            document.getElementById('gridViewBtn').addEventListener('click', () => setViewMode('grid'));
-            document.getElementById('listViewBtn').addEventListener('click', () => setViewMode('list'));
+            function updateContent(lang) {
+                currentLang = lang;
+                
+                // 1. Mise à jour du bouton de langue
+                const langText = document.querySelector(`[data-lang="${lang}"]`).textContent;
+                langBtn.childNodes[0].nodeValue = langText; // Met à jour le texte du bouton
 
-            // Sidebar Links (All Notes, Starred, Trash, etc.)
-            document.querySelectorAll('aside a.sidebar-link').forEach(link => {
-                link.addEventListener('click', handleSidebarLink);
-            });
-            
-            // Share Modal Controls
-            document.getElementById('closeShareModalBtn').addEventListener('click', closeShareModal);
-            
-            // --- New Tag Customization Listener ---
-            document.getElementById('addCustomTagBtn').addEventListener('click', function(e) {
+                // 2. Traduction du contenu (simulée)
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (translations[lang] && translations[lang][key]) {
+                        // Cas spéciaux (titre et description dans le menu)
+                        if (element.querySelector('span:first-child')) {
+                            element.querySelector('span:first-child').textContent = translations[lang][key];
+                            element.querySelector('span:last-child').textContent = translations[lang][`desc_${key.split('_')[1]}`];
+                        } else {
+                            // Pour tous les autres éléments (titres, descriptions simples)
+                            element.textContent = translations[lang][key];
+                        }
+                    }
+                });
+
+                // 3. Mise à jour de l'état "actif" dans le menu déroulant
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    if (option.getAttribute('data-lang') === lang) {
+                        // NOUVEAU: Couleurs pour le thème sombre/or
+                        option.classList.remove('text-text-light', 'hover:bg-gold-dark', 'hover:text-dark-bg');
+                        option.classList.add('text-gold-accent', 'font-bold', 'bg-dark-bg');
+                    } else {
+                        option.classList.remove('text-gold-accent', 'font-bold', 'bg-dark-bg');
+                        option.classList.add('text-text-light', 'hover:bg-gold-dark', 'hover:text-dark-bg');
+                    }
+                });
+            }
+
+            // --- LOGIQUE DE TRADUCTION SIMULÉE (Inchangée) --- //
+            // Mapping pour la traduction de l'ensemble de la page
+            const translations = {
+                'fr': {
+                    nav_lang: 'Français', nav_pricing: 'Prix', nav_services: 'Services', nav_explore: 'Explorer', nav_support: 'Aide', nav_account: 'Mon compte', 
+                    menu_blog: 'Blog', desc_blog: 'Nos dernières nouvelles et mises à jour', 
+                    menu_features: 'Fonctionnalités et outils', desc_features: 'Dernières versions et caractéristiques des produits', 
+                    menu_story: 'Notre histoire', desc_story: 'D\'où nous venons et où nous allons', 
+                    menu_clients: 'Histoires de clients', desc_clients: 'Les succès de nos clients sont nos histoires préférées', 
+                    title: 'Nos Services Diversifiés | BANIKI LABS', subtitle: 'Un hub complet au cœur de Kinshasa : de la technologie à l\'alimentation, en passant par la formation et les services essentiels.', 
+                    btn_discover: 'Découvrir', 
+                    // Services (0 à 17)
+                    service_title_0: 'Création de Site Web', service_desc_0: 'Conception et développement de sites web professionnels (vitrine, e-commerce, blog) sur mesure, optimisés pour mobile et le référencement (SEO).',
+                    service_title_1: 'Centre Informatique Avancé', service_desc_1: 'Accès internet haut débit, impression, scanning, photocopie, conversion de format de fichier (PDF/Word, MP4/MP3, etc.), maintenance informatique et cours d\'informatique pour tous les niveaux.', 
+                    service_title_2: 'Cours de Langue (ANGLAIS, SWAHILI, FRANCAIS)', service_desc_2: 'Des programmes intensifs et personnalisés pour maîtriser l\'anglais, le swahili, le français des affaires, académique ou conversationnel.', 
+                    service_title_3: 'Studio d\'Enregistrement Podcast', service_desc_3: 'Espace insonorisé équipé pour l\'enregistrement, le montage et la diffusion de podcasts de qualité professionnelle.', 
+                    service_title_4: 'Studio d\'Enregistrement Musical', service_desc_4: 'Studio moderne pour l\'enregistrement, le mixage et le mastering de vos productions musicales (artiste, beatmaker, jingle).', 
+                    service_title_5: 'Formation en Bureautique', service_desc_5: 'Cours pratiques sur les outils de productivité (Word, Excel, PowerPoint) essentiels pour le monde professionnel.', 
+                    service_title_6: 'Agence Immobilière (Achat/Vente)', service_desc_6: 'Conseils et transactions pour la location, l\'achat ou la vente de propriétés résidentielles et commerciales à Kinshasa.', 
+                    service_title_7: 'Service de Photographie', service_desc_7: 'Couverture d\'événements, portraits professionnels, photos de produits et séances créatives. Matériel haut de gamme et post-traitement inclus.', 
+                    service_title_8: 'Service de Vidéographie', service_desc_8: 'Production de clips musicaux, vidéos d\'entreprise, documentaires et publicités. Du concept à la post-production professionnelle.', 
+                    service_title_9: 'Livraison Rapide à Domicile', service_desc_9: 'Service de livraison rapide et fiable de tous types de colis et repas à travers Kinshasa. Suivi en temps réel et support client.', 
+                    service_title_10: 'Centre de Développement Personnel', service_desc_10: 'Ateliers, coaching et séminaires pour renforcer le leadership, la confiance en soi et l\'atteinte des objectifs personnels et professionnels.', 
+                    service_title_11: 'Centre d\'Autonomie', service_desc_11: 'Programmes et ressources dédiés à l\'indépendance financière, professionnelle et personnelle, notamment pour les jeunes entrepreneurs.', 
+                    service_title_12: 'Bureau de Change d\'Argent', service_desc_12: 'Services de change de devises rapides et sécurisés avec des taux compétitifs, facilitant vos transactions internationales et locales.', 
+                    service_title_13: 'Service de Traduction Professionnelle', service_desc_13: 'Traduction audio, vidéo, de documents et en personne dans 10 langues clés (français, anglais, swahili, chinois, lingala, portugais, japonais, sona, malgache, espagnol) et autres sur demande.', 
+                    service_title_14: 'Vente Services Réseaux Mobiles RDC', service_desc_14: 'Cabine de vente de crédits, forfaits, cartes SIM et services de transfert d\'argent mobile pour tous les réseaux en RDC.', 
+                    service_title_15: 'Production d\'Eau et Jus Naturels', service_desc_15: 'Agence de fabrication et de vente de jus de fruits frais et d\'eau pure, privilégiant les ingrédients naturels et locaux de qualité.', 
+                    service_title_16: 'Nourriture Fast Food (Kinshasa)', service_desc_16: 'Vente de plats rapides et savoureux, préparés localement à Kinshasa, pour une pause déjeuner ou un dîner rapide et gourmand.', 
+                    service_title_17: 'Service d\'Entraide', service_desc_17: 'Plateforme communautaire de soutien mutuel et de partage de ressources, visant à connecter les individus ayant des besoins similaires à Kinshasa.', 
+                    // NOUVEAU SERVICE 18
+                    service_title_18: 'Service de Transport Fiable', service_desc_18: 'Transport fiable et sécurisé à Kinshasa pour les écoles, églises, universités, et événements spéciaux (mariages, funérailles, excursions, etc.).',
+                    footer_desc: 'Kitovu cha uvumbuzi na huduma nyingi katikati ya DRC. Tunaunganisha teknolojia, mafunzo na huduma muhimu.',
+                    footer_nav_title: 'Navigation de Base',
+                    footer_contact_title: 'Contact & Paiement',
+                    footer_social: 'Réseaux Sociaux'
+                },
+                'en': {
+                    nav_lang: 'English', nav_pricing: 'Pricing', nav_services: 'Services', nav_explore: 'Explore', nav_support: 'Help', nav_account: 'My Account', 
+                    menu_blog: 'Blog', desc_blog: 'Our latest news and updates', 
+                    menu_features: 'Features and Tools', desc_features: 'Latest versions and product features', 
+                    menu_story: 'Our Story', desc_story: 'Where we come from and where we are going', 
+                    menu_clients: 'Client Stories', desc_clients: 'Our clients\' successes are our favorite stories', 
+                    title: 'Our Diverse Services | BANIKI LABS', subtitle: 'A comprehensive hub in the heart of Kinshasa: from technology to food, training, and essential services.', 
+                    btn_discover: 'Discover', 
+                    // Services (0 à 17)
+                    service_title_0: 'Website Creation', service_desc_0: 'Design and development of professional custom websites (showcase, e-commerce, blog), optimized for mobile and search engine optimization (SEO).',
+                    service_title_1: 'Advanced IT Center', service_desc_1: 'High-speed internet access, printing, scanning, photocopying, file format conversion (PDF/Word, MP4/MP3, etc.), IT maintenance, and computer courses for all levels.', 
+                    service_title_2: 'Language Courses (ENGLISH, SWAHILI, FRENCH)', service_desc_2: 'Intensive and personalized programs to master business, academic, or conversational English, Swahili, and French.', 
+                    service_title_3: 'Podcast Recording Studio', service_desc_3: 'Soundproofed space equipped for professional-quality podcast recording, editing, and broadcasting.', 
+                    service_title_4: 'Music Recording Studio', service_desc_4: 'Modern studio for recording, mixing, and mastering your musical productions (artist, beatmaker, jingle).', 
+                    service_title_5: 'Office Automation Training', service_desc_5: 'Practical courses on essential productivity tools (Word, Excel, PowerPoint) for the professional world.', 
+                    service_title_6: 'Real Estate Agency (Buy/Sell)', service_desc_6: 'Advice and transactions for renting, buying, or selling residential and commercial properties in Kinshasa.', 
+                    service_title_7: 'Photography Service', service_desc_7: 'Event coverage, professional portraits, product photos, and creative sessions. High-end equipment and post-processing included.', 
+                    service_title_8: 'Videography Service', service_desc_8: 'Production of music videos, corporate videos, documentaries, and advertisements. From concept to professional post-production.', 
+                    service_title_9: 'Fast Home Delivery', service_desc_9: 'Fast and reliable delivery service for all types of packages and meals across Kinshasa. Real-time tracking and customer support.', 
+                    service_title_10: 'Personal Development Center', service_desc_10: 'Workshops, coaching, and seminars to strengthen leadership, self-confidence, and achieving personal and professional goals.', 
+                    service_title_11: 'Autonomy Center', service_desc_11: 'Programs and resources dedicated to financial, professional, and personal independence, especially for young entrepreneurs.', 
+                    service_title_12: 'Currency Exchange Office', service_desc_12: 'Fast and secure currency exchange services with competitive rates, facilitating your international and local transactions.', 
+                    service_title_13: 'Professional Translation Service', service_desc_13: 'Audio, video, document, and in-person translation in 10 key languages (French, English, Swahili, Chinese, Lingala, Portuguese, Japanese, Sona, Malagasy, Spanish) and others upon request.', 
+                    service_title_14: 'DRC Mobile Network Services Sales', service_desc_14: 'Booth for selling credits, packages, SIM cards, and mobile money transfer services for all networks in the DRC.', 
+                    service_title_15: 'Water and Natural Juice Production', service_desc_15: 'Agency for manufacturing and selling fresh fruit juices and pure water, prioritizing natural and local quality ingredients.', 
+                    service_title_16: 'Fast Food (Kinshasa)', service_desc_16: 'Sale of fast and tasty dishes, prepared locally in Kinshasa, for a quick and gourmet lunch or dinner break.',
+                    service_title_17: 'Mutual Aid Service', service_desc_17: 'Community platform for mutual support and resource sharing, aimed at connecting individuals with similar needs in Kinshasa.',
+                    // NOUVEAU SERVICE 18
+                    service_title_18: 'Reliable Transport Service', service_desc_18: 'Reliable and secure transport in Kinshasa for schools, churches, universities, and special events (weddings, funerals, excursions, etc.).',
+                    footer_desc: 'A hub of innovation and multiple services in the heart of the DRC. We connect technology, training, and essential services.',
+                    footer_nav_title: 'Quick Navigation',
+                    footer_contact_title: 'Contact & Payment',
+                    footer_social: 'Social Networks'
+                },
+                'sw': {
+                    nav_lang: 'Swahili', nav_pricing: 'Bei', nav_services: 'Huduma', nav_explore: 'Chunguza', nav_support: 'Msaada', nav_account: 'Akaunti Yangu', 
+                    menu_blog: 'Blogu', desc_blog: 'Habari zetu za hivi punde na sasisho', 
+                    menu_features: 'Vipengele na Zana', desc_features: 'Matoleo ya hivi punde na vipengele vya bidhaa', 
+                    menu_story: 'Hadithi Yetu', desc_story: 'Tunakotoka na tunakoelekea', 
+                    menu_clients: 'Hadithi za Wateja', desc_clients: 'Mafanikio ya wateja wetu ni hadithi tunazopenda zaidi', 
+                    title: 'Huduma Zetu Mbalimbali | BANIKI LABS', subtitle: 'Kitovu kamili Kinshasa: kutoka teknolojia hadi chakula, mafunzo na huduma muhimu.', 
+                    btn_discover: 'Gundua', 
+                    // Services (0 à 17)
+                    service_title_0: 'Uundaji wa Tovuti', service_desc_0: 'Kubuni na kuendeleza tovuti za kitaalamu (kuonyesha biashara, e-commerce, blogu) zilizoundwa kulingana na mahitaji, zilizoboreshwa kwa simu na uboreshaji wa injini za utafutaji (SEO).',
+                    service_title_1: 'Kituo cha Juu cha TEHAMA', service_desc_1: 'Mtandao wa kasi, kuchapa, kuchanganua, kunakili, ubadilishaji wa umbizo la faili (PDF/Word, MP4/MP3, n.k.), matengenezo ya kompyuta, na kozi za kompyuta kwa viwango vyote.', 
+                    service_title_2: 'Kozi za Lugha (KINGEREZA, KISWAHILI, KIFARANSA)', service_desc_2: 'Programu za kina na maalum za kujifunza Kingereza, Kiswahili, na Kifaransa cha kibiashara, kitaaluma au mazungumzo.', 
+                    service_title_3: 'Studio cha Kurekodi Podcast', service_desc_3: 'Nafasi iliyotengwa kwa kurekodi, kuhariri, na kupeperusha podcast za ubora wa kitaalamu.', 
+                    service_title_4: 'Studio cha Kurekodi Muziki', service_desc_4: 'Studio ya kisasa ya kurekodi, kuchanganya, na kusanifisha (mastering) kazi zako za muziki (msanii, beatmaker, jingle).', 
+                    service_title_5: 'Mafunzo ya Ofisi (Bureautique)', service_desc_5: 'Kozi za vitendo kuhusu zana muhimu za uzalishaji (Word, Excel, PowerPoint) kwa ajili ya ulimwengu wa kazi.', 
+                    service_title_6: 'Wakala wa Majengo (Kununua/Kuuza)', service_desc_6: 'Ushauri na miamala ya kukodisha, kununua, au kuuza mali za makazi na biashara huko Kinshasa.', 
+                    service_title_7: 'Huduma ya Upigaji Picha', service_desc_7: 'Kuhusu matukio, picha za kitaalamu, picha za bidhaa, na vipindi vya ubunifu. Vifaa vya hali ya juu na usindikaji wa baadae vimejumuishwa.', 
+                    service_title_8: 'Huduma ya Video', service_desc_8: 'Uzalishaji wa video za muziki, video za kampuni, makala, na matangazo. Kutoka wazo hadi uzalishaji wa baadae wa kitaalamu.', 
+                    service_title_9: 'Utoaji wa Haraka Nyumbani', service_desc_9: 'Huduma ya utoaji wa haraka na wa kuaminika wa aina zote za vifurushi na milo kote Kinshasa. Ufuatiliaji wa wakati halisi na msaada kwa wateja.', 
+                    service_title_10: 'Kituo cha Maendeleo Binafsi', service_desc_10: 'Warsha, mafunzo ya makocha, na semina za kuimarisha uongozi, kujiamini, na kufikia malengo ya kibinafsi na ya kitaalamu.', 
+                    service_title_11: 'Kituo cha Uhuru (Autonomy)', service_desc_11: 'Programu na rasilimali zilizojitolea kwa uhuru wa kifedha, kitaaluma, na kibinafsi, hasa kwa wajasiriamali wachanga.', 
+                    service_title_12: 'Ofisi ya Kubadilishana Fedha', service_desc_12: 'Huduma za kubadilishana fedha za kigeni haraka na salama kwa viwango vya ushindani, kurahisisha miamala yako ya kimataifa na ya ndani.', 
+                    service_title_13: 'Huduma ya Tafsiri ya Kitaalamu', service_desc_13: 'Tafsiri ya sauti, video, hati, na ana kwa ana kwa lugha 10 muhimu (Kifaransa, Kingereza, Kiswahili, Kichina, Kilingala, Kireno, Kijapani, Kisone, Kimalagasi, Kihispania) na zingine kwa ombi.', 
+                    service_title_14: 'Uuzaji wa Huduma za Mtandao wa Simu RDC', service_desc_14: 'Kibanda cha kuuza salio, vifurushi, kadi za SIM, na huduma za kutuma pesa kwa simu kwa mitandao yote nchini DRC.', 
+                    service_title_15: 'Uzalishaji wa Maji na Juisi Asilia', service_desc_15: 'Wakala wa utengenezaji na uuzaji wa juisi za matunda safi na maji safi, ukipa kipaumbele viungo asili na vya ubora wa ndani.', 
+                    service_title_16: 'Chakula cha Haraka (Kinshasa)', service_desc_16: 'Uuzaji wa vyakula vya haraka na vitamu, vilivyoandaliwa Kinshasa, kwa mapumziko ya chakula cha mchana au chakula cha jioni cha haraka na kitamu.',
+                    service_title_17: 'Huduma ya Kusaidiana', service_desc_17: 'Jukwaa la jamii la kusaidiana na kushiriki rasilimali, linalolenga kuunganisha watu wenye mahitaji yanayofanana huko Kinshasa.',
+                    // NOUVEAU SERVICE 18
+                    service_title_18: 'Huduma ya Usafiri ya Kuaminika', service_desc_18: 'Usafiri wa kuaminika na salama Kinshasa kwa shule, makanisa, vyuo vikuu, na matukio maalum (harusi, mazishi, matembezi, n.k.).',
+                    footer_desc: 'Kitovu cha uvumbuzi na huduma nyingi katikati ya DRC. Tunaunganisha teknolojia, mafunzo na huduma muhimu.',
+                    footer_nav_title: 'Urambazaji wa Haraka',
+                    footer_contact_title: 'Ungana & Lipa',
+                    footer_social: 'Mitandao ya Kijamii'
+                }
+            };
+
+            // Événement pour le sélecteur d'Exploration
+            exploreBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                handleAddNewTag();
+                toggleMenu(exploreBtn, exploreMenu);
             });
 
-            // Sauvegarde du curseur AVANT l'ouverture de la boîte de dialogue de fichier
-            document.querySelectorAll('.attachment-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
+            // Événement pour le sélecteur de Langue
+            langBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(langBtn, langMenu);
+            });
+
+            // Événement pour la sélection d'une langue
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // 1. Sauvegarde la position du curseur immédiatement
-                    saveSelection(); 
-                    const type = this.getAttribute('data-type');
-                    // 2. Déclenche le processus de sélection/insertion
-                    handleAttachment(type);
+                    // On cherche l'élément le plus proche avec l'attribut data-lang pour éviter de cliquer sur le <span> interne
+                    const newLang = e.target.closest('.lang-option').getAttribute('data-lang');
+                    updateContent(newLang);
+                    langMenu.classList.add('hidden'); // Fermer le menu après la sélection
                 });
             });
 
-            // --- Toolbar Listeners ---
-            document.querySelectorAll('#formattingToolbar .format-btn').forEach(button => {
-                button.addEventListener('mousedown', function(e) {
-                    e.preventDefault(); // TRÈS IMPORTANT: Empêche l'éditeur de perdre le focus
-                    const command = this.getAttribute('data-command');
-                    applyFormat(command);
-                });
-            });
-
-            document.getElementById('fontSizeSelect').addEventListener('change', function(e) {
-                e.preventDefault();
-                applyFormat('fontSize', this.value);
-            });
-
-            document.getElementById('fontColorPicker').addEventListener('input', function(e) {
-                e.preventDefault();
-                applyFormat('foreColor', this.value);
-            });
-            
-            // Pour cacher la barre d'outils si l'utilisateur clique en dehors sans sélection
-            document.getElementById('editorScrollContainer').addEventListener('mousedown', function(e) {
-                const editor = document.getElementById('noteContentEditor');
-                const toolbar = document.getElementById('formattingToolbar');
-                // Si le clic n'est pas sur la barre d'outils, on la masque (sauf si c'est l'éditeur lui-même)
-                if (!toolbar.contains(e.target) && !editor.contains(e.target) && window.getSelection().isCollapsed) {
-                    hideToolbar();
+            // Cacher les menus quand on clique à l'extérieur
+            document.addEventListener('click', (e) => {
+                if (!exploreBtn.contains(e.target) && !exploreMenu.contains(e.target)) {
+                    exploreMenu.classList.add('hidden');
+                }
+                if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+                    langMenu.classList.add('hidden');
                 }
             });
-
-
-            // MISE À JOUR : Remplacement de la logique mock par les fonctions Firebase
-            document.getElementById('signInButton').addEventListener('click', handleFacebookSignIn);
-            document.getElementById('signOutButton').addEventListener('click', handleSignOut);
-
-            // Initial active link (All Notes)
-            document.querySelector('.sidebar-link[data-filter="all"]').classList.add('bg-gray-100');
+            
+            // Initialisation de la traduction au chargement
+            updateContent(currentLang);
         });
     </script>
 </body>
