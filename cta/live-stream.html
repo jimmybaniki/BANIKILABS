@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Streaming - Congo Terre de L'Art</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7; /* Gris clair de fond */
+        }
+        /* Style pour maintenir l'aspect ratio 16:9 du lecteur vidéo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="text-2xl font-extrabold text-gray-900 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.878v4.244a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Congo <span class="text-yellow-500 ml-1">Terre de L'Art</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-600 hover:text-yellow-500 transition duration-150 font-medium">
+                    <i class="fas fa-arrow-left mr-1"></i> Retour à l'Accueil
+                </a>
+                <a href="live-stream.html" class="px-4 py-1 border-2 border-red-500 text-red-500 rounded-full hover:bg-red-500 hover:text-white transition duration-300 font-medium">
+                    En Direct Maintenant
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <span class="inline-flex items-center text-xl font-bold text-red-600">
+                <span class="relative flex h-3 w-3 mr-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                </span>
+                LIVE
+            </span>
+            <h1 class="text-4xl md:text-5xl font-extrabold mt-2 text-gray-900">
+                Performance en Direct : Nom de l'Événement
+            </h1>
+            <p class="text-xl text-gray-600 mt-3">
+                Rejoignez-nous pour cette session exceptionnelle de l'Art Congolais.
+            </p>
+        </div>
+
+        <div class="bg-gray-900 rounded-xl shadow-2xl overflow-hidden p-2 md:p-4">
+            
+            <div class="video-container">
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE?autoplay=1" 
+                    title="Live Stream Player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+            
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Détails de la Session</h2>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex items-center"><span class="font-semibold w-24">Artiste :</span> <span class="ml-2">Nom de l'Artiste / Compagnie</span></li>
+                    <li class="flex items-center"><span class="font-semibold w-24">Thème :</span> <span class="ml-2">Le Thème du Jour</span></li>
+                    <li class="flex items-center"><span class="font-semibold w-24">Durée :</span> <span class="ml-2">~ 1h30</span></li>
+                    <li class="flex items-center"><span class="font-semibold w-24">Prochain Live :</span> <span class="ml-2">Vendredi à 18h00 (WAT)</span></li>
+                </ul>
+            </div>
+            
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-500">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Espace Communautaire (Chat)</h2>
+                <div class="h-64 bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-y-auto mb-4 text-gray-700">
+                    <p class="text-center italic text-gray-400">
+                        Veuillez insérer ici votre iFrame ou widget de Chat en Direct si disponible.
+                    </p>
+                    <p class="mt-2 text-sm">Exemple : iFrame YouTube Live Chat, Tawk.to, etc.</p>
+                </div>
+                <input type="text" placeholder="Dites bonjour ou posez une question..." class="w-full px-4 py-2 border rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-500 text-sm">
+                &copy; 2025 Congo Terre de L'Art. Tous droits réservés.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

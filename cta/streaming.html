@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congo Terre de L'Art Streaming - La Culture du Congo en Vidéo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212; /* Noir très sombre (Premium) */
+            color: #e0e0e0; /* Texte clair */
+        }
+        /* Style pour masquer la barre de défilement pour les carrousels */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <header class="bg-gray-900 shadow-2xl sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="flex items-center group">
+                    <svg class="w-7 h-7 mr-2 text-yellow-500 group-hover:text-red-500 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.878v4.244a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="text-3xl font-extrabold text-white">
+                        Congo <span class="text-yellow-500">Stream</span>
+                    </span>
+                </a>
+                
+                <nav class="hidden md:flex space-x-6 text-base font-medium">
+                    <a href="#films" class="text-gray-300 hover:text-red-500 transition duration-150">Films</a>
+                    <a href="#series" class="text-gray-300 hover:text-blue-500 transition duration-150">Séries</a>
+                    <a href="#documentaires" class="text-gray-300 hover:text-teal-500 transition duration-150">Documentaires</a>
+                    <a href="#autres" class="text-gray-300 hover:text-yellow-500 transition duration-150">Arts de la Scène</a>
+                </nav>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" placeholder="Rechercher un titre..." class="bg-gray-800 text-white placeholder-gray-500 rounded-full py-2 pl-4 pr-10 border-2 border-transparent focus:border-yellow-500 focus:outline-none w-64 transition-all duration-300 shadow-inner">
+                    <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <button class="p-2 bg-yellow-500 rounded-full hover:bg-red-600 transition duration-300 transform hover:scale-105 shadow-lg">
+                    <svg class="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative h-[90vh] lg:h-[80vh] bg-cover bg-center shadow-inner" style="background-image: url('https://placehold.co/1920x1080/000000/FFFFFF?text=Spotlight%0AFilm+Congolais');">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-16">
+            <div class="max-w-3xl">
+                <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-full bg-red-700 text-white mb-3 shadow-md">
+                    Film de la semaine
+                </span>
+                <h1 class="text-6xl md:text-8xl font-extrabold mb-4 text-white drop-shadow-lg leading-tight">
+                    L'Étoile du Fleuve
+                </h1>
+                <p class="text-xl text-gray-300 mb-8 max-w-xl">
+                    Un drame puissant sur la quête d'identité à Kinshasa, mêlant musique traditionnelle et enjeux modernes.
+                </p>
+                <div class="flex space-x-4">
+                    <button class="flex items-center bg-red-600 text-white font-bold text-lg py-3 px-8 rounded-full hover:bg-red-700 transition duration-300 transform hover:scale-[1.05] shadow-2xl shadow-red-500/50">
+                        <svg class="w-6 h-6 mr-3 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 3v18l18-9-18-9z"/></svg>
+                        Lecture Immédiate
+                    </button>
+                    <button class="flex items-center bg-gray-700 text-white font-semibold text-lg py-3 px-8 rounded-full hover:bg-gray-600 transition duration-300 border border-gray-600">
+                        Plus d'infos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <script>
+            // Définition des catégories et de leurs couleurs d'accentuation
+            const contentCategories = [
+                {
+                    id: "films", name: "Films Populaires",
+                    accent: "text-red-500", border: "border-red-500",
+                    items: [
+                        { title: "Kinshasa Symphony", year: 2021, duration: "120m", img: "https://placehold.co/300x450/331a1a/f7a0a0?text=Film+1", category: "Drame" },
+                        { title: "Le Masque brisé", year: 2022, duration: "95m", img: "https://placehold.co/300x450/421a1a/f7a0a0?text=Film+2", category: "Action" },
+                        { title: "Route de l'espoir", year: 2023, duration: "110m", img: "https://placehold.co/300x450/501a1a/f7a0a0?text=Film+3", category: "Historique" },
+                        { title: "Le Serment de M'Buji", year: 2020, duration: "105m", img: "https://placehold.co/300x450/5e1a1a/f7a0a0?text=Film+4", category: "Thriller" },
+                        { title: "Chasseurs de Rêves", year: 2024, duration: "135m", img: "https://placehold.co/300x450/6d1a1a/f7a0a0?text=Film+5", category: "Science-Fiction" },
+                        { title: "Le Voyage Intérieur", year: 2022, duration: "88m", img: "https://placehold.co/300x450/7b1a1a/f7a0a0?text=Film+6", category: "Aventure" },
+                        { title: "Placeh. Film 7", year: 2025, duration: "100m", img: "https://placehold.co/300x450/8a1a1a/f7a0a0?text=Film+7", category: "Nouveau" },
+                        { title: "Placeh. Film 8", year: 2025, duration: "100m", img: "https://placehold.co/300x450/991a1a/f7a0a0?text=Film+8", category: "Nouveau" },
+                        { title: "Placeh. Film 9", year: 2025, duration: "100m", img: "https://placehold.co/300x450/a81a1a/f7a0a0?text=Film+9", category: "Nouveau" },
+                        { title: "Placeh. Film 10", year: 2025, duration: "100m", img: "https://placehold.co/300x450/b71a1a/f7a0a0?text=Film+10", category: "Nouveau" }
+                    ]
+                },
+                {
+                    id: "series", name: "Séries Incontournables",
+                    accent: "text-blue-500", border: "border-blue-500",
+                    items: [
+                        { title: "Les Chroniques du Quartier", year: 2023, duration: "Saison 2", img: "https://placehold.co/300x450/1a2c33/a0c4f7?text=Serie+1", category: "Sitcom" },
+                        { title: "Code KIN", year: 2024, duration: "Saison 1", img: "https://placehold.co/300x450/1a3a4d/a0c4f7?text=Serie+2", category: "Policier" },
+                        { title: "Héritage Maudit", year: 2022, duration: "Saison 3", img: "https://placehold.co/300x450/1a4766/a0c4f7?text=Serie+3", category: "Mystère" },
+                        { title: "Le Cercle des Dames", year: 2024, duration: "Saison 1", img: "https://placehold.co/300x450/1a5580/a0c4f7?text=Serie+4", category: "Romance" },
+                        { title: "Aube Nouvelle", year: 2023, duration: "Saison 2", img: "https://placehold.co/300x450/1a6299/a0c4f7?text=Serie+5", category: "Drame" },
+                        { title: "Placeh. Série 6", year: 2025, duration: "Saison 1", img: "https://placehold.co/300x450/1a70b3/a0c4f7?text=Serie+6", category: "Nouveau" },
+                        { title: "Placeh. Série 7", year: 2025, duration: "Saison 1", img: "https://placehold.co/300x450/1a7dd/a0c4f7?text=Serie+7", category: "Nouveau" },
+                        { title: "Placeh. Série 8", year: 2025, duration: "Saison 1", img: "https://placehold.co/300x450/1a8bb/a0c4f7?text=Serie+8", category: "Nouveau" },
+                        { title: "Placeh. Série 9", year: 2025, duration: "Saison 1", img: "https://placehold.co/300x450/1a99d/a0c4f7?text=Serie+9", category: "Nouveau" },
+                        { title: "Placeh. Série 10", year: 2025, duration: "Saison 1", img: "https://placehold.co/300x450/1aa7e/a0c4f7?text=Serie+10", category: "Nouveau" }
+                    ]
+                },
+                {
+                    id: "documentaires", name: "Documentaires & Histoire",
+                    accent: "text-teal-500", border: "border-teal-500",
+                    items: [
+                        { title: "Les Gardiens de l'Okapi", year: 2024, duration: "52m", img: "https://placehold.co/300x450/1a331a/a0f7a0?text=Doc+1", category: "Nature" },
+                        { title: "Le Patrimoine du Fleuve", year: 2023, duration: "48m", img: "https://placehold.co/300x450/1a4d1a/a0f7a0?text=Doc+2", category: "Histoire" },
+                        { title: "La Rumba : Un héritage", year: 2022, duration: "60m", img: "https://placehold.co/300x450/1a661a/a0f7a0?text=Doc+3", category: "Culture" },
+                        { title: "Le Défi Technologique", year: 2024, duration: "55m", img: "https://placehold.co/300x450/1a801a/a0f7a0?text=Doc+4", category: "Science" },
+                        { title: "Placeh. Doc 5", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1a991a/a0f7a0?text=Doc+5", category: "Social" },
+                        { title: "Placeh. Doc 6", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1ab31a/a0f7a0?text=Doc+6", category: "Social" },
+                        { title: "Placeh. Doc 7", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1acd1a/a0f7a0?text=Doc+7", category: "Social" },
+                        { title: "Placeh. Doc 8", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1ae61a/a0f7a0?text=Doc+8", category: "Social" },
+                        { title: "Placeh. Doc 9", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1b001a/a0f7a0?text=Doc+9", category: "Social" },
+                        { title: "Placeh. Doc 10", year: 2025, duration: "45m", img: "https://placehold.co/300x450/1b1a1a/a0f7a0?text=Doc+10", category: "Social" }
+                    ]
+                },
+                {
+                    id: "autres", name: "Arts de la Scène & Tutoriels",
+                    accent: "text-yellow-500", border: "border-yellow-500",
+                    items: [
+                        { title: "Tutoriel : Peinture Acrylique", year: 2024, duration: "25m", img: "https://placehold.co/300x450/33331a/f7f7a0?text=Autres+1", category: "Arts Visuels" },
+                        { title: "Pièce de Théâtre : Maka", year: 2023, duration: "80m", img: "https://placehold.co/300x450/4d4d1a/f7f7a0?text=Autres+2", category: "Scène" },
+                        { title: "Lancement du Livre 'Congo Z'", year: 2024, duration: "45m", img: "https://placehold.co/300x450/66661a/f7f7a0?text=Autres+3", category: "Littérature" },
+                        { title: "Placeh. Autre 4", year: 2025, duration: "30m", img: "https://placehold.co/300x450/80801a/f7f7a0?text=Autres+4", category: "Divers" },
+                        { title: "Placeh. Autre 5", year: 2025, duration: "30m", img: "https://placehold.co/300x450/99991a/f7f7a0?text=Autres+5", category: "Divers" },
+                        { title: "Placeh. Autre 6", year: 2025, duration: "30m", img: "https://placehold.co/300x450/b3b31a/f7f7a0?text=Autres+6", category: "Divers" },
+                        { title: "Placeh. Autre 7", year: 2025, duration: "30m", img: "https://placehold.co/300x450/cdcd1a/f7f7a0?text=Autres+7", category: "Divers" },
+                        { title: "Placeh. Autre 8", year: 2025, duration: "30m", img: "https://placehold.co/300x450/e6e61a/f7f7a0?text=Autres+8", category: "Divers" },
+                        { title: "Placeh. Autre 9", year: 2025, duration: "30m", img: "https://placehold.co/300x450/ffff1a/f7f7a0?text=Autres+9", category: "Divers" },
+                        { title: "Placeh. Autre 10", year: 2025, duration: "30m", img: "https://placehold.co/300x450/ffff33/f7f7a0?text=Autres+10", category: "Divers" }
+                    ]
+                }
+            ];
+
+            // Fonction pour générer une carte de contenu plus professionnelle
+            const createContentCard = (item, accentColor) => `
+                <div class="w-44 sm:w-52 flex-shrink-0 cursor-pointer snap-start group transform transition duration-500 hover:scale-[1.03] shadow-lg hover:shadow-2xl rounded-xl overflow-hidden bg-gray-900 hover:ring-2 hover:${accentColor.replace('text-', 'ring-')}" style="transform-origin: top left;">
+                    <div class="relative w-full h-64">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover transition duration-500 group-hover:opacity-60">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+                            <svg class="w-14 h-14 ${accentColor} drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 3v18l18-9-18-9z"/></svg>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h4 class="text-base font-semibold text-white truncate group-hover:${accentColor.replace('text-', 'text-')}">${item.title}</h4>
+                        <p class="text-xs text-gray-500 mt-1">${item.category} | <span class="text-gray-400 font-medium">${item.year}</span></p>
+                    </div>
+                </div>
+            `;
+
+            // Fonction pour générer une section complète
+            const createContentSection = (category) => {
+                const cardsHtml = category.items.map(item => createContentCard(item, category.accent)).join('');
+                
+                return `
+                    <section id="${category.id}" class="mb-16">
+                        <div class="flex items-center mb-6">
+                            <h2 class="text-3xl font-extrabold text-white mr-4">
+                                <span class="${category.accent}">${category.name.split(' ')[0]}</span> 
+                                ${category.name.substring(category.name.indexOf(' ') + 1)}
+                            </h2>
+                            <a href="#" class="text-sm ${category.accent} hover:text-white transition duration-150 font-medium border-b-2 border-transparent hover:${category.border.replace('border-', 'border-')}">Voir tout &rarr;</a>
+                        </div>
+                        
+                        <div class="flex space-x-6 pb-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+                            ${cardsHtml}
+                        </div>
+                    </section>
+                `;
+            };
+
+            // Insertion des sections dans le DOM
+            document.addEventListener('DOMContentLoaded', () => {
+                const container = document.getElementById('streaming-content-container');
+                if (container) {
+                    container.innerHTML = contentCategories.map(createContentSection).join('');
+                }
+            });
+        </script>
+
+        <div id="streaming-content-container">
+            <div class="text-center text-gray-600 py-10">Chargement du contenu de streaming...</div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-900 py-10 mt-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Congo Stream. Tous droits réservés. | Une initiative de <a href="index.html" class="text-yellow-500 hover:text-white transition duration-150 font-medium">Congo Terre de L'Art</a>.</p>
+            <p class="mt-4">
+                <a href="#" class="hover:text-gray-300 mx-2">Conditions d'utilisation</a> |
+                <a href="#" class="hover:text-gray-300 mx-2">Politique de Confidentialité</a> |
+                <a href="#" class="hover:text-gray-300 mx-2">Aide</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

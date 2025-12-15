@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congo Stream Music - La Musique du Congo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212; /* Noir très sombre (Premium) */
+            color: #e0e0e0; /* Texte clair */
+        }
+        /* Style pour masquer la barre de défilement pour les carrousels */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        /* Classe pour la vignette d'artiste (cercle) */
+        .artist-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .artist-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3); /* Ombre dorée au survol */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <header class="bg-gray-900 shadow-2xl sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="flex items-center group">
+                    <svg class="w-7 h-7 mr-2 text-yellow-500 group-hover:text-red-500 transition duration-300" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 14h2v2h-2v-2zm0-8h2v6h-2V8zm-2-2h6v2h-6V6z"/></svg>
+                    <span class="text-3xl font-extrabold text-white">
+                        Congo <span class="text-yellow-500">Music</span>
+                    </span>
+                </a>
+                
+                <nav id="music-nav" class="hidden md:flex space-x-6 text-base font-medium">
+                    <a href="#videos" class="text-gray-300 hover:text-red-500 transition duration-150">Clips Vidéo</a>
+                    <a href="#audios" class="text-gray-300 hover:text-blue-500 transition duration-150">Albums Audio</a>
+                    <a href="#playlists" class="text-gray-300 hover:text-teal-500 transition duration-150">Playlists</a>
+                </nav>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" placeholder="Rechercher un artiste, titre..." class="bg-gray-800 text-white placeholder-gray-500 rounded-full py-2 pl-4 pr-10 border-2 border-transparent focus:border-yellow-500 focus:outline-none w-64 transition-all duration-300 shadow-inner">
+                    <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <button class="p-2 bg-yellow-500 rounded-full hover:bg-red-600 transition duration-300 transform hover:scale-105 shadow-lg">
+                    <svg class="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <section id="artist-selection" class="py-10 text-center transition-opacity duration-700">
+            <h1 class="text-5xl font-extrabold mb-4 text-white">
+                Bienvenue sur <span class="text-yellow-500">Congo Music</span>
+            </h1>
+            <p class="text-xl text-gray-400 mb-12">
+                Choisissez un artiste pour explorer sa discographie ou continuez pour voir les dernières sorties.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Fally Ipupa')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-yellow-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/FFD700?text=Artist+1" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-yellow-500 transition duration-300">Fally Ipupa</h3>
+                    <p class="text-sm text-gray-500">Rumba/Ndombolo</p>
+                </div>
+
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Koffi Olomidé')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-red-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/FF4500?text=Artist+2" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-red-500 transition duration-300">Koffi Olomidé</h3>
+                    <p class="text-sm text-gray-500">Rumba/Soukous</p>
+                </div>
+
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Innoss\'B')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-blue-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/1E90FF?text=Artist+3" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-blue-500 transition duration-300">Innoss'B</h3>
+                    <p class="text-sm text-gray-500">Afrobeat/Pop</p>
+                </div>
+
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Gaz Mawete')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-teal-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/00CED1?text=Artist+4" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-teal-500 transition duration-300">Gaz Mawete</h3>
+                    <p class="text-sm text-gray-500">Afropop</p>
+                </div>
+
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Gims')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-purple-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/8A2BE2?text=Artist+5" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-purple-500 transition duration-300">Gims</h3>
+                    <p class="text-sm text-gray-500">Pop Urbaine</p>
+                </div>
+
+                <div class="artist-card flex flex-col items-center group" onclick="showMusicContent('Hiro')">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-3 border-4 border-gray-700 group-hover:border-green-500 transition duration-300">
+                        <img src="https://placehold.co/150x150/222222/3CB371?text=Artist+6" alt="Artiste Congolais" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-green-500 transition duration-300">Hiro</h3>
+                    <p class="text-sm text-gray-500">Afrobeat/R&B</p>
+                </div>
+            </div>
+            
+            <button onclick="showMusicContent('Général')" class="mt-16 text-lg font-semibold px-8 py-3 rounded-full bg-gray-700 text-white hover:bg-yellow-500 hover:text-gray-900 transition duration-300 transform hover:scale-105">
+                Voir les nouveautés générales &rarr;
+            </button>
+        </section>
+
+        <section id="music-content-section" class="hidden transition-opacity duration-700">
+            <section id="music-hero" class="relative h-[60vh] lg:h-[70vh] bg-cover bg-center mb-16 rounded-xl shadow-2xl" style="background-image: url('https://placehold.co/1920x1080/000000/FFD700?text=Artiste+Sélectionné+ou+Nouveautés');">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent rounded-xl"></div>
+                <div class="relative h-full flex items-end p-8">
+                    <div class="max-w-4xl">
+                        <p class="text-lg text-yellow-500 font-bold mb-2 uppercase" id="hero-subtitle">
+                            Dernier Album en Vedette
+                        </p>
+                        <h1 class="text-6xl md:text-7xl font-extrabold mb-4 text-white drop-shadow-lg leading-tight" id="hero-title">
+                            Le Meilleur de la Rumba Congolaise
+                        </h1>
+                        <p class="text-xl text-gray-300 mb-8 max-w-xl" id="hero-description">
+                            Découvrez les hits et les classiques de notre catalogue musical.
+                        </p>
+                        <button class="flex items-center bg-yellow-500 text-gray-900 font-bold text-lg py-3 px-8 rounded-full hover:bg-yellow-600 transition duration-300 transform hover:scale-[1.05] shadow-xl shadow-yellow-500/50">
+                            <svg class="w-6 h-6 mr-3 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 18a2 2 0 100-4 2 2 0 000 4zM20 18a2 2 0 100-4 2 2 0 000 4zM4 18h2v-2H4v2zm12 0h2v-2h-2v2zm-2-8a2 2 0 100-4 2 2 0 000 4zM4 10h2V8H4v2z"/></svg>
+                            Écouter Maintenant
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                // Données de contenu musical (adaptées)
+                const contentCategories = [
+                    {
+                        id: "videos", name: "Clips Vidéo Populaires",
+                        accent: "text-red-500", border: "border-red-500",
+                        items: [
+                            { title: "Hit du Moment", artist: "Artiste X", duration: "4:30", img: "https://placehold.co/300x168/331a1a/f7a0a0?text=Clip+1", type: "Clip Vidéo" },
+                            { title: "Nouveau Single", artist: "Artiste Y", duration: "3:55", img: "https://placehold.co/300x168/421a1a/f7a0a0?text=Clip+2", type: "Clip Vidéo" },
+                            { title: "Live Session", artist: "Artiste Z", duration: "6:15", img: "https://placehold.co/300x168/501a1a/f7a0a0?text=Clip+3", type: "Performance Live" },
+                            { title: "Classique Rumba", artist: "Artiste W", duration: "5:00", img: "https://placehold.co/300x168/5e1a1a/f7a0a0?text=Clip+4", type: "Clip Classique" },
+                            { title: "Clip Afropop", artist: "Artiste V", duration: "3:20", img: "https://placehold.co/300x168/6d1a1a/f7a0a0?text=Clip+5", type: "Clip Vidéo" },
+                        ]
+                    },
+                    {
+                        id: "audios", name: "Albums Audio Récents",
+                        accent: "text-blue-500", border: "border-blue-500",
+                        items: [
+                            { title: "Album : Le Fleuve", artist: "Artiste 1", tracks: "12 titres", img: "https://placehold.co/300x300/1a2c33/a0c4f7?text=Album+1", type: "Album Studio" },
+                            { title: "EP : Amour et Kin", artist: "Artiste 2", tracks: "5 titres", img: "https://placehold.co/300x300/1a3a4d/a0c4f7?text=Album+2", type: "EP" },
+                            { title: "Compilation 2024", artist: "Divers", tracks: "20 titres", img: "https://placehold.co/300x300/1a4766/a0c4f7?text=Album+3", type: "Compilation" },
+                            { title: "Best Of Classiques", artist: "Légendes", tracks: "15 titres", img: "https://placehold.co/300x300/1a5580/a0c4f7?text=Album+4", type: "Best Of" },
+                            { title: "Album : La Nouvelle Ère", artist: "Artiste 3", tracks: "10 titres", img: "https://placehold.co/300x300/1a6299/a0c4f7?text=Album+5", type: "Album Studio" },
+                        ]
+                    },
+                    {
+                        id: "playlists", name: "Playlists Thématiques",
+                        accent: "text-teal-500", border: "border-teal-500",
+                        items: [
+                            { title: "Workout Afrobeat", description: "Énergie et rythme.", tracks: "50 titres", img: "https://placehold.co/300x300/1a331a/a0f7a0?text=Playlist+1", type: "Playlist" },
+                            { title: "Chill Rumba", description: "Musique douce pour se détendre.", tracks: "30 titres", img: "https://placehold.co/300x300/1a4d1a/a0f7a0?text=Playlist+2", type: "Playlist" },
+                            { title: "Le Top Urbain", description: "Les hits du moment.", tracks: "40 titres", img: "https://placehold.co/300x300/1a661a/a0f7a0?text=Playlist+3", type: "Playlist" },
+                            { title: "Jazz Congolais", description: "Mélodies sophistiquées.", tracks: "25 titres", img: "https://placehold.co/300x300/1a801a/a0f7a0?text=Playlist+4", type: "Playlist" },
+                            { title: "Nouveaux Talents", description: "La relève de la scène.", tracks: "35 titres", img: "https://placehold.co/300x300/1a991a/a0f7a0?text=Playlist+5", type: "Playlist" },
+                        ]
+                    }
+                ];
+
+                // Fonction pour générer une carte de contenu musical
+                const createMusicCard = (item, accentColor) => {
+                    const isVideo = item.type.includes("Clip Vidéo") || item.type.includes("Live");
+                    const aspectRatio = isVideo ? 'h-32 sm:h-40' : 'h-44 sm:h-52'; // Format 16:9 pour vidéo, 1:1 pour audio
+                    const cardWidth = isVideo ? 'w-56 sm:w-72' : 'w-44 sm:w-52';
+                    const hoverRingColor = accentColor.replace('text-', 'ring-');
+                    
+                    return `
+                        <div class="${cardWidth} flex-shrink-0 cursor-pointer snap-start group transform transition duration-500 hover:scale-[1.03] shadow-lg hover:shadow-2xl rounded-xl overflow-hidden bg-gray-900 hover:ring-2 ${hoverRingColor}" style="transform-origin: top left;">
+                            <div class="relative w-full ${aspectRatio}">
+                                <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover transition duration-500 group-hover:opacity-60">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+                                    <svg class="w-14 h-14 ${accentColor} drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        ${isVideo ? '<path d="M5 3v18l18-9-18-9z"/>' : '<path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 14h2v2h-2v-2zm0-8h2v6h-2V8zm-2-2h6v2h-6V6z"/>'}
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="text-base font-semibold text-white truncate group-hover:${accentColor}">${item.title}</h4>
+                                <p class="text-xs text-gray-500 mt-1">${item.artist || item.description}</p>
+                                <p class="text-xs text-gray-400 font-medium mt-0.5">${item.duration || item.tracks}</p>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                // Fonction pour générer une section complète
+                const createContentSection = (category) => {
+                    const cardsHtml = category.items.map(item => createMusicCard(item, category.accent)).join('');
+                    
+                    return `
+                        <section id="${category.id}" class="mb-16">
+                            <div class="flex items-center mb-6">
+                                <h2 class="text-3xl font-extrabold text-white mr-4">
+                                    <span class="${category.accent}">${category.name.split(' ')[0]}</span> 
+                                    ${category.name.substring(category.name.indexOf(' ') + 1)}
+                                </h2>
+                                <a href="#" class="text-sm ${category.accent} hover:text-white transition duration-150 font-medium border-b-2 border-transparent hover:${category.border.replace('border-', 'border-')}">Voir tout &rarr;</a>
+                            </div>
+                            
+                            <div class="flex space-x-6 pb-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+                                ${cardsHtml}
+                            </div>
+                        </section>
+                    `;
+                };
+
+                // Fonction pour afficher le contenu musical après sélection
+                const showMusicContent = (artistName) => {
+                    const selection = document.getElementById('artist-selection');
+                    const contentSection = document.getElementById('music-content-section');
+                    const musicNav = document.getElementById('music-nav');
+                    const heroTitle = document.getElementById('hero-title');
+                    const heroSubtitle = document.getElementById('hero-subtitle');
+                    const heroDescription = document.getElementById('hero-description');
+
+                    // 1. Mise à jour de la Hero Section
+                    if (artistName !== 'Général') {
+                        heroTitle.textContent = `La Discographie de ${artistName}`;
+                        heroSubtitle.textContent = 'Artiste en vedette';
+                        heroDescription.textContent = `Découvrez tous les clips, albums et singles de ${artistName} en un seul endroit.`;
+                    } else {
+                        // Réinitialiser pour la vue générale
+                        heroTitle.textContent = "Le Meilleur de la Musique Congolaise";
+                        heroSubtitle.textContent = 'Nouveautés Générales';
+                        heroDescription.textContent = "Parcourez les dernières sorties, playlists et vidéos populaires de tous les artistes.";
+                    }
+                    // Note: L'image de fond doit être mise à jour ici si possible.
+
+                    // 2. Affichage des sections de contenu
+                    const container = document.getElementById('streaming-music-container');
+                    if (container) {
+                        container.innerHTML = contentCategories.map(createContentSection).join('');
+                    }
+
+                    // 3. Transition des vues
+                    selection.classList.add('opacity-0');
+                    setTimeout(() => {
+                        selection.classList.add('hidden');
+                        contentSection.classList.remove('hidden');
+                        musicNav.classList.remove('hidden'); // Afficher la navigation
+                        
+                        // Décalage pour l'effet de fade-in
+                        setTimeout(() => {
+                            contentSection.classList.add('opacity-100');
+                        }, 50);
+                    }, 500); // Temps pour l'effet de fade-out
+                };
+            </script>
+
+            <div id="streaming-music-container">
+                </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 py-10 mt-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Congo Music. Tous droits réservés. | Une initiative de <a href="index.html" class="text-yellow-500 hover:text-white transition duration-150 font-medium">Congo Terre de L'Art</a>.</p>
+            <p class="mt-4">
+                <a href="#" class="hover:text-gray-300 mx-2">Conditions d'utilisation</a> |
+                <a href="#" class="hover:text-gray-300 mx-2">Politique de Confidentialité</a> |
+                <a href="#" class="hover:text-gray-300 mx-2">Aide</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
