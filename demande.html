@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banikilabs - Création de Sites Web Professionnels</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuration de la police Inter et couleurs personnalisées -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Section Header/Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-extrabold text-indigo-600 tracking-tight">Banikilabs</a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#offres" class="text-gray-600 hover:text-indigo-600 transition duration-300 font-medium">Nos Offres</a>
+                <a href="#contact" class="text-gray-600 hover:text-indigo-600 transition duration-300 font-medium">Contact</a>
+            </nav>
+            <a href="#offres" class="md:hidden px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-indigo-700 transition duration-300">Offres</a>
+        </div>
+    </header>
+
+    <!-- Section Héro -->
+    <section class="bg-indigo-700 text-white py-20 sm:py-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-6xl font-extrabold mb-4 leading-tight">
+                Lancez Votre Présence En Ligne avec <span class="text-yellow-300">Banikilabs</span>
+            </h1>
+            <p class="text-xl sm:text-2xl mb-10 opacity-90 max-w-3xl mx-auto">
+                Des sites web professionnels, rapides et abordables, adaptés à tous vos besoins.
+            </p>
+            <a href="#offres" class="inline-block px-10 py-4 bg-yellow-400 text-indigo-900 text-lg font-bold rounded-full shadow-xl transform transition duration-300 hover:scale-105 hover:bg-yellow-300">
+                Découvrez Nos Plans
+            </a>
+        </div>
+    </section>
+
+    <!-- Section Offres (Pricing) -->
+    <section id="offres" class="py-16 sm:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">
+                    Des Solutions Web Adaptées à Chaque Projet
+                </h2>
+                <p class="mt-4 text-xl text-gray-600">
+                    Choisissez l'offre qui correspond le mieux à vos objectifs.
+                </p>
+            </div>
+
+            <!-- Grille des Cartes d'Offres -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-12">
+
+                <!-- Carte 1: Site Vitrine -->
+                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-indigo-500 transform hover:scale-[1.02] transition duration-300">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Site Vitrine</h3>
+                    <p class="text-gray-500 mb-6">Présentez votre activité de manière élégante.</p>
+
+                    <div class="flex items-baseline mb-8">
+                        <span class="text-5xl font-extrabold text-indigo-600">$100</span>
+                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
+                    </div>
+
+                    <ul role="list" class="space-y-4 text-gray-600">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <!-- Icone SVG de coche -->
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Design moderne et réactif (Mobile-first)</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Jusqu'à 5 pages (Accueil, Services, Contact, etc.)</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Formulaire de contact fonctionnel</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Optimisation de base pour le chargement rapide</p>
+                        </li>
+                    </ul>
+
+                    <!-- Modification: Redirection vers le placeholder de paiement -->
+                    <a href="https://buy.stripe.com/test_28E5kD3mr1AJ9MzdkZ6Na01" class="mt-10 block w-full bg-indigo-600 text-white py-3 px-6 rounded-lg text-center font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
+                        Choisir le Site Vitrine
+                    </a>
+                </div>
+
+                <!-- Carte 2: Blog (Mise en avant) -->
+                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-yellow-500 transform scale-[1.05] ring-4 ring-yellow-300 transition duration-300">
+                    <div class="flex justify-center mb-4">
+                        <span class="bg-yellow-500 text-indigo-900 text-xs font-extrabold uppercase px-3 py-1 rounded-full">Le Plus Populaire</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Blog Professionnel</h3>
+                    <p class="text-gray-500 mb-6">Partagez votre expertise et engagez votre audience.</p>
+
+                    <div class="flex items-baseline mb-8">
+                        <span class="text-5xl font-extrabold text-yellow-600">$300</span>
+                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
+                    </div>
+
+                    <ul role="list" class="space-y-4 text-gray-600">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3 font-semibold">Toutes les fonctionnalités du Site Vitrine</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Système de Gestion de Contenu (CMS) complet</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Catégories, tags, et recherche d'articles</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Intégration des réseaux sociaux et commentaires</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Optimisation SEO avancée pour les articles</p>
+                        </li>
+                    </ul>
+
+                    <!-- Modification: Redirection vers le placeholder de paiement -->
+                    <a href="#https://buy.stripe.com/test_cNi3cvf5993b2k7gxb6Na02" class="mt-10 block w-full bg-yellow-400 text-indigo-900 py-3 px-6 rounded-lg text-center font-extrabold shadow-xl hover:bg-yellow-300 transition duration-300">
+                        Choisir le Blog Pro
+                    </a>
+                </div>
+
+                <!-- Carte 3: E-commerce -->
+                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-indigo-500 transform hover:scale-[1.02] transition duration-300">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Plateforme E-commerce</h3>
+                    <p class="text-gray-500 mb-6">Vendez vos produits en ligne et développez votre marché.</p>
+
+                    <div class="flex items-baseline mb-8">
+                        <span class="text-5xl font-extrabold text-indigo-600">$600</span>
+                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
+                    </div>
+
+                    <ul role="list" class="space-y-4 text-gray-600">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3 font-semibold">Toutes les fonctionnalités du Blog</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Catalogue de produits illimité</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Système de panier et de checkout sécurisé</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Intégration de paiement (Stripe, PayPal, etc.)</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <p class="ml-3">Gestion des commandes, stocks et taxes</p>
+                        </li>
+                    </ul>
+
+                    <!-- Modification: Redirection vers le placeholder de paiement -->
+                    <a href="https://buy.stripe.com/test_3cIcN5cX1frz2k72Gl6Na03" class="mt-10 block w-full bg-indigo-600 text-white py-3 px-6 rounded-lg text-center font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
+                        Choisir l'E-commerce
+                    </a>
+                </div>
+
+            </div>
+            <!-- Fin Grille des Cartes d'Offres -->
+
+        </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section id="contact" class="py-16 sm:py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Prêt à Commencer Votre Projet ?</h2>
+            <p class="text-xl text-gray-600 mb-10">
+                Contactez l'équipe Banikilabs dès aujourd'hui pour discuter de vos besoins. Nous sommes là pour vous aider !
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <!-- Email -->
+                <a href="mailto:banikimukishijimmy@gmail.com" class="px-8 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:bg-indigo-700 transition duration-300">
+                    Envoyer un Email
+                </a>
+                <!-- Lien WhatsApp -->
+                <a href="https://wa.me/243978415814" target="_blank" class="px-8 py-3 bg-gray-200 text-indigo-800 text-lg font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-300">
+                    WhatsApp (+243 978 415 814)
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <!-- Année mise à jour à 2025 -->
+            <p class="text-gray-400 text-sm">
+                &copy; 2025 Banikilabs. Tous droits réservés. | Créé avec passion pour le web.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
