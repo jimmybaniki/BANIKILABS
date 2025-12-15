@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Paiement du Billet - EventPlatform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Définition des couleurs */
+        .primary-color { background-color: #facc15; } /* Jaune */
+        .primary-text-color { color: #facc15; } /* Jaune */
+        .primary-border-color { border-color: #facc15; } /* Jaune */
+        .dark-background { background-color: #111827; } /* Noir très foncé */
+        .text-dark { color: #111827; } /* Noir */
+    </style>
+</head>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+    
+    <nav class="dark-background shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <i class="fas fa-calendar-alt primary-text-color text-2xl mr-2"></i>
+                    <span class="text-xl font-bold text-white">EventPlatform</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4">
+        <div class="max-w-3xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
+            <div class="p-8 primary-color text-dark text-center">
+                <h1 class="text-2xl font-bold">Passerelle de Paiement via WhatsApp</h1>
+                <p class="text-lg mt-1" id="event-name-display">Événement: **Chargement...**</p>
+            </div>
+
+            <div class="p-8">
+                <div class="mb-8 border-b border-gray-200 pb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg text-gray-700">Prix du billet (1x) :</span>
+                        <span class="text-lg font-semibold text-dark" id="price-display">$0</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg text-gray-700">Frais de service :</span>
+                        <span class="text-lg font-semibold text-dark" id="fees-display">$0</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t pt-4">
+                        <span class="text-xl font-bold text-dark">Total à payer :</span>
+                        <span class="text-2xl font-extrabold primary-text-color" id="total-display">$0</span>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-lg text-gray-700 mb-6 font-semibold">
+                        Cliquez ci-dessous pour finaliser votre achat et obtenir votre ticket via WhatsApp.
+                    </p>
+
+                    <a href="#" id="whatsapp-link" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-extrabold py-3 px-8 rounded-lg text-lg transition duration-300 text-center shadow-lg mb-6">
+                        <i class="fab fa-whatsapp text-2xl mr-3"></i> Finaliser le Paiement sur WhatsApp
+                    </a>
+
+                    <p class="text-sm text-gray-600 mb-4">
+                        Une fois que le **Cashier** vous aura confirmé la réception du paiement sur WhatsApp et envoyé votre ticket, vous pouvez cliquer sur le bouton ci-dessous pour accéder à la page de confirmation.
+                    </p>
+                    
+                    <a href="confirmer.html" id="confirmation-button" class="w-full sm:w-auto inline-flex items-center justify-center primary-color hover:bg-yellow-600 text-dark font-extrabold py-3 px-8 rounded-lg text-lg transition duration-300 text-center shadow-md">
+                        J'ai payé, voir la Confirmation <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="dark-background text-white mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-center items-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2025 EventPlatform. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Fonction pour lire les paramètres de l'URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                event: params.get('event') ? decodeURIComponent(params.get('event')) : 'Événement Inconnu',
+                price: params.get('price') || '0',
+                fees: params.get('fees') || '0',
+                total: params.get('total') || '0'
+            };
+        }
+
+        // Fonction pour mettre à jour l'affichage avec les données et le lien WhatsApp
+        function updatePaymentDetails() {
+            const data = getUrlParams();
+            const phoneNumber = '243978415814'; // Numéro sans le + pour l'URL
+
+            // Mise à jour de l'affichage
+            document.getElementById('page-title').textContent = 'Paiement - ' + data.event;
+            document.getElementById('event-name-display').innerHTML = `Événement: <strong>${data.event}</strong>`;
+            document.getElementById('price-display').textContent = `$${data.price}`;
+            document.getElementById('fees-display').textContent = `$${data.fees}`;
+            document.getElementById('total-display').textContent = `$${data.total}`;
+            
+            // Construction du message pré-écrit pour WhatsApp
+            const message = `Bonjour, je souhaite finaliser le paiement de $${data.total} USD pour l'événement "${data.event}". Merci de m'envoyer les détails de paiement et mon ticket dès que possible.`;
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Mise à jour du lien WhatsApp
+            const whatsappLink = document.getElementById('whatsapp-link');
+            whatsappLink.href = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            // Mise à jour du lien du bouton de confirmation (pour revenir)
+            const confirmationButton = document.getElementById('confirmation-button');
+            confirmationButton.href = `confirmer.html?event=${encodeURIComponent(data.event)}&total=${data.total}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', updatePaymentDetails);
+    </script>
+</body>
+</html>
