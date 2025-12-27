@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bwise LEARNING - Cours de Langue (Anglais, Swahili, Français)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .text-bwise-logo {
+            color: #000000;
+        }
+        .bg-bwise-yellow {
+            background-color: #FFD700;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), 
+                        url('https://images.unsplash.com/photo-1543165796-5426273eaec3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center; gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            background-color: #128c7e;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .flag-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Bouton WhatsApp Flottant -->
+    <a href="https://wa.me/243978415814?text=Bonjour%20Bwise,%20je%20souhaite%20m'inscrire%20à%20un%20cours%20de%20langue." class="whatsapp-float">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>S'inscrire maintenant</span>
+    </a>
+
+    <!-- Header -->
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-1">
+                <span class="text-3xl font-bold text-bwise-logo">B<span class="text-gray-800 lowercase font-semibold">wise</span></span>
+                <span class="text-[10px] font-bold bg-yellow-400 text-black px-2 py-0.5 rounded ml-2">LEARNING</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 font-medium text-gray-600">
+                <a href="#langues" class="hover:text-black">Nos Langues</a>
+                <a href="#programmes" class="hover:text-black">Programmes</a>
+                <a href="https://wa.me/243978415814?text=Demande%20de%20formation%20linguistique%20pour%20entreprise" class="hover:text-black">Formation Entreprise</a>
+                <a href="https://wa.me/243978415814?text=Je%20souhaite%20tester%20mon%20niveau%20de%20langue" class="bg-yellow-400 text-black px-5 py-2 rounded-full font-bold hover:bg-yellow-500 transition text-sm">Tester mon niveau</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-24 px-6 text-center border-b-4 border-yellow-400">
+        <div class="max-w-4xl mx-auto">
+            <span class="bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-6 inline-block">Maîtrisez une nouvelle langue</span>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Cours de Langue : Anglais, Swahili, Français</h1>
+            <p class="text-xl md:text-2xl mb-10 text-gray-300">Des programmes <span class="text-yellow-400 font-bold">intensifs et personnalisés</span> pour maîtriser le français des affaires, l'anglais académique ou le swahili conversationnel.</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#langues" class="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
+                    Découvrir nos cours
+                </a>
+                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20voudrais%20plus%20d'infos%20sur%20les%20cours%20de%20langue" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
+                    Parler à un conseiller
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Language Selector Section -->
+    <section id="langues" class="py-20 container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Choisissez la langue que vous voulez conquérir</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg">Nos experts vous accompagnent de A à Z, du niveau débutant au niveau expert.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- ANGLAIS -->
+            <div class="bg-white p-8 rounded-xl text-center card-hover transition border-2 border-transparent hover:border-yellow-400 shadow-sm">
+                <div class="text-5xl mb-4">🇬🇧</div>
+                <h3 class="text-2xl font-bold mb-2">Anglais</h3>
+                <p class="text-sm text-gray-500 mb-6 font-medium uppercase tracking-widest">Business & Académique</p>
+                <p class="text-gray-600 mb-8 italic">"Préparez le TOEFL, IELTS ou boostez votre carrière internationale."</p>
+                <a href="anglais.html" class="inline-block bg-black text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-gray-800 transition">Choisir l'Anglais</a>
+            </div>
+
+            <!-- SWAHILI -->
+            <div class="bg-white p-8 rounded-xl text-center card-hover transition border-2 border-yellow-400 bg-yellow-50 shadow-sm relative overflow-hidden">
+                <div class="absolute top-4 right-4 bg-yellow-400 text-[10px] font-bold px-2 py-1 rounded">POPULAIRE</div>
+                <div class="text-5xl mb-4">🌍</div>
+                <h3 class="text-2xl font-bold mb-2 text-black">Swahili</h3>
+                <p class="text-sm text-yellow-700 mb-6 font-medium uppercase tracking-widest">Conversationnel & Culturel</p>
+                <p class="text-gray-700 mb-8 italic">"Maîtrisez la langue la plus parlée en Afrique de l'Est et centrale."</p>
+                <a href="swahili.html" class="inline-block bg-yellow-400 text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-yellow-500 transition">Choisir le Swahili</a>
+            </div>
+
+            <!-- FRANCAIS -->
+            <div class="bg-white p-8 rounded-xl text-center card-hover transition border-2 border-transparent hover:border-yellow-400 shadow-sm">
+                <div class="text-5xl mb-4">🇫🇷</div>
+                <h3 class="text-2xl font-bold mb-2">Français</h3>
+                <p class="text-sm text-gray-500 mb-6 font-medium uppercase tracking-widest">Affaires & Communication</p>
+                <p class="text-gray-600 mb-8 italic">"Améliorez votre expression orale et écrite professionnelle."</p>
+                <a href="francais.html" class="inline-block bg-black text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-gray-800 transition">Choisir le Français</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Details -->
+    <section id="programmes" class="bg-gray-900 text-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6 text-yellow-400">Pourquoi choisir Bwise Learning pour vos langues ?</h2>
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="bg-yellow-400 text-black p-2 rounded-lg">
+                                <i class="fas fa-check font-bold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Programmes Intensifs</h4>
+                                <p class="text-gray-400">Des sessions courtes mais riches pour des résultats rapides en moins de 3 mois.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="bg-yellow-400 text-black p-2 rounded-lg">
+                                <i class="fas fa-user-tie font-bold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Coachs Natifs & Experts</h4>
+                                <p class="text-gray-400">Apprenez avec des formateurs qui maîtrisent les nuances culturelles et professionnelles.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="bg-yellow-400 text-black p-2 rounded-lg">
+                                <i class="fas fa-calendar-alt font-bold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Horaires Flexibles</h4>
+                                <p class="text-gray-400">En ligne ou en présentiel, adaptez vos cours selon votre agenda de travail.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white text-black p-8 rounded-2xl shadow-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Demander une brochure</h3>
+                    <form class="space-y-4">
+                        <input type="text" placeholder="Votre nom complet" class="w-full p-3 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                        <select class="w-full p-3 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                            <option>Langue souhaitée : Anglais</option>
+                            <option>Langue souhaitée : Swahili</option>
+                            <option>Langue souhaitée : Français</option>
+                        </select>
+                        <button type="button" onclick="window.location.href='https://wa.me/243978415814?text=Je%20souhaite%20recevoir%20la%20brochure%20des%20cours%20de%20langues'" class="w-full bg-yellow-400 text-black font-bold py-4 rounded-lg hover:bg-yellow-500 transition">
+                            Recevoir par WhatsApp
+                        </button>
+                    </form>
+                    <p class="text-xs text-center text-gray-400 mt-4 italic">Réponse instantanée garantie.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-1">
+                <span class="text-2xl font-bold text-white">B<span class="lowercase font-semibold">wise</span></span>
+                <span class="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded ml-2 font-bold">LEARNING</span>
+            </div>
+            <div class="flex gap-6 text-sm">
+                <a href="#" class="hover:text-white transition">Nos Centres</a>
+                <a href="#" class="hover:text-white transition">Témoignages</a>
+                <a href="#" class="hover:text-white transition">FAQ Langues</a>
+                <a href="https://wa.me/243978415814" class="hover:text-white transition">Contact</a>
+            </div>
+            <div class="text-sm">
+                © 2025 Bwise Learning - Langues.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
