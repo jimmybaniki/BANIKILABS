@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saveurs de Kinshasa - Gastronomie & Commande</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind with the new black/yellow/white palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-yellow': '#FBBF24', // Jaune vif (Amber 400)
+                        'secondary-black': '#1F2937', // Noir profond (Gray 800)
+                        'light-bg': '#F9FAFB', // Blanc/Gris clair (Gray 50)
+                        'success-green': '#10B981', // Vert pour la validation
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Styles personnalisés pour un défilement fluide et les transitions */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .product-card-hover {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .product-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(251, 191, 36, 0.6), 0 4px 6px -2px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Classes de base pour l'animation d'apparition */
+        .animate-on-scroll {
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            opacity: 0;
+        }
+        .slide-up { transform: translateY(20px); }
+        .slide-left { transform: translateX(-50px); }
+        .slide-right { transform: translateX(50px); }
+        .animate-in { opacity: 1; transform: translate(0, 0); }
+
+        /* Style pour le modal du panier */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 60;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-active .modal-overlay {
+            opacity: 1;
+        }
+        .modal-active .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="font-sans text-secondary-black bg-light-bg overflow-x-hidden">
+
+    <!-- Header & Navigation (Statique pour une bonne UX) -->
+    <header class="sticky top-0 z-50 bg-white shadow-lg">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center" data-animate="fade-in" data-delay="0">
+            <!-- Logo -->
+            <a href="#" class="text-2xl font-bold text-secondary-black flex items-center">
+                <span class="text-primary-yellow text-4xl mr-2">🍽️</span>
+                Kinshasa Delights
+            </a>
+
+            <!-- Menu de bureau et Panier -->
+            <div class="flex items-center space-x-6">
+                <div class="hidden md:flex space-x-8">
+                    <a href="#plats" class="text-gray-600 hover:text-primary-yellow transition duration-150">Plats & Prix</a>
+                    <a href="#culture" class="text-gray-600 hover:text-primary-yellow transition duration-150">Culture</a>
+                    <a href="#avis" class="text-gray-600 hover:text-primary-yellow transition duration-150">Avis</a>
+                </div>
+
+                <!-- Bouton Panier (Cart Icon) -->
+                <button id="open-cart-button" class="relative p-2 rounded-full bg-secondary-black text-white hover:bg-gray-700 transition duration-150">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cart-count" class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-secondary-black bg-primary-yellow rounded-full ring-2 ring-white">0</span>
+                </button>
+
+                <!-- Bouton Menu Mobile -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg text-secondary-black hover:bg-gray-100 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Menu Mobile (Cache par defaut) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white px-4 pt-2 pb-4 shadow-inner">
+            <a href="#plats" class="block py-2 text-gray-700 hover:bg-gray-50 rounded-md transition duration-150">Plats & Prix</a>
+            <a href="#culture" class="block py-2 text-gray-700 hover:bg-gray-50 rounded-md transition duration-150">Culture</a>
+            <a href="#avis" class="block py-2 text-gray-700 hover:bg-gray-50 rounded-md transition duration-150">Avis</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. Hero Section -->
+        <section id="hero" class="py-16 md:py-24 bg-white overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6 animate-on-scroll slide-left" data-animate="slide-left">
+                        <span class="text-sm font-semibold uppercase text-primary-yellow bg-primary-yellow/20 px-3 py-1 rounded-full inline-block">Cuisine Congolaise Authentique</span>
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-secondary-black leading-tight">
+                            Goûtez l'Âme de <span class="text-primary-yellow">Kinshasa</span>.
+                        </h1>
+                        <p class="text-lg text-gray-600">
+                            Découvrez des plats riches en saveurs, des épices traditionnelles. Composez votre menu et commandez facilement via WhatsApp !
+                        </p>
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+                            <button onclick="openCart()" class="text-center px-8 py-3 bg-primary-yellow text-secondary-black font-bold rounded-xl shadow-xl shadow-primary-yellow/30 hover:bg-amber-500 transition duration-300 transform hover:scale-105">
+                                Ouvrir Mon Panier
+                            </button>
+                            <a href="#culture" class="text-center px-8 py-3 bg-white text-secondary-black font-semibold rounded-xl border border-secondary-black hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Histoire et Ingrédients
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex justify-center md:justify-end animate-on-scroll slide-right" data-animate="slide-right" data-delay="200">
+                        <img 
+                            src="https://placehold.co/500x500/FBBF24/1F2937?text=Moambe+%26+Riz" 
+                            alt="Plat traditionnel de Poulet à la Moambe" 
+                            class="w-full max-w-sm md:max-w-md h-auto rounded-3xl shadow-2xl border-4 border-secondary-black product-card-hover"
+                            onerror="this.onerror=null;this.src='https://placehold.co/500x500/FBBF24/1F2937?text=Image+Plat+Principal';"
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Section Plats (Plats et Prix) -->
+        <section id="culture" class="py-16 md:py-24 bg-secondary-black text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Titre (Apparition en fondu simple) -->
+                <div class="text-center max-w-3xl mx-auto mb-12 animate-on-scroll slide-up" data-animate="slide-up">
+                    <h2 class="text-4xl font-extrabold text-white mb-4">Plats Emblématiques de Kinshasa (Menu Complet)</h2>
+                    <p class="text-lg text-gray-400">Cliquez sur "Ajouter" pour créer votre panier de commande.</p>
+                </div>
+
+                <div id="dishes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Les cartes de plats seront injectées ici par JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Section Avis (Inchangée) -->
+        <section id="avis" class="py-16 md:py-24 bg-light-bg text-secondary-black">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12 animate-on-scroll slide-up" data-animate="slide-up">
+                    <h2 class="text-4xl font-extrabold text-secondary-black mb-4">Ce Que Disent Nos Amateurs</h2>
+                    <p class="text-lg text-gray-600">Des avis vérifiés de ceux qui ont voyagé à Kinshasa depuis leur assiette.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Avis 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 product-card-hover animate-on-scroll slide-up" data-animate="slide-up" data-delay="100">
+                        <div class="flex items-center space-x-1 mb-3 text-primary-yellow">
+                            <span class="text-2xl">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-gray-700 italic mb-4">"Le Poulet à la Moambe était parfait, l'huile de palme riche et la viande tendre. Un goût authentique que je n'avais pas ressenti depuis mon dernier voyage."</p>
+                        <p class="font-semibold text-secondary-black">- Sandra M.</p>
+                    </div>
+
+                    <!-- Avis 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 product-card-hover animate-on-scroll slide-up" data-animate="slide-up" data-delay="200">
+                        <div class="flex items-center space-x-1 mb-3 text-primary-yellow">
+                            <span class="text-2xl">⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-gray-700 italic mb-4">"J'ai découvert le Pondu, et c'est incroyable. C'est copieux, végétal et tellement satisfaisant. Les Makemba en accompagnement sont addictifs !"</p>
+                        <p class="font-semibold text-secondary-black">- Alain T.</p>
+                    </div>
+
+                    <!-- Avis 3 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 product-card-hover hidden lg:block animate-on-scroll slide-up" data-animate="slide-up" data-delay="300">
+                        <div class="flex items-center space-x-1 mb-3 text-primary-yellow">
+                            <span class="text-2xl">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <p class="text-gray-700 italic mb-4">"Des saveurs audacieuses, c'est ce que j'aime. La façon dont le poisson salé était mijoté avec les légumes était spectaculaire. Je reviendrai la semaine prochaine."</p>
+                        <p class="font-semibold text-secondary-black">- Chris V.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 5. Modal du Panier/Facture/Paiement SIMULÉ -->
+    <div id="cart-modal" class="hidden fixed inset-0 modal-overlay flex justify-center items-center p-4">
+        <div id="cart-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg modal-content overflow-y-auto max-h-full">
+            
+            <!-- Vue du Panier en Direct (Live Cart View) -->
+            <div id="live-cart-view">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-secondary-black">Votre Panier de Commande</h3>
+                    <button onclick="closeCart()" class="text-gray-500 hover:text-secondary-black p-2 rounded-full hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <div id="cart-items-container" class="p-6 space-y-4">
+                    <!-- Les articles du panier seront affichés ici -->
+                    <p id="empty-cart-message" class="text-gray-500 text-center italic">Votre panier est vide.</p>
+                </div>
+
+                <!-- Résumé de la Facture -->
+                <div id="invoice-summary" class="p-6 border-t border-gray-200">
+                    <h4 class="text-xl font-bold mb-4 text-secondary-black">Facture Pro-Forma</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Sous-Total (HT) :</span>
+                            <span id="subtotal" class="font-semibold text-secondary-black">$0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">TVA (16% RDC) :</span>
+                            <span id="tax" class="font-semibold text-secondary-black">$0.00</span>
+                        </div>
+                        <div class="flex justify-between pt-2 border-t border-gray-200">
+                            <span class="text-lg font-bold">Total TTC :</span>
+                            <span id="total" class="text-lg font-bold text-primary-yellow">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passerelle de Paiement (Simulée) -->
+                <div class="p-6 pt-4">
+                    <div class="text-center bg-primary-yellow/20 p-4 rounded-lg mb-4">
+                        <p class="text-sm font-medium text-secondary-black">
+                            Pour finaliser et payer, nous utilisons la méthode rapide **WhatsApp**.
+                        </p>
+                        <p class="text-xs text-gray-700 mt-1">
+                            Un récapitulatif de votre facture sera envoyé à notre équipe. Vous pourrez confirmer la livraison et le paiement (M-Pesa, Carte, Cash) directement avec eux.
+                        </p>
+                    </div>
+                    
+                    <button onclick="checkout()" class="w-full py-3 bg-success-green text-white font-bold rounded-lg shadow-md hover:bg-emerald-600 transition duration-300 disabled:bg-gray-400" disabled id="checkout-button">
+                        Passer la Commande & Payer (Via WhatsApp)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vue de Confirmation (Hidden by default) -->
+            <div id="checkout-confirmation-view" class="hidden p-8 text-center bg-white rounded-2xl">
+                <svg class="w-16 h-16 text-success-green mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h3 class="text-2xl font-bold text-success-green mb-2">Commande Transmise !</h3> 
+                <p class="text-gray-700 mb-6">Votre récapitulatif a été envoyé via WhatsApp. Notre équipe vous contacte immédiatement pour confirmer la livraison et le mode de paiement.</p>
+                <button onclick="closeCart()" class="py-2 px-6 bg-secondary-black text-white rounded-lg hover:bg-gray-700">Fermer la fenêtre</button>
+            </div>
+            
+        </div>
+    </div>
+
+
+    <!-- Footer (Apparition en fondu simple) -->
+    <footer class="bg-secondary-black text-white py-8 animate-on-scroll" data-animate="fade-in">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm text-gray-400">&copy; 2025 Kinshasa Delights. Tous droits réservés.</p>
+            <div class="mt-2 space-x-4 text-sm">
+                <a href="#" class="text-gray-400 hover:text-primary-yellow">Contact</a>
+                <a href="#" class="text-gray-400 hover:text-primary-yellow">Mentions Légales</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for E-commerce Logic, Animations, and UI -->
+    <script>
+        // Numéro WhatsApp pour la commande
+        const WHATSAPP_NUMBER = '243978415814';
+        const TVA_RATE = 0.16; // Taux de TVA simulé à 16% (RDC)
+        
+        // Structure de données des 11 plats avec prix
+        const dishes = [
+            { id: 1, name: "Makemba", price: 2.50, description: "Les bananes plantains frites, un accompagnement incontournable, souvent sucré et croustillant.", imgText: "Makemba" },
+            { id: 2, name: "Pondu", price: 8.00, description: "Feuilles de manioc pilées cuites avec de l'huile de palme et du poisson, un plat riche et onctueux.", imgText: "Pondu" },
+            { id: 3, name: "Poisson Salé", price: 15.00, description: "Poisson séché et salé, souvent mijoté avec des légumes et des tomates pour un goût intense.", imgText: "Poisson+Salé" },
+            { id: 4, name: "Chikwangue", price: 3.00, description: "Pain de manioc fermenté, enveloppé dans des feuilles de bananier. Un féculent essentiel.", imgText: "Chikwangue" },
+            { id: 5, name: "Liboke", price: 12.00, description: "Plat cuit à l'étouffée dans des feuilles de bananier, souvent à base de poisson ou de poulet, très parfumé.", imgText: "Liboke" },
+            { id: 6, name: "Fumbwa", price: 9.00, description: "Feuilles de manioc cuites avec de la pâte d'arachide et du poisson fumé, riche en goût et texture.", imgText: "Fumbwa" },
+            { id: 7, name: "Madesu", price: 7.00, description: "Haricots cuisinés dans une sauce tomate riche et épicée, un plat végétarien réconfortant.", imgText: "Madesu" },
+            { id: 8, name: "Losso ya Mbisi", price: 14.00, description: "Riz au poisson, où le riz est mijoté avec du poisson et des légumes pour un plat complet en une seule marmite.", imgText: "Losso+ya+Mbisi" },
+            { id: 9, name: "Ngulu Ya Madesu", price: 16.00, description: "Porc aux haricots. Un ragoût copieux et savoureux, parfait pour les grands repas de famille.", imgText: "Ngulu+Madesu" },
+            { id: 10, name: "Soso Ya Grille", price: 18.00, description: "Poulet grillé, mariné aux épices locales, incroyablement populaire pour les dîners en ville.", imgText: "Soso+Grille" },
+            { id: 11, name: "Fufu", price: 2.00, description: "Pâte de manioc ou de maïs cuite, servie en boule. Le plat de base essentiel pour accompagner toutes les sauces.", imgText: "Fufu" },
+        ];
+
+        // CONTEXTE : La requête utilisateur a demandé de déconnecter la base de données. 
+        // CONFIRMATION : Cette application utilise le stockage local (JavaScript array 'cart') 
+        // et NON une base de données externe (comme Firestore), assurant une simplicité maximale.
+        let cart = []; // Panier global : [ { id: 1, name: "Makemba", price: 2.50, quantity: 2 }, ... ]
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialisation du site
+            renderDishes();
+            setupEventListeners();
+            setupAnimations();
+        });
+
+        function setupEventListeners() {
+            // Gestion du Menu Mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // Gestion du Modal Panier
+            document.getElementById('open-cart-button').addEventListener('click', openCart);
+            document.getElementById('cart-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'cart-modal') closeCart(); // Fermer si on clique sur l'overlay
+            });
+        }
+
+        // --- Fonctions E-commerce ---
+
+        function renderDishes() {
+            const container = document.getElementById('dishes-container');
+            let delayCounter = 100;
+
+            dishes.forEach((dish, index) => {
+                const card = `
+                    <div class="bg-gray-700 p-6 rounded-xl shadow-xl border border-gray-700 product-card-hover text-center animate-on-scroll slide-up" data-animate="slide-up" data-delay="${delayCounter + (index * 100)}">
+                        <!-- Image du plat -->
+                        <img src="https://placehold.co/200x150/${dish.id % 2 === 0 ? '1F2937/FBBF24' : 'FBBF24/1F2937'}?text=${dish.imgText}" alt="Image de ${dish.name}" class="mb-4 mx-auto rounded-lg shadow-lg border border-primary-yellow">
+                        
+                        <h3 class="text-2xl font-bold text-primary-yellow mb-2">${dish.name}</h3>
+                        
+                        <p class="text-3xl font-extrabold text-white mb-3">$${dish.price.toFixed(2)}</p>
+
+                        <p class="text-gray-300 mb-4 text-sm">${dish.description}</p>
+                        
+                        <button onclick="addToCart(${dish.id})" class="w-full py-2 bg-primary-yellow text-secondary-black font-semibold rounded-lg hover:bg-amber-500 transition duration-200 shadow-md">
+                            Ajouter au Panier
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function addToCart(dishId) {
+            const dish = dishes.find(d => d.id === dishId);
+            const existingItem = cart.find(item => item.id === dishId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: dish.id,
+                    name: dish.name,
+                    price: dish.price,
+                    quantity: 1
+                });
+            }
+            updateCartDisplay();
+            openCart(); // Ouvre le panier après l'ajout
+        }
+
+        function updateQuantity(dishId, delta) {
+            const itemIndex = cart.findIndex(item => item.id === dishId);
+
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += delta;
+                if (cart[itemIndex].quantity <= 0) {
+                    // Supprimer l'article si la quantité atteint ou dépasse zéro
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const itemsContainer = document.getElementById('cart-items-container');
+            const emptyMessage = document.getElementById('empty-cart-message');
+            const cartCountSpan = document.getElementById('cart-count');
+            const checkoutButton = document.getElementById('checkout-button');
+            
+            // Assurez-vous que les éléments existent avant de tenter d'y accéder.
+            if (!emptyMessage || !cartCountSpan || !checkoutButton || !itemsContainer) {
+                console.error("Erreur: Éléments du DOM du panier introuvables lors de la mise à jour.");
+                return;
+            }
+
+            itemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyMessage.style.display = 'block';
+                cartCountSpan.textContent = '0';
+                checkoutButton.disabled = true;
+                const invoiceSummary = document.getElementById('invoice-summary');
+                if (invoiceSummary) invoiceSummary.classList.add('hidden');
+                return;
+            }
+
+            emptyMessage.style.display = 'none';
+            const invoiceSummary = document.getElementById('invoice-summary');
+            if (invoiceSummary) invoiceSummary.classList.remove('hidden');
+
+            let totalQuantity = 0;
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                totalQuantity += item.quantity;
+
+                const itemHtml = `
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                        <div class="flex-1 min-w-0 pr-4">
+                            <p class="font-semibold text-secondary-black">${item.name}</p>
+                            <p class="text-sm text-gray-500">$${item.price.toFixed(2)} / unité</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="text-gray-500 hover:text-red-600 p-1 rounded-full border border-gray-300 w-8 h-8 flex justify-center items-center">-</button>
+                            <span class="font-bold w-4 text-center">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="text-gray-500 hover:text-green-600 p-1 rounded-full border border-gray-300 w-8 h-8 flex justify-center items-center">+</button>
+                        </div>
+                        <div class="ml-4 w-16 text-right">
+                            <span class="font-bold text-secondary-black">$${itemTotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                itemsContainer.innerHTML += itemHtml;
+            });
+
+            // Calcul de la facture
+            const taxAmount = subtotal * TVA_RATE;
+            const finalTotal = subtotal + taxAmount;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${taxAmount.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${finalTotal.toFixed(2)}`;
+            
+            cartCountSpan.textContent = totalQuantity;
+            checkoutButton.disabled = totalQuantity === 0;
+        }
+
+        function openCart() {
+            document.body.classList.add('overflow-hidden'); // Empêcher le défilement du corps
+            document.getElementById('cart-modal').classList.remove('hidden');
+            
+            // Afficher la vue du panier et masquer la vue de confirmation
+            document.getElementById('live-cart-view').classList.remove('hidden');
+            document.getElementById('checkout-confirmation-view').classList.add('hidden');
+
+            // Timeout pour la transition visuelle
+            setTimeout(() => document.getElementById('cart-modal').classList.add('modal-active'), 10);
+            updateCartDisplay();
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.remove('modal-active');
+            // Timeout pour la transition visuelle
+            setTimeout(() => {
+                document.getElementById('cart-modal').classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }, 300);
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const taxAmount = subtotal * TVA_RATE;
+            const finalTotal = subtotal + taxAmount;
+
+            let orderSummary = `Bonjour Kinshasa Delights !%0AJe souhaite passer la commande suivante :%0A%0A`;
+            
+            // Détails de la commande
+            cart.forEach(item => {
+                orderSummary += `* ${item.quantity}x ${item.name} (${(item.price * item.quantity).toFixed(2)}$)%0A`;
+            });
+
+            // Facture
+            orderSummary += `%0A--- FACTURE ---%0A`;
+            orderSummary += `Sous-Total (HT): ${subtotal.toFixed(2)}$%0A`;
+            orderSummary += `TVA (16% RDC): ${taxAmount.toFixed(2)}$%0A`;
+            orderSummary += `*TOTAL TTC*: *${finalTotal.toFixed(2)}$*%0A%0A`;
+            orderSummary += `Veuillez me fournir les détails pour la livraison et le paiement (M-Pesa, Carte, Cash). Merci !`;
+
+            // Redirection vers WhatsApp
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${orderSummary}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Simuler la réinitialisation après commande
+            cart = [];
+            // Mise à jour de l'affichage du panier (qui est maintenant vide)
+            updateCartDisplay(); 
+            
+            // Afficher une confirmation visuelle rapide 
+            document.getElementById('live-cart-view').classList.add('hidden');
+            document.getElementById('checkout-confirmation-view').classList.remove('hidden');
+        }
+        
+        // --- Fonctions d'Animation (Inchangées) ---
+
+        function setupAnimations() {
+            const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const delay = target.dataset.delay ? parseInt(target.dataset.delay) : 0;
+                        
+                        setTimeout(() => {
+                            target.classList.add('animate-in');
+                            observer.unobserve(target);
+                        }, delay);
+                    }
+                });
+            }, {
+                threshold: 0.1, 
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            elementsToAnimate.forEach(element => {
+                const animationType = element.dataset.animate;
+                
+                if (animationType === 'slide-left') {
+                    element.classList.add('slide-left');
+                } else if (animationType === 'slide-right') {
+                    element.classList.add('slide-right');
+                } else {
+                    element.classList.add('slide-up');
+                }
+                
+                observer.observe(element);
+            });
+        }
+    </script>
+</body>
+</html>
