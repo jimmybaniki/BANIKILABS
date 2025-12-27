@@ -1,1 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bwise LEARNING - Formations Microsoft Office</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
+        /* Thème Noir et Jaune */
+        .text-bwise-logo {
+            color: #000000; /* Noir */
+        }
+        .text-bwise-accent {
+            color: #FFD700; /* Jaune Doré */
+        }
+        .bg-bwise-yellow {
+            background-color: #FFD700;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+                        url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center; gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            background-color: #128c7e;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Bouton WhatsApp Flottant (Paiement) -->
+    <a href="https://wa.me/243978415814?text=Bonjour%20Bwise,%20je%20souhaite%20procéder%20au%20paiement%20pour%20une%20formation." class="whatsapp-float">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>Payer maintenant</span>
+    </a>
+
+    <!-- Header -->
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-1">
+                <span class="text-3xl font-bold text-bwise-logo">B<span class="text-gray-800 lowercase font-semibold">wise</span></span>
+                <span class="text-[10px] font-bold bg-yellow-400 text-black px-2 py-0.5 rounded ml-2">LEARNING</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 font-medium text-gray-600">
+                <a href="#" class="hover:text-black">Solutions</a>
+                <a href="#" class="hover:text-black">Bibliothèque</a>
+                <a href="https://wa.me/243978415814?text=Demande%20de%20formation%20pour%20équipe" class="hover:text-black">Former une équipe</a>
+                <a href="https://wa.me/243978415814?text=Je%20souhaite%20demander%20mon%20certificat%20de%20formation" class="bg-yellow-400 text-black px-5 py-2 rounded-full font-bold hover:bg-yellow-500 transition">Demander son certificat</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-24 px-6 text-center border-b-4 border-yellow-400">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Les réponses que vous cherchez sont à portée de main</h1>
+            <p class="text-xl md:text-2xl mb-10 text-gray-300">Développez votre connaissance des produits Microsoft® grâce à <strong class="text-yellow-400">Bwise Learning</strong>. Des milliers de cours pour tous les niveaux.</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20obtenir%20mon%20certificat%20après%20ma%20formation%20Bwise" class="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
+                    Demander son certificat
+                </a>
+                <a href="https://wa.me/243978415814?text=Informations%20sur%20les%20solutions%20entreprises" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
+                    Solutions pour entreprises
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Applications Section -->
+    <section class="py-20 container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Des formations sur les applications dont vous avez besoin</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg">Apprenez à maîtriser les outils Microsoft et les compétences techniques les plus demandées.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fab fa-windows text-4xl text-blue-500 mb-4"></i>
+                <p class="font-semibold text-gray-800">11 cours Windows</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-file-excel text-4xl text-green-600 mb-4"></i>
+                <p class="font-semibold text-gray-800">37 cours Excel</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-briefcase text-4xl text-gray-800 mb-4"></i>
+                <p class="font-semibold text-gray-800">85 cours Office</p>
+            </a>
+
+            <!-- Lien vers tp.html -->
+            <a href="tp.html" class="bg-white p-8 rounded-xl text-center card-hover transition border-2 border-yellow-400 bg-yellow-50 block text-decoration-none">
+                <i class="fas fa-keyboard text-4xl text-black mb-4"></i>
+                <p class="font-bold text-black">Saisie Informatique</p>
+                <p class="text-xs text-yellow-700 mt-2 font-semibold uppercase">Rapidité de saisie</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-file-word text-4xl text-blue-600 mb-4"></i>
+                <p class="font-semibold text-gray-800">21 cours Word</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-envelope text-4xl text-blue-400 mb-4"></i>
+                <p class="font-semibold text-gray-800">12 cours Outlook</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-file-powerpoint text-4xl text-orange-600 mb-4"></i>
+                <p class="font-semibold text-gray-800">13 cours PowerPoint</p>
+            </a>
+
+            <a href="#" class="bg-white p-8 rounded-xl text-center card-hover transition border cursor-pointer shadow-sm block text-decoration-none">
+                <i class="fas fa-shield-alt text-4xl text-red-500 mb-4"></i>
+                <p class="font-semibold text-gray-800">Sécurité IT</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-white py-20 border-t border-gray-100">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12 text-center">
+            <div class="px-4">
+                <div class="w-16 h-16 bg-yellow-100 text-black rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Contenu Premium</h3>
+                <p class="text-gray-600">Accédez à des milliers de cours pour améliorer vos compétences en technologie, créativité et business.</p>
+            </div>
+            <div class="px-4">
+                <div class="w-16 h-16 bg-yellow-100 text-black rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-laptop-code text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Flexibilité Totale</h3>
+                <p class="text-gray-600">Apprenez à votre rythme, quand et où vous le souhaitez, depuis votre ordinateur ou votre portable.</p>
+            </div>
+            <div class="px-4">
+                <div class="w-16 h-16 bg-yellow-100 text-black rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-certificate text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Experts Reconnus</h3>
+                <p class="text-gray-600">Nos tutoriels vidéo sont produits par des experts mondiaux pour vous garantir une formation de qualité.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400 py-12">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-1">
+                <span class="text-2xl font-bold text-white">B<span class="lowercase font-semibold">wise</span></span>
+                <span class="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded ml-2 font-bold">LEARNING</span>
+            </div>
+            <div class="flex gap-6 text-sm">
+                <a href="#" class="hover:text-white transition">À propos</a>
+                <a href="#" class="hover:text-white transition">Confidentialité</a>
+                <a href="#" class="hover:text-white transition">Conditions d'utilisation</a>
+                <a href="#" class="hover:text-white transition">Aide</a>
+            </div>
+            <div class="text-sm">
+                © 2025 Bwise Corporation.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
