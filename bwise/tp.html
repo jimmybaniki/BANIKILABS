@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baniki Typer - Maîtrisez votre clavier</title>
+    <!-- Tailwind CSS pour un design moderne -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .char {
+            border-bottom: 2px solid transparent;
+        }
+
+        .char.current {
+            border-bottom-color: #38bdf8;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { border-bottom-color: transparent; }
+        }
+
+        .char.correct {
+            color: #4ade80;
+        }
+
+        .char.incorrect {
+            color: #f87171;
+            background-color: rgba(248, 113, 113, 0.2);
+            border-radius: 2px;
+        }
+
+        /* Sidebar transition */
+        #sidebar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #sidebar.hidden-sidebar {
+            margin-left: -320px;
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            padding: 0;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Bouton de bascule de la barre latérale -->
+    <button onclick="toggleSidebar()" class="fixed left-4 top-4 z-50 bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full shadow-2xl border border-slate-600 transition-all active:scale-95 group">
+        <svg id="toggle-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <div class="max-w-7xl w-full flex flex-row gap-6 items-start">
+        
+        <!-- Sidebar: Formation Lessons -->
+        <div id="sidebar" class="w-80 flex-shrink-0 space-y-4 overflow-hidden">
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl max-h-[85vh] overflow-y-auto">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-yellow-400 rounded-full"></span>
+                    Apprendre à Taper
+                </h2>
+                
+                <div class="bg-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700/50 text-center">
+                    <div class="text-sm font-semibold text-slate-300 mb-2 italic">Progrès Global</div>
+                    <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400 uppercase tracking-tighter">
+                        <span>Vitesse Moy: <b class="text-white">0 WPM</b></span>
+                        <span>Précision: <b class="text-white">0%</b></span>
+                        <span class="col-span-2">Temps Total: <b class="text-white">0:00</b></span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-700 pb-1">Niveaux de Base</h3>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-medium">1. Débutant</span>
+                            <span class="text-[9px] text-emerald-400 font-bold uppercase">Unité Complétée !</span>
+                        </div>
+                        <button onclick="window.location.href='debutant.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">2. Intermédiaire</span>
+                        <button onclick="window.location.href='intermediaire.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">3. Avancé</span>
+                        <button onclick="window.location.href='avance.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-700 pb-1 pt-2">Pratique & Renforcement</h3>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-medium">4. Renforcement</span>
+                        </div>
+                        <button onclick="window.location.href='renforcement.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-medium">5. Histoires</span>
+                        </div>
+                        <button onclick="window.location.href='histoires.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-700 pb-1 pt-2">Au-delà de la Frappe</h3>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">6. Préparation Tech</span>
+                        <button onclick="window.location.href='tech.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">7. Carrière Pro</span>
+                        <button onclick="window.location.href='carriere.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">8. Essentiels du Code</span>
+                        <button onclick="window.location.href='coding.html'" class="text-xs bg-slate-600 hover:bg-slate-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-700 pb-1 pt-2">Pratique Personnalisée</h3>
+                    
+                    <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg border border-slate-700">
+                        <span class="text-xs font-medium">9. Touches Problèmes</span>
+                        <button onclick="window.location.href='problemes.html'" class="text-xs bg-amber-600 hover:bg-amber-500 px-3 py-1 rounded">Démarrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Typer Area -->
+        <div class="flex-1 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col h-full min-h-[600px] transition-all duration-300">
+            <!-- Header -->
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                <div class="ml-12 md:ml-0">
+                    <h1 class="text-2xl font-900 uppercase tracking-tighter italic leading-none">
+                        <span class="text-black bg-yellow-400 px-2 py-0.5 rounded-l">BANIKI</span><span class="text-yellow-400 bg-black px-2 py-0.5 rounded-r">TYPER</span>
+                    </h1>
+                    <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-[0.2em] font-bold">Maîtrisez votre clavier</p>
+                </div>
+                
+                <!-- Donation Button -->
+                <a href="https://wa.me/243978415814?text=Bonjour%20BanikiLabs,%20je%20souhaite%20faire%20un%20don%20pour%20soutenir%20la%20plateforme." 
+                   target="_blank"
+                   class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.224-3.92c1.516.903 3.12 1.379 4.755 1.379 5.432 0 9.85-4.418 9.853-9.852.002-2.633-1.023-5.108-2.887-6.974-1.864-1.864-4.339-2.889-6.97-2.889-5.433 0-9.851 4.418-9.854 9.852-.001 1.745.459 3.444 1.332 4.937l-.98 3.585 3.751-.984zm9.897-6.735c-.273-.137-1.613-.796-1.863-.887-.25-.09-.432-.137-.613.137-.182.273-.705.887-.864 1.069-.159.182-.318.204-.591.068-.272-.137-1.15-.424-2.19-1.353-.809-.722-1.355-1.614-1.514-1.887-.159-.272-.017-.42.119-.556.123-.122.272-.318.409-.477.136-.159.182-.272.272-.454.091-.182.045-.341-.023-.477-.068-.136-.613-1.477-.841-2.022-.222-.545-.441-.471-.613-.471h-.523c-.182 0-.477.068-.727.341-.25.273-.954.932-.954 2.272 0 1.341.977 2.636 1.114 2.818.136.182 1.921 2.934 4.653 4.114.65.281 1.157.448 1.551.573.653.208 1.248.179 1.717.109.523-.077 1.613-.659 1.841-1.295.227-.636.227-1.182.159-1.295-.068-.113-.25-.181-.523-.318z"/>
+                    </svg>
+                    Faire un Don
+                </a>
+            </div>
+
+            <!-- Main Display -->
+            <div class="p-8 flex-1 flex flex-col">
+                <div id="display-text" class="mono text-2xl md:text-3xl leading-relaxed text-slate-400 select-none mb-10 min-h-[160px] flex-grow">
+                    <!-- Texte injecté par JS -->
+                </div>
+
+                <div class="relative w-full">
+                    <textarea id="input-field" 
+                            class="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 text-2xl mono focus:border-yellow-400 focus:outline-none transition-all shadow-inner placeholder:text-slate-700"
+                            placeholder="Tapez le texte ci-dessus..."
+                            rows="3"
+                            autofocus></textarea>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-6 mt-10">
+                    <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-700 text-center shadow-lg">
+                        <span class="block text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-1">Vitesse</span>
+                        <span class="text-3xl font-800 text-sky-400"><span id="wpm">0</span> <small class="text-xs font-normal text-slate-500 italic">WPM</small></span>
+                    </div>
+                    <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-700 text-center shadow-lg">
+                        <span class="block text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-1">Précision</span>
+                        <span class="text-3xl font-800 text-emerald-400"><span id="accuracy">100</span><small class="text-xs font-normal text-slate-500">%</small></span>
+                    </div>
+                    <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-700 text-center shadow-lg">
+                        <span class="block text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-1">Chrono</span>
+                        <span class="text-3xl font-800 text-amber-400"><span id="timer">0</span><small class="text-xs font-normal text-slate-500">s</small></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools & Customization -->
+            <div class="p-6 bg-slate-900/30 border-t border-slate-700">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <textarea id="paste-area" 
+                            class="flex-1 bg-slate-800 border border-slate-700 rounded-lg p-4 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-400 transition-all" 
+                            placeholder="Collez votre texte ici pour un entraînement sur mesure..." 
+                            rows="1"></textarea>
+                    <div class="flex gap-3">
+                        <button onclick="updateText()" class="bg-slate-700 hover:bg-slate-600 px-6 py-2 rounded-xl text-sm font-bold transition-all active:scale-95">
+                            Appliquer
+                        </button>
+                        <button onclick="resetGame()" class="bg-slate-800 hover:bg-slate-700 px-6 py-2 rounded-xl text-sm font-bold border border-slate-700 transition-all active:scale-95">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Branding Footer -->
+    <div class="mt-8 flex flex-col items-center gap-4">
+        <a href="https://www.banikilabs.store" 
+           target="_blank" 
+           class="px-6 py-2 border border-slate-700 rounded-full text-slate-500 text-[10px] font-bold tracking-widest uppercase hover:text-yellow-400 hover:border-yellow-400/50 hover:bg-yellow-400/5 transition-all duration-300">
+            powered by banikilabs
+        </a>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const displayText = document.getElementById('display-text');
+        const inputField = document.getElementById('input-field');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const timerDisplay = document.getElementById('timer');
+        const pasteArea = document.getElementById('paste-area');
+        const toggleIcon = document.getElementById('toggle-icon');
+
+        let targetText = "Le succès n'est pas final, l'échec n'est pas fatal : c'est le courage de continuer qui compte. La pratique rend parfait.";
+        let startTime = null;
+        let timerInterval = null;
+        let mistakes = 0;
+        let isFinished = false;
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('hidden-sidebar');
+            // Change l'icône ou l'effet si nécessaire
+            if (sidebar.classList.contains('hidden-sidebar')) {
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />';
+            } else {
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />';
+            }
+        }
+
+        function renderText() {
+            displayText.innerHTML = '';
+            targetText.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.classList.add('char');
+                span.innerText = char;
+                if(index === 0) span.classList.add('current');
+                displayText.appendChild(span);
+            });
+        }
+
+        function updateText() {
+            const val = pasteArea.value.trim();
+            if(val !== "") {
+                targetText = val;
+                resetGame();
+                pasteArea.value = "";
+            }
+        }
+
+        function resetGame() {
+            clearInterval(timerInterval);
+            startTime = null;
+            isFinished = false;
+            inputField.disabled = false;
+            inputField.value = '';
+            wpmDisplay.innerText = '0';
+            accuracyDisplay.innerText = '100';
+            timerDisplay.innerText = '0';
+            mistakes = 0;
+            renderText();
+            inputField.focus();
+        }
+
+        inputField.addEventListener('input', () => {
+            if (isFinished) return;
+
+            const arrayText = displayText.querySelectorAll('span');
+            const arrayValue = inputField.value.split('');
+            
+            if (!startTime && arrayValue.length > 0) {
+                startTime = new Date();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            mistakes = 0;
+            arrayText.forEach((characterSpan, index) => {
+                const character = arrayValue[index];
+                
+                characterSpan.classList.remove('correct', 'incorrect', 'current');
+
+                if (character == null) {
+                    if(index === arrayValue.length) characterSpan.classList.add('current');
+                } else if (character === characterSpan.innerText) {
+                    characterSpan.classList.add('correct');
+                } else {
+                    characterSpan.classList.add('incorrect');
+                    mistakes++;
+                }
+            });
+
+            if (arrayValue.length > 0) {
+                const totalTyped = arrayValue.length;
+                let acc = Math.max(0, ((totalTyped - mistakes) / totalTyped) * 100);
+                accuracyDisplay.innerText = Math.round(acc);
+            }
+
+            if (arrayValue.length >= targetText.length) {
+                finishGame();
+            }
+        });
+
+        function finishGame() {
+            isFinished = true;
+            clearInterval(timerInterval);
+            inputField.disabled = true;
+            
+            const finalWpm = wpmDisplay.innerText;
+            const finalAcc = accuracyDisplay.innerText;
+            
+            setTimeout(() => {
+                alert(`Félicitations !\nVitesse : ${finalWpm} WPM\nPrécision : ${finalAcc}%`);
+            }, 300);
+        }
+
+        function updateTimer() {
+            const timeElapsed = Math.floor((new Date() - startTime) / 1000);
+            if (timeElapsed <= 0) return;
+            
+            timerDisplay.innerText = timeElapsed;
+            
+            const charactersTyped = inputField.value.length;
+            const wordsTyped = charactersTyped / 5;
+            const minutes = timeElapsed / 60;
+            const wpm = Math.round(wordsTyped / minutes);
+            
+            wpmDisplay.innerText = wpm >= 0 ? wpm : 0;
+        }
+
+        renderText();
+    </script>
+</body>
+</html>
