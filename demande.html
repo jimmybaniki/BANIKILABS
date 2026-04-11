@@ -1,247 +1,236 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-258F0W69K9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-258F0W69K9');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banikilabs - Création de Sites Web Professionnels</title>
-    <!-- Chargement de Tailwind CSS -->
+    <title>BANIKI LABS | Demande de Devis</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuration de la police Inter et couleurs personnalisées -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body.light-mode {
+            --bg-dark: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb;
-            color: #1e293b;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+            transition: background-color 0.4s ease;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
         }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-    <!-- Section Header/Navigation -->
-    <header class="bg-white shadow-md sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-extrabold text-indigo-600 tracking-tight">Banikilabs</a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#offres" class="text-gray-600 hover:text-indigo-600 transition duration-300 font-medium">Nos Offres</a>
-                <a href="#contact" class="text-gray-600 hover:text-indigo-600 transition duration-300 font-medium">Contact</a>
-            </nav>
-            <a href="#offres" class="md:hidden px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg shadow hover:bg-indigo-700 transition duration-300">Offres</a>
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                    <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex items-center gap-8 mr-4">
+                    <a href="index.html#about" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
+                    <a href="index.html#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
+                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Contact</a>
+                </div>
+                <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+                    <svg id="moonIcon" class="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="sunIcon" class="w-5 h-5 text-[var(--gold)] hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Section Héro -->
-    <section class="bg-indigo-700 text-white py-20 sm:py-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl sm:text-6xl font-extrabold mb-4 leading-tight">
-                Lancez Votre Présence En Ligne avec <span class="text-yellow-300">Banikilabs</span>
+    <!-- Hero Section -->
+    <section class="pt-40 pb-24 px-6 text-center animate-fadeIn">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-6">
+                VOTRE PRÉSENCE<br><span class="text-[var(--gold)]">DIGITALE COMMENCE ICI.</span>
             </h1>
-            <p class="text-xl sm:text-2xl mb-10 opacity-90 max-w-3xl mx-auto">
-                Des sites web professionnels, rapides et abordables, adaptés à tous vos besoins.
+            <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-12">
+                Déployez des solutions web puissantes, rapides et abordables avec Baniki Labs.
             </p>
-            <a href="#offres" class="inline-block px-10 py-4 bg-yellow-400 text-indigo-900 text-lg font-bold rounded-full shadow-xl transform transition duration-300 hover:scale-105 hover:bg-yellow-300">
-                Découvrez Nos Plans
+            <a href="#offres" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,215,0,0.2)]">
+                Découvrir nos plans
+                <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </section>
 
-    <!-- Section Offres (Pricing) -->
-    <section id="offres" class="py-16 sm:py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">
-                    Des Solutions Web Adaptées à Chaque Projet
-                </h2>
-                <p class="mt-4 text-xl text-gray-600">
-                    Choisissez l'offre qui correspond le mieux à vos objectifs.
-                </p>
+    <!-- Section Offres -->
+    <section id="offres" class="py-32 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-24">
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-4">NOS PLANS</h2>
+                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
             </div>
 
-            <!-- Grille des Cartes d'Offres -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-12">
-
-                <!-- Carte 1: Site Vitrine -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-indigo-500 transform hover:scale-[1.02] transition duration-300">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Site Vitrine</h3>
-                    <p class="text-gray-500 mb-6">Présentez votre activité de manière élégante.</p>
-
-                    <div class="flex items-baseline mb-8">
-                        <span class="text-5xl font-extrabold text-indigo-600">$100</span>
-                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Site Vitrine -->
+                <div class="glass-card p-10 rounded-[3rem] space-y-8">
+                    <h3 class="text-2xl font-black tracking-tight uppercase">Site Vitrine</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-5xl font-black text-[var(--gold)]">$100</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Une fois</span>
                     </div>
-
-                    <ul role="list" class="space-y-4 text-gray-600">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <!-- Icone SVG de coche -->
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Design moderne et réactif (Mobile-first)</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Jusqu'à 5 pages (Accueil, Services, Contact, etc.)</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Formulaire de contact fonctionnel</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Optimisation de base pour le chargement rapide</p>
-                        </li>
+                    <ul class="space-y-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Design Responsive</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Jusqu'à 5 pages</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Formulaire Contact</li>
                     </ul>
-
-                    <!-- Modification: Redirection vers le placeholder de paiement -->
-                    <a href="https://buy.stripe.com/test_28E5kD3mr1AJ9MzdkZ6Na01" class="mt-10 block w-full bg-indigo-600 text-white py-3 px-6 rounded-lg text-center font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
-                        Choisir le Site Vitrine
-                    </a>
+                    <a href="https://buy.stripe.com/test_28E5kD3mr1AJ9MzdkZ6Na01" class="block w-full py-4 text-center text-xs font-black uppercase tracking-widest border border-[var(--gold)] text-[var(--gold)] rounded-2xl hover:bg-[var(--gold)] hover:text-black transition-all">Choisir</a>
                 </div>
 
-                <!-- Carte 2: Blog (Mise en avant) -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-yellow-500 transform scale-[1.05] ring-4 ring-yellow-300 transition duration-300">
-                    <div class="flex justify-center mb-4">
-                        <span class="bg-yellow-500 text-indigo-900 text-xs font-extrabold uppercase px-3 py-1 rounded-full">Le Plus Populaire</span>
+                <!-- Blog Pro -->
+                <div class="glass-card p-10 rounded-[3rem] space-y-8 border-[var(--gold)] relative overflow-hidden">
+                    <div class="absolute top-6 right-6 bg-[var(--gold)] text-black text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Populaire</div>
+                    <h3 class="text-2xl font-black tracking-tight uppercase">Blog Pro</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-5xl font-black text-[var(--gold)]">$300</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Une fois</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Blog Professionnel</h3>
-                    <p class="text-gray-500 mb-6">Partagez votre expertise et engagez votre audience.</p>
-
-                    <div class="flex items-baseline mb-8">
-                        <span class="text-5xl font-extrabold text-yellow-600">$300</span>
-                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
-                    </div>
-
-                    <ul role="list" class="space-y-4 text-gray-600">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3 font-semibold">Toutes les fonctionnalités du Site Vitrine</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Système de Gestion de Contenu (CMS) complet</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Catégories, tags, et recherche d'articles</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Intégration des réseaux sociaux et commentaires</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Optimisation SEO avancée pour les articles</p>
-                        </li>
+                    <ul class="space-y-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Système CMS Complet</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Gestion Articles</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Optimisation SEO</li>
                     </ul>
-
-                    <!-- Modification: Redirection vers le placeholder de paiement -->
-                    <a href="https://buy.stripe.com/test_cNi3cvf5993b2k7gxb6Na02" class="mt-10 block w-full bg-yellow-400 text-indigo-900 py-3 px-6 rounded-lg text-center font-extrabold shadow-xl hover:bg-yellow-300 transition duration-300">
-                        Choisir le Blog Pro
-                    </a>
+                    <a href="https://buy.stripe.com/test_cNi3cvf5993b2k7gxb6Na02" class="block w-full py-4 text-center text-xs font-black uppercase tracking-widest bg-[var(--gold)] text-black rounded-2xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,215,0,0.2)]">Choisir</a>
                 </div>
 
-                <!-- Carte 3: E-commerce -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border-t-4 border-indigo-500 transform hover:scale-[1.02] transition duration-300">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Plateforme E-commerce</h3>
-                    <p class="text-gray-500 mb-6">Vendez vos produits en ligne et développez votre marché.</p>
-
-                    <div class="flex items-baseline mb-8">
-                        <span class="text-5xl font-extrabold text-indigo-600">$600</span>
-                        <span class="text-xl font-medium text-gray-500 ml-2">une seule fois</span>
+                <!-- E-commerce -->
+                <div class="glass-card p-10 rounded-[3rem] space-y-8">
+                    <h3 class="text-2xl font-black tracking-tight uppercase">E-commerce</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-5xl font-black text-[var(--gold)]">$600</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Une fois</span>
                     </div>
-
-                    <ul role="list" class="space-y-4 text-gray-600">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3 font-semibold">Toutes les fonctionnalités du Blog</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Catalogue de produits illimité</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Système de panier et de checkout sécurisé</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Intégration de paiement (Stripe, PayPal, etc.)</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p class="ml-3">Gestion des commandes, stocks et taxes</p>
-                        </li>
+                    <ul class="space-y-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Catalogue Illimité</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Paiement Sécurisé</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[var(--gold)]"></i> Gestion Stocks</li>
                     </ul>
-
-                    <!-- Modification: Redirection vers le placeholder de paiement -->
-                    <a href="https://buy.stripe.com/test_3cIcN5cX1frz2k72Gl6Na03" class="mt-10 block w-full bg-indigo-600 text-white py-3 px-6 rounded-lg text-center font-semibold shadow-lg hover:bg-indigo-700 transition duration-300">
-                        Choisir l'E-commerce
-                    </a>
+                    <a href="https://buy.stripe.com/test_3cIcN5cX1frz2k72Gl6Na03" class="block w-full py-4 text-center text-xs font-black uppercase tracking-widest border border-[var(--gold)] text-[var(--gold)] rounded-2xl hover:bg-[var(--gold)] hover:text-black transition-all">Choisir</a>
                 </div>
-
             </div>
-            <!-- Fin Grille des Cartes d'Offres -->
-
         </div>
     </section>
 
     <!-- Section Contact -->
-    <section id="contact" class="py-16 sm:py-24 bg-white">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Prêt à Commencer Votre Projet ?</h2>
-            <p class="text-xl text-gray-600 mb-10">
-                Contactez l'équipe Banikilabs dès aujourd'hui pour discuter de vos besoins. Nous sommes là pour vous aider !
-            </p>
-
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <!-- Email -->
-                <a href="mailto:banikimukishijimmy@gmail.com" class="px-8 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:bg-indigo-700 transition duration-300">
-                    Envoyer un Email
+    <section id="contact" class="py-32 px-6 border-t border-white/5 bg-[var(--bg-dark)]">
+        <div class="max-w-4xl mx-auto glass-card p-16 rounded-[4rem] text-center space-y-10">
+            <h2 class="text-4xl md:text-6xl font-black tracking-tighter">PRÊT À LANCER ?</h2>
+            <p class="text-gray-400 text-lg">Contactez notre équipe pour discuter de votre projet sur mesure.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <a href="mailto:banikimukishijimmy@gmail.com" class="inline-flex items-center gap-4 bg-white/5 text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest border border-white/10 hover:bg-white/10 transition-all">
+                    <i class="fas fa-envelope"></i> Email
                 </a>
-                <!-- Lien WhatsApp -->
-                <a href="https://wa.me/243978415814" target="_blank" class="px-8 py-3 bg-gray-200 text-indigo-800 text-lg font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-300">
-                    WhatsApp (+243 978 415 814)
+                <a href="https://wa.me/243978415814" target="_blank" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <!-- Année mise à jour à 2025 -->
-            <p class="text-gray-400 text-sm">
-                &copy; 2025 Banikilabs. Tous droits réservés. | Créé avec passion pour le web.
-            </p>
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+            <div class="space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="space-y-4 text-gray-400">
+                    <p class="flex items-start gap-3">
+                        <i class="fas fa-map-marker-alt text-[var(--gold)] mt-1"></i>
+                        <span>N°18, Avenue Salongo, Kinshasa, RDC</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i class="fas fa-phone text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs font-mono">
+                            <span>N° Impôt : <span class="text-white">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white">CD/KNG/RCCM/26-A-00220</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <div class="flex gap-4">
+                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
+                <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois."</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
+            &copy; 2025. TOUS DROITS RÉSERVÉS.
         </div>
     </footer>
 
+    <script>
+        document.getElementById('themeToggle').onclick = () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('sunIcon').classList.toggle('hidden', !isLight);
+            document.getElementById('moonIcon').classList.toggle('hidden', isLight);
+        };
+    </script>
 </body>
 
 </html>
