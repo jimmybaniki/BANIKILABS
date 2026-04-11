@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS | Traduction Professionnelle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                    <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex items-center gap-8 mr-4">
+                    <a href="index.html#about" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
+                    <a href="index.html#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
+                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Infos & Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-24 px-6 bg-[var(--bg-dark)] overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-fadeIn">
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-6">
+                        L'EXCELLENCE<br><span class="text-[var(--gold)]">LINGUISTIQUE.</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-xl">
+                        Service de traduction professionnelle au cœur de Kinshasa. Connectez-vous avec des experts qualifiés pour vos documents officiels et interprétations en plusieurs langues.
+                    </p>
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                            Commander maintenant
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="relative animate-fadeIn" style="animation-delay: 0.2s">
+                    <div class="aspect-video rounded-[3rem] overflow-hidden border border-[var(--gold)]/20 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1024" alt="Traduction professionnelle" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">LANGUES DISPONIBLES</h2>
+                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">Plus de 10 langues clés gérées par nos spécialistes locaux.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="glass-card p-8 rounded-3xl text-center">
+                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
+                    <h3 class="font-black uppercase tracking-widest">Français</h3>
+                </div>
+                <div class="glass-card p-8 rounded-3xl text-center">
+                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
+                    <h3 class="font-black uppercase tracking-widest">Anglais</h3>
+                </div>
+                <div class="glass-card p-8 rounded-3xl text-center">
+                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
+                    <h3 class="font-black uppercase tracking-widest">Lingala</h3>
+                </div>
+                <div class="glass-card p-8 rounded-3xl text-center">
+                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
+                    <h3 class="font-black uppercase tracking-widest">Swahili</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">NOS EXPERTISES</h2>
+                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-file-contract"></i></div>
+                    <h3 class="text-2xl font-black tracking-tight uppercase">Traduction de documents</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Traduction professionnelle de vos documents officiels, contrats, rapports et plus encore.</p>
+                </div>
+                <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-headset"></i></div>
+                    <h3 class="text-2xl font-black tracking-tight uppercase">Interprétation</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Services d'interprétation simultanée pour vos réunions, conférences et événements.</p>
+                </div>
+                <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-video"></i></div>
+                    <h3 class="text-2xl font-black tracking-tight uppercase">Traduction vidéo</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Sous-titrage et doublage pour vos vidéos professionnelles ou personnelles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">TÉMOIGNAGES</h2>
+                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">JK</div>
+                        <div>
+                            <h4 class="font-black uppercase text-xs">Jean Kabasele</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Entrepreneur</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm italic leading-relaxed">"Service rapide et hautement professionnel pour mes contrats commerciaux. Je recommande vivement."</p>
+                </div>
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">MM</div>
+                        <div>
+                            <h4 class="font-black uppercase text-xs">Marie-Louise Mbala</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Avocate</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm italic leading-relaxed">"L'interprète fourni pour mon procès international était exceptionnel. Très compétent."</p>
+                </div>
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">PN</div>
+                        <div>
+                            <h4 class="font-black uppercase text-xs">Pascal Ntumba</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Directeur d'ONG</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm italic leading-relaxed">"Nous faisons régulièrement appel à eux pour nos rapports annuels. Toujours à l'heure."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
+        <div class="max-w-4xl mx-auto glass-card p-16 rounded-[4rem] text-center space-y-8">
+            <h2 class="text-4xl md:text-6xl font-black tracking-tighter">PRÊT À COMMENCER ?</h2>
+            <p class="text-gray-400 text-lg">Obtenez un devis gratuit en quelques minutes pour votre projet linguistique.</p>
+            <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                Demander un devis
+                <i class="fas fa-paper-plane"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+            <div class="space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="space-y-4 text-gray-400">
+                    <p class="flex items-start gap-3">
+                        <i class="fas fa-map-marker-alt text-[var(--gold)] mt-1"></i>
+                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i class="fas fa-phone text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <div class="flex gap-4">
+                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
+                <p class="text-gray-500 text-sm italic">"L'excellence comme seul standard pour votre communication internationale."</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
+            &copy; 2025. TOUS DROITS RÉSERVÉS.
+        </div>
+    </footer>
+</body>
+</html>
