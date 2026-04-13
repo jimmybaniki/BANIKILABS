@@ -257,14 +257,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <div class="flex items-center gap-6">
-                <div class="hidden lg:flex items-center gap-8 mr-4">
-                    <a href="#about" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
-                    <a href="#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
-                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Infos & Contact</a>
+                <div class="flex items-center gap-3 md:gap-8 mr-2 md:mr-4">
+                    <a href="#about" class="text-[8px] md:text-[10px] font-black uppercase tracking-tight md:tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
+                    <a href="#expertises" class="text-[8px] md:text-[10px] font-black uppercase tracking-tight md:tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
+                    <a href="#footer" class="text-[8px] md:text-[10px] font-black uppercase tracking-tight md:tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Infos & Contact</a>
+                    <a href="admin.html" class="text-[8px] md:text-[10px] font-black uppercase tracking-tight md:tracking-[0.2em] text-[var(--gold)] hover:text-white transition-colors border border-[var(--gold)]/20 px-2 py-1 rounded-lg">Admin</a>
                 </div>
 
-                <button onclick="toggleCreatorModal()" class="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[var(--gold)] transition-colors">
-                    <span class="w-2 h-2 bg-[var(--gold)] rounded-full animate-ping"></span>
+                <button onclick="toggleCreatorModal()" class="flex items-center gap-1 md:gap-2 text-[8px] md:text-xs font-bold uppercase tracking-widest hover:text-[var(--gold)] transition-colors">
+                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[var(--gold)] rounded-full animate-ping"></span>
                     Le Fondateur
                 </button>
                 
@@ -535,6 +536,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
 
             const s = filtered[currentServiceIndex];
+
+            // Logique pour rediriger vers WhatsApp si le lien est une ancre (#) ou manquant
+            let finalLink = s.link;
+            let targetAttr = "";
+            if (s.link.startsWith('#') || !s.link) {
+                const message = encodeURIComponent(`Bonjour BANIKI LABS, je souhaite obtenir des informations concernant votre service : ${s.name}`);
+                finalLink = `https://wa.me/243978415814?text=${message}`;
+                targetAttr = 'target="_blank"';
+            }
+
             const row = `
                 <div class="service-row py-16 md:py-24 animate-fadeIn">
                     <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
@@ -558,7 +569,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 `).join('')}
                             </ul>
                             <div class="pt-6">
-                                <a href="${s.link}" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                                <a href="${finalLink}" ${targetAttr} class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
                                     Démarrer le projet
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                                 </a>
