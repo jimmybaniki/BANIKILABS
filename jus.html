@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jus Naturels & Boissons Saines | BANIKI LABS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                        url('https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80&w=2072');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-service {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-service:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(255, 215, 0, 0.2);
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouton WhatsApp Flottant -->
+    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20cherche%20des%20jus%20naturels." class="whatsapp-float">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>Commander maintenant</span>
+    </a>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] transition-colors">Retour</a>
+                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[var(--gold)] border border-[var(--gold)]/20 px-3 py-2 rounded-xl hover:bg-[var(--gold)] hover:text-black transition-all">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 md:py-32 px-6 text-center border-b-4 border-[var(--gold)]">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-[var(--gold)] text-black text-xs font-bold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+                Boissons Naturelles
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Jus Naturels & Boissons Saines</h1>
+            <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+                Découvrez nos jus frais pressés à froid, préparés avec les meilleurs fruits locaux et ingrédients naturels.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#menu" class="bg-[var(--gold)] hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
+                    Voir nos Jus
+                </a>
+                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20commander%20des%20jus%20naturels" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
+                    Commander Maintenant
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-20 px-6 bg-[var(--bg-dark)]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Nos Jus Naturels</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-lemon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Jus de Fruits Frais</h3>
+                    <p class="text-gray-400 mb-6">Pressés à froid pour conserver tous les nutriments et vitamines.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Orange: 4$</li>
+                        <li>• Ananas: 5$</li>
+                        <li>• Mangue: 5$</li>
+                        <li>• Papaye: 4$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">100% pur jus</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-blender"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Smoothies Énergétiques</h3>
+                    <p class="text-gray-400 mb-6">Mélanges de fruits frais avec yaourt ou lait végétal.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Tropical: 7$</li>
+                        <li>• Green Detox: 8$</li>
+                        <li>• Berry Boost: 8$</li>
+                        <li>• Protein Power: 9$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">Riche en protéines</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Jus Verts & Détox</h3>
+                    <p class="text-gray-400 mb-6">Légumes verts mélangés avec fruits pour une cure détoxifiante.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Green Power: 6$</li>
+                        <li>• Kale Kick: 7$</li>
+                        <li>• Ginger Shot: 5$</li>
+                        <li>• Immunity Boost: 8$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">Antioxydants naturels</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-glass-whiskey"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Boissons Spéciales</h3>
+                    <p class="text-gray-400 mb-6">Créations uniques avec ingrédients locaux et épices.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Bissap: 4$</li>
+                        <li>• Tamarind: 4$</li>
+                        <li>• Passion Fruit: 5$</li>
+                        <li>• Coconut Water: 3$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">Saveurs exotiques</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Eau & Sodas Maison</h3>
+                    <p class="text-gray-400 mb-6">Eau purifiée et sodas artisanaux sans conservateurs.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Eau Minérale: 1$</li>
+                        <li>• Soda Citron: 3$</li>
+                        <li>• Ginger Ale: 3$</li>
+                        <li>• Tonic Maison: 3$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">Production locale</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-mug-hot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Infusions Saines</h3>
+                    <p class="text-gray-400 mb-6">Boissons chaudes à base de gingembre, lait végétal et citronnelle.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                        <li>• Gingembre: 4$</li>
+                        <li>• Lait Végétal: 5$</li>
+                        <li>• Citronnelle: 4$</li>
+                    </ul>
+                    <div class="text-[var(--gold)] font-bold">Tonique et apaisant</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Avantages Section -->
+    <section class="py-20 px-6 bg-[var(--bg-card)]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Pourquoi Nos Jus ?</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">100% Naturel</h3>
+                    <p class="text-gray-400">Ingrédients frais et naturels, sans additifs ni conservateurs.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Pressage Froid</h3>
+                    <p class="text-gray-400">Méthode de pressage à froid pour préserver nutriments et vitamines.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Fruits Locaux</h3>
+                    <p class="text-gray-400">Fruits et légumes frais issus de l'agriculture locale durable.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Bien-être</h3>
+                    <p class="text-gray-400">Boissons saines pour booster votre énergie et votre santé.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6 bg-gradient-to-r from-[var(--bg-card)] to-[var(--bg-dark)]">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8">Envie d'un Jus Frais ?</h2>
+            <p class="text-xl text-gray-400 mb-10">Livraison gratuite à domicile pour toute commande de 15$ et plus.</p>
+            <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20commander%20des%20jus%20naturels%20avec%20BANIKI%20LABS" class="bg-[var(--gold)] text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
+                Commander Mes Jus
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--bg-card)] py-12 px-6 border-t border-[var(--gold)]/20">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <p class="text-gray-400">© 2025 BANIKI LABS. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS | Agence Immobilière</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #080808; color: #f9fafb; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body>
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FFD700]">Retour</a>
+                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[#FFD700] border border-[#FFD700]/20 px-3 py-2 rounded-xl">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-40 pb-24 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-24">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">AGENCE<br><span class="text-[#FFD700]">IMMOBILIÈRE.</span></h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">Trouvez le bien de vos rêves ou vendez vos propriétés avec l'expertise Baniki Labs à Kinshasa.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                <div class="text-4xl text-[#FFD700]"><i class="fas fa-home"></i></div>
+                <h3 class="text-2xl font-black uppercase">Gestion Locative</h3>
+                <p class="text-gray-400">Nous gérons vos appartements et bureaux pour une rentabilité optimale sans stress.</p>
+            </div>
+            <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                <div class="text-4xl text-[#FFD700]"><i class="fas fa-handshake"></i></div>
+                <h3 class="text-2xl font-black uppercase">Achat & Vente</h3>
+                <p class="text-gray-400">Un accompagnement complet pour vos transactions immobilières en toute sécurité.</p>
+            </div>
+        </div>
+
+        <div class="mt-24 text-center">
+            <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[#FFD700] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                Consulter nos offres
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinéma & Production Audiovisuelle | BANIKI LABS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                        url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2072');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-service {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-service:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(255, 215, 0, 0.2);
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouton WhatsApp Flottant -->
+    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20souhaite%20des%20informations%20sur%20vos%20services%20cinéma." class="whatsapp-float">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>Contactez-nous</span>
+    </a>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] transition-colors">Retour</a>
+                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[var(--gold)] border border-[var(--gold)]/20 px-3 py-2 rounded-xl hover:bg-[var(--gold)] hover:text-black transition-all">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 md:py-32 px-6 text-center border-b-4 border-[var(--gold)]">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-[var(--gold)] text-black text-xs font-bold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+                Production Cinématographique
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Cinéma & Production Audiovisuelle</h1>
+            <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+                Réalisez vos projets cinématographiques avec notre expertise en production, casting et post-production.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#services" class="bg-[var(--gold)] hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
+                    Nos Services
+                </a>
+                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20produire%20un%20film" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
+                    Démarrer un Projet
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 bg-[var(--bg-dark)]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Nos Services Cinématographiques</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Production de Films</h3>
+                    <p class="text-gray-400 mb-6">Films institutionnels, documentaires, courts métrages et longs métrages.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Scénario et réalisation</li>
+                        <li>• Équipe technique complète</li>
+                        <li>• Post-production HD/4K</li>
+                    </ul>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Casting & Acteurs</h3>
+                    <p class="text-gray-400 mb-6">Sélection et gestion des talents pour vos productions.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Base de données acteurs</li>
+                        <li>• Auditions organisées</li>
+                        <li>• Contrats professionnels</li>
+                    </ul>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Location Matériel</h3>
+                    <p class="text-gray-400 mb-6">Caméras, éclairage, son et accessoires professionnels.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Équipement dernière génération</li>
+                        <li>• Formation technique incluse</li>
+                        <li>• Maintenance assurée</li>
+                    </ul>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Montage & Post-prod</h3>
+                    <p class="text-gray-400 mb-6">Montage professionnel et effets spéciaux.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Logiciels professionnels</li>
+                        <li>• Colorimétrie avancée</li>
+                        <li>• Formats multiples</li>
+                    </ul>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Composition Musicale</h3>
+                    <p class="text-gray-400 mb-6">Musique originale et sound design.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Compositeurs professionnels</li>
+                        <li>• Studio d'enregistrement</li>
+                        <li>• Syncronisation parfaite</li>
+                    </ul>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Promotion & Distribution</h3>
+                    <p class="text-gray-400 mb-6">Stratégie de lancement et diffusion de vos œuvres.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Festivals et compétitions</li>
+                        <li>• Plateformes de streaming</li>
+                        <li>• Campagnes marketing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6 bg-gradient-to-r from-[var(--bg-card)] to-[var(--bg-dark)]">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8">Prêt à Réaliser Votre Film ?</h2>
+            <p class="text-xl text-gray-400 mb-10">Contactez notre équipe pour discuter de votre projet cinématographique.</p>
+            <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20produire%20un%20film%20avec%20BANIKI%20LABS" class="bg-[var(--gold)] text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
+                Démarrer Mon Projet Cinéma
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--bg-card)] py-12 px-6 border-t border-[var(--gold)]/20">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <p class="text-gray-400">© 2025 BANIKI LABS. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+</html>
