@@ -69,21 +69,22 @@
         <span>S'inscrire maintenant</span>
     </a>
 
-    <!-- Header -->
-    <header class="bg-white border-b sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-1">
-                <span class="text-3xl font-bold text-bwise-logo">B<span class="text-gray-800 lowercase font-semibold">wise</span></span>
-                <span class="text-[10px] font-bold bg-yellow-400 text-black px-2 py-0.5 rounded ml-2">LEARNING</span>
+    <!-- Navbar Harmonisée -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FFD700] transition-colors">Retour</a>
+                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[#FFD700] border border-[#FFD700]/20 px-3 py-2 rounded-xl hover:bg-[#FFD700] hover:text-black transition-all">Login</a>
             </div>
-            <nav class="hidden md:flex items-center gap-8 font-medium text-gray-600">
-                <a href="#langues" class="hover:text-black">Nos Langues</a>
-                <a href="#programmes" class="hover:text-black">Programmes</a>
-                <a href="https://wa.me/243978415814?text=Demande%20de%20formation%20linguistique%20pour%20entreprise" class="hover:text-black">Formation Entreprise</a>
-                <a href="https://wa.me/243978415814?text=Je%20souhaite%20tester%20mon%20niveau%20de%20langue" class="bg-yellow-400 text-black px-5 py-2 rounded-full font-bold hover:bg-yellow-500 transition text-sm">Tester mon niveau</a>
-            </nav>
         </div>
-    </header>
+    </nav>
+    <div class="pt-20"></div> <!-- Spacer pour la nav fixe -->
 
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-24 px-6 text-center border-b-4 border-yellow-400">
@@ -195,22 +196,58 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-black text-gray-400 py-12 border-t border-gray-800">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex items-center gap-1">
-                <span class="text-2xl font-bold text-white">B<span class="lowercase font-semibold">wise</span></span>
-                <span class="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded ml-2 font-bold">LEARNING</span>
+    <!-- Footer Section -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+            <div class="space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="space-y-4 text-gray-400">
+                    <p class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-[var(--gold)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex gap-6 text-sm">
-                <a href="#" class="hover:text-white transition">Nos Centres</a>
-                <a href="#" class="hover:text-white transition">Témoignages</a>
-                <a href="#" class="hover:text-white transition">FAQ Langues</a>
-                <a href="https://wa.me/243978415814" class="hover:text-white transition">Contact</a>
+
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                </div>
             </div>
-            <div class="text-sm">
-                © 2025 Bwise Learning - Langues.
+
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
+                <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
+                </div>
             </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
+            &copy; 2025. TOUS DROITS RÉSERVÉS.
         </div>
     </footer>
 
