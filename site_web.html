@@ -105,15 +105,18 @@
                     <div class="p-8">
                         <div class="flex justify-between items-start mb-4">
                             <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]">Le Classique</span>
-                            <span class="price-tag">$200</span>
+                            <span class="price-tag">$250</span>
                         </div>
                         <h3 class="text-2xl font-black tracking-tight mb-3">Site Vitrine / Institutionnel</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">Présentez votre entreprise et vos services. Parfait pour les PME à Kinshasa.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider">
+                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Design Responsive</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Formulaire Sécurisé</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Optimisation SEO</li>
                         </ul>
+                        <button onclick="openProjectModal('Site Vitrine', 250)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
+                            Démarrer ce projet
+                        </button>
                     </div>
                 </div>
 
@@ -127,11 +130,14 @@
                         </div>
                         <h3 class="text-2xl font-black tracking-tight mb-3">Boutique en Ligne / E-commerce</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">Vendez vos produits 24/7. Intégration de paiement et gestion de stock.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider">
+                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Système de Panier</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Gestion de Stock</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Mobile Money / Visa</li>
                         </ul>
+                        <button onclick="openProjectModal('E-commerce', 600)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
+                            Démarrer ce projet
+                        </button>
                     </div>
                 </div>
 
@@ -145,11 +151,14 @@
                         </div>
                         <h3 class="text-2xl font-black tracking-tight mb-3">Blog / Plateforme Média</h3>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">Partagez vos idées avec une audience engagée. CMS facile à utiliser.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider">
+                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Système CMS Complet</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Commentaires & Tags</li>
                             <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Vitesse Optimale</li>
                         </ul>
+                        <button onclick="openProjectModal('Blog / Média', 300)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
+                            Démarrer ce projet
+                        </button>
                     </div>
                 </div>
             </div>
@@ -172,6 +181,54 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal de Projet -->
+    <div id="projectModal" class="fixed inset-0 z-[150] hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-xl w-full p-8 md:p-12 rounded-[3.5rem] relative">
+            <button onclick="closeProjectModal()" class="absolute top-8 right-8 text-gray-500 hover:text-[var(--gold)] transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h2 class="text-3xl font-black tracking-tighter mb-2" id="modalTitle">DÉTAILS DU PROJET</h2>
+            <p class="text-[var(--gold)] font-bold mb-8 uppercase tracking-widest text-xs" id="modalPriceLabel"></p>
+            
+            <form onsubmit="submitProjectOrder(event)" class="space-y-6">
+                <input type="hidden" id="selectedPlan">
+                <input type="hidden" id="selectedPrice">
+                
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Description de vos besoins</label>
+                    <textarea id="modalDescription" rows="4" placeholder="Ex: Je souhaite un design minimaliste avec un système de paiement..." 
+                              class="w-full p-6 rounded-[2rem] bg-black/40 border border-white/10 text-white focus:border-[var(--gold)] outline-none transition-all resize-none" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4">Fonctionnalités souhaitées</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="feature" value="Design Responsive" class="w-4 h-4 accent-[var(--gold)]">
+                            <span class="group-hover:text-white transition-colors">Design Responsive</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="feature" value="Paiement Mobile Money" class="w-4 h-4 accent-[var(--gold)]">
+                            <span class="group-hover:text-white transition-colors">Paiement Mobile</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="feature" value="Optimisation SEO" class="w-4 h-4 accent-[var(--gold)]">
+                            <span class="group-hover:text-white transition-colors">Optimisation SEO</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" name="feature" value="Gestion de Stock" class="w-4 h-4 accent-[var(--gold)]">
+                            <span class="group-hover:text-white transition-colors">Gestion de Stock</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-5 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,215,0,0.2)]">
+                    Confirmer sur WhatsApp <i class="fab fa-whatsapp ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)]">
@@ -395,6 +452,40 @@
             // Initialisation de la traduction (par défaut en Français)
             updateContent(currentLang);
         });
+
+        // --- Logique du Modal de Projet ---
+        function openProjectModal(plan, price) {
+            document.getElementById('modalTitle').textContent = plan.toUpperCase();
+            document.getElementById('modalPriceLabel').textContent = "FORFAIT : $" + price;
+            document.getElementById('selectedPlan').value = plan;
+            document.getElementById('selectedPrice').value = price;
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function submitProjectOrder(event) {
+            event.preventDefault();
+            const plan = document.getElementById('selectedPlan').value;
+            const price = document.getElementById('selectedPrice').value;
+            const desc = document.getElementById('modalDescription').value;
+            const checkboxes = document.querySelectorAll('input[name="feature"]:checked');
+            let features = Array.from(checkboxes).map(cb => cb.value).join(', ');
+            
+            const phoneNumber = '243978415814';
+            let message = `*COMMANDE WEB - BANIKI LABS*\n\n`;
+            message += `*Type:* ${plan}\n`;
+            message += `*Budget Forfaitaire:* $${price}\n\n`;
+            message += `*Description du projet:* ${desc}\n\n`;
+            if(features) message += `*Options cochées:* ${features}\n`;
+            
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            closeProjectModal();
+        }
     </script>
 </body>
 
