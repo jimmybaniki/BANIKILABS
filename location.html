@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trouver un Bien | BANIKI LABS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #080808; color: #f9fafb; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+        input, select, textarea { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,215,0,0.2) !important; color: white !important; }
+    </style>
+</head>
+<body>
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[#FFD700] flex items-center justify-center rounded-full">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase">Baniki Labs</span>
+            </a>
+            <a href="immobilier.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FFD700]">Retour</a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 max-w-3xl mx-auto">
+        <div class="glass-card p-10 rounded-[3rem] shadow-2xl">
+            <h1 class="text-4xl font-black tracking-tighter mb-2 uppercase">Trouvez votre <span class="text-[#FFD700]">Espace.</span></h1>
+            <p class="text-gray-500 text-sm mb-10 uppercase tracking-widest font-bold">Remplissez vos critères pour une recherche sur mesure.</p>
+            
+            <form onsubmit="sendRequest(event)" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Type de Bien</label>
+                    <select id="type" class="w-full p-4 rounded-2xl outline-none focus:border-[#FFD700] transition-all">
+                        <option value="Studio (1 pièce)">Studio / 1 Pièce</option>
+                        <option value="Appartement (2 pièces+)">Appartement (2 pièces+)</option>
+                        <option value="Bureau">Espace Bureau</option>
+                        <option value="Dépôt / Entrepôt">Dépôt ou Entrepôt</option>
+                        <option value="Terrain à cultiver">Terrain à cultiver (Farmland)</option>
+                        <option value="Autre">Autre (à préciser)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Budget Max ($)</label>
+                        <input type="number" id="budget" placeholder="Ex: 500" class="w-full p-4 rounded-2xl outline-none focus:border-[#FFD700]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Commune souhaitée</label>
+                        <input type="text" id="commune" placeholder="Ex: Gombe, Bandal..." class="w-full p-4 rounded-2xl outline-none focus:border-[#FFD700]">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">Détails supplémentaires</label>
+                    <textarea id="details" rows="3" placeholder="Avez-vous des besoins spécifiques ? (ex: parking, étage, clôture...)" class="w-full p-4 rounded-2xl outline-none focus:border-[#FFD700]"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-5 bg-[#FFD700] text-black font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-4">
+                    Lancer la recherche sur WhatsApp
+                    <i class="fab fa-whatsapp text-xl"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-12 grid grid-cols-3 gap-4">
+            <div class="glass-card p-6 rounded-2xl text-center">
+                <i class="fas fa-bolt text-[#FFD700] mb-2"></i>
+                <p class="text-[8px] font-black uppercase text-gray-500">Rapide</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl text-center">
+                <i class="fas fa-shield-alt text-[#FFD700] mb-2"></i>
+                <p class="text-[8px] font-black uppercase text-gray-500">Sécurisé</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl text-center">
+                <i class="fas fa-check-double text-[#FFD700] mb-2"></i>
+                <p class="text-[8px] font-black uppercase text-gray-500">Vérifié</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function sendRequest(e) {
+            e.preventDefault();
+            const type = document.getElementById('type').value;
+            const budget = document.getElementById('budget').value;
+            const commune = document.getElementById('commune').value;
+            const details = document.getElementById('details').value;
+            
+            let message = `*DEMANDE DE LOCATION - BANIKI LABS*\n\n`;
+            message += `🏠 *Type:* ${type}\n`;
+            message += `💰 *Budget:* ${budget ? '$' + budget : 'À discuter'}\n`;
+            message += `📍 *Zone:* ${commune || 'Kinshasa'}\n`;
+            if(details) message += `📝 *Notes:* ${details}`;
+
+            window.open(`https://wa.me/243978415814?text=${encodeURIComponent(message)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
