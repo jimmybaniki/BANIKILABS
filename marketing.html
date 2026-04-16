@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Digital | BANIKI LABS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                        url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2072');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-service {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-service:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(255, 215, 0, 0.2);
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-5px);
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouton WhatsApp Flottant -->
+    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20cherche%20des%20services%20de%20marketing%20digital." class="whatsapp-float">
+        <i class="fab fa-whatsapp text-2xl"></i>
+        <span>Demander un devis</span>
+    </a>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] transition-colors">Retour</a>
+                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[var(--gold)] border border-[var(--gold)]/20 px-3 py-2 rounded-xl hover:bg-[var(--gold)] hover:text-black transition-all">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 md:py-32 px-6 text-center border-b-4 border-[var(--gold)]">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-[var(--gold)] text-black text-xs font-bold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+                Marketing Digital
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Boostez Votre Présence Digitale</h1>
+            <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+                Stratégies marketing complètes pour accroître votre visibilité et atteindre vos objectifs commerciaux.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#services" class="bg-[var(--gold)] hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
+                    Nos Services
+                </a>
+                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20un%20devis%20pour%20le%20marketing%20digital" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
+                    Obtenir un Devis
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 bg-[var(--bg-dark)]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Nos Services Marketing</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">SEO & Référencement</h3>
+                    <p class="text-gray-400 mb-6">Optimisation pour les moteurs de recherche pour améliorer votre visibilité.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Audit SEO complet</li>
+                        <li>• Optimisation on-page</li>
+                        <li>• Stratégie de contenu</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 300$/mois</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Réseaux Sociaux</h3>
+                    <p class="text-gray-400 mb-6">Gestion complète de vos comptes sociaux et stratégie de contenu.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Gestion de communauté</li>
+                        <li>• Création de contenu</li>
+                        <li>• Publicité ciblée</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 250$/mois</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Publicité en Ligne</h3>
+                    <p class="text-gray-400 mb-6">Campagnes publicitaires performantes sur Google Ads et réseaux sociaux.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Google Ads</li>
+                        <li>• Facebook/Instagram Ads</li>
+                        <li>• Remarketing</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 200$/mois</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Analytics & Reporting</h3>
+                    <p class="text-gray-400 mb-6">Suivi des performances et rapports détaillés de vos campagnes.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Google Analytics</li>
+                        <li>• Rapports mensuels</li>
+                        <li>• Optimisation continue</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 150$/mois</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Email Marketing</h3>
+                    <p class="text-gray-400 mb-6">Campagnes d'emailing ciblées pour fidéliser vos clients.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Conception templates</li>
+                        <li>• Segmentation listes</li>
+                        <li>• Automatisation</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 180$/mois</div>
+                </div>
+
+                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Stratégie Digitale</h3>
+                    <p class="text-gray-400 mb-6">Conseil stratégique pour votre transformation digitale.</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Audit digital</li>
+                        <li>• Plan d'action</li>
+                        <li>• Accompagnement</li>
+                    </ul>
+                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 500$/projet</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Avantages Section -->
+    <section class="py-20 px-6 bg-[var(--bg-card)]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Pourquoi Nous Choisir ?</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-target"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Résultats Prouvés</h3>
+                    <p class="text-gray-400">Stratégies testées et optimisées pour des résultats mesurables.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Expertise</h3>
+                    <p class="text-gray-400">Équipe spécialisée dans le marketing digital depuis 2020.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Analytics</h3>
+                    <p class="text-gray-400">Suivi précis des KPIs et optimisation continue des campagnes.</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-[var(--gold)] text-4xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Accompagnement</h3>
+                    <p class="text-gray-400">Support personnalisé et formation pour votre équipe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6 bg-gradient-to-r from-[var(--bg-card)] to-[var(--bg-dark)]">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8">Prêt à Booster Votre Business ?</h2>
+            <p class="text-xl text-gray-400 mb-10">Contactez-nous pour une stratégie marketing digitale sur mesure.</p>
+            <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20un%20devis%20pour%20le%20marketing%20digital%20de%20BANIKI%20LABS" class="bg-[var(--gold)] text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
+                Démarrer Mon Projet
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--bg-card)] py-12 px-6 border-t border-[var(--gold)]/20">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
+                    <span class="text-black font-black text-lg">BL</span>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <p class="text-gray-400">© 2025 BANIKI LABS. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+</html>
