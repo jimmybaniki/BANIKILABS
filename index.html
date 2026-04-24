@@ -264,29 +264,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <div id="mobileNavMenu" class="hidden absolute top-full right-0 mt-4 w-48 bg-black/95 backdrop-blur-2xl border border-[var(--gold)]/30 rounded-2xl overflow-hidden shadow-2xl z-[110]">
-                        <a href="about.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()">À Propos</a>
-                        <a href="#expertises" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()">Expertises</a>
-                        <a href="#footer" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()">Infos & Contact</a>
+                        <a href="about.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="about">À Propos</a>
+                        <a href="#expertises" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="expertises">Expertises</a>
+                        <a href="#footer" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="contact">Infos & Contact</a>
                         <a href="login.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--gold)] hover:bg-[var(--gold)] hover:text-black transition-colors">Admin</a>
                     </div>
                 </div>
 
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex items-center gap-8 mr-4">
-                    <a href="about.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
-                    <a href="#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
-                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Infos & Contact</a>
+                    <a href="about.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="about">À Propos</a>
+                    <a href="#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="expertises">Expertises</a>
+                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="contact">Infos & Contact</a>
                 </div>
 
-                <button onclick="toggleCreatorModal()" class="flex items-center gap-1 md:gap-2 text-[8px] md:text-xs font-bold uppercase tracking-widest hover:text-[var(--gold)] transition-colors">
-                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[var(--gold)] rounded-full animate-ping"></span>
-                    Le Fondateur
-                </button>
+                <div class="relative">
+                    <button id="userMenuBtn" class="flex items-center gap-1 md:gap-2 text-[8px] md:text-xs font-bold uppercase tracking-widest hover:text-[var(--gold)] transition-colors">
+                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[var(--gold)] rounded-full animate-ping"></span>
+                        Menu
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
+                    </button>
+                    <div id="userMenu" class="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl bg-neutral-900 border border-white/10 z-20 hidden overflow-hidden">
+                        <a href="#" onclick="toggleCreatorModal(); document.getElementById('userMenu').classList.add('hidden');" class="block px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black">Le Fondateur</a>
+                        <a href="login.html" class="block px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black">Login</a>
+                    </div>
+                </div>
                 
                 <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
                     <svg id="moonIcon" class="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                     <svg id="sunIcon" class="w-5 h-5 text-[var(--gold)] hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
                 </button>
+
+                <div class="relative">
+                    <button id="langBtn" class="flex items-center text-gray-400 hover:text-[var(--gold)] font-bold text-[10px] uppercase tracking-widest transition duration-150">
+                        <span id="currentLangDisplay">FR</span>
+                        <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
+                    </button>
+                    <div id="langMenu" class="absolute right-0 mt-2 w-32 rounded-xl shadow-2xl bg-neutral-900 border border-white/10 z-20 hidden overflow-hidden">
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="fr">FRANÇAIS</a>
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="en">ENGLISH</a>
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="sw">KISWAHILI</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -312,13 +331,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <div class="space-y-6 animate-fadeIn" style="animation-delay: 0.3s">
-                <p class="text-[var(--gold)] text-lg md:text-2xl font-bold tracking-wide uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                <p class="text-[var(--gold)] text-lg md:text-2xl font-bold tracking-wide uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" data-translate="hero-subtitle">
                     innovation sans limite
                 </p>
-                <h1 class="text-white text-5xl md:text-7xl max-w-4xl mx-auto font-black tracking-tighter leading-tight mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                <h1 class="text-white text-5xl md:text-7xl max-w-4xl mx-auto font-black tracking-tighter leading-tight mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" data-translate="hero-title">
                     VOTRE VISION,<br/><span class="text-[var(--gold)]">NOTRE LAB</span>
                 </h1>
-                <p class="text-white text-xl md:text-2xl max-w-4xl mx-auto font-bold tracking-tight leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                <p class="text-white text-xl md:text-2xl max-w-4xl mx-auto font-bold tracking-tight leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" data-translate="hero-description">
                     Une synergie de solutions pour transformer votre quotidien et propulser votre entreprise.
                 </p>
             </div>
@@ -330,13 +349,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24">
                 <div>
-                    <h2 class="text-4xl md:text-7xl font-black tracking-tighter uppercase mb-4">Services</h2>
+                    <h2 class="text-4xl md:text-7xl font-black tracking-tighter uppercase mb-4" data-translate="services-title">Services</h2>
                     <div class="h-1.5 w-40 bg-[var(--gold)] rounded-full"></div>
                 </div>
                 
                 <div id="filterDropdown">
                     <button onclick="toggleDropdown()" class="w-full flex justify-between items-center bg-white/5 border border-[var(--gold)]/30 text-white font-bold py-4 px-8 rounded-2xl hover:border-[var(--gold)] transition-all">
-                        <span id="currentFilterLabel">TOUTES LES CATÉGORIES</span>
+                        <span id="currentFilterLabel" data-translate="all-categories">TOUTES LES CATÉGORIES</span>
                         <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
                     </button>
                     <div id="filterMenu">
@@ -429,35 +448,158 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <script>
+        const translations = {
+            fr: {
+                "hero-subtitle": "innovation sans limite",
+                "hero-title": "VOTRE VISION,<br/><span class=\"text-[var(--gold)]\">NOTRE LAB</span>",
+                "hero-description": "Une synergie de solutions pour transformer votre quotidien et propulser votre entreprise.",
+                "services-title": "Services",
+                "all-categories": "TOUTES LES CATÉGORIES",
+                "about": "À Propos",
+                "expertises": "Expertises",
+                "contact": "Infos & Contact",
+                "back": "Retour",
+                "about-title": "NOTRE <span class=\"text-[var(--gold)]\">HISTOIRE.</span>",
+                "our-vision": "Notre Vision",
+                "excellence-title": "L'EXCELLENCE COMME<br><span class=\"text-[var(--gold)]\">SEUL STANDARD.</span>",
+                "about-para1": "Baniki Labs n'est pas seulement une entreprise multiservices ; c'est un écosystème d'innovation implanté au cœur de Kinshasa. Nous accompagnons la transformation digitale et opérationnelle des leaders de demain en alliant rigueur professionnelle et créativité sans limite.",
+                "about-para2": "Notre approche repose sur la conviction que chaque projet est unique. Que nous développions une solution web complexe, que nous facilitions une transaction immobilière ou que nous produisions un contenu média percutant, nous appliquons la même exigence de qualité supérieure.",
+                "expertises-count": "Expertises métiers",
+                "availability": "Disponibilité Innovation",
+                "start-project": "Démarrer le projet"
+            },
+            en: {
+                "hero-subtitle": "innovation without limits",
+                "hero-title": "YOUR VISION,<br/><span class=\"text-[var(--gold)]\">OUR LAB</span>",
+                "hero-description": "A synergy of solutions to transform your daily life and boost your business.",
+                "services-title": "Services",
+                "all-categories": "ALL CATEGORIES",
+                "about": "About",
+                "expertises": "Expertise",
+                "contact": "Info & Contact",
+                "back": "Back",
+                "about-title": "OUR <span class=\"text-[var(--gold)]\">STORY.</span>",
+                "our-vision": "Our Vision",
+                "excellence-title": "EXCELLENCE AS<br><span class=\"text-[var(--gold)]\">THE ONLY STANDARD.</span>",
+                "about-para1": "Baniki Labs is not just a multi-service company; it is an innovation ecosystem rooted in the heart of Kinshasa. We support the digital and operational transformation of tomorrow's leaders by combining professional rigor and limitless creativity.",
+                "about-para2": "Our approach is based on the conviction that each project is unique. Whether we develop a complex web solution, facilitate a real estate transaction, or produce impactful media content, we apply the same demand for superior quality.",
+                "expertises-count": "Business Expertise",
+                "availability": "Innovation Availability",
+                "start-project": "Start the project"
+            },
+            sw: {
+                "hero-subtitle": "ubunifu bila mipaka",
+                "hero-title": "MAONO YAKO,<br/><span class=\"text-[var(--gold)]\">LAB YETU</span>",
+                "hero-description": "Ushirikiano wa suluhisho ili kubadilisha maisha yako ya kila siku na kuongeza biashara yako.",
+                "services-title": "Huduma",
+                "all-categories": "AINI ZOTE",
+                "about": "Kuhusu",
+                "expertises": "Ujuzi",
+                "contact": "Habari & Mawasiliano",
+                "back": "Rudi",
+                "about-title": "HADITHI <span class=\"text-[var(--gold)]\">YETU.</span>",
+                "our-vision": "Maono Yetu",
+                "excellence-title": "UBORA KAMA<br><span class=\"text-[var(--gold)]\">KIWANGO PEKEE.</span>",
+                "about-para1": "Baniki Labs sio tu kampuni ya huduma nyingi; ni mfumo wa ubunifu uliojikita katikati ya Kinshasa. Tunasaidia mabadiliko ya dijitali na uendeshaji wa viongozi wa kesho kwa kuunganisha ukali wa kitaaluma na ubunifu usio na mipaka.",
+                "about-para2": "Njia yetu inategemea imani kwamba kila mradi ni wa kipekee. Iwe tunatengeneza suluhisho tata ya wavuti, kurahisisha muamala wa mali isiyohamishika, au kutengeneza maudhui ya media yenye athari, tunatumia mahitaji sawa ya ubora wa hali ya juu.",
+                "expertises-count": "Ujuzi wa Biashara",
+                "availability": "Upatikanaji wa Ubunifu",
+                "start-project": "Anza mradi"
+            }
+        };
+
+        let currentLang = 'fr';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
+            document.documentElement.lang = lang;
+
+            // Update all elements with data-translate
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Update categories in dropdown
+            if (lang !== 'fr') {
+                // For now, keep categories in French, but we can translate them later
+            }
+
+            // Update services if present
+            if (document.getElementById('servicesContainer')) {
+                populateDropdown();
+                renderServices();
+            }
+
+            // Store in localStorage
+            localStorage.setItem('lang', lang);
+        }
+
+        // Language selector functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const langBtn = document.getElementById('langBtn');
+            const langMenu = document.getElementById('langMenu');
+            if (!langBtn || !langMenu) return;
+
+            langBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                langMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    setLanguage(lang);
+                    langMenu.classList.add('hidden');
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!langBtn.contains(event.target) && !langMenu.contains(event.target)) {
+                    langMenu.classList.add('hidden');
+                }
+            });
+
+            // Load saved language
+            const savedLang = localStorage.getItem('lang') || 'fr';
+            setLanguage(savedLang);
+        });
+    </script>
+
+    <script>
         let lastFilter = 'all';
         let currentServiceIndex = 0;
 
         const servicesData = {
             categories: {
-                all: "TOUTES LES CATÉGORIES", 
-                tech: "TECHNOLOGIE & WEB", 
-                media: "MÉDIA & STUDIO", 
-                edu: "FORMATION & ACADÉMIE", 
-                lifestyle: "SERVICES & LOGISTIQUE", 
-                biz: "BUSINESS & IMMOBILIER"
+                all: { fr: "TOUTES LES CATÉGORIES", en: "ALL CATEGORIES", sw: "AINI ZOTE" },
+                tech: { fr: "TECHNOLOGIE & WEB", en: "TECHNOLOGY & WEB", sw: "TEKNOLOJIA & WAVUTI" },
+                media: { fr: "MÉDIA & STUDIO", en: "MEDIA & STUDIO", sw: "HABARI & STUDIO" },
+                edu: { fr: "FORMATION & ACADÉMIE", en: "TRAINING & ACADEMY", sw: "MAFUNZO & AKADEMIA" },
+                lifestyle: { fr: "SERVICES & LOGISTIQUE", en: "SERVICES & LOGISTICS", sw: "HUDUMA & LOGISTIKA" },
+                biz: { fr: "BUSINESS & IMMOBILIER", en: "BUSINESS & REAL ESTATE", sw: "BIASHARA & MALI ISIYOHAMISHIKA" }
             },
             list: [
-                { cat: "tech", name: "Création Site Web", desc: "Sites vitrines et e-commerce sur mesure optimisés SEO.", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", features: ["Design Mobile First", "Optimisation SEO", "Paiement en ligne"], link: "site_web.html" },
-                { cat: "tech", name: "Centre Informatique", desc: "Internet haut débit, impression et maintenance technique.", img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800", features: ["Fibre Optique", "Maintenance Pro", "Scanning/Photocopie"], link: "bwiseservices.html" },
-                { cat: "edu", name: "Cours de Langues", desc: "Anglais, Swahili et Français pour tous les niveaux.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800", features: ["Profs natifs", "Certifications", "Conversationnel"], link: "language.html" },
-                { cat: "media", name: "Studio Podcast", desc: "Production audio haute qualité pour vos émissions.", img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800", features: ["Isolation Phonique", "Mixage Audio", "Diffusion Web"], link: "podcast.html" },
-                { cat: "biz", name: "Marketing Digital", desc: "Stratégies digitales pour accroître votre visibilité en ligne.", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", features: ["SEO & SEM", "Réseaux Sociaux", "Publicité en ligne"], link: "marketing.html" },
-                { cat: "biz", name: "Agence Immobilière", desc: "Achat, vente et location de propriétés à Kinshasa.", img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", features: ["Expertise terrain", "Gestion locative", "Conseil juridique"], link: "immobilier.html" },
-                { cat: "media", name: "Photographie", desc: "Portraits et couverture d'événements prestigieux.", img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800", features: ["Shooting Studio", "Événementiel", "Retouche Pro"], link: "photo.html" },
-                { cat: "media", name: "Vidéographie", desc: "Production de clips et vidéos d'entreprise premium.", img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800", features: ["Tournage 4K", "Montage Pro", "Scénarisation"], link: "videographie.html" },
-                { cat: "lifestyle", name: "Livraison Rapide", desc: "Transport de colis et repas à travers la capitale.", img: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800", features: ["Suivi GPS", "Rapide & Sûr", "Support 24/7"], link: "livraison.html" },
-                { cat: "edu", name: "Développement Personnel", desc: "Ateliers de leadership et coaching de vie.", img: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800", features: ["Confiance en soi", "Leadership", "Planification"], link: "developpement-perso.html" },
-                { cat: "biz", name: "Bureau de Change", desc: "Transactions sécurisées aux meilleurs taux du marché.", img: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=800", features: ["Taux en temps réel", "Zéro commission", "Sécurité totale"], link: "#change" },
-                { cat: "biz", name: "Traduction", desc: "Traduction dans 10 langues clés par des pros.", img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800", features: ["10 Langues", "Interprétation", "Documents Pro"], link: "translate.html" },
-                { cat: "lifestyle", name: "Eau & Jus Naturels", desc: "Boissons saines aux ingrédients locaux frais.", img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80&w=800", features: ["100% Bio", "Production Locale", "Fraîcheur"], link: "jus.html" },
-                { cat: "lifestyle", name: "Fast Food", desc: "Restauration rapide et savoureuse de qualité.", img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=800", features: ["Plats cuisinés", "Rapide", "Livraison"], link: "fastfood.html" },
-                { cat: "lifestyle", name: "Transport Fiable", desc: "Location de véhicules pour tous vos événements.", img: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800", features: ["Sécurisé", "Toutes occasions", "Bus & Van"], link: "transport.html" },
-                { cat: "media", name: "Agence Cinéma", desc: "Production de films et location de matériel.", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800", features: ["Casting", "Post-prod", "Location Cam"], link: "cinema.html" }
+                { cat: "tech", name: { fr: "Création Site Web", en: "Website Creation", sw: "Uundaji wa Tovuti" }, desc: { fr: "Sites vitrines et e-commerce sur mesure optimisés SEO.", en: "Custom showcase and e-commerce websites optimized for SEO.", sw: "Tovuti za maonyesho na e-commerce maalum zilizoboreshwa kwa SEO." }, features: { fr: ["Design Mobile First", "Optimisation SEO", "Paiement en ligne"], en: ["Mobile First Design", "SEO Optimization", "Online Payment"], sw: ["Muundo wa Simu Kwanza", "Uboreshaji wa SEO", "Malipo Mtandaoni"] }, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "site_web.html" },
+                { cat: "tech", name: { fr: "Centre Informatique", en: "Computer Center", sw: "Kituo cha Kompyuta" }, desc: { fr: "Internet haut débit, impression et maintenance technique.", en: "High-speed internet, printing and technical maintenance.", sw: "Intaneti ya kasi ya juu, uchapishaji na matengenezo ya kiufundi." }, features: { fr: ["Fibre Optique", "Maintenance Pro", "Scanning/Photocopie"], en: ["Fiber Optic", "Pro Maintenance", "Scanning/Photocopying"], sw: ["Fiber Optic", "Matengenezo ya Pro", "Kuskeni/Kunakili"] }, img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800", link: "bwiseservices.html" },
+                { cat: "edu", name: { fr: "Cours de Langues", en: "Language Courses", sw: "Kozi za Lugha" }, desc: { fr: "Anglais, Swahili et Français pour tous les niveaux.", en: "English, Swahili and French for all levels.", sw: "Kiingereza, Kiswahili na Kifaransa kwa viwango vyote." }, features: { fr: ["Profs natifs", "Certifications", "Conversationnel"], en: ["Native Teachers", "Certifications", "Conversational"], sw: ["Walimu Asili", "Vyeti", "Mazungumzo"] }, img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800", link: "language.html" },
+                { cat: "media", name: { fr: "Studio Podcast", en: "Podcast Studio", sw: "Studio ya Podcast" }, desc: { fr: "Production audio haute qualité pour vos émissions.", en: "High-quality audio production for your shows.", sw: "Uzalishaji wa sauti ya ubora wa juu kwa vipindi vyako." }, features: { fr: ["Isolation Phonique", "Mixage Audio", "Diffusion Web"], en: ["Sound Isolation", "Audio Mixing", "Web Broadcasting"], sw: ["Kutenganisha Sauti", "Kuchanganya Sauti", "Utangazaji wa Wavuti"] }, img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800", link: "podcast.html" },
+                { cat: "biz", name: { fr: "Marketing Digital", en: "Digital Marketing", sw: "Uuzaji wa Dijitali" }, desc: { fr: "Stratégies digitales pour accroître votre visibilité en ligne.", en: "Digital strategies to increase your online visibility.", sw: "Mikakati ya dijitali ili kuongeza mwonekano wako mtandaoni." }, features: { fr: ["SEO & SEM", "Réseaux Sociaux", "Publicité en ligne"], en: ["SEO & SEM", "Social Networks", "Online Advertising"], sw: ["SEO & SEM", "Mitandao ya Kijamii", "Tangazo Mtandaoni"] }, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", link: "marketing.html" },
+                { cat: "biz", name: { fr: "Agence Immobilière", en: "Real Estate Agency", sw: "Wakala wa Mali Isiyohamishika" }, desc: { fr: "Achat, vente et location de propriétés à Kinshasa.", en: "Buying, selling and renting properties in Kinshasa.", sw: "Kununua, kuuza na kukodisha mali katika Kinshasa." }, features: { fr: ["Expertise terrain", "Gestion locative", "Conseil juridique"], en: ["Field Expertise", "Rental Management", "Legal Advice"], sw: ["Ujuzi wa Shamba", "Usimamizi wa Ukodishaji", "Shauri za Kisheria"] }, img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", link: "immobilier.html" },
+                { cat: "media", name: { fr: "Photographie", en: "Photography", sw: "Upigaji Picha" }, desc: { fr: "Portraits et couverture d'événements prestigieux.", en: "Portraits and coverage of prestigious events.", sw: "Picha na chanjo ya matukio ya kifahari." }, features: { fr: ["Shooting Studio", "Événementiel", "Retouche Pro"], en: ["Studio Shooting", "Event Coverage", "Pro Retouching"], sw: ["Upigaji Studio", "Chanjo ya Tukio", "Urekebishaji wa Pro"] }, img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800", link: "photo.html" },
+                { cat: "media", name: { fr: "Vidéographie", en: "Videography", sw: "Upigaji Video" }, desc: { fr: "Production de clips et vidéos d'entreprise premium.", en: "Production of premium clips and corporate videos.", sw: "Uzalishaji wa video na video za kampuni za premium." }, features: { fr: ["Tournage 4K", "Montage Pro", "Scénarisation"], en: ["4K Shooting", "Pro Editing", "Scripting"], sw: ["Upigaji 4K", "Uhariri wa Pro", "Uandishi"] }, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800", link: "videographie.html" },
+                { cat: "lifestyle", name: { fr: "Livraison Rapide", en: "Fast Delivery", sw: "Uwasilishaji wa Haraka" }, desc: { fr: "Transport de colis et repas à travers la capitale.", en: "Package and meal transport across the capital.", sw: "Usafirishaji wa vifurushi na chakula katika mji mkuu." }, features: { fr: ["Suivi GPS", "Rapide & Sûr", "Support 24/7"], en: ["GPS Tracking", "Fast & Safe", "24/7 Support"], sw: ["Kufuatilia GPS", "Haraka & Salama", "Msaada 24/7"] }, img: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800", link: "livraison.html" },
+                { cat: "edu", name: { fr: "Développement Personnel", en: "Personal Development", sw: "Maendeleo ya Kibinafsi" }, desc: { fr: "Ateliers de leadership et coaching de vie.", en: "Leadership workshops and life coaching.", sw: "Warsha za uongozi na kufundisha maisha." }, features: { fr: ["Confiance en soi", "Leadership", "Planification"], en: ["Self-Confidence", "Leadership", "Planning"], sw: ["Kujiamini", "Uongozi", "Upangaji"] }, img: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800", link: "developpement-perso.html" },
+                { cat: "biz", name: { fr: "Bureau de Change", en: "Currency Exchange", sw: "Ofisi ya Kubadilisha Sarafu" }, desc: { fr: "Transactions sécurisées aux meilleurs taux du marché.", en: "Secure transactions at the best market rates.", sw: "Miamala salama kwa viwango bora vya soko." }, features: { fr: ["Taux en temps réel", "Zéro commission", "Sécurité totale"], en: ["Real-time rates", "Zero commission", "Total security"], sw: ["Viwango vya wakati halisi", "Tume sifuri", "Usalama kamili"] }, img: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=800", link: "#change" },
+                { cat: "biz", name: { fr: "Traduction", en: "Translation", sw: "Tafsiri" }, desc: { fr: "Traduction dans 10 langues clés par des pros.", en: "Translation into 10 key languages by professionals.", sw: "Tafsiri katika lugha 10 muhimu na wataalamu." }, features: { fr: ["10 Langues", "Interprétation", "Documents Pro"], en: ["10 Languages", "Interpretation", "Pro Documents"], sw: ["Lugha 10", "Tafsiri", "Hati za Pro"] }, img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800", link: "translate.html" },
+                { cat: "lifestyle", name: { fr: "Eau & Jus Naturels", en: "Water & Natural Juices", sw: "Maji & Juisi Asili" }, desc: { fr: "Boissons saines aux ingrédients locaux frais.", en: "Healthy drinks with fresh local ingredients.", sw: "Vinywaji vya afya na viungo vya ndani safi." }, features: { fr: ["100% Bio", "Production Locale", "Fraîcheur"], en: ["100% Organic", "Local Production", "Freshness"], sw: ["100% Bio", "Uzalishaji wa Ndani", "Ubichi"] }, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80&w=800", link: "jus.html" },
+                { cat: "lifestyle", name: { fr: "Fast Food", en: "Fast Food", sw: "Chakula cha Haraka" }, desc: { fr: "Restauration rapide et savoureuse de qualité.", en: "Fast and tasty quality food.", sw: "Chakula cha haraka na kitamu cha ubora." }, features: { fr: ["Plats cuisinés", "Rapide", "Livraison"], en: ["Cooked Dishes", "Fast", "Delivery"], sw: ["Sahani Zilizopikwa", "Haraka", "Uwasilishaji"] }, img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=800", link: "fastfood.html" },
+                { cat: "lifestyle", name: { fr: "Transport Fiable", en: "Reliable Transport", sw: "Usafirishaji wa Kuaminika" }, desc: { fr: "Location de véhicules pour tous vos événements.", en: "Vehicle rental for all your events.", sw: "Ukodishaji wa magari kwa matukio yako yote." }, features: { fr: ["Sécurisé", "Toutes occasions", "Bus & Van"], en: ["Secure", "All occasions", "Bus & Van"], sw: ["Salama", "Matukio Yote", "Basi & Van"] }, img: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800", link: "transport.html" },
+                { cat: "media", name: { fr: "Agence Cinéma", en: "Cinema Agency", sw: "Wakala wa Sinema" }, desc: { fr: "Production de films et location de matériel.", en: "Film production and equipment rental.", sw: "Uzalishaji wa filamu na ukodishaji wa vifaa." }, features: { fr: ["Casting", "Post-prod", "Location Cam"], en: ["Casting", "Post-prod", "Camera Rental"], sw: ["Kucheza", "Baada ya uzalishaji", "Ukodi wa Kamera"] }, img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800", link: "cinema.html" }
             ]
         };
 
@@ -470,7 +612,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const menu = document.getElementById('filterMenu');
             menu.innerHTML = '';
             
-            Object.entries(servicesData.categories).forEach(([key, label]) => {
+            Object.entries(servicesData.categories).forEach(([key, labels]) => {
+                const label = labels[currentLang] || labels.fr;
                 const btn = document.createElement('button');
                 btn.className = 'filter-item';
                 btn.innerText = label;
@@ -529,38 +672,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 targetAttr = 'target="_blank"';
             }
 
+            const name = s.name[currentLang] || s.name.fr;
+            const desc = s.desc[currentLang] || s.desc.fr;
+            const features = s.features[currentLang] || s.features.fr;
+            const category = servicesData.categories[s.cat][currentLang] || servicesData.categories[s.cat].fr;
+
             const row = `
                 <div class="service-row py-16 md:py-24 animate-fadeIn">
-                    <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
-                        <div class="w-full lg:w-5/12">
-                            <div class="service-image-container aspect-[4/3] shadow-2xl">
-                                <img src="${s.img}" class="w-full h-full object-cover" alt="${s.name}">
-                            </div>
-                        </div>
-                        <div class="w-full lg:w-7/12 space-y-8">
-                            <div class="space-y-4">
-                                <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.4em]">${servicesData.categories[s.cat]}</span>
-                                <h3 class="text-3xl md:text-5xl font-black tracking-tighter leading-tight">${s.name}</h3>
-                                <p class="text-gray-400 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">${s.desc}</p>
-                            </div>
-                            <ul class="space-y-3">
-                                ${s.features.map(f => `
-                                    <li class="flex items-center gap-3 text-sm md:text-base font-bold text-gray-300">
-                                        <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg>
-                                        ${f}
-                                    </li>
-                                `).join('')}
-                            </ul>
-                            <div class="pt-6">
-                                <a href="${finalLink}" ${targetAttr} class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-                                    Démarrer le projet
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Navigation Carousel -->
-                    <div class="flex items-center justify-center gap-6 mt-12">
+                    <!-- Navigation Carousel Above -->
+                    <div class="flex items-center justify-center gap-6 mb-12">
                         <button onclick="previousService()" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black hover:border-[var(--gold)] transition-all disabled:opacity-30 disabled:cursor-not-allowed" ${filtered.length <= 1 ? 'disabled' : ''}>
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>
                         </button>
@@ -572,6 +692,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <button onclick="nextService()" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black hover:border-[var(--gold)] transition-all disabled:opacity-30 disabled:cursor-not-allowed" ${filtered.length <= 1 ? 'disabled' : ''}>
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 5l7 7-7 7"></path></svg>
                         </button>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+                        <div class="w-full lg:w-5/12">
+                            <div class="service-image-container aspect-[4/3] shadow-2xl cursor-pointer" onclick="window.open('${finalLink}', '${targetAttr ? '_blank' : '_self'}')">
+                                <img src="${s.img}" class="w-full h-full object-cover" alt="${name}">
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-7/12 space-y-8">
+                            <div class="space-y-4">
+                                <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.4em]">${category}</span>
+                                <h3 class="text-3xl md:text-5xl font-black tracking-tighter leading-tight cursor-pointer" onclick="window.open('${finalLink}', '${targetAttr ? '_blank' : '_self'}')">${name}</h3>
+                                <p class="text-gray-400 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">${desc}</p>
+                            </div>
+                            <ul class="space-y-3">
+                                ${features.map(f => `
+                                    <li class="flex items-center gap-3 text-sm md:text-base font-bold text-gray-300">
+                                        <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg>
+                                        ${f}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            <div class="pt-6">
+                                <a href="${finalLink}" ${targetAttr} class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                                    ${translations[currentLang]['start-project'] || 'Démarrer le projet'}
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -616,6 +764,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             document.getElementById('sunIcon').classList.toggle('hidden', !isLight);
             document.getElementById('moonIcon').classList.toggle('hidden', isLight);
         };
+
+        // User menu
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userMenu = document.getElementById('userMenu');
+        if (userMenuBtn && userMenu) {
+            userMenuBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                userMenu.classList.toggle('hidden');
+            });
+            document.addEventListener('click', function(event) {
+                if (!userMenuBtn.contains(event.target) && !userMenu.contains(event.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+        }
 
         window.onclick = (e) => {
             const modal = document.getElementById('creatorModal');
