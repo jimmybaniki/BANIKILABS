@@ -14,6 +14,32 @@ fragment = '''                <div class="relative">
                 </div>
 '''
 script = '''    <script>
+        const translations = {
+            fr: {},
+            en: {},
+            sw: {}
+        };
+
+        let currentLang = 'fr';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
+            document.documentElement.lang = lang;
+
+            // Update all elements with data-translate or data-key
+            document.querySelectorAll('[data-translate], [data-key]').forEach(el => {
+                const key = el.getAttribute('data-translate') || el.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Store in localStorage
+            localStorage.setItem('lang', lang);
+        }
+
+        // Language selector functionality
         document.addEventListener('DOMContentLoaded', function() {
             const langBtn = document.getElementById('langBtn');
             const langMenu = document.getElementById('langMenu');
@@ -26,7 +52,7 @@ script = '''    <script>
                 option.addEventListener('click', function(event) {
                     event.preventDefault();
                     const lang = this.getAttribute('data-lang');
-                    document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
+                    setLanguage(lang);
                     langMenu.classList.add('hidden');
                 });
             });
@@ -35,21 +61,23 @@ script = '''    <script>
                     langMenu.classList.add('hidden');
                 }
             });
+            // Load saved language
+            const savedLang = localStorage.getItem('lang') || 'fr';
+            setLanguage(savedLang);
         });
     </script>\n'''
 updated = []
 for path in sorted(root.glob('*.html')):
     text = path.read_text(encoding='utf-8')
-    if 'id="langBtn"' in text or 'id="langMenu"' in text:
+    if 'id="langBtn"' in text:
         continue
-    if '<div class="flex items-center gap-4">' not in text:
-        continue
-    new_text = text.replace('<div class="flex items-center gap-4">', '<div class="flex items-center gap-4">\n' + fragment, 1)
-    if 'document.querySelectorAll(\'.lang-option\')' not in new_text and '</body>' in new_text:
-        new_text = new_text.replace('</body>', script + '</body>')
-    if new_text != text:
-        path.write_text(new_text, encoding='utf-8')
-        updated.append(path.name)
+    if '<div class="flex items-center gap-' in text:
+        new_text = text.replace('<div class="flex items-center gap-', '<div class="flex items-center gap-\n' + fragment, 1)
+        if 'document.querySelectorAll(\'.lang-option\')' not in new_text and '</body>' in new_text:
+            new_text = new_text.replace('</body>', script + '</body>')
+        if new_text != text:
+            path.write_text(new_text, encoding='utf-8')
+            updated.append(path.name)
 report = root / 'lang-update-report.txt'
 report.write_text('\n'.join(updated), encoding='utf-8')
 print('updated', updated)
