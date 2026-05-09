@@ -265,6 +265,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </button>
                     <div id="mobileNavMenu" class="hidden absolute top-full right-0 mt-4 w-48 bg-black/95 backdrop-blur-2xl border border-[var(--gold)]/30 rounded-2xl overflow-hidden shadow-2xl z-[110]">
                         <a href="about.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="about">À Propos</a>
+                        <a href="news.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()">Actualités</a>
                         <a href="#expertises" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="expertises">Expertises</a>
                         <a href="#footer" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="contact">Infos & Contact</a>
                         <a href="login.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--gold)] hover:bg-[var(--gold)] hover:text-black transition-colors">Admin</a>
@@ -274,6 +275,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex items-center gap-8 mr-4">
                     <a href="about.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="about">À Propos</a>
+                    <a href="news.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Actualités</a>
                     <a href="#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="expertises">Expertises</a>
                     <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="contact">Infos & Contact</a>
                 </div>
@@ -340,6 +342,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <p class="text-white text-xl md:text-2xl max-w-4xl mx-auto font-bold tracking-tight leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" data-translate="hero-description">
                     Une synergie de solutions pour transformer votre quotidien et propulser votre entreprise.
                 </p>
+                
+                <!-- Boutons CTA -->
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
+                    <a href="#expertises" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                        Explorer nos services
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                    <a href="news.html" class="inline-flex items-center gap-4 bg-white/10 border border-[var(--gold)]/50 text-[var(--gold)] px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-[var(--gold)] hover:text-black transition-all">
+                        📰 Actualités
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -573,6 +587,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script>
         let lastFilter = 'all';
         let currentServiceIndex = 0;
+        
+        // Variables pour le swipe
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
 
         const servicesData = {
             categories: {
@@ -724,6 +743,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', row);
+            setupSwipeListeners();
         }
 
         function nextService() {
@@ -747,6 +767,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             if (index >= 0 && index < filtered.length) {
                 currentServiceIndex = index;
                 renderServices();
+            }
+        }
+
+        // Gestion du swipe pour le carousel
+        function setupSwipeListeners() {
+            const container = document.getElementById('servicesContainer');
+            if (!container) return;
+
+            container.addEventListener('touchstart', onTouchStart, { passive: true });
+            container.addEventListener('touchmove', onTouchMove, { passive: true });
+            container.addEventListener('touchend', onTouchEnd, { passive: true });
+        }
+
+        function onTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            touchStartTime = Date.now();
+        }
+
+        function onTouchMove(e) {
+            // Vérifier si le mouvement est vertical pour permettre le scroll normal
+            const currentY = e.changedTouches[0].screenY;
+            const diffY = currentY - touchStartY;
+            
+            // Si le mouvement est significativement vertical, c'est un scroll
+            if (Math.abs(diffY) > 10) {
+                return; // Permettre le scroll normal
+            }
+        }
+
+        function onTouchEnd(e) {
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const touchEndTime = Date.now();
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            const diffTime = touchEndTime - touchStartTime;
+            
+            // Vérifier que c'est un swipe horizontal (pas vertical)
+            // Le mouvement horizontal doit être au moins 2x plus grand que le vertical
+            if (Math.abs(diffX) > Math.abs(diffY) * 2 && Math.abs(diffX) > 50 && diffTime < 500) {
+                // Calculer la vélocité (pixels par milliseconde)
+                const velocity = Math.abs(diffX) / diffTime;
+                const filtered = getFilteredServices();
+                
+                if (filtered.length > 1) {
+                    // Swipe à gauche (diffX < 0) = prochain service
+                    // Swipe à droite (diffX > 0) = service précédent
+                    // La vélocité détermine combien de services à avancer
+                    
+                    let step = 1;
+                    // Si swipe très rapide (> 0.8 px/ms), avancer de 3 services
+                    if (velocity > 0.8) {
+                        step = 3;
+                    } else if (velocity > 0.5) {
+                        step = 2;
+                    }
+                    
+                    if (diffX < 0) {
+                        // Swipe à gauche = avancer
+                        currentServiceIndex = (currentServiceIndex + step) % filtered.length;
+                    } else {
+                        // Swipe à droite = reculer
+                        currentServiceIndex = (currentServiceIndex - step + filtered.length * 10) % filtered.length;
+                    }
+                    renderServices();
+                }
             }
         }
 

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="sw" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Invitation Mariage - Jimmy & Joyce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        h1, h2, .serif { font-family: 'Playfair Display', serif; }
+        .bg-main {
+            background: url('jimjoy.jpeg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .invitation-card {
+            position: relative;
+            background-color: #1a2a44;
+            color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(202, 138, 4, 0.3);
+            overflow: hidden;
+        }
+        .invitation-card-bg {
+            position: absolute;
+            inset: 0;
+            background: url('jimjoy.jpeg') no-repeat center center;
+            background-size: cover;
+            z-index: 0;
+        }
+        .invitation-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(26, 42, 68, 0.92), rgba(44, 62, 80, 0.92));
+            z-index: 1;
+        }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            border-top: 3px solid #ffffff; width: 20px; height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-main min-h-full">
+    <div class="min-h-full bg-black/60 p-4 md:p-8 backdrop-blur-sm">
+        <div class="max-w-2xl mx-auto">
+        
+        <!-- Lang Selector -->
+        <div class="flex justify-center gap-2 mb-6">
+            <button onclick="setLang('fr')" class="px-3 py-1 rounded bg-white/20 text-white text-xs hover:bg-white/40">FR</button>
+            <button onclick="setLang('en')" class="px-3 py-1 rounded bg-white/20 text-white text-xs hover:bg-white/40">EN</button>
+            <button onclick="setLang('sw')" class="px-3 py-1 rounded bg-white/20 text-white text-xs hover:bg-white/40">SW</button>
+        </div>
+
+        <!-- En-tête -->
+        <div class="text-center mb-8">
+            <h1 id="titleText" class="text-5xl font-bold text-white mb-2 drop-shadow-lg">Jimmy & Joyce</h1>
+            <p id="subtitleText" class="text-blue-100 font-light tracking-widest uppercase text-sm">Confirmation de présence et Invitation</p>
+        </div>
+
+        <!-- Formulaire d'enregistrement -->
+        <div id="registrationFormContainer" class="glass p-8 rounded-3xl shadow-2xl">
+            <form id="inviteForm" class="space-y-4">
+                <div>
+                    <label id="lblNom" class="block text-sm font-medium text-gray-700 mb-1">Nom et Prénom</label>
+                    <input type="text" id="fullName" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label id="lblTel" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                        <input type="tel" id="phone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label id="lblEmail" class="block text-sm font-medium text-gray-700 mb-1">E-mail (Optionnel)</label>
+                        <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label id="lblParoisse" class="block text-sm font-medium text-gray-700 mb-1">Paroisse ou Famille (Optionnel)</label>
+                    <input type="text" id="paroisse" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label id="lblGuests" class="block text-sm font-medium text-gray-700 mb-1">Nombre d'invités (en plus de vous)</label>
+                    <input type="number" id="guests" value="0" min="0" oninput="updateContribution()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg flex items-start space-x-3">
+                    <input type="checkbox" id="commitment" required class="mt-1 w-5 h-5">
+                    <label for="commitment" id="lblCommit" class="text-sm text-blue-800 font-semibold leading-tight cursor-pointer">
+                        Je m'engage à contribuer à hauteur de 50$ pour l'organisation.
+                    </label>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 flex justify-center items-center space-x-2">
+                    <span id="btnText">Confirmer ma présence</span>
+                </button>
+                <p id="statusMsg" class="hidden text-center text-sm p-2 rounded-lg"></p>
+            </form>
+        </div>
+
+        <!-- Zone de la carte d'invitation (cachée au début) -->
+        <div id="invitationContainer" class="hidden mt-8 space-y-6">
+            <div id="invitationCard" class="invitation-card p-12 text-center border-4 border-yellow-600/30">
+                <div class="invitation-card-bg"></div>
+                <div class="invitation-card-overlay"></div>
+                <!-- Décoration -->
+                <div class="absolute top-0 left-0 w-32 h-32 border-l-4 border-t-4 border-yellow-600/20 rounded-tl-3xl z-20"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 border-r-4 border-b-4 border-yellow-600/20 rounded-br-3xl z-20"></div>
+                
+                <div class="relative z-20">
+                    <!-- Photo des mariés dans un coeur (Optimisé pour le téléchargement) -->
+                    <div class="w-64 h-64 mx-auto mb-6 relative">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="w-full h-full overflow-visible">
+                            <defs>
+                                <clipPath id="heartClip">
+                                    <path d="M 50,30 C 50,30 45,15 30,15 C 15,15 5,25 5,40 C 5,60 30,80 50,95 C 70,80 95,60 95,40 C 95,25 85,15 70,15 C 55,15 50,30 50,30 Z" />
+                                </clipPath>
+                            </defs>
+                            <image id="heartImageTag" xlink:href="jimjoy.jpeg" href="jimjoy.jpeg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+                            <path d="M 50,30 C 50,30 45,15 30,15 C 15,15 5,25 5,40 C 5,60 30,80 50,95 C 70,80 95,60 95,40 C 95,25 85,15 70,15 C 55,15 50,30 50,30 Z" fill="none" stroke="#ca8a04" stroke-width="2" />
+                        </svg>
+                    </div>
+
+                    <p id="cardOfficial" class="text-yellow-500 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">Invitation Officielle</p>
+                    <h2 class="text-4xl serif mb-6 italic">Jimmy & Joyce</h2>
+                    <p id="cardQuote" class="italic text-yellow-100/80 mb-6 px-4 serif text-sm leading-relaxed"></p>
+                    <div class="w-24 h-[1px] bg-yellow-600/50 mx-auto mb-8"></div>
+                    
+                    <p id="cardWelcome" class="text-lg opacity-90 mb-2 font-light italic">Bienvenue,</p>
+                    <p id="cardName" class="text-3xl font-bold mb-10 text-white drop-shadow-md"></p>
+                    
+                    <div class="text-center mb-6">
+                        <p id="cardLoc" class="text-xl serif text-yellow-500 mb-1">Kinondoni</p>
+                        <p id="cardTime" class="text-sm font-light tracking-widest">16 MAI 2026 • 14:00</p>
+                        <p id="cardDateNote" class="text-[10px] text-blue-200/60 italic mt-2"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4 text-sm mb-8 max-w-[200px] mx-auto">
+                        <div class="bg-white/10 p-3 rounded-lg">
+                            <p class="text-blue-200">Réf.</p>
+                            <p id="cardRef" class="font-semibold font-mono"></p>
+                        </div>
+                    </div>
+
+                    <div class="text-xs opacity-70 italic">
+                        Veuillez présenter cette carte à l'entrée.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="downloadImg" class="flex-1 bg-gray-900 text-white py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 hover:bg-black transition">
+                    <span id="btnDlImg">Télécharger l'image</span>
+                </button>
+                <button id="downloadPdf" class="flex-1 bg-red-700 text-white py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 hover:bg-red-800 transition">
+                    <span id="btnDlPdf">Télécharger le PDF</span>
+                </button>
+            </div>
+            <button onclick="window.location.reload()" id="btnReset" class="w-full text-white/70 font-medium text-sm hover:text-white underline underline-offset-4">Enregistrer une autre personne</button>
+        </div>
+
+        <!-- Admin Panel (Hidden by default) -->
+        <div id="adminPanel" class="hidden glass p-8 rounded-3xl shadow-2xl mt-8">
+            <h2 id="adminTitle" class="text-3xl font-bold text-gray-800 mb-6 text-center">Gestion des Invitations</h2>
+            <div class="flex justify-between items-center mb-4">
+                <p id="adminCount" class="text-gray-600"></p>
+                <button id="refreshAdminData" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 0020 13a8 8 0 00-15.356-2m0 0v5h-.581m0-5h.581"></path></svg>
+                    <span id="adminRefreshBtn">Actualiser</span>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg shadow-md">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Nom</th>
+                            <th class="py-3 px-6 text-left">Téléphone</th>
+                            <th class="py-3 px-6 text-left">Email</th>
+                            <th class="py-3 px-6 text-left">Paroisse/Famille</th>
+                            <th class="py-3 px-6 text-center">Invités</th>
+                            <th class="py-3 px-6 text-center">Engagement</th>
+                            <th class="py-3 px-6 text-center">Confirmation</th>
+                            <th class="py-3 px-6 text-left">Date Enregistrement</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="text-gray-600 text-sm font-light">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="backToForm" class="mt-6 w-full text-blue-600 font-medium text-sm hover:underline">
+                <span id="adminBackBtn">Retour au formulaire</span>
+            </button>
+        </div>
+
+        <!-- Admin Access Link -->
+        <div class="text-center mt-8">
+            <button id="showAdminPanelBtn" class="text-white/50 hover:text-white underline text-xs">Admin</button>
+        </div>
+
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPJd_z4j1QwEUFXKVC3SandB13c-YS31Q-9Z_UVYFyoCMBCsNGdXY9oLUlNGIerhm-/exec";
+        
+        const translations = {
+            fr: {
+                title: "Jimmy & Joyce", subtitle: "Confirmation de présence et Invitation",
+                lblNom: "Nom et Prénom", lblTel: "Téléphone", lblEmail: "E-mail",
+                lblParoisse: "Paroisse ou Famille (Optionnel)", lblGuests: "Nombre d'invités (en plus de vous)",
+                commit: "Je m'engage à contribuer à hauteur de ", cur: "$",
+                btn: "Confirmer ma présence", registering: "Enregistrement...",
+                off: "Invitation Officielle", welcome: "Bienvenue,", time: "16 MAI 2026 • 14:00",
+                dlImg: "Télécharger l'image", dlPdf: "Télécharger le PDF", reset: "Enregistrer une autre personne",
+                quote: "« Deux âmes, un seul cœur, un voyage sacré qui commence avec vous à nos côtés. »",
+                dateNote: "*La date est sujette à modification en cas d'imprévu majeur.",
+                admin: {
+                    title: "Gestion des Invitations",
+                    count: "Total des invités : ",
+                    refresh: "Actualiser",
+                    back: "Retour au formulaire"
+                }
+            },
+            en: {
+                title: "Jimmy & Joyce", subtitle: "Wedding RSVP & Invitation",
+                lblNom: "Full Name", lblTel: "Phone Number", lblEmail: "E-mail",
+                lblParoisse: "Church or Family (Optional)", lblGuests: "Number of guests (excluding you)",
+                commit: "I commit to contribute ", cur: "$",
+                btn: "Confirm Attendance", registering: "Registering...",
+                off: "Official Invitation", welcome: "Welcome,", time: "MAY 16, 2026 • 2:00 PM",
+                dlImg: "Download Image", dlPdf: "Download PDF", reset: "Register another person",
+                quote: "“Two souls, one heart, a sacred journey starting with you by our side.”",
+                dateNote: "*Date may be subject to change in case of unforeseen circumstances.",
+                admin: {
+                    title: "Invitation Management",
+                    count: "Total Guests: ",
+                    refresh: "Refresh",
+                    back: "Back to Form"
+                }
+            },
+            sw: {
+                title: "Jimmy & Joyce", subtitle: "Uthibitisho wa Kuhudhuria na Mwaliko",
+                lblNom: "Jina Kamili", lblTel: "Namba ya Simu", lblEmail: "Barua pepe",
+                lblParoisse: "Parokia au Familia (Hiari)", lblGuests: "Idadi ya wageni (zaidi yako)",
+                commit: "Ninajitolea kuchangia kiasi cha ", cur: "TSh",
+                btn: "Thibitisha Kuhudhuria", registering: "Inasajili...",
+                off: "Mwaliko Rasmi", welcome: "Karibu,", time: "16 MEI 2026 • SAA 8 MCHANA",
+                dlImg: "Pakua Picha", dlPdf: "Pakua PDF", reset: "Sajili mtu mwingine",
+                quote: "“Nafsi mbili, moyo mmoja, safari takatifu inayoanza nanyi kando yetu.”",
+                dateNote: "*Tarehe inaweza kubadilika ikitokea dharura isiyotarajiwa.",
+                admin: {
+                    title: "Usimamizi wa Mialiko",
+                    count: "Jumla ya Wageni: ",
+                    refresh: "Onyesha Upya",
+                    back: "Rudi kwenye Fomu"
+                }
+            }
+        };
+
+        let currentLang = 'sw';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            document.getElementById('titleText').textContent = t.title;
+            document.getElementById('subtitleText').textContent = t.subtitle;
+            document.getElementById('lblNom').textContent = t.lblNom;
+            document.getElementById('lblTel').textContent = t.lblTel;
+            document.getElementById('lblEmail').textContent = t.lblEmail;
+            document.getElementById('lblParoisse').textContent = t.lblParoisse;
+            document.getElementById('lblGuests').textContent = t.lblGuests;
+            document.getElementById('btnText').textContent = t.btn;
+            document.getElementById('cardOfficial').textContent = t.off;
+            document.getElementById('cardWelcome').textContent = t.welcome;
+            document.getElementById('cardTime').textContent = t.time;
+            document.getElementById('btnDlImg').textContent = t.dlImg;
+            document.getElementById('btnDlPdf').textContent = t.dlPdf;
+            document.getElementById('btnReset').textContent = t.reset;
+            document.getElementById('cardQuote').textContent = t.quote;
+            document.getElementById('cardDateNote').textContent = t.dateNote;
+            // Admin Panel translations
+            document.getElementById('adminTitle').textContent = translations[lang].admin.title;
+            document.getElementById('adminRefreshBtn').textContent = translations[lang].admin.refresh;
+            document.getElementById('adminBackBtn').textContent = translations[lang].admin.back;
+            updateContribution();
+        }
+
+        // Fonction pour convertir l'image en Base64 afin d'assurer l'impression
+        function preloadImageAsBase64() {
+            const img = new Image();
+            img.crossOrigin = "anonymous"; 
+            img.src = "jimjoy.jpeg";
+            img.onload = function() {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                try {
+                    const dataURL = canvas.toDataURL("image/jpeg");
+                    const heartImg = document.getElementById('heartImageTag');
+                    if (heartImg) {
+                        heartImg.setAttribute("href", dataURL);
+                        heartImg.setAttribute("xlink:href", dataURL);
+                    }
+                } catch (e) {
+                    console.warn("CORS limitation: Image Base64 conversion skipped. Ensure you are using a server.");
+                }
+            };
+        }
+
+        function updateContribution() {
+            const nb = parseInt(document.getElementById('guests').value) || 0;
+            const total = 1 + nb;
+            const price = currentLang === 'sw' ? (total * 50000).toLocaleString() : (total * 50);
+            document.getElementById('lblCommit').innerHTML = `${translations[currentLang].commit} <strong>${price}${translations[currentLang].cur}</strong>.`;
+        }
+
+        const form = document.getElementById('inviteForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const regFormContainer = document.getElementById('registrationFormContainer');
+        const invitationContainer = document.getElementById('invitationContainer');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminTableBody = document.getElementById('adminTableBody');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI Loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<div class="loading-spinner"></div> <span>${translations[currentLang].registering}</span>`;
+            statusMsg.classList.add('hidden');
+
+            const nb = document.getElementById('guests').value;
+            const data = {
+                nom: document.getElementById('fullName').value,
+                email: document.getElementById('email').value || "Non précisé",
+                telephone: document.getElementById('phone').value,
+                paroisse: document.getElementById('paroisse').value || "Non précisé",
+                nbInvites: nb,
+                engagement: "50$",
+                confirmation: "Présent"
+            };
+
+            try {
+                // Envoi à Google Sheets
+                // Utilisation de mode: 'no-cors' pour éviter les erreurs de redirection Google
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // Générer une référence locale
+                const ref = "JJ-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+                
+                // Afficher la carte
+                showInvitation(data.nom, ref);
+
+            } catch (error) {
+                console.error("Error:", error);
+                statusMsg.textContent = "Erreur de connexion. Vérifiez votre internet.";
+                statusMsg.className = "text-center text-sm p-2 rounded-lg bg-red-100 text-red-700 mt-4";
+                statusMsg.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Confirmer ma présence</span>';
+            }
+        });
+
+        function showInvitation(name, ref) {
+            regFormContainer.classList.add('hidden');
+            invitationContainer.classList.remove('hidden');
+            document.getElementById('cardName').textContent = name;
+            document.getElementById('cardRef').textContent = ref;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Téléchargement Image
+        document.getElementById('downloadImg').addEventListener('click', () => {
+            html2canvas(document.getElementById('invitationCard'), { 
+                useCORS: true,
+                scale: 2, // Augmente la qualité pour le "4K"
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Invitation_${document.getElementById('cardName').textContent}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+
+        // Téléchargement PDF
+        document.getElementById('downloadPdf').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            html2canvas(document.getElementById('invitationCard'), { 
+                useCORS: true,
+                scale: 2,
+                logging: false
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+                pdf.save(`Invitation_${document.getElementById('cardName').textContent}.pdf`);
+            });
+        });
+
+        // Init
+        setLang('sw');
+        preloadImageAsBase64();
+
+        // Admin Panel Logic
+        const ADMIN_PASSWORD = "admin2026";
+        document.getElementById('showAdminPanelBtn').addEventListener('click', () => {
+            const password = prompt("Veuillez entrer le mot de passe administrateur :");
+            if (password === ADMIN_PASSWORD) {
+                regFormContainer.classList.add('hidden');
+                invitationContainer.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                loadAdminData();
+            } else if (password !== null) { // If user didn't cancel
+                alert("Mot de passe incorrect.");
+            }
+        });
+
+        document.getElementById('backToForm').addEventListener('click', () => {
+            adminPanel.classList.add('hidden');
+            regFormContainer.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById('refreshAdminData').addEventListener('click', loadAdminData);
+
+        async function loadAdminData() {
+            adminTableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-gray-500">Chargement des données...</td></tr>`;
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Données reçues:", data); // Pour déboguer
+                displayAdminData(data);
+            } catch (error) {
+                console.error("Erreur lors du chargement des données admin:", error);
+                adminTableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-red-500">Erreur de chargement des données. Vérifiez la console pour plus de détails et assurez-vous que le Google Apps Script est configuré pour les requêtes GET avec CORS.</td></tr>`;
+            }
+        }
+
+        function displayAdminData(data) {
+            adminTableBody.innerHTML = ''; // Clear previous data
+            if (!data || data.length === 0) {
+                adminTableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-gray-500">Aucune donnée enregistrée.</td></tr>`;
+                document.getElementById('adminCount').textContent = translations[currentLang].admin.count + "0";
+                return;
+            }
+
+            data.forEach(row => {
+                // Fonction utilitaire pour trouver une valeur même si la colonne change de nom
+                const find = (keywords) => {
+                    for (let k of keywords) {
+                        // On teste la clé en minuscule et sans espaces
+                        let key = k.toLowerCase().replace(/ /g, "");
+                        if (row[key] !== undefined) return row[key];
+                        if (row[k] !== undefined) return row[k];
+                    }
+                    return "-";
+                };
+
+                const dateVal = row.DateEnregistrement || row["Date Enregistrement"] || row.timestamp || row.Timestamp || "";
+                const tr = document.createElement('tr');
+                tr.classList.add('border-b', 'border-gray-200', 'hover:bg-gray-100');
+                tr.innerHTML = `
+                    <td class="py-3 px-6 text-left font-medium">${find(['nom', 'jina', 'name', 'fullname'])}</td>
+                    <td class="py-3 px-6 text-left">${find(['telephone', 'phone', 'simu'])}</td>
+                    <td class="py-3 px-6 text-left text-xs">${find(['email', 'baruepepe'])}</td>
+                    <td class="py-3 px-6 text-left">${find(['paroisse', 'parokia', 'famille', 'family'])}</td>
+                    <td class="py-3 px-6 text-center font-bold">${find(['nbinvites', 'invites', 'guests', 'wageni'])}</td>
+                    <td class="py-3 px-6 text-center">${find(['engagement', 'contribution', 'mchango'])}</td>
+                    <td class="py-3 px-6 text-center">${find(['confirmation', 'status'])}</td>
+                    <td class="py-3 px-6 text-left">${dateVal ? new Date(dateVal).toLocaleString() : ''}</td>
+                `;
+                adminTableBody.appendChild(tr);
+            });
+            document.getElementById('adminCount').textContent = translations[currentLang].admin.count + data.length;
+        }
+    </script>
+</body>
+</html>
