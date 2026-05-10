@@ -625,6 +625,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function init() {
             populateDropdown();
             renderServices();
+            setupSwipeListeners();
         }
 
         function populateDropdown() {
@@ -697,7 +698,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const category = servicesData.categories[s.cat][currentLang] || servicesData.categories[s.cat].fr;
 
             const row = `
-                <div class="service-row py-16 md:py-24 animate-fadeIn">
+                <div class="service-row py-16 md:py-24 animate-fadeIn select-none">
                     <!-- Navigation Carousel Above -->
                     <div class="flex items-center justify-center gap-6 mb-12">
                         <button onclick="previousService()" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black hover:border-[var(--gold)] transition-all disabled:opacity-30 disabled:cursor-not-allowed" ${filtered.length <= 1 ? 'disabled' : ''}>
@@ -715,7 +716,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
                         <div class="w-full lg:w-5/12">
                             <div class="service-image-container aspect-[4/3] shadow-2xl cursor-pointer" onclick="window.open('${finalLink}', '${targetAttr ? '_blank' : '_self'}')">
-                                <img src="${s.img}" class="w-full h-full object-cover" alt="${name}">
+                                <img src="${s.img}" class="w-full h-full object-cover" alt="${name}" draggable="false">
                             </div>
                         </div>
                         <div class="w-full lg:w-7/12 space-y-8">
@@ -742,8 +743,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                 </div>
             `;
-            container.insertAdjacentHTML('beforeend', row);
-            setupSwipeListeners();
+            container.innerHTML = row;
         }
 
         function nextService() {
@@ -787,14 +787,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         function onTouchMove(e) {
-            // Vérifier si le mouvement est vertical pour permettre le scroll normal
-            const currentY = e.changedTouches[0].screenY;
-            const diffY = currentY - touchStartY;
-            
-            // Si le mouvement est significativement vertical, c'est un scroll
-            if (Math.abs(diffY) > 10) {
-                return; // Permettre le scroll normal
-            }
+            // Suivi du mouvement pour la fluidité du geste
         }
 
         function onTouchEnd(e) {
@@ -806,34 +799,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const diffY = touchEndY - touchStartY;
             const diffTime = touchEndTime - touchStartTime;
             
-            // Vérifier que c'est un swipe horizontal (pas vertical)
-            // Le mouvement horizontal doit être au moins 2x plus grand que le vertical
+            // Swipe horizontal détecté
             if (Math.abs(diffX) > Math.abs(diffY) * 2 && Math.abs(diffX) > 50 && diffTime < 500) {
-                // Calculer la vélocité (pixels par milliseconde)
-                const velocity = Math.abs(diffX) / diffTime;
-                const filtered = getFilteredServices();
-                
-                if (filtered.length > 1) {
-                    // Swipe à gauche (diffX < 0) = prochain service
-                    // Swipe à droite (diffX > 0) = service précédent
-                    // La vélocité détermine combien de services à avancer
-                    
-                    let step = 1;
-                    // Si swipe très rapide (> 0.8 px/ms), avancer de 3 services
-                    if (velocity > 0.8) {
-                        step = 3;
-                    } else if (velocity > 0.5) {
-                        step = 2;
-                    }
-                    
-                    if (diffX < 0) {
-                        // Swipe à gauche = avancer
-                        currentServiceIndex = (currentServiceIndex + step) % filtered.length;
-                    } else {
-                        // Swipe à droite = reculer
-                        currentServiceIndex = (currentServiceIndex - step + filtered.length * 10) % filtered.length;
-                    }
-                    renderServices();
+                if (diffX < 0) {
+                    nextService(); // Swipe gauche -> suivant
+                } else {
+                    previousService(); // Swipe droite -> précédent
                 }
             }
         }
