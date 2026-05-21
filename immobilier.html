@@ -1,73 +1,1427 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANIKI LABS | Agence Immobilière</title>
+    <title>Banikilabs - L'Immobilier de Rêve en RDC</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            500: '#0084ff', // Azure blue (RDC vibes)
+                            600: '#0066cc',
+                            700: '#004c99',
+                            800: '#003366',
+                            900: '#0c2340',
+                        },
+                        accent: {
+                            500: '#FFD700', // Gold accents
+                            600: '#e6c200',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #080808; color: #f9fafb; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        h1, h2, h3, h4, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glassmorphism {
+            background: rgba(12, 35, 64, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body>
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)]">
-                    <span class="text-black font-black text-lg">BL</span>
+<body class="bg-slate-100 text-slate-700 dark:bg-slate-950 dark:text-slate-300 min-h-screen flex flex-col antialiased">
+
+    <!-- TOP NOTIFICATION BANNER -->
+    <div class="bg-gradient-to-r from-brand-700 via-brand-600 to-blue-500 text-white text-xs md:text-sm py-2 px-4 text-center font-medium relative z-50">
+        <span class="inline-flex items-center gap-1">
+            <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
+            </span>
+            <span>Nouveau : Découvrez l'Agent Intelligent <strong>Baniki AI</strong> pour trouver votre logement en RDC instantanément !</span>
+        </span>
+    </div>
+
+    <!-- MAIN NAV HEADER -->
+    <header class="sticky top-0 z-40 w-full transition-all duration-300 glassmorphism border-b border-slate-200/80 dark:border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="flex items-center gap-3 group">
+                        <div class="w-11 h-11 bg-accent-500 flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110">
+                            <span class="text-black font-black text-lg">BL</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xl font-extrabold tracking-tight uppercase text-slate-900 dark:text-white">
+                                Baniki <span class="text-accent-500">Labs</span>
+                            </span>
+                            <span class="text-[8px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase">L'excellence Immo RDC</span>
+                        </div>
+                    </a>
                 </div>
-                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
-            </a>
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FFD700]">Retour</a>
-                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[#FFD700] border border-[#FFD700]/20 px-3 py-2 rounded-xl">Login</a>
+
+                <!-- Navigation Links - Desktop -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-accent-500 transition-colors">Retour</a>
+                    <a href="#catalogue" class="hover:text-brand-500 transition-colors">Propriétés</a>
+                    <a href="#services-hub" class="hover:text-brand-500 transition-colors">Nos Services</a>
+                    <a href="#ai-assistant" class="hover:text-brand-500 transition-colors flex items-center gap-1">
+                        <span class="px-1.5 py-0.5 bg-accent-500 text-brand-900 text-[10px] rounded-md font-bold uppercase tracking-wider animate-pulse">New</span>
+                        Baniki AI
+                    </a>
+                    <a href="#calculator" class="hover:text-brand-500 transition-colors">Simulateur</a>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Light/Dark Mode Toggle -->
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle Theme">
+                        <i id="themeIcon" class="fa-solid fa-moon text-slate-600 dark:text-slate-300"></i>
+                    </button>
+
+                    <!-- Submit Property Button (Desktop) -->
+                    <button onclick="openPublishModal()" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-brand-600/20 hover:shadow-brand-600/30 transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Publier mon bien</span>
+                    </button>
+
+                    <!-- Mobile Menu Trigger -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        <i id="mobileMenuIcon" class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <main class="pt-40 pb-24 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-24">
-            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">AGENCE<br><span class="text-[#FFD700]">IMMOBILIÈRE.</span></h1>
-            <p class="text-gray-400 text-lg max-w-2xl mx-auto">Trouvez le bien de vos rêves ou vendez vos propriétés avec l'expertise Baniki Labs à Kinshasa.</p>
+        <!-- Mobile Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-6 space-y-4">
+            <a href="index.html" class="block text-lg font-medium text-slate-400 hover:text-accent-500">Retour à l'accueil</a>
+            <a href="#catalogue" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500">Chercher un bien</a>
+            <a href="#services-hub" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500">Nos services pro</a>
+            <a href="#ai-assistant" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500 text-brand-500 flex items-center gap-2">
+                <i class="fa-solid fa-robot"></i> Chatbot Baniki AI
+            </a>
+            <a href="#calculator" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500">Calculateur de tarifs</a>
+            <button onclick="toggleMobileMenu(); openPublishModal()" class="w-full flex items-center justify-center gap-2 bg-brand-500 text-white font-semibold py-3 rounded-xl">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Publier mon bien</span>
+            </button>
         </div>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <a href="location.html" class="glass-card p-10 rounded-[3rem] space-y-6 block hover:scale-[1.02] transition-transform border-[var(--gold)]/40 bg-[var(--gold)]/5">
-                <div class="text-4xl text-[#FFD700]"><i class="fas fa-key"></i></div>
-                <div class="flex justify-between items-center">
-                    <h3 class="text-2xl font-black uppercase">Location</h3>
-                    <i class="fas fa-arrow-right text-[#FFD700]"></i>
-                </div>
-                <p class="text-gray-400">Besoin d'un studio, bureau ou terrain ? Trouvez la perle rare adaptée à votre budget.</p>
-            </a>
+    <!-- HERO SECTION -->
+    <section class="relative bg-gradient-to-b from-brand-900 via-brand-850 to-slate-900 text-white py-16 md:py-28 overflow-hidden">
+        <!-- Abstract Background Glows -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,132,255,0.15),transparent_45%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,215,0,0.05),transparent_40%)]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-brand-200 text-xs font-semibold tracking-wider uppercase mb-5 backdrop-blur-md border border-white/5">
+                    <i class="fa-solid fa-circle-check text-accent-500"></i> Leader de l'Immobilier de Confiance en RDC
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight md:leading-none font-outfit">
+                    Trouvez, louez ou vendez en <span class="bg-gradient-to-r from-brand-400 via-brand-200 to-white bg-clip-text text-transparent">toute sécurité</span>
+                </h1>
+                <p class="mt-4 text-base md:text-xl text-slate-300 font-light">
+                    Le plus grand marché immobilier de Kinshasa, Lubumbashi, Goma et partout en RDC avec des agents 100% certifiés.
+                </p>
+            </div>
 
-            <a href="gestion_locative.html" class="glass-card p-10 rounded-[3rem] space-y-6 block hover:scale-[1.02] transition-transform">
-                <div class="text-4xl text-[#FFD700]"><i class="fas fa-home"></i></div>
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xl font-black uppercase">Gestion</h3>
-                    <i class="fas fa-arrow-right text-[#FFD700]"></i>
+            <!-- FAST COMPREHENSIVE SEARCH PANEL -->
+            <div class="max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-2xl shadow-black/40 border border-slate-100/10 text-slate-900 dark:text-white">
+                <div class="flex flex-wrap gap-2 mb-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <button onclick="setSearchType('louer')" id="btnTabLouer" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-key"></i> À Louer
+                    </button>
+                    <button onclick="setSearchType('vendre')" id="btnTabVendre" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-tags"></i> À Vendre
+                    </button>
+                    <button onclick="setSearchType('all')" id="btnTabAll" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-list"></i> Tout voir
+                    </button>
                 </div>
-                <p class="text-gray-400">Nous gérons vos appartements et bureaux pour une rentabilité optimale sans stress.</p>
-            </a>
-            <a href="achat_vente.html" class="glass-card p-10 rounded-[3rem] space-y-6 block hover:scale-[1.02] transition-transform">
-                <div class="text-4xl text-[#FFD700]"><i class="fas fa-handshake"></i></div>
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xl font-black uppercase">Vente</h3>
-                    <i class="fas fa-arrow-right text-[#FFD700]"></i>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <!-- City Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Ville</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-dot absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <select id="filterCity" class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none appearance-none cursor-pointer">
+                                <option value="all">Toutes les villes (RDC)</option>
+                                <option value="Kinshasa">Kinshasa</option>
+                                <option value="Lubumbashi">Lubumbashi</option>
+                                <option value="Goma">Goma</option>
+                                <option value="Kolwezi">Kolwezi</option>
+                                <option value="Brazzaville">Brazzaville</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Type Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Type de bien</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-building absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <select id="filterType" class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none appearance-none cursor-pointer">
+                                <option value="all">Tous types</option>
+                                <option value="Appartement">Appartement</option>
+                                <option value="Maison">Maison</option>
+                                <option value="Villa">Villa / Duplex</option>
+                                <option value="Parcelle">Parcelle / Terrain</option>
+                                <option value="Bureau">Bureau / Commerce</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price Range Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Budget Max ($)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-wallet absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <select id="filterPrice" class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none appearance-none cursor-pointer">
+                                <option value="all">Illimité</option>
+                                <option value="500">Moins de 500 $</option>
+                                <option value="1500">Moins de 1 500 $</option>
+                                <option value="5000">Moins de 5 000 $</option>
+                                <option value="100000">Moins de 100 000 $</option>
+                                <option value="500000">Moins de 500 000 $</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Trigger Search -->
+                    <div>
+                        <button onclick="applyFilters()" class="w-full bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Rechercher</span>
+                        </button>
+                    </div>
                 </div>
-                <p class="text-gray-400">Un accompagnement complet pour vos transactions immobilières en toute sécurité.</p>
-            </a>
+            </div>
         </div>
+    </section>
 
-        <div class="mt-24 text-center">
-            <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[#FFD700] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-                Consulter nos offres
-                <i class="fab fa-whatsapp"></i>
-            </a>
+    <!-- TRUST STATS -->
+    <section class="py-10 bg-white dark:bg-slate-900 border-y border-slate-200/50 dark:border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <span class="block text-3xl md:text-5xl font-black text-brand-500 font-outfit" id="statsProperties">5,841+</span>
+                    <span class="block text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mt-1">Biens Répertoriés</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-5xl font-black text-brand-500 font-outfit">100%</span>
+                    <span class="block text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mt-1">Agents Vérifiés</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-5xl font-black text-brand-500 font-outfit">24h / 7</span>
+                    <span class="block text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mt-1">Support Local</span>
+                </div>
+                <div>
+                    <span class="block text-3xl md:text-5xl font-black text-brand-500 font-outfit">> 15k</span>
+                    <span class="block text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mt-1">Clients Heureux</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTAINER (CATALOGUE + MAP SPLIT VIEW) -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="catalogue">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- LEFT LISTINGS AREA (60%) -->
+            <div class="w-full lg:w-[62%]">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white font-outfit">Annonces Recommandées</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400" id="resultsCount">Affichage de 6 propriétés trouvées</p>
+                    </div>
+                    <!-- Quick sorting dropdown -->
+                    <div class="flex items-center gap-2">
+                        <span class="hidden sm:inline text-xs font-bold uppercase text-slate-400">Trier par:</span>
+                        <select id="sortSelector" onchange="sortProperties()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none">
+                            <option value="featured">En Vedette</option>
+                            <option value="priceAsc">Prix croissant</option>
+                            <option value="priceDesc">Prix décroissant</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Listings Grid -->
+                <div id="listingsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dynamic properties cards will be injected here via JavaScript -->
+                </div>
+            </div>
+
+            <!-- RIGHT INTERACTIVE MAP & EXTRA VALUE AREA (38%) -->
+            <div class="w-full lg:w-[38%] space-y-8">
+                <!-- Interactive Mini Map Component -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-xl overflow-hidden relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <h3 class="font-bold text-sm tracking-wide uppercase text-slate-600 dark:text-slate-300">Géo-localisation RDC</h3>
+                        </div>
+                        <span class="text-xs font-medium text-brand-500">Carte interactive</span>
+                    </div>
+
+                    <!-- Canvas/SVG Custom Map Simulation representing regions of Congo -->
+                    <div class="relative w-full h-64 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center overflow-hidden">
+                        <!-- Abstract DRC map outline SVG -->
+                        <svg class="absolute inset-0 w-full h-full text-slate-300/60 dark:text-slate-800/65 transition-all p-4" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M50,40 Q65,10 90,20 T140,25 T180,60 T150,110 T160,160 T110,180 T70,140 T30,120 T20,70 Z" />
+                        </svg>
+
+                        <!-- Kinshasa dot -->
+                        <button onclick="zoomToCity('Kinshasa')" class="absolute top-[110px] left-[45px] group focus:outline-none">
+                            <span class="absolute inline-flex h-5 w-5 rounded-full bg-brand-500/30 animate-ping"></span>
+                            <span class="relative block w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white"></span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Kinshasa</span>
+                        </button>
+
+                        <!-- Lubumbashi dot -->
+                        <button onclick="zoomToCity('Lubumbashi')" class="absolute top-[165px] left-[140px] group focus:outline-none">
+                            <span class="absolute inline-flex h-5 w-5 rounded-full bg-brand-500/30 animate-ping"></span>
+                            <span class="relative block w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white"></span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Lubumbashi</span>
+                        </button>
+
+                        <!-- Goma dot -->
+                        <button onclick="zoomToCity('Goma')" class="absolute top-[65px] left-[155px] group focus:outline-none">
+                            <span class="absolute inline-flex h-5 w-5 rounded-full bg-red-500/30 animate-ping"></span>
+                            <span class="relative block w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white"></span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Goma</span>
+                        </button>
+
+                        <!-- Kolwezi dot -->
+                        <button onclick="zoomToCity('Kolwezi')" class="absolute top-[148px] left-[118px] group focus:outline-none">
+                            <span class="absolute inline-flex h-5 w-5 rounded-full bg-brand-500/30 animate-ping"></span>
+                            <span class="relative block w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white"></span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Kolwezi</span>
+                        </button>
+
+                        <!-- Interactive instructions -->
+                        <div class="absolute bottom-2 left-2 right-2 bg-white/95 dark:bg-slate-900/95 p-2 rounded-xl border border-slate-100 dark:border-slate-800 text-[10px] text-center text-slate-500 dark:text-slate-400 shadow">
+                            Cliquez sur une ville de la carte pour filtrer instantanément.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PREFABRICATED HOUSES & CONCESSIONS PROMO -->
+                <div class="bg-gradient-to-br from-brand-900 to-slate-900 rounded-3xl p-6 text-white border border-slate-800 relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/10 rounded-full blur-2xl"></div>
+                    <div class="relative z-10">
+                        <span class="px-2.5 py-1 bg-accent-500 text-brand-950 text-[10px] rounded-lg font-bold tracking-wider uppercase">Tendance RDC</span>
+                        <h3 class="text-xl font-bold mt-3 mb-2 font-outfit">Maisons Préfabriquées Premium</h3>
+                        <p class="text-xs text-slate-300 mb-4 font-light leading-relaxed">
+                            Besoin d'une villa clé en main prête en 45 jours ? Commandez nos structures écologiques modulaires certifiées CE.
+                        </p>
+                        <button onclick="triggerPrefabricatedInquiry()" class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-brand-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-transform active:scale-95">
+                            <span>Voir le catalogue préfabriqué</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DOWNLOAD COMPREHENSIVE CONTRACT FORM -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-lg text-slate-700 dark:text-slate-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center text-orange-600">
+                            <i class="fa-solid fa-file-pdf text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">Modèles de Contrat PDF gratuit</h4>
+                            <p class="text-xs text-slate-400">Prêt à l'usage (Conforme RDC)</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+                        Téléchargez légalement le contrat type de bail résidentiel ou d'achat de parcelle signé par un avocat spécialisé.
+                    </p>
+                    <button onclick="downloadMockContract()" class="w-full text-center text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 py-3 rounded-xl transition-all">
+                        <i class="fa-solid fa-download mr-1.5"></i> Télécharger le contrat de bail (.PDF)
+                    </button>
+                </div>
+            </div>
         </div>
     </main>
+
+    <!-- CHATBOT BANIKI AI ASSISTANT SECTION -->
+    <section id="ai-assistant" class="bg-gradient-to-tr from-brand-950 to-slate-900 text-slate-200 py-16 border-y border-brand-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-500 text-black text-xs font-black uppercase rounded-lg tracking-wider shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                        <i class="fa-solid fa-microchip"></i> Agent Intelligent RDC
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black leading-tight font-outfit text-accent-500">
+                        Trouvez votre maison avec <span class="text-white">Baniki AI</span>
+                    </h2>
+                    <p class="text-slate-300 font-light leading-relaxed text-sm md:text-base">
+                        Baniki AI comprend vos phrases naturelles. Écrivez-lui directement "Je cherche un appartement à louer de 3 chambres à Gombe pour 1500$" ou "Je veux vendre ma parcelle à N'sele", il s'occupe de trier la base de données pour vous instantanément !
+                    </p>
+                    
+                    <!-- Quick commands to tap -->
+                    <div class="space-y-2.5">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Exemples de commandes à essayer :</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="sendChatMessage('Trouve-moi un appartement meublé à Gombe')" class="text-xs bg-slate-800/50 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all text-left">
+                                🏠 Appartement Gombe
+                            </button>
+                            <button onclick="sendChatMessage('Je cherche une maison journalière à 100$')" class="text-xs bg-accent-500/10 hover:bg-accent-500/20 text-accent-500 px-3.5 py-2 rounded-xl border border-accent-500/30 transition-all text-left font-bold">
+                                📅 Location Journalière
+                            </button>
+                            <button onclick="sendChatMessage('Je cherche une belle villa de luxe')" class="text-xs bg-slate-800/50 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all text-left">
+                                ✨ Villa de luxe
+                            </button>
+                            <button onclick="sendChatMessage('Y a-t-il des terrains pas chers à Kolwezi ?')" class="text-xs bg-slate-800/50 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all text-left">
+                                🌍 Terrain Kolwezi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulated iPhone Agent interface -->
+                <div class="lg:col-span-7 flex justify-center">
+                    <div class="w-full max-w-md bg-slate-900 rounded-[2.5rem] p-4 shadow-2xl border-4 border-slate-800 relative">
+                        <!-- Speaker / Camera Notch -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-5 bg-slate-800 rounded-b-xl z-20"></div>
+                        
+                        <!-- Screen Container -->
+                        <div class="bg-slate-950 rounded-[2rem] overflow-hidden flex flex-col h-[480px]">
+                            <!-- Chatbot Header -->
+                            <div class="bg-slate-900 px-4 pt-6 pb-4 border-b border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white text-lg">
+                                            <i class="fa-solid fa-robot"></i>
+                                        </div>
+                                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm">Baniki AI Agent</h4>
+                                        <p class="text-[10px] text-slate-400">Agent en ligne • Réponse instantanée</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">2.0v</span>
+                            </div>
+
+                            <!-- Messages Area -->
+                            <div id="chatMessages" class="flex-grow overflow-y-auto p-4 space-y-3 scroll-smooth text-xs">
+                                <!-- Bot message -->
+                                <div class="flex gap-2.5 max-w-[85%]">
+                                    <div class="w-6 h-6 rounded-full bg-brand-500 flex-shrink-0 flex items-center justify-center text-[10px] text-white">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <div class="bg-slate-900 rounded-2xl rounded-tl-none p-3 text-slate-200 leading-relaxed shadow-sm">
+                                        Mambo vipi ! Je suis votre agent immobilier IA de confiance. Dites-moi ce que vous cherchez (lieu, budget, type de contrat) et je chercherai pour vous !
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chat inputs -->
+                            <div class="p-3 bg-slate-900/50 border-t border-slate-800">
+                                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                                    <input type="text" id="chatInput" placeholder="Tapez votre recherche ici..." class="flex-1 bg-slate-950 border-0 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <button type="submit" class="w-11 h-11 bg-brand-500 hover:bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform active:scale-95">
+                                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICE VALUE PORTAL (NETTOYAGE, PEINTURE, DEMENAGEMENT) -->
+    <section id="services-hub" class="py-16 bg-white dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-500 font-bold uppercase text-xs tracking-widest block mb-2">ÉCOSYSTÈME COMPLET</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold font-outfit">Plus qu'un portail : Nos services d'experts</h2>
+                <p class="mt-4 text-slate-500 dark:text-slate-400 font-light">
+                    Pour simplifier votre installation, nous fournissons des professionnels agréés avec devis gratuits immédiats.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <!-- Service 1 -->
+                <div class="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-paint-roller text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 font-outfit">Peinture Professionnelle</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Ravivez les murs de votre nouvel appartement. Peintres certifiés, finitions soignées en 48h chrono.
+                    </p>
+                    <span class="text-xs font-semibold text-brand-500">Tarif dès 5$/m² →</span>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-broom text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 font-outfit">Nettoyage complet</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Désinfection, nettoyage de chantier avant déménagement ou de fin de bail résidentiel et industriel.
+                    </p>
+                    <span class="text-xs font-semibold text-brand-500">Devis instantané →</span>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-950 text-orange-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-truck-ramp-box text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 font-outfit">Déménagement Sécurisé</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Équipe de manutentionnaires formés et camions sécurisés pour transporter vos affaires de Gombe à Ngaliema.
+                    </p>
+                    <span class="text-xs font-semibold text-brand-500">Service garanti →</span>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 transition-all hover:shadow-xl group hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-scale-balanced text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 font-outfit">Avocats et Droit Immo</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Évitez les litiges de double vente de parcelles. Authentification rapide de vos titres fonciers au Ministère.
+                    </p>
+                    <span class="text-xs font-semibold text-brand-500">Conseils d'experts →</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE ESTIMATION CALCULATOR -->
+    <section id="calculator" class="py-16 bg-slate-100 dark:bg-slate-950 border-t border-slate-200/50 dark:border-slate-800/50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 border border-slate-200 dark:border-slate-800 shadow-xl">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-outfit text-slate-900 dark:text-white">Estimateur Intelligent de Budget Immo</h3>
+                    <p class="text-xs text-slate-400 mt-1">Calculez instantanément vos frais d'agence, garantie locative et déménagement.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Calculator Parameters -->
+                    <div class="space-y-5">
+                        <!-- Option : Loyer Mensuel -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Loyer du bien ciblé ($ / mois)</label>
+                            <input type="number" id="calcLoyer" value="500" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+
+                        <!-- Option : Garantie locative (Mois) -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Garantie locative exigée (Mois)</label>
+                            <select id="calcGarantie" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="3">3 Mois (Légal RDC)</option>
+                                <option value="5">5 Mois</option>
+                                <option value="1">1 Mois</option>
+                            </select>
+                        </div>
+
+                        <!-- Option : Type de déménagement -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Besoin d'un Déménageur ?</label>
+                            <select id="calcDemenageur" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="0">Non, je m'en occupe</option>
+                                <option value="150">Oui, standard (Petite distance) + 150$</option>
+                                <option value="350">Oui, premium (Kinshasa périphérie) + 350$</option>
+                            </select>
+                        </div>
+
+                        <button onclick="calculateBudget()" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold py-3.5 rounded-xl transition-all hover:opacity-90 active:scale-95">
+                            Calculer le total à prévoir
+                        </button>
+                    </div>
+
+                    <!-- Calculator Output Card -->
+                    <div class="bg-brand-50 dark:bg-slate-950/60 rounded-2xl p-6 border border-brand-100 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold tracking-widest text-brand-600 dark:text-brand-400 uppercase">BUDGET TOTAL ESTIMÉ</span>
+                            <div class="text-4xl md:text-5xl font-black text-brand-900 dark:text-white mt-1.5 mb-4 font-outfit" id="calcTotal">$ 1,650.00</div>
+                            
+                            <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                                <div class="flex justify-between">
+                                    <span>Garantie Locative :</span>
+                                    <span class="font-bold" id="outGarantie">$ 1,500</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Commission de l'agent (1 mois) :</span>
+                                    <span class="font-bold" id="outCommission">$ 500</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Déménagement & Logistique :</span>
+                                    <span class="font-bold" id="outDemenagement">$ 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-slate-200 dark:border-slate-800 mt-6">
+                            <p class="text-[10px] text-slate-400 leading-relaxed">
+                                *Note : En RDC, la loi fixe la garantie de bail résidentiel à un maximum de 3 mois de loyer. Les frais de commission de l'agent s'élèvent généralement à un mois.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-900 text-white pt-16 pb-8 border-t border-brand-850">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-white/5">
+                
+                <div class="space-y-4">
+                    <span class="text-2xl font-bold font-outfit text-white">BANIKI<span class="text-accent-500">LABS</span></span>
+                    <p class="text-xs text-slate-300 leading-relaxed font-light">
+                        La plateforme immobilière de référence en RDC. Trouvez votre futur chez-vous ou faites fructifier vos biens grâce à notre réseau d'experts certifiés.
+                    </p>
+                    <div class="flex gap-3 text-slate-400">
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-brands fa-instagram text-sm"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-sm tracking-widest uppercase text-slate-400 mb-4">Villes phares</h4>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li><a href="#" onclick="zoomToCity('Kinshasa')" class="hover:underline">Immobilier Kinshasa</a></li>
+                        <li><a href="#" onclick="zoomToCity('Lubumbashi')" class="hover:underline">Immobilier Lubumbashi</a></li>
+                        <li><a href="#" onclick="zoomToCity('Goma')" class="hover:underline">Immobilier Goma</a></li>
+                        <li><a href="#" onclick="zoomToCity('Kolwezi')" class="hover:underline">Immobilier Kolwezi</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-sm tracking-widest uppercase text-slate-400 mb-4">Catégories d'annonces</h4>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li><a href="#" class="hover:underline">Appartements à Louer</a></li>
+                        <li><a href="#" class="hover:underline">Maisons & Villas à Vendre</a></li>
+                        <li><a href="#" class="hover:underline">Parcelles & Terrains constructibles</a></li>
+                        <li><a href="#" class="hover:underline">Bureaux & Commerces</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-sm tracking-widest uppercase text-slate-400 mb-4">Contact & Support</h4>
+                    <ul class="space-y-3.5 text-xs text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brand-400"></i> +243 978 415 814</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-brand-400"></i> contact@banikilabs.com</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-map-pin text-brand-400"></i> Gombe, Kinshasa, RDC</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Footer bottom bar -->
+            <div class="flex flex-col md:flex-row items-center justify-between pt-8 text-[11px] text-slate-400">
+                <p>© 2026 Banikilabs. Développé pour surpasser toute concurrence. Tous droits réservés.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:underline">Mentions légales</a>
+                    <span>•</span>
+                    <a href="#" class="hover:underline">Politique de confidentialité</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- DETAILS DIALOG MODAL -->
+    <div id="detailsModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Modal Backdrop overlay -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeDetailsModal()">
+                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal Panel content -->
+            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-slate-200/50 dark:border-slate-800">
+                <div class="relative">
+                    <button onclick="closeDetailsModal()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white flex items-center justify-center transition-transform active:scale-95">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                    <!-- Featured Image placeholder -->
+                    <img id="modalImg" src="" alt="Détail du bien" class="w-full h-64 object-cover">
+                    <!-- Badges on image -->
+                    <div class="absolute bottom-4 left-4 flex gap-2">
+                        <span id="modalTag" class="px-3 py-1 bg-brand-500 text-white text-xs font-black uppercase rounded-lg"></span>
+                        <span id="modalCity" class="px-3 py-1 bg-black/60 backdrop-blur text-white text-xs font-semibold rounded-lg"></span>
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-8 space-y-6">
+                    <div>
+                        <h3 id="modalTitle" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit"></h3>
+                        <p id="modalPrice" class="text-2xl font-black text-brand-500 mt-2 font-outfit"></p>
+                    </div>
+                    <p id="modalDesc" class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed italic"></p>
+
+                    <!-- Room indicators grid -->
+                    <div class="grid grid-cols-3 gap-4 border-y border-slate-100 dark:border-slate-800 py-4 text-center">
+                        <div class="space-y-1">
+                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Chambres</span>
+                            <span id="modalBeds" class="block font-bold text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-bed text-brand-400 mr-1"></i> -</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Salles de bain</span>
+                            <span id="modalBaths" class="block font-bold text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-bath text-brand-400 mr-1"></i> -</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Agent Vérifié</span>
+                            <span id="modalAgent" class="block font-bold text-emerald-500 text-sm"><i class="fa-solid fa-user-shield mr-1"></i> Oui</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom notification center for actions -->
+                    <div id="modalAlert" class="hidden p-3 text-xs font-semibold rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span id="modalAlertText"></span>
+                    </div>
+
+                    <!-- Contact & CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a id="whatsappLink" href="" target="_blank" class="flex-1 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-center py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-md">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Contacter sur WhatsApp</span>
+                        </a>
+                        <button onclick="copyListingLink()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-white font-bold py-3 rounded-xl transition-all text-sm">
+                            <i class="fa-solid fa-share-nodes mr-1.5"></i> Partager l'annonce
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PUBLISH NEW LISTING MODAL -->
+    <div id="publishModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Modal Backdrop overlay -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closePublishModal()">
+                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal Panel content -->
+            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-slate-200/50 dark:border-slate-800">
+                <div class="p-6 md:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl md:text-2xl font-bold font-outfit text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-brand-500"></i> Publier une Annonce
+                        </h3>
+                        <button onclick="closePublishModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+
+                    <form id="newListingForm" onsubmit="handleNewListingSubmit(event)" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Titre de l'annonce</label>
+                                <input type="text" id="addTitle" placeholder="Ex: Bel appartement moderne" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Ville</label>
+                                <select id="addCity" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                    <option value="Kinshasa">Kinshasa</option>
+                                    <option value="Lubumbashi">Lubumbashi</option>
+                                    <option value="Goma">Goma</option>
+                                    <option value="Kolwezi">Kolwezi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de bien</label>
+                                <select id="addType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                    <option value="Appartement">Appartement</option>
+                                    <option value="Maison">Maison</option>
+                                    <option value="Villa">Villa / Duplex</option>
+                                    <option value="Parcelle">Parcelle / Terrain</option>
+                                    <option value="Bureau">Bureau / Commerce</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Contrat</label>
+                                <select id="addDeal" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                    <option value="louer">À Louer</option>
+                                    <option value="vendre">À Vendre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Prix ($)</label>
+                                <input type="number" id="addPrice" placeholder="Ex: 800" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Précision prix</label>
+                                <input type="text" id="addPeriod" placeholder="Ex: par mois, prix global" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Chambres (Optionnel)</label>
+                                <input type="number" id="addBeds" value="2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Douches (Optionnel)</label>
+                                <input type="number" id="addBaths" value="2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Image Thématique</label>
+                            <select id="addImageTheme" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                <option value="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80">Appartement Moderne Chic</option>
+                                <option value="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80">Grande Villa Moderne</option>
+                                <option value="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80">Maison Traditionnelle Confort</option>
+                                <option value="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80">Villa de luxe avec Piscine</option>
+                            </select>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-95">
+                                Publier maintenant sur Banikilabs
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION NOTIFIER CHIP -->
+    <div id="notificationToast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200">
+        <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="flex-1">
+            <p id="notificationToastText" class="text-xs font-semibold leading-relaxed"></p>
+        </div>
+        <button onclick="hideToast()" class="text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <script>
+        // Global variables & state holding mock RDC properties matching real Zwandako listings
+        let properties = [
+            {
+                id: 7,
+                title: "Maison Journalière Premium – Gombe",
+                price: 100,
+                period: "par jour",
+                city: "Kinshasa",
+                type: "Maison",
+                deal: "louer",
+                beds: 2,
+                baths: 2,
+                image: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80",
+                agent: "Baniki Labs",
+                badge: "Journalier",
+                verified: true,
+                description: "Maison tout confort à Gombe. Inclus : Wifi haut débit, Climatiseur, 2 chambres, cuisine équipée, salon, salle à manger, 2 douches/toilettes. Sécurité garantie, Panneau solaire et Groupe électrogène."
+            },
+            {
+                id: 8,
+                title: "Maison inachevée – Mont-Ngafula, Kinshasa",
+                price: 70000,
+                period: "global (discutable)",
+                city: "Kinshasa",
+                type: "Maison",
+                deal: "vendre",
+                beds: 0,
+                baths: 0,
+                image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
+                agent: "Baniki Labs",
+                badge: "Opportunité",
+                verified: true,
+                description: "OPPORTUNITÉ : Maison inachevée sur une magnifique parcelle de 18m x 20m (360 m²) idéalement située à Mont-Ngafula. Emplacement calme et accessible. Terrain plat et prêt pour la construction. Dossier complet et vérifié."
+            },
+            {
+                id: 1,
+                title: "Appartement à Louer – Gombe, Kinshasa",
+                price: 800,
+                period: "par mois",
+                city: "Kinshasa",
+                type: "Appartement",
+                deal: "louer",
+                beds: 2,
+                baths: 2,
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+                agent: "Fabrice Kala",
+                badge: "En Vedette",
+                verified: true
+            },
+            {
+                id: 2,
+                title: "Villa Moderne à Vendre – Macampagne, Kinshasa",
+                price: 450000,
+                period: "prix total",
+                city: "Kinshasa",
+                type: "Villa",
+                deal: "vendre",
+                beds: 5,
+                baths: 4,
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                agent: "Immo Congo Elite",
+                badge: "Populaire",
+                verified: true
+            },
+            {
+                id: 3,
+                title: "Parcelle à Vendre – Kintambo, Kinshasa",
+                price: 120000,
+                period: "prix total",
+                city: "Kinshasa",
+                type: "Parcelle",
+                deal: "vendre",
+                beds: 0,
+                baths: 0,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                agent: "Mambomarket Agency",
+                badge: "Terrain",
+                verified: true
+            },
+            {
+                id: 4,
+                title: "Appartement Meublé à Louer – Lubumbashi, Golf",
+                price: 1200,
+                period: "par mois",
+                city: "Lubumbashi",
+                type: "Appartement",
+                deal: "louer",
+                beds: 3,
+                baths: 2,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                agent: "John Kabila",
+                badge: "Nouveau",
+                verified: true
+            },
+            {
+                id: 5,
+                title: "Bureau Spacieux à Louer – Goma, Rive du Lac",
+                price: 1500,
+                period: "par mois",
+                city: "Goma",
+                type: "Bureau",
+                deal: "louer",
+                beds: 0,
+                baths: 2,
+                image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+                agent: "FK Immo Goma",
+                badge: "En Vedette",
+                verified: true
+            },
+            {
+                id: 6,
+                title: "Maison à Louer – Kolwezi, Centre",
+                price: 600,
+                period: "par mois",
+                city: "Kolwezi",
+                type: "Maison",
+                deal: "louer",
+                beds: 3,
+                baths: 2,
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+                agent: "Lema Botomba",
+                badge: "Populaire",
+                verified: true
+            }
+        ];
+
+        // Active filters state
+        let currentSearchType = 'all'; // 'louer' | 'vendre' | 'all'
+
+        // Initialize App on load
+        window.onload = function() {
+            renderProperties(properties);
+            calculateBudget();
+        };
+
+        // Renders listings inside the main grid dynamically
+        function renderProperties(data) {
+            const grid = document.getElementById('listingsGrid');
+            const counter = document.getElementById('resultsCount');
+            grid.innerHTML = '';
+            
+            counter.innerText = `Affichage de ${data.length} propriété(s) trouvée(s)`;
+
+            if (data.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 px-4 text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700 dark:text-slate-300">Aucun bien trouvé</h4>
+                        <p class="text-xs text-slate-400 mt-1">Essayez d'ajuster vos critères ou de regarder d'autres villes de la RDC.</p>
+                        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-brand-500 text-white text-xs font-semibold rounded-lg">Réinitialiser les filtres</button>
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(property => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 relative group cursor-pointer";
+                card.onclick = () => openDetailsModal(property.id);
+                
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${property.image}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
+                        <div class="absolute top-3 left-3 flex gap-1.5">
+                            <span class="px-2.5 py-1 bg-brand-500 text-white text-[10px] font-black uppercase rounded-lg">${property.badge}</span>
+                            <span class="px-2.5 py-1 bg-black/60 backdrop-blur text-white text-[10px] font-bold rounded-lg uppercase">${property.deal === 'louer' ? 'À Louer' : 'À Vendre'}</span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <button class="w-8 h-8 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-white text-brand-500 flex items-center justify-center shadow transition-transform active:scale-90" onclick="event.stopPropagation(); toggleFavorite(${property.id})">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center gap-1 text-[11px] font-bold text-brand-500 uppercase tracking-widest">
+                            <i class="fa-solid fa-map-pin"></i>
+                            <span>${property.city}</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-800 dark:text-white line-clamp-1">${property.title}</h3>
+                        
+                        <div class="flex items-center gap-4 text-[11px] text-slate-400 font-semibold border-y border-slate-50 dark:border-slate-800 py-2.5">
+                            ${property.beds > 0 ? `<span><i class="fa-solid fa-bed text-brand-400 mr-1.5"></i>${property.beds} Lits</span>` : ''}
+                            ${property.baths > 0 ? `<span><i class="fa-solid fa-bath text-brand-400 mr-1.5"></i>${property.baths} Douches</span>` : ''}
+                            <span><i class="fa-solid fa-shield-halved text-emerald-500 mr-1.5"></i>Vérifié</span>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <div>
+                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Tarif Pro</span>
+                                <span class="text-base font-extrabold text-brand-900 dark:text-brand-400 font-outfit">$ ${property.price.toLocaleString()} <span class="text-xs font-medium text-slate-400">${property.period}</span></span>
+                            </div>
+                            <span class="text-xs font-bold text-brand-500 group-hover:translate-x-1 transition-all">Détails <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Set main deal category (Louer / Vendre)
+        function setSearchType(type) {
+            currentSearchType = type;
+            const btnLouer = document.getElementById('btnTabLouer');
+            const btnVendre = document.getElementById('btnTabVendre');
+            const btnAll = document.getElementById('btnTabAll');
+
+            // Reset active styles
+            [btnLouer, btnVendre, btnAll].forEach(btn => {
+                btn.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-all flex items-center justify-center gap-2";
+            });
+
+            // Set active style for selected tab
+            if (type === 'louer') {
+                btnLouer.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
+            } else if (type === 'vendre') {
+                btnVendre.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
+            } else {
+                btnAll.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
+            }
+
+            applyFilters();
+        }
+
+        // Apply drop-down filters combined with the main active tab
+        function applyFilters() {
+            const city = document.getElementById('filterCity').value;
+            const type = document.getElementById('filterType').value;
+            const maxPrice = document.getElementById('filterPrice').value;
+
+            let filtered = properties;
+
+            // Deal type tab filter
+            if (currentSearchType !== 'all') {
+                filtered = filtered.filter(p => p.deal === currentSearchType);
+            }
+
+            // City filter
+            if (city !== 'all') {
+                filtered = filtered.filter(p => p.city === city);
+            }
+
+            // Type filter
+            if (type !== 'all') {
+                filtered = filtered.filter(p => p.type === type);
+            }
+
+            // Price filter
+            if (maxPrice !== 'all') {
+                filtered = filtered.filter(p => p.price <= parseInt(maxPrice));
+            }
+
+            renderProperties(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterCity').value = 'all';
+            document.getElementById('filterType').value = 'all';
+            document.getElementById('filterPrice').value = 'all';
+            setSearchType('all');
+        }
+
+        // Sorting features
+        function sortProperties() {
+            const criteria = document.getElementById('sortSelector').value;
+            let sorted = [...properties];
+            
+            if (criteria === 'priceAsc') {
+                sorted.sort((a, b) => a.price - b.price);
+            } else if (criteria === 'priceDesc') {
+                sorted.sort((a, b) => b.price - a.price);
+            } else {
+                // Random featured sorting simulation
+                sorted.sort((a, b) => b.id - a.id);
+            }
+            renderProperties(sorted);
+        }
+
+        // Map Click Interaction Handler
+        function zoomToCity(cityName) {
+            document.getElementById('filterCity').value = cityName;
+            applyFilters();
+            showToast(`Filtré sur la ville de : ${cityName}`);
+        }
+
+        // Theme toggler
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon text-slate-600';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-slate-300';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Mobile navbar toggler
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark text-lg';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars text-lg';
+            }
+        }
+
+        // Modal management details
+        function openDetailsModal(id) {
+            const property = properties.find(p => p.id === id);
+            if (!property) return;
+
+            document.getElementById('modalImg').src = property.image;
+            document.getElementById('modalTag').innerText = property.badge;
+            document.getElementById('modalCity').innerText = property.city;
+            document.getElementById('modalTitle').innerText = property.title;
+            document.getElementById('modalPrice').innerText = `$ ${property.price.toLocaleString()} ${property.period}`;
+            document.getElementById('modalBeds').innerHTML = `<i class="fa-solid fa-bed text-brand-400 mr-1"></i> ${property.beds} Chambres`;
+            document.getElementById('modalBaths').innerHTML = `<i class="fa-solid fa-bath text-brand-400 mr-1"></i> ${property.baths} Douches`;
+            document.getElementById('modalAgent').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-500 mr-1"></i> ${property.agent}`;
+            document.getElementById('modalDesc').innerText = property.description || "";
+
+            // Create direct WhatsApp contact prefilled message
+            const whatsappText = `Bonjour, je suis intéressé par l'annonce "${property.title}" affichée sur Banikilabs au prix de ${property.price}$ : https://banikilabs.com/property/${property.id}`;
+            document.getElementById('whatsappLink').href = `https://api.whatsapp.com/send?phone=243978415814&text=${encodeURIComponent(whatsappText)}`;
+
+            document.getElementById('modalAlert').classList.add('hidden');
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
+        function copyListingLink() {
+            // Simulator of link copying
+            const dummyUrl = window.location.href + '#details';
+            const tempInput = document.createElement('input');
+            tempInput.value = dummyUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Display feedback
+            const alertBox = document.getElementById('modalAlert');
+            const alertText = document.getElementById('modalAlertText');
+            alertText.innerText = "Lien de l'annonce copié dans le presse-papier ! Envoyez-le à vos proches.";
+            alertBox.classList.remove('hidden');
+        }
+
+        // Favorites toggle simulator
+        function toggleFavorite(id) {
+            showToast("Ajouté à votre liste de favoris !");
+        }
+
+        // Listing Upload Modals
+        function openPublishModal() {
+            document.getElementById('publishModal').classList.remove('hidden');
+        }
+
+        function closePublishModal() {
+            document.getElementById('publishModal').classList.add('hidden');
+        }
+
+        // Handles submission of custom user listings inside browser storage memory
+        function handleNewListingSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('addTitle').value;
+            const city = document.getElementById('addCity').value;
+            const type = document.getElementById('addType').value;
+            const deal = document.getElementById('addDeal').value;
+            const price = parseInt(document.getElementById('addPrice').value);
+            const period = document.getElementById('addPeriod').value || (deal === 'louer' ? 'par mois' : 'prix global');
+            const beds = parseInt(document.getElementById('addBeds').value) || 0;
+            const baths = parseInt(document.getElementById('addBaths').value) || 0;
+            const image = document.getElementById('addImageTheme').value;
+
+            const newProperty = {
+                id: properties.length + 1,
+                title: `${type} à ${deal === 'louer' ? 'Louer' : 'Vendre'} – ${title}, ${city}`,
+                price: price,
+                period: period,
+                city: city,
+                type: type,
+                deal: deal,
+                beds: beds,
+                baths: baths,
+                image: image,
+                agent: "Vous (Agent Soumissionnaire)",
+                badge: "Nouveau",
+                verified: true
+            };
+
+            properties.unshift(newProperty); // Put to top of recommended listings
+            renderProperties(properties); // Re-render instantly
+            closePublishModal();
+            
+            // Dynamic UI Stats increment
+            const countStats = document.getElementById('statsProperties');
+            countStats.innerText = "5,842+";
+
+            showToast("🎉 Annonce publiée avec succès ! Elle s'affiche maintenant au catalogue.");
+            
+            // Scroll to catalogue
+            document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Interactive Budget calculator functions
+        function calculateBudget() {
+            const loyer = parseFloat(document.getElementById('calcLoyer').value) || 0;
+            const moisGarantie = parseInt(document.getElementById('calcGarantie').value) || 3;
+            const demenageur = parseFloat(document.getElementById('calcDemenageur').value) || 0;
+
+            const totalGarantie = loyer * moisGarantie;
+            const commission = loyer; // Fixed 1 month agent commission (Common standard RDC)
+            const totalBudget = totalGarantie + commission + demenageur;
+
+            document.getElementById('calcTotal').innerText = `$ ${totalBudget.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('outGarantie').innerText = `$ ${totalGarantie.toLocaleString()}`;
+            document.getElementById('outCommission').innerText = `$ ${commission.toLocaleString()}`;
+            document.getElementById('outDemenagement').innerText = `$ ${demenageur.toLocaleString()}`;
+        }
+
+        // Intelligent Baniki AI Bot Engine
+        function sendChatMessage(text) {
+            document.getElementById('chatInput').value = text;
+            handleChatSubmit(null);
+        }
+
+        function handleChatSubmit(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Display user message
+            appendChatMessage(query, 'user');
+            input.value = '';
+
+            // Loading simulation
+            setTimeout(() => {
+                const response = processBotIntelligence(query);
+                appendChatMessage(response, 'bot');
+            }, 800);
+        }
+
+        function appendChatMessage(text, sender) {
+            const chatBox = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            
+            if (sender === 'user') {
+                msgDiv.className = "flex justify-end gap-2.5 max-w-[85%] ml-auto";
+                msgDiv.innerHTML = `
+                    <div class="bg-brand-500 text-white rounded-2xl rounded-tr-none p-3 shadow-sm">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                msgDiv.className = "flex gap-2.5 max-w-[85%]";
+                msgDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded-full bg-brand-500 flex-shrink-0 flex items-center justify-center text-[10px] text-white">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-900 rounded-2xl rounded-tl-none p-3 text-slate-200 leading-relaxed shadow-sm">
+                        ${text}
+                    </div>
+                `;
+            }
+
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Simple Natural Language Processing simulated to understand context of RDC real estate search
+        function processBotIntelligence(query) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('ngafula') || q.includes('inachevé') || q.includes('inacheve')) {
+                return `J'ai justement une superbe opportunité à **Mont-Ngafula** ! Une maison inachevée sur une parcelle de 360m² pour **70 000$ (discutable)**. Terrain plat et documents vérifiés. <button onclick="openDetailsModal(8)" class="text-brand-400 underline font-bold ml-1">Voir les détails</button>`;
+            }
+
+            if (q.includes('journalier') || q.includes('par jour') || q.includes('100')) {
+                return `Absolument ! Nous proposons une **Maison Journalière à Gombe** pour **100$/jour**. Elle est entièrement équipée : 2 chambres, wifi, clim, panneau solaire et groupe électrogène. <button onclick="openDetailsModal(7)" class="text-brand-400 underline font-bold ml-1">Voir la fiche complète</button>`;
+            }
+
+            if (q.includes('gombe') || q.includes('meublé') || q.includes('meuble')) {
+                // Return kinshasa Gombe listings
+                const items = properties.filter(p => p.city === 'Kinshasa' && p.type === 'Appartement');
+                return `J'ai trouvé ${items.length} appartement(s) correspondant à Gombe/Kinshasa. Le premier est à **800$/mois** géré par notre agent Fabrice Kala. <button onclick="openDetailsModal(1)" class="text-brand-400 underline font-bold ml-1">Voir la fiche</button>`;
+            }
+            
+            if (q.includes('villa') || q.includes('luxe')) {
+                return `Oh, une villa d'exception ! Je vous conseille la **Villa Moderne à Macampagne** (5 chambres, 4 douches, 450,000$). C'est un de nos produits les plus prisés. <button onclick="openDetailsModal(2)" class="text-brand-400 underline font-bold ml-1">Voir la fiche</button>`;
+            }
+
+            if (q.includes('terrain') || q.includes('parcelle') || q.includes('kolwezi')) {
+                return `Absolument ! J'ai des terrains et parcelles prêts à bâtir : une parcelle de choix à Kintambo (120,000$) ou une maison spacieuse au centre de Kolwezi à 600$/mois. <button onclick="openDetailsModal(6)" class="text-brand-400 underline font-bold ml-1">Examiner l'annonce</button>`;
+            }
+
+            if (q.includes('loi') || q.includes('garantie') || q.includes('contrat')) {
+                return `La législation congolaise en RDC protège le locataire : le propriétaire ne peut légalement pas demander plus de **3 mois** de garantie locative pour un bail résidentiel. Vous pouvez télécharger notre contrat conforme pour sécuriser votre bail !`;
+            }
+
+            return `D'accord ! Je peux rechercher cela parmi nos 5 841 propriétés en RDC. En tant qu'assistant de confiance, je vous invite également à spécifier votre budget de départ pour que je cible le meilleur agent immo !`;
+        }
+
+        // Simulated Contract Downloader
+        function downloadMockContract() {
+            showToast("📥 Téléchargement lancé : Contrat_de_Bail_Type_RDC.pdf (Modèle légal gratuit)");
+        }
+
+        function triggerPrefabricatedInquiry() {
+            showToast("✨ Redirection vers l'espace de personnalisation de votre maison préfabriquée...");
+        }
+
+        // Custom non-blocking visual Toast Notifications
+        function showToast(message) {
+            const toast = document.getElementById('notificationToast');
+            const toastText = document.getElementById('notificationToastText');
+            
+            toastText.innerText = message;
+            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200";
+
+            // Autohide after 4 seconds
+            setTimeout(() => {
+                hideToast();
+            }, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('notificationToast');
+            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200";
+        }
+    </script>
 </body>
 </html>

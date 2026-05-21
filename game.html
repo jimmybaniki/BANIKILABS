@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baniki Venture: Scale-Up DRC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --baniki-blue: #0ea5e9;
+            --baniki-dark: #0f172a;
+            --baniki-gold: #fbbf24;
+            --baniki-purple: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Space+Grotesk', sans-serif;
+            background-color: var(--baniki-dark);
+            color: white;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--baniki-blue), #3b82f6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-locked {
+            background: #334155;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        #game-canvas {
+            image-rendering: auto;
+        }
+
+        .pulse-gold {
+            animation: pulse-gold 2s infinite;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <!-- Header / Nav -->
+    <header class="p-6 flex justify-between items-center z-10 border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-sky-500 rounded-lg flex items-center justify-center font-bold text-xl">B</div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">BANIKILABS</h1>
+                <p class="text-[10px] text-sky-400 tracking-widest uppercase">Venture Hub • DRC Dashboard</p>
+            </div>
+        </div>
+        
+        <div class="flex gap-6 items-center">
+            <div class="flex flex-col items-end">
+                <span class="text-xs text-slate-400 uppercase">Capital</span>
+                <span id="cash-display" class="text-xl font-bold text-emerald-400">$10,000</span>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-xs text-slate-400 uppercase">Active Users</span>
+                <span id="users-display" class="text-xl font-bold text-sky-400">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Game Area -->
+    <main class="flex-1 relative overflow-hidden px-6 py-4">
+        
+        <!-- Dashboard Authentication Screen -->
+        <div id="start-screen" class="absolute inset-0 z-20 flex items-center justify-center p-6 bg-slate-900/95 backdrop-blur-xl">
+            <div class="glass p-10 max-w-md w-full text-center">
+                <div class="mb-6">
+                    <i class="fa-solid fa-shield-halved text-sky-500 text-5xl mb-4"></i>
+                    <h2 class="text-3xl font-bold mb-2">Venture Access</h2>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Authorized personnel only. Please enter the founder's dashboard credentials to begin scaling.
+                    </p>
+                </div>
+                
+                <div class="space-y-4 mb-8">
+                    <input type="password" id="admin-pass" placeholder="Enter Password" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center focus:outline-none focus:border-sky-500 transition-colors">
+                    <p id="error-msg" class="text-xs text-red-500 hidden italic">Invalid credential token.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="play-btn" onclick="validatePassword()" class="btn-primary w-full py-4 rounded-xl font-bold text-lg">ACCESS DASHBOARD</button>
+                    <!-- Visual only button for unauthorized users -->
+                    <button onclick="watchMode()" class="bg-slate-800 border border-white/10 w-full py-4 rounded-xl font-bold text-lg hover:bg-slate-700 transition-all">OBSERVE ECOSYSTEM</button>
+                </div>
+                <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-tighter">Banikilabs Environment v2.6.0</p>
+            </div>
+        </div>
+
+        <!-- Gameplay UI -->
+        <div class="grid grid-cols-12 gap-6 h-full">
+            
+            <!-- Left Sidebar: Actions (Expansion Deck) -->
+            <div class="col-span-12 md:col-span-4 flex flex-col gap-4">
+                <div class="glass p-5 flex-1 flex flex-col overflow-hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-widest flex items-center justify-between">
+                        <span>Expansion Deck</span>
+                        <i class="fa-solid fa-layer-group text-sky-400"></i>
+                    </h3>
+                    
+                    <div class="space-y-3 overflow-y-auto pr-2 custom-scrollbar" id="upgrade-list">
+                        <!-- Action Card: Banikilabs Store Integration -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('store')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">Banikilabs.Store</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$3,000</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mb-2 italic">Connect hardware products to your ecosystem.</p>
+                            <div class="flex items-center gap-2 text-[10px] text-sky-400/80">
+                                <i class="fa-solid fa-cart-shopping"></i> <span>+20% Revenue per user</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Card: Devs -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('dev')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">Hire Talent (DRC)</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$800</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Increase product building speed and reliability.</p>
+                        </div>
+
+                        <!-- Action Card: Baniki Cloud -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('server')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">Baniki Cloud Storage</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$4,500</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Infrastructure to unlock Goma & Bukavu operations.</p>
+                        </div>
+
+                        <!-- Action Card: Fintech -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('fintech')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">BanikiPay Gateway</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$10,000</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Allow in-app mobile money payments.</p>
+                        </div>
+
+                        <!-- Action Card: Solar Grids -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('solar')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">Clean Energy Mini-Grid</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$25,000</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Power your data centers 24/7 across DRC.</p>
+                        </div>
+
+                        <!-- Action Card: Marketing -->
+                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer group" onclick="buyUpgrade('marketing')">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-bold group-hover:text-sky-400 transition-colors">WhatsApp Blitz</span>
+                                <span class="text-emerald-400 font-semibold text-sm">$1,500</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Viral growth strategy across Kinshasa.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Map/Visualizer -->
+            <div class="col-span-12 md:col-span-8 relative">
+                <div class="glass h-full relative flex flex-col overflow-hidden">
+                    <div class="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                            DRC Ecosystem Real-Time Feed
+                        </span>
+                        <div id="event-ticker" class="text-xs italic text-sky-400">Waiting for dash authorization...</div>
+                    </div>
+                    
+                    <div class="flex-1 relative" id="canvas-container">
+                        <canvas id="game-canvas" class="w-full h-full"></canvas>
+                        
+                        <!-- Watch Mode Overlay -->
+                        <div id="watch-overlay" class="hidden absolute inset-0 bg-slate-900/40 pointer-events-none flex items-center justify-center">
+                            <div class="px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-full text-red-400 text-xs font-bold uppercase tracking-widest">
+                                View Only Mode
+                            </div>
+                        </div>
+
+                        <!-- Log / Feed -->
+                        <div id="game-feed" class="absolute bottom-4 left-4 right-4 h-24 overflow-y-auto space-y-2 text-[11px] font-mono p-3 bg-black/60 rounded-xl pointer-events-none border border-white/10">
+                            <div class="text-slate-500">[SYSTEM] Initialization complete. Admin check pending...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal for Events -->
+    <div id="event-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
+        <div class="glass p-8 max-w-md w-full border-sky-500/30">
+            <div id="event-icon" class="text-4xl mb-4">📢</div>
+            <h3 id="event-title" class="text-2xl font-bold mb-2">Market Shift</h3>
+            <p id="event-desc" class="text-slate-400 mb-6 leading-relaxed text-sm">Something happened in the ecosystem.</p>
+            <button onclick="closeModal()" class="btn-primary w-full py-3 rounded-xl font-bold">ACKNOWLEDGE</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const state = {
+            cash: 10000,
+            users: 0,
+            revenueMultiplier: 0.01,
+            reputation: 50,
+            gameActive: false,
+            isWatchMode: false,
+            upgrades: {
+                dev: { cost: 800, count: 0 },
+                server: { cost: 4500, count: 0 },
+                marketing: { cost: 1500, count: 0 },
+                store: { cost: 3000, count: 0 },
+                fintech: { cost: 10000, count: 0 },
+                solar: { cost: 25000, count: 0 }
+            }
+        };
+
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const feed = document.getElementById('game-feed');
+        const ticker = document.getElementById('event-ticker');
+
+        const cities = [
+            { name: "Kinshasa", x: 0.2, y: 0.6, size: 8, active: true },
+            { name: "Lubumbashi", x: 0.8, y: 0.85, size: 6, active: false },
+            { name: "Goma", x: 0.85, y: 0.45, size: 5, active: false },
+            { name: "Kisangani", x: 0.6, y: 0.4, size: 5, active: false },
+            { name: "Bukavu", x: 0.82, y: 0.52, size: 4, active: false }
+        ];
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        window.addEventListener('resize', initCanvas);
+
+        function validatePassword() {
+            const pass = document.getElementById('admin-pass').value;
+            const error = document.getElementById('error-msg');
+            
+            if (pass === "admin2026") {
+                startGame(false);
+            } else {
+                error.classList.remove('hidden');
+                setTimeout(() => error.classList.add('hidden'), 2000);
+            }
+        }
+
+        function watchMode() {
+            state.isWatchMode = true;
+            document.getElementById('watch-overlay').classList.remove('hidden');
+            startGame(true);
+            addLog("WATCH MODE: Administrative functions disabled.");
+        }
+
+        function startGame(readOnly) {
+            document.getElementById('start-screen').classList.add('hidden');
+            state.gameActive = true;
+            initCanvas();
+            requestAnimationFrame(gameLoop);
+            
+            if (!readOnly) {
+                addLog("Venture DASHBOARD ACTIVATED. Admin credentials verified.");
+                setInterval(triggerRandomEvent, 18000);
+            } else {
+                ticker.innerText = "OBSERVER SESSION ACTIVE";
+            }
+        }
+
+        function addLog(msg) {
+            const div = document.createElement('div');
+            div.innerHTML = `<span class="text-sky-500">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+            feed.prepend(div);
+            if (feed.children.length > 8) feed.lastChild.remove();
+        }
+
+        function updateDisplays() {
+            document.getElementById('cash-display').innerText = `$${Math.floor(state.cash).toLocaleString()}`;
+            document.getElementById('users-display').innerText = Math.floor(state.users).toLocaleString();
+        }
+
+        function buyUpgrade(type) {
+            if (state.isWatchMode) {
+                addLog("<span class='text-yellow-400'>Access Denied: Observe mode only.</span>");
+                return;
+            }
+
+            const up = state.upgrades[type];
+            if (state.cash >= up.cost) {
+                state.cash -= up.cost;
+                up.count++;
+                
+                if (type === 'store') {
+                    state.revenueMultiplier += 0.005;
+                    addLog("Banikilabs.Store link active. Inventory hardware scaling.");
+                } else if (type === 'dev') {
+                    addLog("Regional talent hired. Efficiency boosted.");
+                } else if (type === 'server') {
+                    const inactive = cities.find(c => !c.active);
+                    if (inactive) {
+                        inactive.active = true;
+                        addLog(`Expanded cloud grid to ${inactive.name}.`);
+                    }
+                } else if (type === 'fintech') {
+                    state.revenueMultiplier += 0.02;
+                    addLog("BanikiPay Gateway live. Digital payments enabled.");
+                } else if (type === 'solar') {
+                    state.reputation += 30;
+                    addLog("Clean Energy transition complete. 99.9% Uptime.");
+                } else if (type === 'marketing') {
+                    addLog("Viral campaign spreading through WhatsApp groups.");
+                }
+                
+                up.cost = Math.floor(up.cost * 1.6);
+                updateDisplays();
+            } else {
+                addLog("<span class='text-red-400'>Insufficient liquidity for this venture.</span>");
+            }
+        }
+
+        function triggerRandomEvent() {
+            if (!state.gameActive || state.isWatchMode) return;
+
+            const events = [
+                { title: "VC Injection", desc: "A pan-African VC fund has injected capital into Banikilabs.", cash: 12000, icon: "⚡" },
+                { title: "Connectivity Issue", desc: "Submarine cable maintenance slowed down growth in coastal nodes.", users: -100, icon: "🌊" },
+                { title: "Startup Act DRC", desc: "New favorable regulations passed in Kinshasa! Business efficiency up.", cash: 5000, icon: "🏛️" },
+                { title: "Goma Expansion", desc: "Local entrepreneurs are adopting Baniki solutions in North Kivu.", users: 8000, icon: "🌋" }
+            ];
+
+            const ev = events[Math.floor(Math.random() * events.length)];
+            
+            document.getElementById('event-title').innerText = ev.title;
+            document.getElementById('event-desc').innerText = ev.desc;
+            document.getElementById('event-icon').innerText = ev.icon;
+            document.getElementById('event-modal').classList.remove('hidden');
+
+            if (ev.cash) state.cash += ev.cash;
+            if (ev.users) state.users += Math.max(0, ev.users);
+            
+            ticker.innerText = `MARKET: ${ev.title}`;
+            addLog(`EVENT: ${ev.title}`);
+            updateDisplays();
+        }
+
+        function closeModal() {
+            document.getElementById('event-modal').classList.add('hidden');
+        }
+
+        function drawMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background grid
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.05)';
+            for(let i=0; i<canvas.width; i+=50) {
+                ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
+            }
+            for(let i=0; i<canvas.height; i+=50) {
+                ctx.moveTo(0, i); ctx.lineTo(canvas.width, i);
+            }
+            ctx.stroke();
+
+            // Draw Connections
+            cities.forEach((city, i) => {
+                const px = city.x * canvas.width;
+                const py = city.y * canvas.height;
+
+                if (city.active && i !== 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(cities[0].x * canvas.width, cities[0].y * canvas.height);
+                    ctx.lineTo(px, py);
+                    ctx.strokeStyle = 'rgba(14, 165, 233, 0.2)';
+                    ctx.setLineDash([10, 5]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Moving Data packets
+                    const time = Date.now() * 0.001;
+                    const progress = (time % 1);
+                    const dotX = cities[0].x * canvas.width + (px - cities[0].x * canvas.width) * progress;
+                    const dotY = cities[0].y * canvas.height + (py - cities[0].y * canvas.height) * progress;
+                    
+                    ctx.fillStyle = state.isWatchMode ? '#64748b' : '#fbbf24';
+                    ctx.beginPath();
+                    ctx.arc(dotX, dotY, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // City Nodes
+                ctx.beginPath();
+                ctx.arc(px, py, city.active ? city.size : city.size / 2, 0, Math.PI * 2);
+                ctx.fillStyle = city.active ? (state.isWatchMode ? '#475569' : '#0ea5e9') : '#1e293b';
+                
+                if (city.active && !state.isWatchMode) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#0ea5e9';
+                }
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Label
+                ctx.fillStyle = city.active ? '#fff' : '#475569';
+                ctx.font = '600 11px Space Grotesk';
+                ctx.fillText(city.name.toUpperCase(), px + 15, py + 5);
+            });
+        }
+
+        function gameLoop() {
+            if (!state.gameActive) return;
+
+            // Calculations
+            const growthFactor = (state.upgrades.marketing.count + 1) * (cities.filter(c => c.active).length);
+            state.users += growthFactor * 0.05;
+            
+            // Revenue only flows if not in watch mode, or flows slower? Let's keep it ticking for visuals
+            state.cash += state.users * state.revenueMultiplier * 0.1;
+
+            drawMap();
+            updateDisplays();
+            requestAnimationFrame(gameLoop);
+        }
+
+        initCanvas();
+    </script>
+</body>
+</html>

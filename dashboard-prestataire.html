@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Prestataire | BANIKI LABS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.12);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+            --border: rgba(255, 215, 0, 0.12);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top, rgba(255, 215, 0, 0.1), transparent 35%), linear-gradient(180deg, #060606 0%, #0f0f13 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(10, 10, 10, 0.98);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            inset: 0 auto 0 0;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 999px;
+            background: var(--gold);
+            color: #000;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+        }
+
+        .sidebar-logo-text h1 {
+            margin: 0;
+            font-size: 1.125rem;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-logo-text p {
+            margin: 0.25rem 0 0;
+            color: rgba(249, 250, 251, 0.6);
+            font-size: 0.85rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            color: rgba(249, 250, 251, 0.7);
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #000;
+            background: var(--gold);
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            color: rgba(249, 250, 251, 0.55);
+            font-size: 0.85rem;
+        }
+
+        .main {
+            margin-left: 280px;
+            padding: 2rem 2rem 3rem;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+            letter-spacing: -0.03em;
+        }
+
+        .topbar p {
+            margin: 0.75rem 0 0;
+            color: rgba(249, 250, 251, 0.65);
+            max-width: 42rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 999px;
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+            font-weight: 700;
+            border: 1px solid rgba(255, 215, 0, 0.18);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(18, 18, 18, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(249, 250, 251, 0.55);
+            font-size: 0.78rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-value {
+            font-size: 2.6rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+
+        .card-text {
+            color: rgba(249, 250, 251, 0.65);
+            line-height: 1.7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.92rem;
+        }
+
+        thead th {
+            text-align: left;
+            color: rgba(249, 250, 251, 0.65);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.06);
+        }
+
+        td {
+            padding: 0.85rem 0;
+            color: rgba(249, 250, 251, 0.82);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .status-active { background: rgba(34, 197, 94, 0.14); color: #84cc16; }
+        .status-pending { background: rgba(250, 204, 21, 0.14); color: #facc15; }
+        .status-paused { background: rgba(248, 113, 113, 0.14); color: #f87171; }
+
+        .section {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: rgba(249, 250, 251, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .chart-bars {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .bar-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 1.25rem;
+            padding: 1rem 0.75rem 0.85rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            gap: 0.85rem;
+            min-height: 180px;
+        }
+
+        .bar-value {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 999px;
+            overflow: hidden;
+            height: 130px;
+            display: grid;
+            place-items: end;
+        }
+
+        .bar-fill {
+            width: 100%;
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.95), rgba(255, 255, 255, 0.18));
+            transition: height 0.4s ease;
+        }
+
+        .bar-label { color: rgba(249, 250, 251, 0.7); font-size: 0.9rem; }
+
+        @media (max-width: 1024px) {
+            .sidebar { position: relative; width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+            .main { margin-left: 0; }
+            .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .chart-bars { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-circle">BL</div>
+            <div class="sidebar-logo-text">
+                <h1>Baniki Labs</h1>
+                <p>Dashboard Prestataire</p>
+            </div>
+        </div>
+
+        <button class="nav-item active" onclick="navigateTo('dashboard', event)">
+            <span>Tableau de bord</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('products', event)">
+            <span>Produits</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('revenues', event)">
+            <span>Revenus</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('orders', event)">
+            <span>Commandes</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('settings', event)">
+            <span>Paramètres</span>
+        </button>
+
+        <div class="sidebar-footer">
+            <p>Accès rapide :</p>
+            <a href="jobs.html" class="text-[var(--gold)] hover:underline">Retour aux offres</a>
+            <p class="mt-3">Gérez vos produits, suivez vos revenus et pilotez votre croissance facilement.</p>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <h2>Mon espace prestataire</h2>
+                <p>Suivez vos performances, vos produits disponibles et vos revenus en temps réel.</p>
+            </div>
+            <div class="badge">Revenu total / mois : 3 250 €</div>
+        </div>
+
+        <section id="dashboard" class="section dashboard-section">
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-title">Chiffre d'affaires</div>
+                    <div class="card-value">3 250 €</div>
+                    <div class="card-text">Montant encaissé ce mois-ci sur vos prestations disponibles.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Produits en ligne</div>
+                    <div class="card-value">28</div>
+                    <div class="card-text">Services et formations publiés pour vos clients.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Commandes récentes</div>
+                    <div class="card-value">12</div>
+                    <div class="card-text">Demandes traitées cette semaine par vos produits.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h3>Revenu par produit</h3>
+                        <p>Analyse visuelle des meilleures ventes de la semaine.</p>
+                    </div>
+                </div>
+                <div class="chart-bars">
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 78%"></div></div>
+                        <div class="bar-label">Centre informatique</div>
+                        <div class="card-value">1 100 €</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 64%"></div></div>
+                        <div class="bar-label">Marketing</div>
+                        <div class="card-value">820 €</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 50%"></div></div>
+                        <div class="bar-label">Vidéo</div>
+                        <div class="card-value">560 €</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 42%"></div></div>
+                        <div class="bar-label">Photo</div>
+                        <div class="card-value">410 €</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="products" class="section products-section" style="display:none;">
+            <div class="section-header">
+                <div>
+                    <h3>Vos produits</h3>
+                    <p>Liste des services et formations que vous proposez actuellement.</p>
+                </div>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Catégorie</th>
+                            <th>Tarif</th>
+                            <th>Ventes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr>
+                            <td>Formation Microsoft Office</td>
+                            <td>Centre informatique</td>
+                            <td>50 €/mois</td>
+                            <td>34</td>
+                            <td><span class="status-pill status-active">Actif</span></td>
+                        </tr>
+                        <tr>
+                            <td>Pack Vidéo Professionnelle</td>
+                            <td>Vidéo</td>
+                            <td>280 €</td>
+                            <td>12</td>
+                            <td><span class="status-pill status-active">Actif</span></td>
+                        </tr>
+                        <tr>
+                            <td>Conseil Marketing</td>
+                            <td>Marketing</td>
+                            <td>120 €/session</td>
+                            <td>18</td>
+                            <td><span class="status-pill status-pending">En demande</span></td>
+                        </tr>
+                        <tr>
+                            <td>Visite immobilière VIP</td>
+                            <td>Immobilier</td>
+                            <td>75 €/consultation</td>
+                            <td>7</td>
+                            <td><span class="status-pill status-paused">En pause</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="revenues" class="section revenues-section" style="display:none;">
+            <div class="section-header">
+                <div>
+                    <h3>Revenus et facturation</h3>
+                    <p>Suivi des montants perçus et des tendances par période.</p>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-title">Revenu annuel</div>
+                    <div class="card-value">27 800 €</div>
+                    <div class="card-text">Performance sur les 12 derniers mois.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Factures émises</div>
+                    <div class="card-value">84</div>
+                    <div class="card-text">Factures envoyées aux clients depuis le début de l'année.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Revenus en attente</div>
+                    <div class="card-value">610 €</div>
+                    <div class="card-text">Paiements en attente de validation.</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Distribution des revenus</div>
+                <div class="card-text">Vos catégories les plus rentables.</div>
+                <div class="chart-bars" style="margin-top:1.5rem;">
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 82%"></div></div>
+                        <div class="bar-label">Centre informatique</div>
+                        <div class="card-value">45%</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 62%"></div></div>
+                        <div class="bar-label">Marketing</div>
+                        <div class="card-value">25%</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 41%"></div></div>
+                        <div class="bar-label">Vidéo</div>
+                        <div class="card-value">17%</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-value"><div class="bar-fill" style="height: 28%"></div></div>
+                        <div class="bar-label">Photo</div>
+                        <div class="card-value">13%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="orders" class="section orders-section" style="display:none;">
+            <div class="section-header">
+                <div>
+                    <h3>Commandes récentes</h3>
+                    <p>Suivez les demandes et statuts des commandes clients.</p>
+                </div>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Commande</th>
+                            <th>Produit</th>
+                            <th>Client</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#4587</td>
+                            <td>Formation Microsoft Office</td>
+                            <td>Paul K.</td>
+                            <td>50 €</td>
+                            <td><span class="status-pill status-active">Validée</span></td>
+                        </tr>
+                        <tr>
+                            <td>#4591</td>
+                            <td>Pack Vidéo Professionnelle</td>
+                            <td>Inès M.</td>
+                            <td>280 €</td>
+                            <td><span class="status-pill status-pending">En cours</span></td>
+                        </tr>
+                        <tr>
+                            <td>#4598</td>
+                            <td>Conseil Marketing</td>
+                            <td>Yvan D.</td>
+                            <td>120 €</td>
+                            <td><span class="status-pill status-active">Payée</span></td>
+                        </tr>
+                        <tr>
+                            <td>#4602</td>
+                            <td>Visite immobilière VIP</td>
+                            <td>Sophie L.</td>
+                            <td>75 €</td>
+                            <td><span class="status-pill status-pending">A traiter</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="settings" class="section settings-section" style="display:none;">
+            <div class="section-header">
+                <div>
+                    <h3>Paramètres du prestataire</h3>
+                    <p>Actualisez votre profil, vos offres et vos informations de paiement.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="grid-3">
+                    <div>
+                        <div class="card-title">Nom</div>
+                        <div class="card-text">Studio Baniki</div>
+                    </div>
+                    <div>
+                        <div class="card-title">Email</div>
+                        <div class="card-text">prestataire@banikilabs.com</div>
+                    </div>
+                    <div>
+                        <div class="card-title">Téléphone</div>
+                        <div class="card-text">+221 77 123 45 67</div>
+                    </div>
+                </div>
+                <div style="margin-top:1.5rem;">
+                    <div class="card-title">Description</div>
+                    <p class="card-text">Prestataire spécialisé dans les services informatiques, la formation professionnelle et les solutions marketing pour les entreprises et particuliers.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function navigateTo(section, event) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.querySelectorAll('section').forEach(sectionElement => {
+                sectionElement.style.display = 'none';
+            });
+
+            const selected = document.getElementById(section);
+            if (selected) selected.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
