@@ -369,7 +369,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="h-1.5 w-40 bg-[var(--gold)] rounded-full"></div>
                 </div>
                 
-                <div id="filterDropdown">
+                <div class="flex-1 min-w-0">
+                    <label for="serviceSearch" class="sr-only">Rechercher un service</label>
+                    <div class="relative">
+                        <input id="serviceSearch" type="search" oninput="updateServiceSearch(this.value)" placeholder="Rechercher un service..." class="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-500 rounded-2xl py-4 pl-5 pr-12 outline-none focus:border-[var(--gold)] focus:ring-2 focus:ring-[var(--gold)]/20 transition-all" />
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)]">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 21l-5.2-5.2"/><circle cx="10" cy="10" r="6"/></svg>
+                        </span>
+                    </div>
+                </div>
+                <div id="filterDropdown" class="w-full md:w-96">
                     <button onclick="toggleDropdown()" class="w-full flex justify-between items-center bg-white/5 border border-[var(--gold)]/30 text-white font-bold py-4 px-8 rounded-2xl hover:border-[var(--gold)] transition-all">
                         <span id="currentFilterLabel" data-translate="all-categories">TOUTES LES CATÉGORIES</span>
                         <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
@@ -593,6 +602,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script>
         let lastFilter = 'all';
         let currentServiceIndex = 0;
+        let serviceSearchQuery = '';
         
         // Variables pour le swipe
         let touchStartX = 0;
@@ -660,6 +670,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             document.getElementById('filterMenu').classList.toggle('show');
         }
 
+        function updateServiceSearch(value) {
+            serviceSearchQuery = value.trim().toLowerCase();
+            currentServiceIndex = 0;
+            renderServices();
+        }
+
         // Fermer le dropdown au clic extérieur
         window.addEventListener('click', (e) => {
             const dropdown = document.getElementById('filterDropdown');
@@ -669,9 +685,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         });
 
         function getFilteredServices() {
-            return lastFilter === 'all' 
-                ? servicesData.list 
-                : servicesData.list.filter(s => s.cat === lastFilter);
+            return servicesData.list.filter(s => {
+                if (lastFilter !== 'all' && s.cat !== lastFilter) return false;
+
+                if (!serviceSearchQuery) return true;
+
+                const name = (s.name[currentLang] || s.name.fr).toLowerCase();
+                const desc = (s.desc[currentLang] || s.desc.fr).toLowerCase();
+                return name.includes(serviceSearchQuery) || desc.includes(serviceSearchQuery);
+            });
         }
 
         function renderServices() {
