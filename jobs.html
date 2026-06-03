@@ -3,1462 +3,896 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de CV Professionnel Bilingue</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Créateur de CV Pro - Style Français & Américain</title>
     
+    <!-- Tailwind CSS pour le style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- html2pdf.js pour l'export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Google Fonts (Inter pour l'interface, Roboto/Merriweather pour les CVs) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         
-        /* Formats A4 spécifiques pour l'aperçu et l'impression */
-        .cv-preview-container {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            box-sizing: border-box;
-            background-color: white;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
+        /* Styles spécifiques pour les CVs */
+        .cv-container { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* Style Français */
+        .cv-fr { font-family: 'Roboto', sans-serif; }
+        .cv-fr .header { border-bottom: 4px solid #eab308; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; gap: 2rem; align-items: center;}
+        .cv-fr .section-title { color: #000000; border-bottom: 2px solid #eab308; margin-bottom: 0.75rem; padding-bottom: 0.25rem; font-weight: 700; text-transform: uppercase; font-size: 1.1rem;}
+        .cv-fr .photo-container { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 3px solid #eab308; flex-shrink: 0;}
+        .cv-fr .photo-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Styles d'impression pour forcer le format A4 exact sans headers/footers système */
+        /* Style Américain (Resume) ultra-professionnel */
+        .cv-us { font-family: 'Inter', sans-serif; color: #111827; line-height: 1.5; }
+        .cv-us .header { text-align: center; border-bottom: 2px solid #111827; padding-bottom: 1.25rem; margin-bottom: 1.25rem; }
+        .cv-us .header h1 { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.25rem; letter-spacing: -0.02em; text-transform: uppercase; }
+        .cv-us .header-contact { font-size: 0.85rem; color: #374151; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .cv-us .section-title { font-size: 1.05rem; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #111827; margin-bottom: 0.75rem; padding-bottom: 0.2rem; margin-top: 1.25rem; letter-spacing: 0.05em; color: #111827;}
+        .cv-us .photo-container { display: none; }
+
+        /* Utilitaires pour le layout du CV */
+        .cv-item { margin-bottom: 1rem; }
+        .cv-item-header { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600;}
+        .cv-item-subtitle { font-style: italic; color: #4b5563; margin-bottom: 0.25rem; }
+        .cv-list { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; }
+        .cv-list li { margin-bottom: 0.25rem; line-height: 1.4;}
+
+        /* Loader pour l'amélioration de texte */
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #eab308; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Pour l'impression PDF */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #cv-preview, #cv-preview * {
-                visibility: visible;
-            }
-            #cv-preview {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 210mm;
-                height: 297mm;
-                padding: 15mm !important;
-                box-shadow: none !important;
-                margin: 0 !important;
-            }
-            @page {
-                size: A4;
-                margin: 0;
-            }
-            .no-print {
-                display: none !important;
-            }
-        }
-
-        /* Personnalisation fine de la scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            body { background: white; }
+            .no-print { display: none !important; }
+            .cv-container { box-shadow: none; margin: 0; width: 100%; height: auto; }
+            #cv-preview-area { padding: 0; margin: 0; }
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="h-screen flex flex-col overflow-hidden">
 
-    <!-- Navbar du Générateur -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-indigo-600 text-white p-2 rounded-lg">
-                    <i class="fa-solid fa-file-invoice text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg text-slate-900 tracking-tight leading-none" id="nav-title">Smart CV Designer</h1>
-                    <span class="text-xs text-indigo-600 font-medium" id="nav-subtitle">Correcteur de grammaire & Optimiseur de phrases</span>
-                </div>
+    <!-- Navbar -->
+    <nav class="bg-black border-b border-gray-800 px-6 py-3 flex justify-between items-center z-10 no-print">
+        <div class="flex items-center gap-2">
+            <i data-lucide="file-text" class="text-yellow-400 w-6 h-6"></i>
+            <h1 class="text-xl font-bold text-white">CV MasterPro</h1>
+        </div>
+        <div class="flex gap-4 items-center">
+            <div class="flex bg-gray-800 p-1 rounded-lg">
+                <button id="btn-style-fr" class="px-4 py-1.5 text-sm font-medium rounded-md bg-yellow-400 shadow-sm text-black transition-all">Style Français</button>
+                <button id="btn-style-us" class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all">Style Américain</button>
             </div>
+            
+            <!-- Sélecteur de langue -->
+            <select id="lang-selector" class="bg-gray-800 text-white border-gray-700 text-sm rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-400 font-medium cursor-pointer">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
 
-            <!-- Contrôles rapides -->
-            <div class="flex items-center space-x-4">
-                <!-- Langue de l'interface / CV -->
-                <div class="flex items-center bg-slate-100 rounded-lg p-1 border border-slate-200">
-                    <button id="lang-fr" onclick="switchLanguage('fr')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 bg-white text-indigo-600 shadow-sm">
-                        🇨🇦🇫🇷 Français
-                    </button>
-                    <button id="lang-en" onclick="switchLanguage('en')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900">
-                        🇺🇸🇬🇧 English
-                    </button>
-                </div>
+            <button id="btn-download" class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Exporter PDF</span>
+            </button>
+        </div>
+    </nav>
 
-                <!-- Bouton d'exportation PDF principal -->
-                <button onclick="triggerPrint()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md flex items-center space-x-2 transition-all hover:scale-[1.02]">
-                    <i class="fa-solid fa-download"></i>
-                    <span id="btn-download-txt">Télécharger mon CV (PDF)</span>
-                </button>
+    <!-- Main Content Layout -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Panneau de gauche : Formulaire (Scrollable) -->
+        <div class="w-1/3 bg-white border-r border-gray-200 overflow-y-auto no-print flex flex-col">
+            <div class="p-6 space-y-8 flex-1">
+                
+                <!-- Section Informations Personnelles -->
+                <section>
+                    <h2 class="text-lg font-bold text-black mb-4 flex items-center gap-2">
+                        <i data-lucide="user" class="w-5 h-5 text-yellow-500"></i> Infos Personnelles
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Prénom</label>
+                                <input type="text" id="input-firstname" value="Jean" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nom</label>
+                                <input type="text" id="input-lastname" value="Dupont" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Titre Professionnel</label>
+                            <input type="text" id="input-title" value="Développeur Full Stack Senior" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Email</label>
+                                <input type="email" id="input-email" value="jean.dupont@email.com" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
+                                <input type="text" id="input-phone" value="+33 6 12 34 56 78" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Localisation</label>
+                                <input type="text" id="input-location" value="Paris, France" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">LinkedIn</label>
+                                <input type="text" id="input-linkedin" value="linkedin.com/in/jeandupont" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Résumé / Profil</label>
+                            <textarea id="input-summary" rows="3" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">Passionné par le développement web avec 5 ans d'expérience dans la création d'applications robustes. Expertise en React et Node.js.</textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Expériences -->
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                            <i data-lucide="briefcase" class="w-5 h-5 text-yellow-500"></i> Expériences
+                        </h2>
+                        <button id="add-exp-btn" class="text-sm text-yellow-600 hover:text-yellow-700 font-bold">+ Ajouter</button>
+                    </div>
+                    <div id="experiences-container" class="space-y-6">
+                        <!-- Expérience Item (Template) -->
+                        <div class="exp-item border border-gray-200 p-4 rounded-lg bg-gray-50 relative group">
+                            <button class="remove-exp-btn absolute top-2 right-2 text-gray-400 hover:text-red-500 hidden group-hover:block"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div><label class="text-xs text-gray-500">Poste</label><input type="text" class="exp-title w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Lead Developer"></div>
+                                <div><label class="text-xs text-gray-500">Entreprise</label><input type="text" class="exp-company w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Tech Solutions Inc."></div>
+                                <div><label class="text-xs text-gray-500">Dates</label><input type="text" class="exp-dates w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Jan 2020 - Présent"></div>
+                                <div><label class="text-xs text-gray-500">Lieu</label><input type="text" class="exp-loc w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Paris"></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-end mb-1">
+                                    <label class="text-xs text-gray-500">Description (Tirets)</label>
+                                    <button class="improve-text-btn text-xs bg-black text-yellow-400 px-2 py-1 rounded hover:bg-gray-800 transition-colors flex items-center gap-1 font-medium">
+                                        <i data-lucide="sparkles" class="w-3 h-3"></i> Améliorer le texte (IA)
+                                    </button>
+                                </div>
+                                <textarea class="exp-desc w-full p-2 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" rows="4">- j'ai fait le site web
+- gerer une equipe de 3 devs
+- mis en place des api
+- augmenter la vitesse du site</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Formations -->
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                            <i data-lucide="graduation-cap" class="w-5 h-5 text-yellow-500"></i> Formations
+                        </h2>
+                        <button id="add-edu-btn" class="text-sm text-yellow-600 hover:text-yellow-700 font-bold">+ Ajouter</button>
+                    </div>
+                    <div id="education-container" class="space-y-4">
+                        <div class="edu-item border border-gray-200 p-4 rounded-lg bg-gray-50 relative group">
+                            <button class="remove-edu-btn absolute top-2 right-2 text-gray-400 hover:text-red-500 hidden group-hover:block"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div class="col-span-2"><label class="text-xs text-gray-500">Diplôme</label><input type="text" class="edu-degree w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Master en Ingénierie Informatique"></div>
+                                <div><label class="text-xs text-gray-500">École</label><input type="text" class="edu-school w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="Université de Technologie"></div>
+                                <div><label class="text-xs text-gray-500">Dates</label><input type="text" class="edu-dates w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" value="2015 - 2020"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Compétences -->
+                <section>
+                    <h2 class="text-lg font-bold text-black mb-4 flex items-center gap-2">
+                        <i data-lucide="code" class="w-5 h-5 text-yellow-500"></i> <span id="title-skills-sec">Compétences</span>
+                    </h2>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1" id="lbl-skills-help">Séparées par des virgules</label>
+                        <textarea id="input-skills" rows="3" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">JavaScript, React, Node.js, Python, SQL, Git, Docker, Méthodes Agiles, Gestion de projet</textarea>
+                    </div>
+                </section>
+
+                <!-- Section Langues -->
+                <section>
+                    <h2 class="text-lg font-bold text-black mb-4 flex items-center gap-2">
+                        <i data-lucide="globe" class="w-5 h-5 text-yellow-500"></i> <span id="title-lang-sec">Langues</span>
+                    </h2>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1" id="lbl-lang-help">Séparées par des virgules (ex: Français (Maternel))</label>
+                        <textarea id="input-languages" rows="2" class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-yellow-400 outline-none">Français (Maternel), Anglais (Courant)</textarea>
+                    </div>
+                </section>
+
+            </div>
+            
+            <div class="p-4 border-t border-gray-200 bg-gray-50 text-center">
+                <p class="text-xs text-gray-500">Les modifications mettent à jour l'aperçu automatiquement.</p>
             </div>
         </div>
-    </header>
 
-    <!-- Zone principale -->
-    <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- PANNEAU DE GAUCHE : FORMULAIRES DE SAISIE (7 cols) -->
-        <section class="lg:col-span-5 space-y-6 no-print max-h-[calc(100vh-120px)] overflow-y-auto pr-2">
+        <!-- Panneau de droite : Prévisualisation (A4) -->
+        <div id="cv-preview-area" class="w-2/3 bg-gray-200 overflow-y-auto p-8 flex justify-center">
             
-            <!-- SECTION 1 : STYLE & APPARENCE -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center space-x-2">
-                    <i class="fa-solid fa-palette text-indigo-500"></i>
-                    <span data-i18n="section-style">Style & Apparence</span>
-                </h3>
+            <!-- Conteneur du CV (celui qui sera exporté en PDF) -->
+            <div id="cv-document" class="cv-container cv-fr p-10">
                 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2" data-i18n="style-layout">Mise en page</label>
-                        <select id="select-template" onchange="updateTemplate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="modern" selected data-i18n="temp-modern">Moderne & Épuré</option>
-                            <option value="classic" data-i18n="temp-classic">Classique Universitaire</option>                            <option value="minimal" data-i18n="temp-minimal">Minimaliste Compact</option>                            <option value="french" data-i18n="temp-french">Disposition Française</option>                            <option value="american" data-i18n="temp-american">Disposition Américaine</option>
-                        </select>
+                <!-- En-tête -->
+                <div class="header" id="cv-header">
+                    <!-- Rempli par JS -->
+                </div>
+
+                <!-- Résumé -->
+                <div class="mb-6" id="cv-summary-section">
+                    <p id="cv-summary-text" class="text-sm leading-relaxed"></p>
+                </div>
+
+                <!-- Contenu Principal (Grid pour style FR, Flex pour US) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="cv-main-layout">
+                    
+                    <!-- Colonne Principale (Expériences) -->
+                    <div class="md:col-span-2">
+                        <h3 class="section-title">Expérience Professionnelle</h3>
+                        <div id="cv-experiences-list">
+                            <!-- Rempli par JS -->
+                        </div>
                     </div>
+
+                    <!-- Colonne Secondaire (Formation & Compétences) -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2" data-i18n="style-color">Couleur d'accent</label>
-                        <div class="flex items-center space-x-2 py-1.5">
-                            <button onclick="changeAccentColor('#4f46e5')" class="w-6 h-6 rounded-full bg-indigo-600 border-2 border-white ring-2 ring-indigo-600 ring-offset-1 focus:outline-none"></button>
-                            <button onclick="changeAccentColor('#0f766e')" class="w-6 h-6 rounded-full bg-teal-700 border-2 border-white focus:outline-none hover:ring-2 hover:ring-teal-700"></button>
-                            <button onclick="changeAccentColor('#0284c7')" class="w-6 h-6 rounded-full bg-sky-600 border-2 border-white focus:outline-none hover:ring-2 hover:ring-sky-600"></button>
-                            <button onclick="changeAccentColor('#e11d48')" class="w-6 h-6 rounded-full bg-rose-600 border-2 border-white focus:outline-none hover:ring-2 hover:ring-rose-600"></button>
-                            <button onclick="changeAccentColor('#1e293b')" class="w-6 h-6 rounded-full bg-slate-800 border-2 border-white focus:outline-none hover:ring-2 hover:ring-slate-800"></button>
+                        <div class="mb-6">
+                            <h3 class="section-title">Formation</h3>
+                            <div id="cv-education-list">
+                                <!-- Rempli par JS -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="section-title" id="cv-title-skills">Compétences</h3>
+                            <ul id="cv-skills-list" class="flex flex-wrap gap-2 text-sm">
+                                <!-- Rempli par JS -->
+                            </ul>
+                        </div>
+
+                        <div class="mt-6">
+                            <h3 class="section-title" id="cv-title-lang">Langues</h3>
+                            <ul id="cv-languages-list" class="space-y-1 text-sm text-gray-700">
+                                <!-- Rempli par JS -->
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- SECTION 2 : INFORMATIONS PERSONNELLES -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center space-x-2 border-b border-slate-100 pb-2">
-                    <i class="fa-solid fa-user text-indigo-500"></i>
-                    <span data-i18n="section-personal">Informations Personnelles</span>
-                </h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="field-fullname">Nom complet</label>
-                        <input type="text" id="in-name" placeholder="Jean Dupont" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="field-jobtitle">Titre professionnel</label>
-                        <input type="text" id="in-title" placeholder="Chef de Projet Digital" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="field-email">Email</label>
-                        <input type="email" id="in-email" placeholder="jean.dupont@email.com" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="field-phone">Téléphone</label>
-                        <input type="text" id="in-phone" placeholder="+33 6 12 34 56 78" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="field-address">Adresse / Ville</label>
-                        <input type="text" id="in-address" placeholder="Paris, France" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">LinkedIn / Website</label>
-                        <input type="text" id="in-link" placeholder="linkedin.com/in/jeandupont" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION 3 : PROFIL / ACCROCHE (AVEC OPTIMISEUR) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-indigo-50 to-transparent w-24 h-full pointer-events-none"></div>
-                
-                <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
-                        <i class="fa-solid fa-align-left text-indigo-500"></i>
-                        <span data-i18n="section-summary">Profil Professionnel</span>
-                    </h3>
-                    <!-- Bouton Optimiseur -->
-                    <button onclick="openOptimizer('summary', 'in-summary')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1 border border-indigo-100 transition-all hover:scale-[1.02]">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span data-i18n="btn-improve">Améliorer la phrase (IA)</span>
-                    </button>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="label-summary">Décrivez brièvement vos forces, vos ambitions ou vos compétences clés en quelques lignes.</label>
-                    <textarea id="in-summary" rows="3" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: Professionnel passionné par le marketing digital avec plus de 5 ans d'expérience..."></textarea>
-                </div>
-            </div>
-
-            <!-- SECTION 4 : EXPÉRIENCES PROFESSIONNELLES -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
-                        <i class="fa-solid fa-briefcase text-indigo-500"></i>
-                        <span data-i18n="section-experience">Expériences Professionnelles</span>
-                    </h3>
-                    <button onclick="addExperience()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1 border border-slate-200">
-                        <i class="fa-solid fa-plus"></i>
-                        <span data-i18n="btn-add">Ajouter</span>
-                    </button>
-                </div>
-
-                <div id="experience-list" class="space-y-4">
-                    <!-- Généré dynamiquement en JS -->
-                </div>
-            </div>
-
-            <!-- SECTION 5 : FORMATIONS -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
-                        <i class="fa-solid fa-graduation-cap text-indigo-500"></i>
-                        <span data-i18n="section-education">Formations & Diplômes</span>
-                    </h3>
-                    <button onclick="addEducation()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1 border border-slate-200">
-                        <i class="fa-solid fa-plus"></i>
-                        <span data-i18n="btn-add">Ajouter</span>
-                    </button>
-                </div>
-
-                <div id="education-list" class="space-y-4">
-                    <!-- Généré dynamiquement en JS -->
-                </div>
-            </div>
-
-            <!-- SECTION 6 : COMPÉTENCES & LANGUES -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Compétences -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center space-x-2 border-b border-slate-100 pb-2">
-                        <i class="fa-solid fa-award text-indigo-500"></i>
-                        <span data-i18n="section-skills">Compétences</span>
-                    </h3>
-                    <div class="space-y-3">
-                        <label class="block text-xs font-medium text-slate-600" data-i18n="label-skills-desc">Saisissez vos compétences clés (séparées par des virgules)</label>
-                        <input type="text" id="in-skills" placeholder="Gestion de Projet, React, SEO, UI/UX" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-
-                <!-- Langues -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center space-x-2 border-b border-slate-100 pb-2">
-                        <i class="fa-solid fa-language text-indigo-500"></i>
-                        <span data-i18n="section-languages">Langues</span>
-                    </h3>
-                    <div class="space-y-3">
-                        <label class="block text-xs font-medium text-slate-600" data-i18n="label-languages-desc">Saisissez vos langues maîtrisées (ex: Français, Anglais)</label>
-                        <input type="text" id="in-languages" placeholder="Français (Maternelle), Anglais (C1)" oninput="syncData()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- PANNEAU DE DROITE : APERÇU A4 EN DIRECT (7 cols) -->
-        <section class="lg:col-span-7 flex flex-col items-center justify-start py-2">
-            <!-- Instructions pour impression -->
-            <div class="w-full max-w-[210mm] mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 flex items-start space-x-2.5 no-print">
-                <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm"></i>
-                <div>
-                    <strong data-i18n="print-tip-title">Astuce de téléchargement optimal :</strong> 
-                    <span data-i18n="print-tip-desc">Dans la boîte de dialogue d'impression, cochez "Enregistrer au format PDF" et désactivez "En-têtes et pieds de page" pour obtenir un rendu A4 impeccable sans marges indésirables.</span>
-                </div>
-            </div>
-
-            <!-- Le conteneur du CV A4 -->
-            <div id="cv-preview" class="cv-preview-container fade-in shadow-2xl overflow-hidden transition-all duration-300">
-                <!-- Rendu injecté dynamiquement en fonction du style choisi -->
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MODAL DE L'OPTIMISEUR / CORRECTEUR SYNTAXIQUE ET GRAMMATICAL (IA INTELLIGENTE) -->
-    <div id="optimizer-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col fade-in">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-5 flex justify-between items-center">
-                <div class="flex items-center space-x-2.5">
-                    <div class="bg-white/10 p-2 rounded-lg">
-                        <i class="fa-solid fa-wand-magic-sparkles text-lg text-indigo-200"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-base" data-i18n="modal-title">Optimiseur de Rédaction Smart CV</h4>
-                        <p class="text-xs text-indigo-200" data-i18n="modal-subtitle">Correction grammaticale et suggestions de formules professionnelles</p>
-                    </div>
-                </div>
-                <button onclick="closeOptimizer()" class="text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-all">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Body -->
-            <div class="p-6 space-y-5 flex-1 overflow-y-auto max-h-[75vh]">
-                <!-- Texte original entré -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" data-i18n="modal-original-label">Votre texte brut actuel :</label>
-                    <div id="modal-current-text" class="bg-slate-50 border border-slate-200 rounded-lg p-3.5 text-sm text-slate-700 font-mono whitespace-pre-line min-h-[50px]">
-                        <!-- Rempli en JS -->
-                    </div>
-                </div>
-
-                <!-- Suggestions optimisées -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center space-x-2">
-                        <span class="text-indigo-600" data-i18n="modal-suggest-label">💎 Formules et corrections professionnelles proposées :</span>
-                    </label>
-                    
-                    <div id="suggestions-box" class="space-y-3">
-                        <!-- Les cartes d'options de correction vont s'insérer ici -->
-                    </div>
-                </div>
-
-                <!-- Aide lexicale rapide (mots d'action) -->
-                <div class="bg-indigo-50/50 border border-indigo-100 rounded-lg p-4">
-                    <h5 class="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
-                        <i class="fa-solid fa-lightbulb"></i>
-                        <span data-i18n="modal-tips-title">Mots clés et structures de pouvoir à privilégier :</span>
-                    </h5>
-                    <div class="flex flex-wrap gap-1.5" id="lexical-tips">
-                        <!-- Mots d'aide injectés dynamiquement selon la langue -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="bg-slate-50 border-t border-slate-100 p-4 flex justify-end space-x-3">
-                <button onclick="closeOptimizer()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold text-xs rounded-lg hover:bg-slate-100" data-i18n="btn-close">Fermer</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE FONCTIONNEMENT LOGIQUE, TRADUCTIONS ET RENDUS -->
+    <!-- Modal d'information (remplace alert) -->
+    <div id="msg-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+            <h3 id="msg-title" class="text-lg font-bold mb-2">Message</h3>
+            <p id="msg-text" class="text-gray-600 mb-4"></p>
+            <div class="flex justify-end">
+                <button onclick="closeModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Dictionnaire de traductions de l'UI
-        const translations = {
+        // Initialisation des icônes
+        lucide.createIcons();
+
+        // État de l'application
+        let currentStyle = 'fr'; // 'fr' ou 'us'
+        let currentLang = 'fr'; // 'fr' ou 'en'
+
+        const i18n = {
             fr: {
-                "nav-title": "Smart CV Designer",
-                "nav-subtitle": "Correcteur de grammaire & Optimiseur de phrases",
-                "btn-download-txt": "Télécharger mon CV (PDF)",
-                "section-style": "Style & Apparence",
-                "style-layout": "Mise en page",
-                "style-color": "Couleur d'accent",
-                "temp-modern": "Moderne & Épuré",
-                "temp-classic": "Classique Universitaire",
-                "temp-minimal": "Minimaliste Compact",
-                "temp-french": "Disposition Française",
-                "temp-american": "Disposition Américaine (Resume)",
-                "section-personal": "Informations Personnelles",
-                "field-fullname": "Nom complet",
-                "field-jobtitle": "Titre professionnel",
-                "field-email": "Email",
-                "field-phone": "Téléphone",
-                "field-address": "Adresse / Ville",
-                "section-summary": "Profil Professionnel",
-                "btn-improve": "Optimiser la phrase (IA)",
-                "label-summary": "Décrivez brièvement vos forces, vos ambitions ou vos compétences clés en quelques lignes.",
-                "section-experience": "Expériences Professionnelles",
-                "btn-add": "Ajouter",
-                "section-education": "Formations & Diplômes",
-                "section-skills": "Compétences",
-                "label-skills-desc": "Saisissez vos compétences clés (séparées par des virgules)",
-                "section-languages": "Langues",
-                "label-languages-desc": "Saisissez vos langues maîtrisées (ex: Français, Anglais)",
-                "print-tip-title": "Astuce de téléchargement optimal :",
-                "print-tip-desc": "Dans la boîte de dialogue d'impression, cochez 'Enregistrer au format PDF' et désactivez 'En-têtes et pieds de page' pour obtenir un rendu A4 impeccable sans marges indésirables.",
-                "modal-title": "Optimiseur de Rédaction Smart CV",
-                "modal-subtitle": "Correction grammaticale et suggestions de formules professionnelles",
-                "modal-original-label": "Votre texte brut actuel :",
-                "modal-suggest-label": "💎 Formules et corrections professionnelles proposées :",
-                "modal-tips-title": "Mots clés et structures de pouvoir à privilégier :",
-                "btn-close": "Fermer",
-                "placeholder-exp-desc": "Ex: Géré le développement de la plateforme web...",
-                "field-exp-role": "Poste occupé",
-                "field-exp-comp": "Entreprise / Organisation",
-                "field-exp-dates": "Période (Ex: 2021 - Présent)",
-                "field-edu-degree": "Diplôme & Filière",
-                "field-edu-school": "Établissement / École",
-                "field-edu-dates": "Période (Ex: 2018 - 2021)"
+                appTitle: "CV MasterPro",
+                styleFr: "Style Français",
+                styleUs: "Style Américain",
+                exportPdf: "Exporter PDF",
+                personalInfo: "Infos Personnelles",
+                firstName: "Prénom",
+                lastName: "Nom",
+                jobTitle: "Titre Professionnel",
+                email: "Email",
+                phone: "Téléphone",
+                location: "Localisation",
+                linkedin: "LinkedIn",
+                summary: "Résumé / Profil",
+                experience: "Expériences",
+                addBtn: "+ Ajouter",
+                position: "Poste",
+                company: "Entreprise",
+                dates: "Dates",
+                city: "Lieu",
+                descTirets: "Description (Tirets)",
+                education: "Formations",
+                degree: "Diplôme",
+                school: "École",
+                skillsSec: "Compétences",
+                skillsHelp: "Séparées par des virgules",
+                langSec: "Langues",
+                langHelp: "Séparées par des virgules (ex: Français (Maternel))",
+                infoFooter: "Les modifications mettent à jour l'aperçu automatiquement.",
+                cvExpTitle: "Expérience Professionnelle",
+                cvEduTitle: "Formation",
+                cvSkillsTitle: "Compétences",
+                cvLangTitle: "Langues",
+                photoAlt: "Photo de profil",
+                improveBtn: "Améliorer le texte (IA)"
             },
             en: {
-                "nav-title": "Smart CV Designer",
-                "nav-subtitle": "Grammar Checker & Sentence Improver",
-                "btn-download-txt": "Download my CV (PDF)",
-                "section-style": "Style & Appearance",
-                "style-layout": "Template",
-                "style-color": "Accent Color",
-                "temp-modern": "Modern & Sleek",
-                "temp-classic": "Classic Academic",
-                "temp-minimal": "Minimalist Compact",
-                "temp-french": "French Layout",
-                "temp-american": "American Layout (Resume)",
-                "section-personal": "Personal Information",
-                "field-fullname": "Full name",
-                "field-jobtitle": "Professional Title",
-                "field-email": "Email",
-                "field-phone": "Phone",
-                "field-address": "Address / City",
-                "section-summary": "Professional Summary",
-                "btn-improve": "Improve writing (AI)",
-                "label-summary": "Briefly describe your core strengths, professional goals, and highlights in a few lines.",
-                "section-experience": "Work Experience",
-                "btn-add": "Add New",
-                "section-education": "Education",
-                "section-skills": "Skills",
-                "label-skills-desc": "Enter your key skills (separated by commas)",
-                "section-languages": "Languages",
-                "label-languages-desc": "Enter languages you speak (e.g., English, French)",
-                "print-tip-title": "Optimal PDF Export Tip:",
-                "print-tip-desc": "In the print dialog, select 'Save as PDF' and turn OFF 'Headers and footers' to get a perfect clean layout on A4 page.",
-                "modal-title": "Smart CV AI Writing Enhancer",
-                "modal-subtitle": "Grammar correction and suggestions of high-impact professional templates",
-                "modal-original-label": "Your original text input:",
-                "modal-suggest-label": "💎 Curated and grammar-improved phrasing suggestions:",
-                "modal-tips-title": "High-impact verbs & keywords to use:",
-                "btn-close": "Close",
-                "placeholder-exp-desc": "E.g. Managed and designed the core ecommerce platform...",
-                "field-exp-role": "Role / Position",
-                "field-exp-comp": "Company / Organisation",
-                "field-exp-dates": "Dates (e.g., 2021 - Present)",
-                "field-edu-degree": "Degree & Major",
-                "field-edu-school": "School / University",
-                "field-edu-dates": "Dates (e.g., 2018 - 2021)"
+                appTitle: "Resume MasterPro",
+                styleFr: "French Style",
+                styleUs: "US Style",
+                exportPdf: "Export PDF",
+                personalInfo: "Personal Info",
+                firstName: "First Name",
+                lastName: "Last Name",
+                jobTitle: "Job Title",
+                email: "Email",
+                phone: "Phone",
+                location: "Location",
+                linkedin: "LinkedIn",
+                summary: "Summary / Profile",
+                experience: "Experience",
+                addBtn: "+ Add",
+                position: "Position",
+                company: "Company",
+                dates: "Dates",
+                city: "City",
+                descTirets: "Description (Bulleted)",
+                education: "Education",
+                degree: "Degree",
+                school: "School",
+                skillsSec: "Skills",
+                skillsHelp: "Comma-separated",
+                langSec: "Languages",
+                langHelp: "Comma-separated (e.g., English (Native))",
+                infoFooter: "Changes update the preview automatically.",
+                cvExpTitle: "Professional Experience",
+                cvEduTitle: "Education",
+                cvSkillsTitle: "Skills",
+                cvLangTitle: "Languages",
+                photoAlt: "Profile Photo",
+                improveBtn: "Improve text (AI)"
             }
         };
 
-        // Données d'état du CV
-        let currentLang = 'fr';
-        let accentColor = '#4f46e5'; // Indigo par défaut
-        let currentTemplate = 'modern';
-
-        // Valeurs par défaut pour peupler le CV au premier chargement (bilingue)
-        const defaults = {
-            fr: {
-                name: "Alexandre Martin",
-                title: "Responsable Marketing Digital & Growth",
-                email: "alexandre.martin@email.com",
-                phone: "+33 6 45 89 23 11",
-                address: "Lyon, France",
-                link: "linkedin.com/in/alexandremartin",
-                summary: "Expert analytique et orienté résultats avec 6+ ans de savoir-faire dans le pilotage de campagnes d'acquisition omnicanales. Fortes aptitudes à optimiser les taux de conversion (CRO) et à maximiser l'efficacité budgétaire.",
-                skills: "SEO, SEM Google Ads, Analytics (GA4), Copywriting, SQL, Gestion de Projet (Agile)",
-                languages: "Français (Langue Maternelle), Anglais (Bilingue - C1)",
-                experiences: [
-                    {
-                        role: "Chef de Projet Growth Marketing",
-                        company: "Digital Boost Enterprise - Paris",
-                        dates: "2023 - Présent",
-                        desc: "Supervision du budget publicitaire mensuel de 15k€ pour augmenter les conversions de prospects. Pilotage des optimisations SEO et d'un nouveau plan d'automatisation des emails."
-                    },
-                    {
-                        role: "Spécialiste Acquisition de Trafic Junior",
-                        company: "Global Scale Agency - Lyon",
-                        dates: "2020 - 2023",
-                        desc: "Gestion opérationnelle de campagnes publicitaires Google Ads et Meta Ads. Amélioration du coût par acquisition global de 18% sur 2 ans d'exercice continu."
-                    }
-                ],
-                education: [
-                    {
-                        degree: "Master Stratégie Digitale & E-commerce",
-                        school: "IAE Lyon School of Management",
-                        dates: "2018 - 2020"
-                    },
-                    {
-                        degree: "Licence Gestion de Projet Multimédia",
-                        school: "Université de Lyon III",
-                        dates: "2015 - 2018"
-                    }
-                ]
-            },
-            en: {
-                name: "Alexander Martin",
-                title: "Digital Marketing & Growth Lead",
-                email: "alexander.martin@email.com",
-                phone: "+1 (555) 342-9988",
-                address: "New York, NY",
-                link: "linkedin.com/in/alexandermartin",
-                summary: "Results-driven marketing manager with 6+ years of expertise in spearheading omnichannel customer acquisition. Expert in conversion rate optimization (CRO) and driving cost-efficiency across multiple growth channels.",
-                skills: "SEO, Google Ads, GA4 Analytics, Landing Page Optimization, SQL, Agile Project Management",
-                languages: "English (Native), French (Bilingual - C1)",
-                experiences: [
-                    {
-                        role: "Growth Marketing Lead",
-                        company: "Digital Boost Enterprise - NY",
-                        dates: "2023 - Present",
-                        desc: "Managed a monthly performance budget of $15k resulting in high qualified lead generation. Led structural SEO optimizations and automated email campaign funnels."
-                    },
-                    {
-                        role: "Junior Traffic Manager",
-                        company: "Global Scale Agency - Boston",
-                        dates: "2020 - 2023",
-                        desc: "Operated paid search and social campaigns. Achieved an average cost-per-acquisition reduction of 18% over a two-year deployment timeline."
-                    }
-                ],
-                education: [
-                    {
-                        degree: "M.S. in Digital Strategy & Marketing Analytics",
-                        school: "New York University",
-                        dates: "2018 - 2020"
-                    },
-                    {
-                        degree: "B.S. in Media Communications",
-                        school: "Boston University",
-                        dates: "2015 - 2018"
-                    }
-                ]
-            }
-        };
-
-        // État courant modifiable par l'utilisateur
-        let currentData = JSON.parse(JSON.stringify(defaults[currentLang]));
-
-        // INITIALISATION
-        window.onload = function() {
-            populateForm();
-            renderCV();
-            translateUI();
+        // Fonction utilitaire pour le modal (évite alert)
+        function showMessage(title, message) {
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-text').innerText = message;
+            document.getElementById('msg-modal').classList.remove('hidden');
+            document.getElementById('msg-modal').classList.add('flex');
         }
 
-        // Commuter la langue globale
-        function switchLanguage(lang) {
-            currentLang = lang;
-            
-            // Permuter les styles de boutons
-            const btnFr = document.getElementById('lang-fr');
-            const btnEn = document.getElementById('lang-en');
-            if (lang === 'fr') {
-                btnFr.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 bg-white text-indigo-600 shadow-sm";
-                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900";
-            } else {
-                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 bg-white text-indigo-600 shadow-sm";
-                btnFr.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900";
-            }
-
-            // Charger les valeurs par défaut de la nouvelle langue choisie
-            currentData = JSON.parse(JSON.stringify(defaults[lang]));
-            
-            populateForm();
-            translateUI();
-            renderCV();
+        function closeModal() {
+            document.getElementById('msg-modal').classList.add('hidden');
+            document.getElementById('msg-modal').classList.remove('flex');
         }
 
-        // Appliquer les clés de traduction sur les balises ayant data-i18n
-        function translateUI() {
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    el.innerText = translations[currentLang][key];
-                }
-            });
-
-            // Mettre à jour les placeholders dynamiques de l'UI
-            document.getElementById('in-name').placeholder = currentLang === 'fr' ? "Jean Dupont" : "John Doe";
-            document.getElementById('in-title').placeholder = currentLang === 'fr' ? "Chef de Projet Digital" : "Product Manager";
-
-            // Bouton téléchargement
-            document.getElementById('btn-download-txt').innerText = translations[currentLang]["btn-download-txt"];
-        }
-
-        // Remplir les inputs à partir de currentData
-        function populateForm() {
-            document.getElementById('in-name').value = currentData.name;
-            document.getElementById('in-title').value = currentData.title;
-            document.getElementById('in-email').value = currentData.email;
-            document.getElementById('in-phone').value = currentData.phone;
-            document.getElementById('in-address').value = currentData.address;
-            document.getElementById('in-link').value = currentData.link || '';
-            document.getElementById('in-summary').value = currentData.summary;
-            document.getElementById('in-skills').value = currentData.skills;
-            document.getElementById('in-languages').value = currentData.languages;
-
-            // Remplir les listes d'expérience et de formation
-            rebuildExperienceFormList();
-            rebuildEducationFormList();
-        }
-
-        // Reconstruire les formulaires d'expériences dynamiques
-        function rebuildExperienceFormList() {
-            const list = document.getElementById('experience-list');
-            list.innerHTML = '';
-            
-            currentData.experiences.forEach((exp, index) => {
-                const div = document.createElement('div');
-                div.className = "p-4 bg-slate-50 border border-slate-200 rounded-lg relative space-y-3";
-                div.innerHTML = `
-                    <button onclick="removeExperience(${index})" class="absolute top-2 right-2 text-slate-400 hover:text-rose-500 transition-all p-1">
-                        <i class="fa-solid fa-trash text-sm"></i>
-                    </button>
-                    <div class="grid grid-cols-2 gap-3 pr-6">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-exp-role']}</label>
-                            <input type="text" value="${exp.role}" oninput="updateExperienceValue(${index}, 'role', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-exp-comp']}</label>
-                            <input type="text" value="${exp.company}" oninput="updateExperienceValue(${index}, 'company', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-exp-dates']}</label>
-                            <input type="text" value="${exp.dates}" oninput="updateExperienceValue(${index}, 'dates', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                        <div class="col-span-2">
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide">Description / Missions</label>
-                                <button onclick="openOptimizer('exp-${index}', 'exp-desc-${index}')" class="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center space-x-1">
-                                    <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i>
-                                    <span>${translations[currentLang]['btn-improve']}</span>
-                                </button>
-                            </div>
-                            <textarea id="exp-desc-${index}" rows="3" oninput="updateExperienceValue(${index}, 'desc', this.value)" placeholder="${translations[currentLang]['placeholder-exp-desc']}" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">${exp.desc}</textarea>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        // Reconstruire les formulaires d'éducation
-        function rebuildEducationFormList() {
-            const list = document.getElementById('education-list');
-            list.innerHTML = '';
-
-            currentData.education.forEach((edu, index) => {
-                const div = document.createElement('div');
-                div.className = "p-4 bg-slate-50 border border-slate-200 rounded-lg relative space-y-3";
-                div.innerHTML = `
-                    <button onclick="removeEducation(${index})" class="absolute top-2 right-2 text-slate-400 hover:text-rose-500 transition-all p-1">
-                        <i class="fa-solid fa-trash text-sm"></i>
-                    </button>
-                    <div class="grid grid-cols-2 gap-3 pr-6">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-edu-degree']}</label>
-                            <input type="text" value="${edu.degree}" oninput="updateEducationValue(${index}, 'degree', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-edu-school']}</label>
-                            <input type="text" value="${edu.school}" oninput="updateEducationValue(${index}, 'school', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">${translations[currentLang]['field-edu-dates']}</label>
-                            <input type="text" value="${edu.dates}" oninput="updateEducationValue(${index}, 'dates', this.value)" class="w-full bg-white border border-slate-200 rounded py-1.5 px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        </div>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        // Synchroniser les données formulaires vers currentData puis rafraîchir l'aperçu
-        function syncData() {
-            currentData.name = document.getElementById('in-name').value;
-            currentData.title = document.getElementById('in-title').value;
-            currentData.email = document.getElementById('in-email').value;
-            currentData.phone = document.getElementById('in-phone').value;
-            currentData.address = document.getElementById('in-address').value;
-            currentData.link = document.getElementById('in-link').value;
-            currentData.summary = document.getElementById('in-summary').value;
-            currentData.skills = document.getElementById('in-skills').value;
-            currentData.languages = document.getElementById('in-languages').value;
-
-            renderCV();
-        }
-
-        // Mutateurs expérience
-        function updateExperienceValue(index, field, value) {
-            currentData.experiences[index][field] = value;
-            renderCV();
-        }
-
-        function addExperience() {
-            currentData.experiences.push({
-                role: currentLang === 'fr' ? "Nouveau Poste" : "New Position",
-                company: "Compagnie / Company",
-                dates: "2024 - 2026",
-                desc: ""
-            });
-            rebuildExperienceFormList();
-            renderCV();
-        }
-
-        function removeExperience(index) {
-            currentData.experiences.splice(index, 1);
-            rebuildExperienceFormList();
-            renderCV();
-        }
-
-        // Mutateurs éducation
-        function updateEducationValue(index, field, value) {
-            currentData.education[index][field] = value;
-            renderCV();
-        }
-
-        function addEducation() {
-            currentData.education.push({
-                degree: currentLang === 'fr' ? "Nouveau Diplôme" : "New Degree",
-                school: "Université / School",
-                dates: "2020 - 2023"
-            });
-            rebuildEducationFormList();
-            renderCV();
-        }
-
-        function removeEducation(index) {
-            currentData.education.splice(index, 1);
-            rebuildEducationFormList();
-            renderCV();
-        }
-
-        // Changer de modèle/template
-        function updateTemplate() {
-            currentTemplate = document.getElementById('select-template').value;
-            renderCV();
-        }
-
-        // Changer la couleur d'accentuation
-        function changeAccentColor(colorHex) {
-            accentColor = colorHex;
-            renderCV();
-        }
-
-        // FORMULAIRE ET TEMPLATING EN TEMPS RÉEL
-        function renderCV() {
-            const preview = document.getElementById('cv-preview');
-            let htmlContent = '';
-
-            // Prétraitement des compétences et langues pour l'intégration de badges
-            const skillBadges = currentData.skills ? currentData.skills.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
-            const languageList = currentData.languages ? currentData.languages.split(',').map(l => l.trim()).filter(l => l.length > 0) : [];
-
-            if (currentTemplate === 'modern') {
-                htmlContent = generateModernLayout(skillBadges, languageList);
-            } else if (currentTemplate === 'classic') {
-                htmlContent = generateClassicLayout(skillBadges, languageList);
-            } else if (currentTemplate === 'minimal') {
-                htmlContent = generateMinimalLayout(skillBadges, languageList);
-            } else if (currentTemplate === 'french') {
-                htmlContent = generateFrenchLayout(skillBadges, languageList);
-            } else if (currentTemplate === 'american') {
-                htmlContent = generateAmericanLayout(skillBadges, languageList);
-            }
-
-            preview.innerHTML = htmlContent;
-        }
-
-        // ---------------- LAYOUTS RENDUS DE CV ----------------
-        // --- TEMPLATES DE CV ---
-
-        // 1. TEMPLATE MODERNE (En-tête de couleur, structure élégante à 2 colonnes ou asymétrique)
-        // 1. MODERNE
-        function generateModernLayout(skills, languages) {
-            const primaryColor = accentColor;
-            
-            // Formatage des expériences
-            let expHtml = '';
-            currentData.experiences.forEach(exp => {
-                expHtml += `
-                    <div class="mb-5 relative pl-4 border-l-2" style="border-color: ${primaryColor};">
-                        <div class="flex justify-between items-baseline mb-0.5">
-                            <h4 class="font-bold text-sm text-slate-800">${exp.role}</h4>
-                            <span class="text-xs text-slate-500 font-medium whitespace-nowrap">${exp.dates}</span>
-                        </div>
-                        <div class="text-xs font-semibold" style="color: ${primaryColor};">${exp.company}</div>
-                        <p class="text-xs text-slate-600 mt-1.5 leading-relaxed text-justify whitespace-pre-line">${exp.desc}</p>
-                    </div>
-                `;
-                expHtml += `<div class="mb-4 relative pl-4 border-l-2" style="border-color: ${primaryColor};">
-                    <div class="flex justify-between items-baseline"><h4 class="font-bold text-sm">${exp.role}</h4><span class="text-[10px] text-slate-500">${exp.dates}</span></div>
-                    <div class="text-xs font-semibold" style="color: ${primaryColor}">${exp.company}</div>
-                    <p class="text-[11px] text-slate-600 mt-1 whitespace-pre-line">${exp.desc}</p>
-                </div>`;
-            });
-
-            // Formatage éducation
-            let eduHtml = '';
-            currentData.education.forEach(edu => {
-                eduHtml += `
-                    <div class="mb-4">
-                        <div class="flex justify-between items-baseline mb-0.5">
-                            <h4 class="font-bold text-xs text-slate-800">${edu.degree}</h4>
-                            <span class="text-xs text-slate-500 font-medium">${edu.dates}</span>
-                        </div>
-                        <div class="text-xs text-slate-500">${edu.school}</div>
-                    </div>
-                `;
-                eduHtml += `<div class="mb-3">
-                    <div class="flex justify-between items-baseline"><h4 class="font-bold text-[11px]">${edu.degree}</h4><span class="text-[10px] text-slate-500">${edu.dates}</span></div>
-                    <div class="text-[11px] text-slate-500">${edu.school}</div>
-                </div>`;
-            });
-
-            // Badges compétences
-            let skillsHtml = skills.map(skill => 
-                `<span class="text-[10px] font-medium px-2 py-1 rounded bg-slate-100 text-slate-700">${skill}</span>`
-            ).join(' ');
-
-            // Langues
-            let langHtml = languages.map(lang => 
-                `<div class="text-xs text-slate-600 flex justify-between py-1 border-b border-slate-100">
-                    <span class="font-medium">${lang}</span>
-                 </div>`
-            ).join('');
-
-            return `
-                <div class="h-full flex flex-col justify-between text-slate-800">
-                    <!-- Header -->
-            return `<div class="h-full flex flex-col">
-                    <div class="border-b-4 pb-4 mb-5 flex justify-between items-start" style="border-color: ${primaryColor};">
-                        <div>
-                            <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">${currentData.name || 'Nom complet'}</h2>
-                            <h3 class="text-sm font-semibold mt-1 tracking-wide uppercase" style="color: ${primaryColor};">${currentData.title || 'Titre du poste'}</h3>
-                        </div>
-                        <div class="text-right text-xs text-slate-500 space-y-0.5">
-                            ${currentData.email ? `<div><i class="fa-solid fa-envelope mr-1" style="color: ${primaryColor};"></i> ${currentData.email}</div>` : ''}
-                            ${currentData.phone ? `<div><i class="fa-solid fa-phone mr-1" style="color: ${primaryColor};"></i> ${currentData.phone}</div>` : ''}
-                            ${currentData.address ? `<div><i class="fa-solid fa-map-marker-alt mr-1" style="color: ${primaryColor};"></i> ${currentData.address}</div>` : ''}
-                            ${currentData.link ? `<div><i class="fa-solid fa-globe mr-1" style="color: ${primaryColor};"></i> ${currentData.link}</div>` : ''}
-                        </div>
-                        <div><h2 class="text-2xl font-black">${currentData.name}</h2><h3 class="text-sm font-bold uppercase" style="color: ${primaryColor}">${currentData.title}</h3></div>
-                        <div class="text-right text-[10px] text-slate-500"><div>${currentData.email}</div><div>${currentData.phone}</div><div>${currentData.address}</div></div>
-                    </div>
-
-                    <!-- Layout Corps -->
-                    <div class="grid grid-cols-12 gap-6 flex-1">
-                        <!-- Colonne Principale (Gauche - 8 cols) -->
-                        <div class="col-span-8 space-y-6">
-                            <!-- Résumé -->
-                            ${currentData.summary ? `
-                            <div>
-                                <h3 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: ${primaryColor};">${currentLang === 'fr' ? 'À propos de moi' : 'Professional Summary'}</h3>
-                                <p class="text-xs text-slate-600 leading-relaxed text-justify whitespace-pre-line">${currentData.summary}</p>
-                            </div>` : ''}
-
-                            <!-- Expériences -->
-                            <div>
-                                <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Work Experience'}</h3>
-                                ${expHtml || '<p class="text-xs text-slate-400">Aucune expérience renseignée</p>'}
-                            </div>
-                            <div><h3 class="text-xs font-bold uppercase mb-2" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Profil' : 'Profile'}</h3><p class="text-[11px] text-slate-600">${currentData.summary}</p></div>
-                            <div><h3 class="text-xs font-bold uppercase mb-2" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Expérience' : 'Experience'}</h3>${expHtml}</div>
-                        </div>
-
-                        <!-- Colonne Latérale (Droite - 4 cols) -->
-                        <div class="col-span-4 space-y-6 border-l border-slate-100 pl-4">
-                            <!-- Éducation -->
-                            <div>
-                                <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Formations' : 'Education'}</h3>
-                                ${eduHtml || '<p class="text-xs text-slate-400">Aucune formation renseignée</p>'}
-                            </div>
-
-                            <!-- Compétences -->
-                            <div>
-                                <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Compétences' : 'Skills'}</h3>
-                                <div class="flex flex-wrap gap-1.5">
-                                    ${skillsHtml || '<p class="text-xs text-slate-400">Aucune compétence renseignée</p>'}
-                                </div>
-                            </div>
-
-                            <!-- Langues -->
-                            <div>
-                                <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Langues' : 'Languages'}</h3>
-                                <div class="space-y-1">
-                                    ${langHtml || '<p class="text-xs text-slate-400">Aucune langue renseignée</p>'}
-                                </div>
-                            </div>
-                        <div class="col-span-4 space-y-6 border-l pl-4">
-                            <div><h3 class="text-xs font-bold uppercase mb-2" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Formation' : 'Education'}</h3>${eduHtml}</div>
-                            <div><h3 class="text-xs font-bold uppercase mb-2" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Compétences' : 'Skills'}</h3><p class="text-[10px] text-slate-600">${currentData.skills}</p></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-                </div>`;
-        }
-
-        // 4. TEMPLATE FRANÇAISE (Accent sur la clarté, l'organisation et parfois une touche de formalité)
-        function generateFrenchLayout(skills, languages) {
-        // 2. CLASSIQUE
-        function generateClassicLayout(skills, languages) {
-            const primaryColor = accentColor;
-
-            let expHtml = '';
-            currentData.experiences.forEach(exp => {
-                expHtml += `
-                    <div class="mb-4">
-                        <div class="flex justify-between items-baseline mb-0.5">
-                            <h4 class="font-bold text-sm text-slate-900">${exp.role}</h4>
-                            <span class="text-xs text-slate-500 font-medium">${exp.dates}</span>
-                        </div>
-                        <div class="text-xs font-medium text-slate-600">${exp.company}</div>
-                        <p class="text-xs text-slate-700 mt-1 leading-relaxed text-justify whitespace-pre-line">${exp.desc}</p>
-                    </div>
-                `;
-                expHtml += `<div class="mb-4"><div class="flex justify-between items-baseline font-serif"><span class="font-bold text-sm">${exp.role} - ${exp.company}</span><span class="text-xs">${exp.dates}</span></div><p class="text-xs text-slate-600 mt-1">${exp.desc}</p></div>`;
-            });
-
-            let eduHtml = '';
-            currentData.education.forEach(edu => {
-                eduHtml += `
-                    <div class="mb-3">
-                        <div class="flex justify-between items-baseline mb-0.5">
-                            <h4 class="font-bold text-xs text-slate-900">${edu.degree}</h4>
-                            <span class="text-xs text-slate-500 font-medium">${edu.dates}</span>
-                        </div>
-                        <div class="text-xs text-slate-600">${edu.school}</div>
-            return `<div class="h-full flex flex-col font-serif" style="font-family: 'Playfair Display', serif;">
-                    <div class="text-center border-b pb-4 mb-6" style="border-color: ${primaryColor};">
-                        <h2 class="text-3xl font-bold">${currentData.name}</h2>
-                        <h3 class="text-sm italic mt-1" style="color: ${primaryColor}">${currentData.title}</h3>
-                        <div class="flex justify-center gap-4 text-[10px] font-sans mt-2"><span>${currentData.email}</span><span>${currentData.phone}</span><span>${currentData.address}</span></div>
-                    </div>
-                `;
-            });
-                    <div class="mb-6"><h3 class="text-center text-xs font-bold uppercase mb-2" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Experience'}</h3>${expHtml}</div>
-                </div>`;
-        }
-
-            let skillsFormatted = skills.map(skill => `<span class="text-xs font-medium text-slate-700">${skill}</span>`).join(' • ');
-            let languagesFormatted = languages.map(lang => `<span class="text-xs font-medium text-slate-700">${lang}</span>`).join(' • ');
-
-            return `
-                <div class="h-full flex flex-col justify-between text-slate-800 font-sans">
-                    <!-- Header Nom et Contact -->
-                    <div class="pb-4 mb-6 border-b" style="border-color: ${primaryColor};">
-                        <h2 class="text-2xl font-extrabold text-slate-900 uppercase tracking-tight">${currentData.name || 'Nom complet'}</h2>
-                        <h3 class="text-sm font-semibold mt-1 tracking-wide uppercase" style="color: ${primaryColor};">${currentData.title || 'Titre du poste'}</h3>
-                        <div class="text-xs text-slate-600 mt-3 flex flex-wrap gap-x-4 gap-y-1">
-                            ${currentData.phone ? `<div><i class="fa-solid fa-phone mr-1" style="color: ${primaryColor};"></i> ${currentData.phone}</div>` : ''}
-                            ${currentData.email ? `<div><i class="fa-solid fa-envelope mr-1" style="color: ${primaryColor};"></i> ${currentData.email}</div>` : ''}
-                            ${currentData.address ? `<div><i class="fa-solid fa-map-marker-alt mr-1" style="color: ${primaryColor};"></i> ${currentData.address}</div>` : ''}
-                            ${currentData.link ? `<div><i class="fa-solid fa-globe mr-1" style="color: ${primaryColor};"></i> ${currentData.link}</div>` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Résumé -->
-                    ${currentData.summary ? `
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: ${primaryColor};">${currentLang === 'fr' ? 'Profil' : 'Profile'}</h3>
-                        <p class="text-xs text-slate-700 leading-relaxed text-justify whitespace-pre-line">${currentData.summary}</p>
-                    </div>` : ''}
-
-                    <!-- Expériences -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Work Experience'}</h3>
-                        ${expHtml || '<p class="text-xs text-slate-400">Aucune expérience renseignée</p>'}
-                    </div>
-
-                    <!-- Formations -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Formations & Diplômes' : 'Education'}</h3>
-                        ${eduHtml || '<p class="text-xs text-slate-400">Aucune formation renseignée</p>'}
-                    </div>
-
-                    <!-- Compétences -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Compétences' : 'Skills'}</h3>
-                        <p class="text-xs text-slate-700 leading-relaxed">${skillsFormatted || 'Aucune compétence'}</p>
-                    </div>
-
-                    <!-- Langues -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Langues' : 'Languages'}</h3>
-                        <p class="text-xs text-slate-700 leading-relaxed">${languagesFormatted || 'Aucune langue'}</p>
-                    </div>
-        // 3. MINIMALISTE
-        function generateMinimalLayout(skills, languages) {
-            return `<div class="h-full text-[11px] text-slate-700">
-                <div class="flex justify-between border-b pb-2 mb-4">
-                    <div><h2 class="text-lg font-bold">${currentData.name}</h2><p class="font-bold" style="color: ${accentColor}">${currentData.title}</p></div>
-                    <div class="text-right text-[9px]">${currentData.email}<br>${currentData.phone}</div>
-                </div>
-            `;
-                <p class="mb-4 italic">${currentData.summary}</p>
-                <div class="font-bold uppercase text-[9px] mb-2 border-b">Experience</div>
-                ${currentData.experiences.map(e => `<div class="mb-3"><strong>${e.role}</strong> | ${e.company} (${e.dates})<br>${e.desc}</div>`).join('')}
-            </div>`;
-        }
-
-        // 5. TEMPLATE AMÉRICAINE (Resume - accent sur les réalisations quantifiables et la concision)
-        function generateAmericanLayout(skills, languages) {
-        // 4. DISPOSITION FRANÇAISE
-        function generateFrenchLayout(skills, languages) {
-            const primaryColor = accentColor;
-
-            let expHtml = '';
-            currentData.experiences.forEach(exp => {
-                expHtml += `
-                    <div class="mb-4">
-                        <div class="flex justify-between items-baseline">
-                            <h4 class="font-bold text-sm text-slate-900" style="color: ${primaryColor};">${exp.role}</h4>
-                            <span class="text-xs text-slate-600">${exp.dates}</span>
-                        </div>
-                        <div class="text-xs font-medium text-slate-700 mb-1">${exp.company}</div>
-                        <ul class="list-disc list-inside text-xs text-slate-700 leading-relaxed pl-4">
-                            <li>${exp.desc || (currentLang === 'fr' ? 'Décrivez vos réalisations ici...' : 'Describe your key achievements here...')}</li>
-                        </ul>
-                    </div>
-                `;
-                expHtml += `<div class="mb-4">
-                    <div class="flex justify-between font-bold text-sm"><span>${exp.role}</span><span class="text-slate-500">${exp.dates}</span></div>
-                    <div class="text-xs font-bold italic" style="color: ${primaryColor}">${exp.company}</div>
-                    <p class="text-[11px] mt-1 text-slate-700">${exp.desc}</p>
-                </div>`;
-            });
-
-            let eduHtml = '';
-            currentData.education.forEach(edu => {
-                eduHtml += `
-                    <div class="mb-3">
-                        <div class="flex justify-between items-baseline">
-                            <h4 class="font-bold text-xs text-slate-900">${edu.degree}</h4>
-                            <span class="text-xs text-slate-600">${edu.dates}</span>
-                        </div>
-                        <div class="text-xs text-slate-700">${edu.school}</div>
-                    </div>
-                `;
-                eduHtml += `<div class="mb-2"><div class="flex justify-between text-xs"><strong>${edu.degree}</strong><span>${edu.dates}</span></div><div class="text-[11px]">${edu.school}</div></div>`;
-            });
-
-            let skillsFormatted = skills.join(' | ');
-            let languagesFormatted = languages.join(' | ');
-
-            return `
-                <div class="h-full flex flex-col justify-between text-slate-800 font-sans">
-                    <!-- Nom et Contact - Central et proéminent -->
-                    <div class="text-center pb-4 mb-6 border-b" style="border-color: ${primaryColor};">
-                        <h2 class="text-3xl font-extrabold text-slate-900 uppercase tracking-tight">${currentData.name || 'Full Name'}</h2>
-                        <p class="text-sm text-slate-600 mt-2">${currentData.phone} | ${currentData.email} | ${currentData.address} ${currentData.link ? ` | ${currentData.link}` : ''}</p>
-                    </div>
-
-                    <!-- Résumé / Summary -->
-                    ${currentData.summary ? `
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: ${primaryColor};">${currentLang === 'fr' ? 'Résumé Professionnel' : 'Summary'}</h3>
-                        <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">${currentData.summary}</p>
-                    </div>` : ''}
-
-                    <!-- Compétences - Mots clés importants pour ATS -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-2" style="color: ${primaryColor};">${currentLang === 'fr' ? 'Compétences Clés' : 'Skills'}</h3>
-                        <p class="text-sm text-slate-700">${skillsFormatted || 'No skills listed'}</p>
-                    </div>
-
-                    <!-- Expériences Professionnelles -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Expérience' : 'Experience'}</h3>
-                        ${expHtml || '<p class="text-xs text-slate-400">No experience listed</p>'}
-                    </div>
-
-                    <!-- Éducation -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-3 border-b pb-1" style="color: ${primaryColor}; border-color: ${primaryColor}22;">${currentLang === 'fr' ? 'Formation' : 'Education'}</h3>
-                        ${eduHtml || '<p class="text-xs text-slate-400">No education listed</p>'}
-                    </div>
-
-                    <!-- Langues -->
-                    ${
-        // 2. TEMPLATE CLASSIQUE (Style universitaire académique, centré, élégant, Serif "Playfair Display")
-        function generateClassicLayout(skills, languages) {
-            const primaryColor = accentColor;
-            
-            let expHtml = '';
-            currentData.experiences.forEach(exp => {
-                expHtml += `
-                    <div class="mb-4">
-                        <div class="flex justify-between items-baseline font-serif">
-                            <span class="font-bold text-slate-900 text-sm">${exp.role} <span class="font-normal text-slate-500 italic"> - ${exp.company}</span></span>
-                            <span class="text-xs text-slate-600 font-medium">${exp.dates}</span>
-                        </div>
-                        <p class="text-xs text-slate-600 mt-1 leading-relaxed text-justify whitespace-pre-line">${exp.desc}</p>
-                    </div>
-                `;
-            });
-
-            let eduHtml = '';
-            currentData.education.forEach(edu => {
-                eduHtml += `
-                    <div class="mb-3">
-                        <div class="flex justify-between items-baseline font-serif">
-                            <span class="font-bold text-slate-900 text-xs">${edu.degree}</span>
-                            <span class="text-xs text-slate-600">${edu.dates}</span>
-                        </div>
-                        <div class="text-xs text-slate-500 italic">${edu.school}</div>
-                    </div>
-                `;
-            });
-
-            let skillsFormatted = skills.join(' • ');
-            let languagesFormatted = languages.join(' • ');
-
-            return `
-                <div class="h-full flex flex-col justify-between font-serif text-slate-800" style="font-family: 'Playfair Display', Georgia, serif;">
-                    <!-- En-tête centré -->
-                    <div class="text-center border-b pb-4 mb-6" style="border-color: ${primaryColor};">
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">${currentData.name || 'Nom complet'}</h2>
-                        <h3 class="text-sm font-medium italic mt-1" style="color: ${primaryColor};">${currentData.title || 'Titre du poste'}</h3>
-                        
-                        <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 font-sans mt-3" style="font-family: 'Inter', sans-serif;">
-                            ${currentData.email ? `<div><i class="fa-solid fa-envelope mr-1 text-slate-400"></i>${currentData.email}</div>` : ''}
-                            ${currentData.phone ? `<div><i class="fa-solid fa-phone mr-1 text-slate-400"></i>${currentData.phone}</div>` : ''}
-                            ${currentData.address ? `<div><i class="fa-solid fa-map-marker-alt mr-1 text-slate-400"></i>${currentData.address}</div>` : ''}
-                            ${currentData.link ? `<div><i class="fa-solid fa-globe mr-1 text-slate-400"></i>${currentData.link}</div>` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Résumé / Accroche -->
-                    ${currentData.summary ? `
-                    <div class="mb-5 text-center">
-                        <p class="text-xs text-slate-600 italic leading-relaxed max-w-2xl mx-auto">${currentData.summary}</p>
-                    </div>` : ''}
-
-                    <!-- Expériences -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-2 border-b pb-0.5 text-center font-sans" style="color: ${primaryColor}; border-color: ${primaryColor}66; font-family: 'Inter', sans-serif;">
-                            ${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Professional Experience'}
-                        </h3>
-                        ${expHtml || '<p class="text-xs text-slate-400 text-center">Aucune expérience renseignée</p>'}
-                    </div>
-
-                    <!-- Éducation -->
-                    <div class="mb-5">
-                        <h3 class="text-xs font-bold uppercase tracking-wider mb-2 border-b pb-0.5 text-center font-sans" style="color: ${primaryColor}; border-color: ${primaryColor}66; font-family: 'Inter', sans-serif;">
-                            ${currentLang === 'fr' ? 'Formations & Diplômes' : 'Education'}
-                        </h3>
-                        ${eduHtml || '<p class="text-xs text-slate-400 text-center">Aucune formation renseignée</p>'}
-                    </div>
-
-                    <!-- Compétences & Langues Combinées -->
-                    <div class="grid grid-cols-2 gap-4 pt-2 border-t font-sans" style="font-family: 'Inter', sans-serif; border-color: ${primaryColor}22;">
-                        <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider mb-1" style="color: ${primaryColor};">${currentLang === 'fr' ? 'Compétences' : 'Skills'}</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">${skillsFormatted || 'Aucune compétence'}</p>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider mb-1" style="color: ${primaryColor};">${currentLang === 'fr' ? 'Langues' : 'Languages'}</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed">${languagesFormatted || 'Aucune langue'}</p>
-                        </div>
-                    </div>
-            return `<div class="h-full flex flex-col font-sans">
-                <div class="border-l-8 pl-6 py-2 mb-6" style="border-color: ${primaryColor}">
-                    <h2 class="text-3xl font-black uppercase">${currentData.name}</h2>
-                    <p class="text-sm font-bold uppercase tracking-widest">${currentData.title}</p>
-                    <div class="text-[10px] mt-2 flex gap-4"><span>${currentData.email}</span><span>${currentData.phone}</span><span>${currentData.address}</span></div>
-                </div>
-            `;
-                <div class="mb-6"><h3 class="font-bold border-b-2 mb-3 uppercase text-xs" style="border-color: ${primaryColor}">${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Experience'}</h3>${expHtml}</div>
-                <div><h3 class="font-bold border-b-2 mb-3 uppercase text-xs" style="border-color: ${primaryColor}">Formation</h3>${eduHtml}</div>
-            </div>`;
-        }
-
-        // 3. TEMPLATE MINIMALISTE (Très compact, sans-serif ultra épuré pour tenir sur 1 seule page)
-        function generateMinimalLayout(skills, languages) {
-        // 5. DISPOSITION AMÉRICAINE (Resume)
-        function generateAmericanLayout(skills, languages) {
-            const primaryColor = accentColor;
-
-            let expHtml = '';
-            currentData.experiences.forEach(exp => {
-                expHtml += `
-                    <div class="grid grid-cols-12 gap-2 mb-4">
-                        <div class="col-span-3 text-xs text-slate-500 font-semibold tracking-tight">${exp.dates}</div>
-                        <div class="col-span-9">
-                            <h4 class="font-bold text-xs text-slate-900">${exp.role} <span class="font-normal text-slate-500">| ${exp.company}</span></h4>
-                            <p class="text-[11px] text-slate-600 mt-1 leading-relaxed whitespace-pre-line text-justify">${exp.desc}</p>
-                        </div>
-                    </div>
-                `;
-                expHtml += `<div class="mb-4">
-                    <div class="flex justify-between font-bold text-sm"><span>${exp.role}</span><span>${exp.dates}</span></div>
-                    <div class="text-xs font-medium text-slate-700">${exp.company}</div>
-                    <ul class="list-disc list-inside text-[11px] text-slate-600 mt-1 pl-2"><li>${exp.desc}</li></ul>
-                </div>`;
-            });
-
-            let eduHtml = '';
-            currentData.education.forEach(edu => {
-                eduHtml += `
-                    <div class="grid grid-cols-12 gap-2 mb-2">
-                        <div class="col-span-3 text-xs text-slate-500 font-medium">${edu.dates}</div>
-                        <div class="col-span-9">
-                            <h4 class="font-bold text-xs text-slate-800">${edu.degree}</h4>
-                            <div class="text-[11px] text-slate-500">${edu.school}</div>
-                        </div>
-                    </div>
-                `;
-                eduHtml += `<div class="mb-3"><div class="flex justify-between font-bold text-xs"><span>${edu.degree}</span><span>${edu.dates}</span></div><div class="text-[11px]">${edu.school}</div></div>`;
-            });
-
-            return `
-                <div class="h-full flex flex-col justify-between text-slate-700 font-sans text-xs">
-                    <!-- En-tête Compact -->
-                    <div class="flex justify-between items-end border-b pb-3 mb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-slate-900 uppercase tracking-tight">${currentData.name || 'Nom complet'}</h2>
-                            <h3 class="text-xs font-semibold tracking-widest uppercase mt-0.5" style="color: ${primaryColor};">${currentData.title || 'Titre du poste'}</h3>
-                        </div>
-                        <div class="text-right text-[10px] text-slate-500 space-y-0.5">
-                            <div>${currentData.email} | ${currentData.phone}</div>
-                            <div>${currentData.address} ${currentData.link ? ` | ${currentData.link}` : ''}</div>
-                        </div>
-                    </div>
-
-                    <!-- Résumé de profil -->
-                    ${currentData.summary ? `
-                    <div class="mb-4">
-                        <p class="text-[11px] text-slate-600 leading-relaxed text-justify whitespace-pre-line">${currentData.summary}</p>
-                    </div>` : ''}
-
-                    <!-- Expériences -->
-                    <div class="mb-4">
-                        <h3 class="text-[10px] font-bold uppercase tracking-wider mb-2 border-b pb-0.5" style="color: ${primaryColor}; border-color: ${primaryColor}33;">
-                            ${currentLang === 'fr' ? 'Expériences Professionnelles' : 'Experience'}
-                        </h3>
-                        ${expHtml || '<p class="text-xs text-slate-400">Aucune expérience renseignée</p>'}
-                    </div>
-
-                    <!-- Éducation -->
-                    <div class="mb-4">
-                        <h3 class="text-[10px] font-bold uppercase tracking-wider mb-2 border-b pb-0.5" style="color: ${primaryColor}; border-color: ${primaryColor}33;">
-                            ${currentLang === 'fr' ? 'Formations' : 'Education'}
-                        </h3>
-                        ${eduHtml || '<p class="text-xs text-slate-400">Aucune formation renseignée</p>'}
-                    </div>
-
-                    <!-- Compétences & Langues Combinées de profil -->
-                    <div class="grid grid-cols-12 gap-2 pt-2 border-t" style="border-color: ${primaryColor}22;">
-                        <div class="col-span-3 text-[10px] font-bold uppercase tracking-wider" style="color: ${primaryColor};">
-                            ${currentLang === 'fr' ? 'Compétences & Langues' : 'Skills & Languages'}
-                        </div>
-                        <div class="col-span-9 text-[11px] text-slate-600 leading-relaxed">
-                            <strong>${currentLang === 'fr' ? 'Outils & Compétences : ' : 'Skills: '}</strong>${currentData.skills || 'N/A'}<br>
-                            <strong>${currentLang === 'fr' ? 'Langues : ' : 'Languages: '}</strong>${currentData.languages || 'N/A'}
-                        </div>
-                    </div>
-            return `<div class="h-full font-sans text-slate-800">
-                <div class="text-center border-b-2 pb-4 mb-6" style="border-color: ${primaryColor}">
-                    <h2 class="text-3xl font-extrabold uppercase">${currentData.name}</h2>
-                    <p class="text-sm mt-1">${currentData.address} | ${currentData.phone} | ${currentData.email}</p>
-                </div>
-            `;
-                <div class="mb-4"><h3 class="text-xs font-bold border-b mb-2 uppercase" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Expérience' : 'Experience'}</h3>${expHtml}</div>
-                <div class="mb-4"><h3 class="text-xs font-bold border-b mb-2 uppercase" style="color: ${primaryColor}">${currentLang === 'fr' ? 'Formation' : 'Education'}</h3>${eduHtml}</div>
-                <div><h3 class="text-xs font-bold border-b mb-2 uppercase" style="color: ${primaryColor}">Skills</h3><p class="text-xs">${currentData.skills}</p></div>
-            </div>`;
-        }
-
-
-        // ---------------- MODULE OPTIMISEUR DE RÉDACTION (SIMULÉ AVEC DICTIONNAIRE SMART) ----------------
-
-        // Notre moteur d'analyse sémantique local (Français & Anglais)
-        // Il identifie les verbes pauvres ou fautes classiques et propose des alternatives riches d'action
-        const professionalOptimizations = {
-            fr: [
-                {
-                    triggers: ["géré", "gerer", "fait", "faire", "travaillé", "occuper", "chargé de"],
-                    title: "Remplacer les verbes d'action faibles",
-                    description: "Remplacez les expressions passives par des verbes d'action analytiques à forte valeur ajoutée.",
-                    options: [
-                        "Piloter de bout en bout l'exécution opérationnelle de...",
-                        "Superviser et coordonner de manière rigoureuse...",
-                        "Optimiser l'allocation des ressources et des processus pour..."
-                    ]
-                },
-                {
-                    triggers: ["marketing", "pub", "campagne", "ads"],
-                    title: "Maximiser l'impact Marketing & Growth",
-                    description: "Enrichissez l'impact commercial en mettant l'accent sur la croissance stratégique et les indicateurs clés.",
-                    options: [
-                        "Concevoir et déployer une stratégie d'acquisition omnicanale pour booster le ROI de...",
-                        "Maximiser les performances des budgets publicitaires grâce à un ciblage qualitatif de...",
-                        "Modéliser et analyser les funnels de conversion clés pour stimuler l'acquisition de..."
-                    ]
-                },
-                {
-                    triggers: ["projet", "chef", "équipe"],
-                    title: "Renforcer les postures de Leadership",
-                    description: "Mettez en valeur votre sens des responsabilités d'équipe et d'animation de projets structurants.",
-                    options: [
-                        "Fédérer et animer une équipe transversale autour de jalons livrables clés.",
-                        "Garantir le respect scrupuleux du cahier des charges, des délais de livraison et des budgets alloués.",
-                        "Piloter la transition de gestion de projet vers une méthodologie Agile structurée."
-                    ]
-                },
-                {
-                    triggers: ["créé", "creer", "développé", "site", "web"],
-                    title: "Valoriser l'excellence Technique / Design",
-                    description: "Présentez vos réalisations technologiques avec plus d'exactitude et de précision conceptuelle.",
-                    options: [
-                        "Architecture et développement d'une plateforme applicative modulaire, sécurisée et performante.",
-                        "Concevoir une interface utilisateur (UI/UX) intuitive favorisant l'engagement et la rétention utilisateur.",
-                        "Piloter l'intégration continue et l'amélioration continue des fonctionnalités clés du système."
-                    ]
-                }
-            ],
-            en: [
-                {
-                    triggers: ["managed", "did", "worked", "responsible for", "made"],
-                    title: "Upgrade Weak Action Verbs",
-                    description: "Replace passive verbs with high-impact, analytical action verbs to show authority and results.",
-                    options: [
-                        "Spearheaded and executed strategic cross-functional operations regarding...",
-                        "Supervised end-to-end execution of workflows to maximize conversion rates of...",
-                        "Optimized resource allocation and team workflows to drive efficiency for..."
-                    ]
-                },
-                {
-                    triggers: ["marketing", "ads", "campaign", "social media"],
-                    title: "Boost Growth & Marketing Impact",
-                    description: "Focus on metrics, quantitative values, and smart scaling strategies.",
-                    options: [
-                        "Designed and deployed high-performing omnichannel acquisition funnels, resulting in direct revenue growth...",
-                        "Maximized ROI on multi-channel ad spend through iterative visual and copy testing...",
-                        "Conducted detailed data-driven analyses to scale high-value user acquisitions."
-                    ]
-                },
-                {
-                    triggers: ["project", "team", "leader"],
-                    title: "Demonstrate Agile Leadership",
-                    description: "Emphasize project milestones, cross-functional collaboration, and timely deliveries.",
-                    options: [
-                        "Fostered collaboration across diverse engineering and product teams to hit crucial product milestones.",
-                        "Ensured strict alignment with product specifications, budgets, and delivery timelines.",
-                        "Pioneered transition from legacy development frameworks to modular Agile methodologies."
-                    ]
-                }
-            ]
-        };
-
-        // Liste des verbes de pouvoir / action recommandés
-        const powerVerbs = {
-            fr: ["Piloter", "Superviser", "Fédérer", "Optimiser", "Concevoir", "Négocier", "Analyser", "Standardiser", "Générer", "Restructurer", "Accélérer", "Diagnostiquer"],
-            en: ["Spearhead", "Formulate", "Coordinate", "Re-engineer", "Consolidate", "Pioneer", "Maximize", "Orchestrate", "Accelerate", "Analyze", "Cultivate", "Outperform"]
-        };
-
-        let currentActiveInputId = ''; // Garder trace du champ qu'on est en train d'améliorer
-
-        // Ouvrir le modal d'optimisation intelligente
-        function openOptimizer(contextKey, inputId) {
-            currentActiveInputId = inputId;
-            const originalText = document.getElementById(inputId).value;
-            
-            // Afficher le texte brut actuel
-            document.getElementById('modal-current-text').innerText = originalText || (currentLang === 'fr' ? "(Veuillez d'abord écrire une description pour l'optimiser)" : "(Please write some description first to optimize)");
-
-            const suggestionsBox = document.getElementById('suggestions-box');
-            suggestionsBox.innerHTML = '';
-
-            // Trouver des suggestions adaptées en fonction de la langue et des mots saisis
-            const matchRules = professionalOptimizations[currentLang];
-            let matchingSuggestions = [];
-
-            if (originalText && originalText.trim().length > 0) {
-                // Trouver les déclencheurs
-                matchRules.forEach(rule => {
-                    const matches = rule.triggers.some(trigger => originalText.toLowerCase().includes(trigger));
-                    if (matches) {
-                        matchingSuggestions.push(rule);
-                    }
-                });
-            }
-
-            // Si aucune règle spécifique n'est déclenchée, proposer des améliorations globales par défaut
-            if (matchingSuggestions.length === 0) {
-                matchingSuggestions = [matchRules[0]]; // Proposition par défaut (Verbes faibles)
-            }
-
-            // Générer les blocs de suggestions interactifs
-            matchingSuggestions.forEach(suggestion => {
-                const card = document.createElement('div');
-                card.className = "border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-slate-100 transition-all";
+        // --- GESTION DU STYLE FR / US ---
+        const btnFr = document.getElementById('btn-style-fr');
+        const btnUs = document.getElementById('btn-style-us');
+        const cvDoc = document.getElementById('cv-document');
+        const cvMainLayout = document.getElementById('cv-main-layout');
+
+        function setStyle(style) {
+            currentStyle = style;
+            if (style === 'fr') {
+                // UI Buttons
+                btnFr.className = "px-4 py-1.5 text-sm font-medium rounded-md bg-yellow-400 shadow-sm text-black transition-all";
+                btnUs.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all";
                 
-                let optionsHtml = '';
-                suggestion.options.forEach((opt, idx) => {
-                    optionsHtml += `
-                        <button onclick="applySuggestion('${opt.replace(/'/g, "\\'")}')" class="w-full text-left bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-700 py-2.5 px-3.5 rounded-lg text-xs font-medium text-slate-700 shadow-sm transition-all flex items-center justify-between group mt-2">
-                            <span>"${opt}"</span>
-                            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-indigo-600 transition-all ml-2"></i>
-                        </button>
-                    `;
-                });
-
-                card.innerHTML = `
-                    <h5 class="font-bold text-xs text-slate-800 flex items-center space-x-2">
-                        <span class="w-1.5 h-3 bg-indigo-600 rounded-full inline-block"></span>
-                        <span>${suggestion.title}</span>
-                    </h5>
-                    <p class="text-[11px] text-slate-500 mt-1 mb-2 leading-relaxed">${suggestion.description}</p>
-                    <div class="space-y-1.5">${optionsHtml}</div>
-                `;
-                suggestionsBox.appendChild(card);
-            });
-
-            // Peupler les mots d'action de pouvoir en bas de modal
-            const tipsContainer = document.getElementById('lexical-tips');
-            tipsContainer.innerHTML = '';
-            powerVerbs[currentLang].forEach(verb => {
-                const badge = document.createElement('span');
-                badge.className = "text-[10px] font-semibold bg-indigo-50 text-indigo-700 px-2 py-1 rounded cursor-pointer hover:bg-indigo-100";
-                badge.innerText = verb;
-                badge.onclick = () => {
-                    // Insérer le verbe au clic dans le texte original (simulé)
-                    const area = document.getElementById(currentActiveInputId);
-                    area.value = (area.value ? area.value + ' ' : '') + verb + ' ';
-                    syncData();
-                    document.getElementById('modal-current-text').innerText = area.value;
-                };
-                tipsContainer.appendChild(badge);
-            });
-
-            // Ouvrir l'affichage modal
-            document.getElementById('optimizer-modal').classList.remove('hidden');
+                // CV Classes
+                cvDoc.classList.remove('cv-us');
+                cvDoc.classList.add('cv-fr');
+                
+                // Layout (2 columns for FR)
+                cvMainLayout.classList.add('md:grid-cols-3');
+                cvMainLayout.children[0].classList.add('md:col-span-2');
+            } else {
+                // UI Buttons
+                btnUs.className = "px-4 py-1.5 text-sm font-medium rounded-md bg-yellow-400 shadow-sm text-black transition-all";
+                btnFr.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all";
+                
+                // CV Classes
+                cvDoc.classList.remove('cv-fr');
+                cvDoc.classList.add('cv-us');
+                
+                // Layout (1 column for US, usually top to bottom)
+                cvMainLayout.classList.remove('md:grid-cols-3');
+                cvMainLayout.children[0].classList.remove('md:col-span-2');
+            }
+            updatePreview();
         }
 
-        // Appliquer la suggestion choisie au champ d'édition d'origine
-        function applySuggestion(suggestedText) {
-            if (!currentActiveInputId) return;
-            const inputField = document.getElementById(currentActiveInputId);
+        btnFr.addEventListener('click', () => setStyle('fr'));
+        btnUs.addEventListener('click', () => setStyle('us'));
+
+        // --- GESTION DES LANGUES ---
+        const langSelector = document.getElementById('lang-selector');
+        langSelector.addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            applyTranslations();
+            updatePreview();
+        });
+
+        function applyTranslations() {
+            const t = i18n[currentLang];
             
-            // On remplace le contenu actuel par la phrase enrichie ou on l'ajoute
-            if (inputField.value && inputField.value.trim().length > 0) {
-                // Ajouter proprement
-                inputField.value = suggestedText;
+            // Navbar
+            document.querySelector('nav h1').textContent = t.appTitle;
+            document.getElementById('btn-style-fr').textContent = t.styleFr;
+            document.getElementById('btn-style-us').textContent = t.styleUs;
+            const btnDl = document.getElementById('btn-download');
+            if(btnDl.querySelector('span')) btnDl.querySelector('span').textContent = t.exportPdf;
+            else btnDl.lastChild.textContent = " " + t.exportPdf;
+            
+            // Form Headers
+            const sections = document.querySelectorAll('.w-1\\/3 section h2');
+            if(sections.length >= 3) {
+                sections[0].lastChild.textContent = " " + t.personalInfo;
+                sections[1].lastChild.textContent = " " + t.experience;
+                sections[2].lastChild.textContent = " " + t.education;
+            }
+            if(document.getElementById('title-skills-sec')) document.getElementById('title-skills-sec').textContent = t.skillsSec;
+            if(document.getElementById('title-lang-sec')) document.getElementById('title-lang-sec').textContent = t.langSec;
+
+            // Form Labels (Perso Info)
+            document.getElementById('input-firstname').previousElementSibling.textContent = t.firstName;
+            document.getElementById('input-lastname').previousElementSibling.textContent = t.lastName;
+            document.getElementById('input-title').previousElementSibling.textContent = t.jobTitle;
+            document.getElementById('input-email').previousElementSibling.textContent = t.email;
+            document.getElementById('input-phone').previousElementSibling.textContent = t.phone;
+            document.getElementById('input-location').previousElementSibling.textContent = t.location;
+            if(document.getElementById('input-linkedin')) document.getElementById('input-linkedin').previousElementSibling.textContent = t.linkedin;
+            document.getElementById('input-summary').previousElementSibling.textContent = t.summary;
+
+            // Helps & Buttons
+            if(document.getElementById('lbl-skills-help')) document.getElementById('lbl-skills-help').textContent = t.skillsHelp;
+            if(document.getElementById('lbl-lang-help')) document.getElementById('lbl-lang-help').textContent = t.langHelp;
+            document.getElementById('add-exp-btn').textContent = t.addBtn;
+            document.getElementById('add-edu-btn').textContent = t.addBtn;
+
+            // Footer info
+            const infoFooter = document.querySelector('.border-t.bg-gray-50 p');
+            if(infoFooter) infoFooter.textContent = t.infoFooter;
+
+            // Dynamic Elements (Experiences)
+            document.querySelectorAll('.exp-item').forEach(item => {
+                const labels = item.querySelectorAll('label');
+                if(labels.length >= 5) {
+                    labels[0].textContent = t.position;
+                    labels[1].textContent = t.company;
+                    labels[2].textContent = t.dates;
+                    labels[3].textContent = t.city;
+                    labels[4].textContent = t.descTirets;
+                }
+                const btnImpr = item.querySelector('.improve-text-btn');
+                if(btnImpr && !btnImpr.disabled) {
+                    btnImpr.innerHTML = `<i data-lucide="sparkles" class="w-3 h-3"></i> ${t.improveBtn}`;
+                }
+            });
+
+            // Dynamic Elements (Education)
+            document.querySelectorAll('.edu-item').forEach(item => {
+                const labels = item.querySelectorAll('label');
+                if(labels.length >= 3) {
+                    labels[0].textContent = t.degree;
+                    labels[1].textContent = t.school;
+                    labels[2].textContent = t.dates;
+                }
+            });
+
+            // CV Titles
+            const cvExpTitleEl = document.querySelector('#cv-experiences-list').previousElementSibling;
+            if(cvExpTitleEl) cvExpTitleEl.textContent = t.cvExpTitle;
+            
+            const cvEduTitleEl = document.querySelector('#cv-education-list').previousElementSibling;
+            if(cvEduTitleEl) cvEduTitleEl.textContent = t.cvEduTitle;
+            
+            if(document.getElementById('cv-title-skills')) document.getElementById('cv-title-skills').textContent = t.cvSkillsTitle;
+            if(document.getElementById('cv-title-lang')) document.getElementById('cv-title-lang').textContent = t.cvLangTitle;
+
+            lucide.createIcons();
+        }
+
+        // --- MISE A JOUR DE LA PREVISUALISATION ---
+        function updatePreview() {
+            // 1. Infos perso
+            const fname = document.getElementById('input-firstname').value;
+            const lname = document.getElementById('input-lastname').value;
+            const title = document.getElementById('input-title').value;
+            const email = document.getElementById('input-email').value;
+            const phone = document.getElementById('input-phone').value;
+            const loc = document.getElementById('input-location').value;
+            const linkedin = document.getElementById('input-linkedin') ? document.getElementById('input-linkedin').value : '';
+            const summary = document.getElementById('input-summary').value;
+            const t = i18n[currentLang];
+
+            // Header HTML selon le style
+            const headerEl = document.getElementById('cv-header');
+            if (currentStyle === 'fr') {
+                let contactHTML = `
+                    <p><i data-lucide="mail" class="inline w-3 h-3 mr-1"></i> ${email}</p>
+                    <p><i data-lucide="phone" class="inline w-3 h-3 mr-1"></i> ${phone}</p>
+                    <p><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i> ${loc}</p>
+                `;
+                if (linkedin) contactHTML += `<p><i data-lucide="linkedin" class="inline w-3 h-3 mr-1"></i> ${linkedin}</p>`;
+
+                headerEl.innerHTML = `
+                    <div class="photo-container bg-gray-200">
+                        <img src="https://placehold.co/150x150/e2e8f0/475569?text=${encodeURIComponent(t.photoAlt)}" alt="${t.photoAlt}" onerror="this.src='https://placehold.co/150x150/e2e8f0/475569?text=${encodeURIComponent(t.photoAlt)}'">
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 tracking-tight uppercase">${fname} <span class="text-yellow-500">${lname}</span></h1>
+                        <h2 class="text-xl text-gray-600 mt-1 mb-3">${title}</h2>
+                        <div class="text-sm text-gray-500 space-y-1">
+                            ${contactHTML}
+                        </div>
+                    </div>
+                `;
             } else {
-                inputField.value = suggestedText;
+                // Style US : très propre, typographie forte, séparateurs discrets
+                let contactHTML = `
+                    <span>${loc}</span>
+                    <span class="mx-2 text-gray-400">|</span> 
+                    <span>${phone}</span>
+                    <span class="mx-2 text-gray-400">|</span> 
+                    <span class="text-gray-800">${email}</span>
+                `;
+                if (linkedin) contactHTML += `<span class="mx-2 text-gray-400">|</span> <span class="text-gray-800">${linkedin}</span>`;
+
+                headerEl.innerHTML = `
+                    <h1>${fname} ${lname}</h1>
+                    <div class="text-lg text-gray-800 font-semibold mb-2">${title}</div>
+                    <div class="header-contact">
+                        ${contactHTML}
+                    </div>
+                `;
             }
 
-            // Mettre à jour la synchro et l'affichage live
-            syncData();
+            // Résumé
+            const summaryEl = document.getElementById('cv-summary-section');
+            if (summary.trim() !== "") {
+                summaryEl.style.display = "block";
+                document.getElementById('cv-summary-text').innerText = summary;
+                document.getElementById('cv-summary-text').className = currentStyle === 'fr' ? "text-sm leading-relaxed" : "text-[0.95rem] leading-relaxed text-gray-800";
+            } else {
+                summaryEl.style.display = "none";
+            }
+
+            // 2. Expériences
+            const expListEl = document.getElementById('cv-experiences-list');
+            expListEl.innerHTML = '';
+            const expItems = document.querySelectorAll('.exp-item');
             
-            // Fermer l'assistant
-            closeOptimizer();
+            expItems.forEach(item => {
+                const eTitle = item.querySelector('.exp-title').value;
+                const eComp = item.querySelector('.exp-company').value;
+                const eDates = item.querySelector('.exp-dates').value;
+                const eLoc = item.querySelector('.exp-loc').value;
+                const eDesc = item.querySelector('.exp-desc').value;
+
+                if(eTitle || eComp) {
+                    const listItems = eDesc.split('\n')
+                        .filter(line => line.trim() !== '')
+                        .map(line => `<li>${line.replace(/^- /, '')}</li>`)
+                        .join('');
+
+                    if (currentStyle === 'fr') {
+                        const html = `
+                            <div class="cv-item">
+                                <div class="cv-item-header">
+                                    <span class="text-base">${eTitle}</span>
+                                    <span class="text-sm font-normal text-gray-600">${eDates}</span>
+                                </div>
+                                <div class="cv-item-subtitle text-sm">
+                                    ${eComp} ${eLoc ? `| ${eLoc}` : ''}
+                                </div>
+                                <ul class="cv-list text-sm text-gray-700">
+                                    ${listItems}
+                                </ul>
+                            </div>
+                        `;
+                        expListEl.innerHTML += html;
+                    } else {
+                        // US Layout : Titre à gauche, Dates à droite. Sous-titre Entreprise en italique.
+                        const html = `
+                            <div class="mb-4">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="font-bold text-gray-900 text-[1.05rem]">${eTitle}</span>
+                                    <span class="text-[0.9rem] font-semibold text-gray-800 whitespace-nowrap">${eDates}</span>
+                                </div>
+                                <div class="text-[0.95rem] italic text-gray-800 mb-1">
+                                    ${eComp}${eLoc ? `, ${eLoc}` : ''}
+                                </div>
+                                <ul class="list-disc pl-5 text-[0.9rem] text-gray-800 space-y-1 marker:text-gray-400">
+                                    ${listItems}
+                                </ul>
+                            </div>
+                        `;
+                        expListEl.innerHTML += html;
+                    }
+                }
+            });
+
+            // 3. Formations
+            const eduListEl = document.getElementById('cv-education-list');
+            eduListEl.innerHTML = '';
+            const eduItems = document.querySelectorAll('.edu-item');
+            
+            eduItems.forEach(item => {
+                const eDeg = item.querySelector('.edu-degree').value;
+                const eSchool = item.querySelector('.edu-school').value;
+                const eDates = item.querySelector('.edu-dates').value;
+
+                if(eDeg || eSchool) {
+                    if (currentStyle === 'fr') {
+                        const html = `
+                            <div class="cv-item mb-3">
+                                <div class="cv-item-header text-sm">
+                                    <span>${eDeg}</span>
+                                </div>
+                                <div class="text-sm text-gray-700">${eSchool}</div>
+                                <div class="text-xs text-gray-500 italic">${eDates}</div>
+                            </div>
+                        `;
+                        eduListEl.innerHTML += html;
+                    } else {
+                        const html = `
+                            <div class="mb-3">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="font-bold text-gray-900 text-[1rem]">${eSchool}</span>
+                                    <span class="text-[0.9rem] font-semibold text-gray-800 whitespace-nowrap">${eDates}</span>
+                                </div>
+                                <div class="text-[0.95rem] italic text-gray-800">${eDeg}</div>
+                            </div>
+                        `;
+                        eduListEl.innerHTML += html;
+                    }
+                }
+            });
+
+            // 4. Compétences
+            const skillsStr = document.getElementById('input-skills').value;
+            const skillsListEl = document.getElementById('cv-skills-list');
+            skillsListEl.innerHTML = '';
+            
+            // Adaptation de la grille de compétences selon le style
+            if (currentStyle === 'fr') {
+                skillsListEl.className = "flex flex-wrap gap-2 text-sm";
+            } else {
+                skillsListEl.className = "text-[0.95rem] text-gray-800 leading-relaxed";
+            }
+
+            if(skillsStr.trim() !== "") {
+                const skills = skillsStr.split(',').map(s => s.trim()).filter(s => s !== "");
+                if (currentStyle === 'fr') {
+                    skills.forEach(skill => {
+                        skillsListEl.innerHTML += `<li class="bg-gray-100 text-gray-800 px-2 py-1 rounded border border-gray-200">${skill}</li>`;
+                    });
+                } else {
+                    skillsListEl.innerHTML = `<li>${skills.join(' <span class="mx-2 text-gray-400">•</span> ')}</li>`;
+                }
+            }
+
+            // 5. Langues
+            const langInput = document.getElementById('input-languages');
+            const langListEl = document.getElementById('cv-languages-list');
+            if(langListEl && langInput) {
+                langListEl.innerHTML = '';
+                
+                if (currentStyle === 'fr') {
+                    langListEl.className = "space-y-1 text-sm text-gray-700";
+                } else {
+                    langListEl.className = "text-[0.95rem] text-gray-800 leading-relaxed";
+                }
+
+                const langStr = langInput.value;
+                if(langStr.trim() !== "") {
+                    const langs = langStr.split(',').map(s => s.trim()).filter(s => s !== "");
+                    if (currentStyle === 'fr') {
+                        langs.forEach(lang => {
+                            langListEl.innerHTML += `<li>${lang}</li>`;
+                        });
+                    } else {
+                        langListEl.innerHTML = `<li>${langs.join(' <span class="mx-2 text-gray-400">•</span> ')}</li>`;
+                    }
+                }
+            }
+
+            // Ré-initialiser les icônes injectées
+            lucide.createIcons();
         }
 
-        function closeOptimizer() {
-            document.getElementById('optimizer-modal').classList.add('hidden');
-            currentActiveInputId = '';
+        // --- ECOUTEURS D'EVENEMENTS POUR LE FORMULAIRE ---
+        // Ajouter un écouteur sur tous les inputs pour mettre à jour la vue en direct
+        function attachInputListeners() {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.removeEventListener('input', updatePreview); // Éviter les doublons
+                input.addEventListener('input', updatePreview);
+            });
+
+            // Boutons de suppression
+            document.querySelectorAll('.remove-exp-btn').forEach(btn => {
+                btn.onclick = function() { this.closest('.exp-item').remove(); updatePreview(); };
+            });
+            document.querySelectorAll('.remove-edu-btn').forEach(btn => {
+                btn.onclick = function() { this.closest('.edu-item').remove(); updatePreview(); };
+            });
+
+            // Boutons d'amélioration de texte
+            document.querySelectorAll('.improve-text-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const textarea = this.closest('div').nextElementSibling;
+                    improveText(textarea, this);
+                };
+            });
         }
 
-        // DÉCLENCHER L'EXPORTATION PDF VIA L'IMPRESSION SYSTÈME DU NAVIGATEUR
-        function triggerPrint() {
-            window.print();
+        // --- AMELIORATION IA (GEMINI API) ---
+        async function improveText(textareaElement, buttonElement) {
+            const originalText = textareaElement.value;
+            if (originalText.trim() === "") return;
+
+            // Sauvegarder le contenu original du bouton
+            const originalBtnContent = buttonElement.innerHTML;
+            
+            // Afficher le loader
+            buttonElement.innerHTML = `<span class="loader"></span> Patientez...`;
+            buttonElement.disabled = true;
+
+            try {
+                const apiKey = ""; // Laissée vide pour injection automatique
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                
+                const prompt = currentLang === 'fr' 
+                    ? `Agis comme un rédacteur de CV expert. Améliore ces puces de description de poste pour qu'elles soient professionnelles, orientées résultats et percutantes. Renvoie UNIQUEMENT les puces améliorées, en commençant chacune par un tiret (-). Ne fais pas de phrase d'introduction ni de mise en forme complexe.\n\nTexte original:\n${originalText}`
+                    : `Act as an expert resume writer. Improve these job description bullet points to make them professional, action-oriented, and impactful. Return ONLY the improved bullet points, starting each with a hyphen (-). Do not include any introductory text or complex markdown.\n\nOriginal text:\n${originalText}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content) {
+                    const improvedText = result.candidates[0].content.parts[0].text;
+                    textareaElement.value = improvedText.trim();
+                    updatePreview();
+                    
+                    buttonElement.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-green-600"></i> Amélioré`;
+                } else {
+                    throw new Error("Réponse de l'API invalide");
+                }
+            } catch (error) {
+                console.error("Erreur IA :", error);
+                showMessage("Erreur", currentLang === 'fr' ? "L'amélioration de texte a échoué. Veuillez réessayer." : "Text improvement failed. Please try again.");
+                buttonElement.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3 text-red-600"></i> Erreur`;
+            } finally {
+                lucide.createIcons();
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalBtnContent;
+                    buttonElement.disabled = false;
+                    lucide.createIcons();
+                }, 3000);
+            }
         }
+
+        // --- AJOUT DE SECTIONS DYNAMIQUES ---
+        document.getElementById('add-exp-btn').addEventListener('click', () => {
+            const container = document.getElementById('experiences-container');
+            const newExp = document.createElement('div');
+            const t = i18n[currentLang];
+            newExp.className = 'exp-item border border-gray-200 p-4 rounded-lg bg-gray-50 relative group';
+            newExp.innerHTML = `
+                <button class="remove-exp-btn absolute top-2 right-2 text-gray-400 hover:text-red-500 hidden group-hover:block"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div><label class="text-xs text-gray-500">${t.position}</label><input type="text" class="exp-title w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                    <div><label class="text-xs text-gray-500">${t.company}</label><input type="text" class="exp-company w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                    <div><label class="text-xs text-gray-500">${t.dates}</label><input type="text" class="exp-dates w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                    <div><label class="text-xs text-gray-500">${t.city}</label><input type="text" class="exp-loc w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <label class="text-xs text-gray-500">${t.descTirets}</label>
+                        <button class="improve-text-btn text-xs bg-black text-yellow-400 px-2 py-1 rounded hover:bg-gray-800 transition-colors flex items-center gap-1 font-medium">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> ${t.improveBtn}
+                        </button>
+                    </div>
+                    <textarea class="exp-desc w-full p-2 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" rows="3" placeholder="- Mission 1\n- Mission 2"></textarea>
+                </div>
+            `;
+            container.appendChild(newExp);
+            lucide.createIcons();
+            attachInputListeners();
+        });
+
+        document.getElementById('add-edu-btn').addEventListener('click', () => {
+            const container = document.getElementById('education-container');
+            const newEdu = document.createElement('div');
+            const t = i18n[currentLang];
+            newEdu.className = 'edu-item border border-gray-200 p-4 rounded-lg bg-gray-50 relative group';
+            newEdu.innerHTML = `
+                <button class="remove-edu-btn absolute top-2 right-2 text-gray-400 hover:text-red-500 hidden group-hover:block"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="col-span-2"><label class="text-xs text-gray-500">${t.degree}</label><input type="text" class="edu-degree w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                    <div><label class="text-xs text-gray-500">${t.school}</label><input type="text" class="edu-school w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                    <div><label class="text-xs text-gray-500">${t.dates}</label><input type="text" class="edu-dates w-full p-1 border rounded text-sm focus:ring-2 focus:ring-yellow-400 outline-none" placeholder=""></div>
+                </div>
+            `;
+            container.appendChild(newEdu);
+            lucide.createIcons();
+            attachInputListeners();
+        });
+
+        // --- EXPORT PDF ---
+        document.getElementById('btn-download').addEventListener('click', () => {
+            const element = document.getElementById('cv-document');
+            const name = document.getElementById('input-lastname').value.toUpperCase() || 'CV';
+            const firstName = document.getElementById('input-firstname').value || '';
+            const filename = `CV_${firstName}_${name}.pdf`;
+
+            // Options pour html2pdf
+            const opt = {
+                margin:       [0, 0, 0, 0], // Marges nulles car on gère le padding dans .cv-container
+                filename:     filename,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true }, // scale 2 pour une meilleure résolution
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Afficher un message de chargement
+            const btn = document.getElementById('btn-download');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span class="loader" style="width:14px;height:14px;border-width:2px;"></span> Création...`;
+            btn.disabled = true;
+
+            // Génération
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurer le bouton
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }).catch(err => {
+                console.error("Erreur lors de la génération du PDF :", err);
+                showMessage("Erreur", "Une erreur est survenue lors de la création du PDF.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            });
+        });
+
+        // Initialisation au chargement
+        window.onload = () => {
+            attachInputListeners();
+            applyTranslations(); // Appliquer la langue par défaut
+            setStyle('fr'); // Style par défaut
+        };
+
     </script>
 </body>
 </html>
