@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mlimani City - Cloud Store Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tzgreen: '#1eb53a',
+                        tzyellow: '#fcd116',
+                        tzblue: '#00a3dd',
+                    },
+                    screens: {
+                        'xs': '480px',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'phone': '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(0,0,0,0.03)',
+                        'neon': '0 0 15px rgba(30, 181, 58, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary-rgb: 30, 181, 58; /* Default TZ Green */
+            --primary-hex: #1eb53a;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+        
+        .phone-scrollbar::-webkit-scrollbar { width: 4px; }
+        .phone-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .phone-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 10px; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        /* Dynamic Theme Class */
+        .dynamic-bg { background-color: var(--primary-hex) !important; }
+        .dynamic-text { color: var(--primary-hex) !important; }
+        .dynamic-border { border-color: var(--primary-hex) !important; }
+        .dynamic-ring:focus { ring-color: var(--primary-hex) !important; }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 h-full flex flex-col">
+
+    <!-- PORTAL AUTHENTICATION OVERLAY -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden flex flex-col transform transition-all">
+            <!-- Auth Header -->
+            <div class="p-6 bg-slate-900 text-white flex items-center gap-3 border-b-4 border-tzyellow">
+                <div class="bg-tzgreen text-white p-2.5 rounded-xl">
+                    <i class="fa-solid fa-store text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight">Mlimani City Cloud</h2>
+                    <p class="text-xs text-slate-300">Manage your store / Simamia duka lako</p>
+                </div>
+            </div>
+
+            <!-- Auth Form & Tabs -->
+            <div class="p-6 space-y-4">
+                <!-- Tabs Selector -->
+                <div class="bg-slate-100 p-1 rounded-lg flex gap-1">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold rounded bg-white text-slate-800 shadow-sm transition">Login / Ingia</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-semibold rounded text-slate-500 hover:text-slate-800 transition">Register / Jisajili</button>
+                </div>
+
+                <!-- Input Forms -->
+                <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address / Barua Pepe</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
+                            <input type="email" id="auth-email" required placeholder="name@example.com" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">Password / Nyila</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                            <input type="password" id="auth-password" required minlength="6" placeholder="****** (min. 6 chars)" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                        </div>
+                    </div>
+
+                    <!-- Auth Actions -->
+                    <button type="submit" id="auth-submit-btn" class="w-full mt-2 bg-tzgreen hover:bg-green-600 text-white font-bold py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <!-- Guest Fallback / Demo Option -->
+                <div class="border-t border-slate-100 pt-4 flex flex-col gap-2">
+                    <p class="text-[10px] text-center text-slate-400 uppercase tracking-wider font-bold">Demo Mode / Nje ya Mtandao</p>
+                    <button onclick="accessAsGuest()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-tzyellow"></i> Continue in Local Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTENT (Protected) -->
+    <div id="app-main-content" class="h-full flex flex-col hidden">
+        <!-- App Header -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 md:px-6 py-3 flex flex-wrap gap-4 items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="bg-tzgreen text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-store text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+                        Mlimani <span class="text-tzblue">City</span> <span class="hidden xs:inline text-[10px] uppercase tracking-widest bg-tzyellow/20 text-yellow-700 px-2 py-0.5 rounded-full font-bold">Manager</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-500 font-medium">Store Dashboard / Dashibodi ya Duka</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- User account identity -->
+                <div id="user-profile-badge" class="hidden sm:flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+                    <span class="h-2 w-2 rounded-full bg-tzgreen"></span>
+                    <span id="user-email-display" class="font-semibold text-slate-700">admin@mlimanicity.co.tz</span>
+                    <button onclick="handleLogout()" class="text-slate-400 hover:text-rose-600 transition pl-1" title="Logout">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+
+                <!-- Database Connection Status Badge -->
+                <div class="flex flex-col text-right">
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">System Status</span>
+                    <span id="cloud-status-badge" class="text-xs font-bold text-amber-600 flex items-center justify-end gap-1">
+                        <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span> Local Mode
+                    </span>
+                </div>
+                <button onclick="resetToDefaults()" class="text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 md:px-3 md:py-2 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 border border-slate-200">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 flex flex-col lg:flex-row min-h-0 lg:overflow-hidden bg-slate-50">
+            
+            <!-- LEFT PANEL: Admin & Customizer (60% width on lg) -->
+            <section class="w-full lg:w-[58%] xl:w-[62%] lg:shrink-0 p-4 lg:p-6 lg:overflow-y-scroll custom-scrollbar flex flex-col gap-6">
+                
+                <!-- Dashboard Stats and Intro -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Sales (Mauzo)</span>
+                        <div class="flex items-baseline justify-between mt-2">
+                            <span id="dashboard-sales" class="text-sm md:text-lg font-bold text-slate-900">0 TZS</span>
+                            <span class="text-[9px] font-bold text-tzgreen bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5"><i class="fa-solid fa-chart-line"></i> Live</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Orders (Oda)</span>
+                        <div class="flex items-baseline justify-between mt-2">
+                            <span id="dashboard-orders-count" class="text-xl font-bold text-slate-900">0</span>
+                            <span class="text-[10px] text-slate-500 font-medium">Avg: <span id="dashboard-avg-cart" class="font-bold">0 TZS</span></span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Products (Bidhaa)</span>
+                        <div class="flex items-baseline justify-between mt-2">
+                            <span id="dashboard-products-count" class="text-xl font-bold text-slate-900 font-mono">0</span>
+                            <span class="text-[10px] text-tzblue font-bold cursor-pointer hover:underline" onclick="switchAdminTab('products-tab')">Manage</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Conv. Rate</span>
+                        <div class="flex items-baseline justify-between mt-2">
+                            <span id="dashboard-conversion" class="text-xl font-bold text-slate-900">4.8%</span>
+                            <span class="text-[10px] text-slate-400">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Controls -->
+                <div class="bg-slate-100 p-1.5 rounded-xl flex gap-1 self-stretch overflow-x-auto hide-scrollbar sticky top-[73px] lg:top-[-24px] lg:-mx-6 lg:px-6 lg:py-4 lg:rounded-none z-20 shadow-sm border-b border-slate-200/60">
+                    <button onclick="switchAdminTab('settings-tab')" id="btn-settings-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 bg-white text-slate-900 shadow-sm border border-slate-200 whitespace-nowrap">
+                        <i class="fa-solid fa-wand-magic-sparkles text-tzgreen"></i> Settings & Identity
+                    </button>
+                    <button onclick="switchAdminTab('products-tab')" id="btn-products-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-900 hover:bg-white/50 border border-transparent whitespace-nowrap">
+                        <i class="fa-solid fa-boxes-stacked"></i> Products (Bidhaa)
+                    </button>
+                    <button onclick="switchAdminTab('orders-tab')" id="btn-orders-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-900 hover:bg-white/50 border border-transparent relative whitespace-nowrap">
+                        <i class="fa-solid fa-receipt"></i> Orders (Oda)
+                        <span id="orders-badge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] h-4 w-4 rounded-full flex items-center justify-center animate-bounce">0</span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: DESIGN & IDENTITY -->
+                <div id="settings-tab" class="admin-tab-content block space-y-6">
+                    
+                    <!-- Customize Identity -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                            <span class="bg-slate-100 text-tzgreen p-1.5 rounded-lg text-xs"><i class="fa-solid fa-store"></i></span>
+                            Store Visual Identity (Muonekano)
+                        </h3>
+
+                        <!-- Logo Upload Section -->
+                        <div class="mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div id="shop-logo-preview" class="h-16 w-16 rounded-xl bg-white border shadow-sm flex items-center justify-center overflow-hidden shrink-0">
+                                    <i class="fa-solid fa-store text-2xl text-slate-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800">Store Logo / Image</h4>
+                                    <p class="text-[10px] text-slate-500">Displays in header (JPG, PNG)</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label id="btn-upload-logo-wrap" class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition shadow-sm text-center">
+                                    <i class="fa-solid fa-upload mr-1"></i> Upload
+                                    <input type="file" id="shop-logo-input" class="hidden" accept="image/*" onchange="handleShopLogoChange(this)">
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Store Name (Jina la Duka)</label>
+                                <input type="text" id="config-store-name" value="Mlimani City Store" oninput="updateStoreConfig()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Slogan (Kauli Mbiu)</label>
+                                <input type="text" id="config-store-slogan" value="The Ultimate Shopping Experience" oninput="updateStoreConfig()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Currency (Fedha)</label>
+                                <select id="config-currency" onchange="updateStoreConfig()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition bg-white">
+                                    <option value="TZS">TZS (Tanzanian Shilling)</option>
+                                    <option value="USD">USD ($)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Banner Announcement</label>
+                                <input type="text" id="config-banner-text" value="Karibu! Get 10% off with code: TZA10 ✨" oninput="updateStoreConfig()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">WhatsApp / Phone</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2.5 text-slate-400"><i class="fa-brands fa-whatsapp text-xs"></i></span>
+                                    <input type="text" id="config-contact-phone" value="+255 " oninput="updateStoreConfig()" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Physical Address (Mahali)</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2.5 text-slate-400"><i class="fa-solid fa-location-dot text-xs"></i></span>
+                                    <input type="text" id="config-contact-address" value="Sam Nujoma Rd, Dar es Salaam" oninput="updateStoreConfig()" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customize Payments (Tanzanian context) -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                            <span class="bg-slate-100 text-tzgreen p-1.5 rounded-lg text-xs"><i class="fa-solid fa-money-bill-transfer"></i></span>
+                            Payment Methods (Njia za Malipo)
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- M-Pesa -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-xs font-extrabold text-slate-700">📱 Vodacom M-Pesa</span>
+                                    <input type="checkbox" id="pay-mpesa-active" checked onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                                </label>
+                                <input type="text" id="pay-mpesa-info" placeholder="Lipa Namba / Phone" value="5551234" oninput="updateStoreConfig()" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-tzgreen">
+                            </div>
+                            <!-- Tigo Pesa -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-xs font-extrabold text-slate-700">📱 Tigo Pesa</span>
+                                    <input type="checkbox" id="pay-tigo-active" checked onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                                </label>
+                                <input type="text" id="pay-tigo-info" placeholder="Lipa Namba / Phone" value="0712345678" oninput="updateStoreConfig()" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-tzgreen">
+                            </div>
+                            <!-- Airtel Money -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-xs font-extrabold text-slate-700">📱 Airtel Money</span>
+                                    <input type="checkbox" id="pay-airtel-active" onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                                </label>
+                                <input type="text" id="pay-airtel-info" placeholder="Lipa Namba / Phone" oninput="updateStoreConfig()" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-tzgreen">
+                            </div>
+                            <!-- HaloPesa -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-xs font-extrabold text-slate-700">📱 HaloPesa</span>
+                                    <input type="checkbox" id="pay-halo-active" onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                                </label>
+                                <input type="text" id="pay-halo-info" placeholder="Lipa Namba / Phone" oninput="updateStoreConfig()" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-tzgreen">
+                            </div>
+                            <!-- Bank Card -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <span class="text-xs font-extrabold text-slate-700">💳 Bank Card (Kadi)</span>
+                                    <input type="checkbox" id="pay-card-active" onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                                </label>
+                                <input type="text" id="pay-card-info" placeholder="Bank Account Number" oninput="updateStoreConfig()" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-tzgreen">
+                            </div>
+                            <!-- Cash on Delivery -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-slate-700">🚚 Cash on Delivery (Taslimu)</span>
+                                <input type="checkbox" id="pay-delivery-active" checked onchange="updateStoreConfig()" class="rounded text-tzgreen focus:ring-tzgreen">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customize Palette & Theme Layout -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                            <span class="bg-slate-100 text-tzgreen p-1.5 rounded-lg text-xs"><i class="fa-solid fa-palette"></i></span>
+                            Theme & Colors (Rangi)
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-2">Brand Color (Rangi kuu)</label>
+                            <div class="grid grid-cols-5 gap-2">
+                                <button onclick="changeThemeColor('#1eb53a')" class="theme-color-btn flex flex-col items-center justify-center p-2 rounded-xl border-2 border-green-500 bg-green-50 transition">
+                                    <span class="h-6 w-6 rounded-full bg-[#1eb53a] block shadow-inner"></span>
+                                    <span class="text-[10px] mt-1 font-bold">TZ Green</span>
+                                </button>
+                                <button onclick="changeThemeColor('#fcd116')" class="theme-color-btn flex flex-col items-center justify-center p-2 rounded-xl border-2 border-transparent bg-slate-50 hover:bg-slate-100 transition">
+                                    <span class="h-6 w-6 rounded-full bg-[#fcd116] block shadow-inner"></span>
+                                    <span class="text-[10px] mt-1 font-bold">TZ Yellow</span>
+                                </button>
+                                <button onclick="changeThemeColor('#00a3dd')" class="theme-color-btn flex flex-col items-center justify-center p-2 rounded-xl border-2 border-transparent bg-slate-50 hover:bg-slate-100 transition">
+                                    <span class="h-6 w-6 rounded-full bg-[#00a3dd] block shadow-inner"></span>
+                                    <span class="text-[10px] mt-1 font-bold">TZ Blue</span>
+                                </button>
+                                <button onclick="changeThemeColor('#0f172a')" class="theme-color-btn flex flex-col items-center justify-center p-2 rounded-xl border-2 border-transparent bg-slate-50 hover:bg-slate-100 transition">
+                                    <span class="h-6 w-6 rounded-full bg-slate-900 block shadow-inner"></span>
+                                    <span class="text-[10px] mt-1 font-bold">Black</span>
+                                </button>
+                                <button onclick="changeThemeColor('#e11d48')" class="theme-color-btn flex flex-col items-center justify-center p-2 rounded-xl border-2 border-transparent bg-slate-50 hover:bg-slate-100 transition">
+                                    <span class="h-6 w-6 rounded-full bg-rose-600 block shadow-inner"></span>
+                                    <span class="text-[10px] mt-1 font-bold">Rose</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PRODUCTS MANAGER -->
+                <div id="products-tab" class="admin-tab-content hidden space-y-6">
+                    
+                    <!-- Add Product Panel -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center justify-between uppercase tracking-wide">
+                            <span class="flex items-center gap-2">
+                                <span class="bg-slate-100 text-tzgreen p-1.5 rounded-lg text-xs"><i id="prod-form-icon" class="fa-solid fa-plus"></i></span>
+                                <span id="prod-form-title">Add New Product (Ongeza Bidhaa)</span>
+                            </span>
+                            <button id="btn-cancel-edit" onclick="resetProductForm()" class="hidden text-[10px] font-bold text-rose-500 hover:text-rose-600 uppercase">Cancel Edit</button>
+                        </h3>
+                        
+                        <form id="add-product-form" onsubmit="handleAddNewProduct(event)" class="space-y-4">
+                            <input type="hidden" id="edit-prod-id">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">SKU</label>
+                                    <input type="text" id="prod-code" placeholder="Auto" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Product Name (Jina)</label>
+                                    <input type="text" id="prod-name" placeholder="e.g., Kitenge Dress" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Category</label>
+                                    <input type="text" id="prod-category" placeholder="Fashion, Art, etc." required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Price (TZS)</label>
+                                    <input type="number" id="prod-price" placeholder="45000" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Stock</label>
+                                    <input type="number" id="prod-stock" value="10" min="0" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Description (Maelezo)</label>
+                                <textarea id="prod-desc" rows="2" placeholder="Describe the product..." required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5">Product Image URL (Picha)</label>
+                                <input type="url" id="prod-img-url" placeholder="https://example.com/image.jpg" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition mb-2">
+                                
+                                <p class="text-[10px] text-slate-400 uppercase font-black mb-2 text-center">Or choose quick theme</p>
+                                <div class="grid grid-cols-5 gap-2">
+                                    <label class="relative border-2 border-green-500 cursor-pointer rounded-lg overflow-hidden h-14 group">
+                                        <input type="radio" name="prod-img" value="fashion-1" checked class="hidden">
+                                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=150&q=80" class="h-full w-full object-cover" alt="Watch">
+                                        <div class="absolute inset-0 bg-green-900/30 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                                    </label>
+                                    <!-- other radios handled via JS mapping for simplicity in this demo, defaulting to image URL input -->
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-tzgreen text-white hover:bg-green-600 font-bold py-2.5 rounded-lg text-sm transition duration-200 flex items-center justify-center gap-2 shadow-md">
+                                <i class="fa-solid fa-plus-circle"></i> <span id="prod-submit-text">Save & Publish</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Product Catalog List for Edit / Delete -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Catalog (<span id="count-items-list">0</span>)</h3>
+                        <div id="admin-products-container" class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
+                            <!-- Admin products dynamic generation goes here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: LIVE ORDERS TRACKER -->
+                <div id="orders-tab" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Recent Orders (Oda Mpya)</h3>
+                                <p class="text-xs text-slate-500 font-medium">Live purchase stream</p>
+                            </div>
+                            <button onclick="clearAllOrders()" class="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> Clear All
+                            </button>
+                        </div>
+
+                        <div id="admin-orders-container" class="space-y-3 min-h-[150px] flex flex-col justify-center">
+                            <!-- Ordered items will dynamically render here -->
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- RIGHT PANEL: Realistic Smartphone Simulator Frame (40% width on lg) -->
+            <section class="w-full lg:w-[42%] xl:w-[38%] lg:shrink-0 p-4 lg:p-6 bg-slate-200/50 flex items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200">
+                
+                <div class="sticky top-6 flex flex-col items-center">
+                    <!-- Device Container -->
+                    <div id="phone-simulator" class="relative w-[340px] h-[690px] bg-slate-900 rounded-[50px] shadow-phone border-[8px] border-slate-800 p-2.5 flex flex-col overflow-hidden ring-[6px] ring-slate-900/10">
+                        
+                        <!-- Dynamic Island Notch Mockup -->
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-50 flex items-center justify-between px-3 text-white shadow-xl">
+                            <span class="w-1.5 h-1.5 rounded-full bg-tzgreen animate-pulse"></span>
+                            <div class="w-1 h-1 rounded-full bg-slate-800"></div>
+                        </div>
+                        
+                        <!-- Smartphone Screen View -->
+                        <div class="w-full h-full bg-white rounded-[38px] overflow-hidden flex flex-col relative select-none">
+                            
+                            <!-- Smartphone Native Status Bar -->
+                            <div class="bg-white/95 backdrop-blur px-6 pt-3 pb-2 flex justify-between items-center text-[11px] font-bold text-slate-900 z-40 select-none">
+                                <span id="phone-time" class="tracking-wide">09:41</span>
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-signal"></i>
+                                    <span class="text-[9px]">4G</span>
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-three-quarters text-sm"></i>
+                                </div>
+                            </div>
+
+                            <!-- Store Promo Banner Inside Phone -->
+                            <div id="phone-promo-banner" class="dynamic-bg text-white text-[10px] py-1.5 px-4 text-center font-bold tracking-wide transition duration-300">
+                                Karibu! Get 10% off with code: TZA10 ✨
+                            </div>
+
+                            <!-- Main Screen Navigable Area -->
+                            <div id="phone-screen-content" class="flex-1 overflow-y-auto phone-scrollbar bg-slate-50 relative pb-20 flex flex-col">
+                                
+                                <!-- SCREEN: HOME / SHOPPING -->
+                                <div id="screen-home" class="phone-view active space-y-4">
+                                    <!-- Phone Header Banner / Hero Section -->
+                                    <div class="bg-slate-900 text-white p-5 pt-6 pb-8 flex flex-col justify-end space-y-1 relative overflow-hidden shadow-inner border-b-4 border-tzyellow">
+                                        <div class="absolute right-0 bottom-0 opacity-10 text-8xl translate-y-4 translate-x-2 dynamic-text"><i class="fa-solid fa-bag-shopping"></i></div>
+                                        
+                                        <!-- Custom Shop Logo -->
+                                        <img id="phone-hero-logo" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80" class="h-14 w-14 rounded-full border-2 border-white/20 mb-3 object-cover shadow-md" alt="Logo">
+                                        
+                                        <span id="phone-hero-subtitle" class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Karibu Sana</span>
+                                        <h2 id="phone-hero-title" class="text-xl font-black tracking-tight leading-tight">Mlimani City Store</h2>
+                                        <p id="phone-hero-desc" class="text-xs text-slate-300 max-w-[85%] font-medium">The Ultimate Shopping Experience</p>
+                                    </div>
+
+                                    <!-- Search & Quick Categories -->
+                                    <div class="px-4 space-y-3">
+                                        <div class="relative">
+                                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-xs"></i>
+                                            <input type="text" id="phone-search-input" onkeyup="handlePhoneSearch()" placeholder="Tafuta bidhaa... (Search)" class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 shadow-sm rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                        </div>
+                                        
+                                        <div class="flex gap-2 overflow-x-auto pb-1 phone-scrollbar text-xs font-bold whitespace-nowrap">
+                                            <button onclick="filterCategory('all')" class="cat-pill dynamic-bg text-white px-4 py-1.5 rounded-full shadow-sm transition">All</button>
+                                            <button onclick="filterCategory('Fashion')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-4 py-1.5 rounded-full transition">Fashion</button>
+                                            <button onclick="filterCategory('Art')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-4 py-1.5 rounded-full transition">Art</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Catalog Layout inside Smartphone -->
+                                    <div class="px-4 pb-4">
+                                        <div id="phone-products-list" class="grid grid-cols-2 gap-3">
+                                            <!-- Interactive products are dynamically loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN: PRODUCT DETAILS -->
+                                <div id="screen-detail" class="phone-view hidden bg-white min-h-full">
+                                    <button onclick="navigatePhoneTo('home')" class="absolute top-4 left-4 z-10 bg-white/95 shadow-md text-slate-800 h-8 w-8 rounded-full flex items-center justify-center text-sm border border-slate-100 hover:scale-105 active:scale-95 transition">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <div class="h-64 w-full relative bg-slate-100 overflow-hidden">
+                                        <img id="detail-img" src="" class="w-full h-full object-cover" alt="Detail Image">
+                                    </div>
+                                    <div class="p-5 space-y-4">
+                                        <span id="detail-category" class="text-[10px] font-extrabold dynamic-text uppercase bg-slate-100 px-2.5 py-1 rounded-md">Category</span>
+                                        <h3 id="detail-name" class="text-lg font-black text-slate-900 leading-tight">Product Name</h3>
+                                        <div class="flex items-baseline gap-2">
+                                            <span id="detail-price" class="text-xl font-bold text-slate-900">0 TZS</span>
+                                        </div>
+                                        <p id="detail-desc" class="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">Description of the product...</p>
+                                        
+                                        <div class="pt-3">
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1.5">Availability</span>
+                                            <span id="detail-stock" class="text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-md">In Stock</span>
+                                        </div>
+
+                                        <button id="detail-add-btn" class="w-full mt-4 dynamic-bg text-white font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-green-200">
+                                            <i class="fa-solid fa-cart-plus"></i> Add to Cart (Weka Kikapuni)
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN: SHOPPING CART -->
+                                <div id="screen-cart" class="phone-view hidden bg-slate-50 min-h-full flex flex-col">
+                                    <div class="p-4 bg-white border-b border-slate-100 sticky top-0 z-10 flex items-center gap-3">
+                                        <button onclick="navigatePhoneTo('home')" class="text-slate-500 hover:text-slate-800">
+                                            <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                                            <i class="fa-solid fa-cart-shopping dynamic-text"></i> Cart (Kikapu)
+                                        </h3>
+                                    </div>
+                                    
+                                    <div id="phone-cart-items" class="p-4 space-y-3 flex-1 overflow-y-auto phone-scrollbar">
+                                        <!-- Cart Items render here -->
+                                        <div class="text-center text-slate-400 text-xs font-medium py-10">Cart is empty. (Kikapu kiko wazi)</div>
+                                    </div>
+
+                                    <div class="bg-white border-t border-slate-200 p-4 space-y-3 pb-6">
+                                        <div class="flex justify-between text-xs font-bold">
+                                            <span class="text-slate-500">Subtotal</span>
+                                            <span id="cart-subtotal" class="text-slate-900">0 TZS</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs font-bold">
+                                            <span class="text-slate-500">Delivery (Usafiri)</span>
+                                            <span class="text-tzgreen">Free / Bure</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm font-black pt-2 border-t border-dashed border-slate-200">
+                                            <span class="text-slate-900">Total</span>
+                                            <span id="cart-total" class="dynamic-text">0 TZS</span>
+                                        </div>
+                                        <button onclick="checkoutCart()" class="w-full dynamic-bg text-white font-bold py-3.5 rounded-xl text-sm mt-2 shadow-lg active:scale-95 transition-transform flex justify-center items-center gap-2">
+                                            Checkout Now <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Phone Bottom Navigation Bar -->
+                            <div class="absolute bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 pb-5 pt-2 px-6 flex justify-between items-center z-50">
+                                <button onclick="navigatePhoneTo('home')" class="phone-nav-btn text-tzgreen flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-house text-lg"></i>
+                                    <span class="text-[9px] font-bold">Duka</span>
+                                </button>
+                                <button onclick="navigatePhoneTo('cart')" class="phone-nav-btn text-slate-400 hover:text-slate-800 flex flex-col items-center gap-1 transition relative">
+                                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                                    <span class="text-[9px] font-bold">Kikapu</span>
+                                    <span id="phone-cart-badge" class="absolute -top-1 -right-2 bg-rose-500 text-white text-[8px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden">0</span>
+                                </button>
+                                <button class="phone-nav-btn text-slate-400 hover:text-slate-800 flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-user text-lg"></i>
+                                    <span class="text-[9px] font-bold">Akaunti</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- SUPABASE CONFIGURATION ---
+        const CLOUD_URL = 'https://iiotlhjzuphhguukldbg.supabase.co';
+        const CLOUD_KEY = 'sb_publishable_iuno04EOYaNzSvUPojt_GQ_l9F0Z4QT';
+        let sb = null;
+
+        // --- STATE & DATA ---
+        let appState = {
+            isAuthenticated: false,
+            userEmail: '',
+            themeColor: '#1eb53a',
+            storeConfig: {
+                name: 'Mlimani City Store',
+                slogan: 'The Ultimate Shopping Experience',
+                currency: 'TZS',
+                banner: 'Karibu! Get 10% off with code: TZA10 ✨',
+                phone: '+255 712 345 678',
+                address: 'Sam Nujoma Rd, Dar es Salaam'
+            },
+            products: [
+                { id: '1', sku: 'TZ-01', name: 'Kitenge Dress', category: 'Fashion', price: 45000, stock: 15, desc: 'Beautiful high-quality Kitenge fabric dress made in Tanzania.', img: 'https://images.unsplash.com/photo-1549062572-544a64fb0c56?auto=format&fit=crop&w=300&q=80' },
+                { id: '2', sku: 'TZ-02', name: 'Kilimanjaro Coffee', category: 'Food', price: 15000, stock: 30, desc: 'Premium roasted Arabica coffee beans from Mount Kilimanjaro.', img: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=300&q=80' },
+                { id: '3', sku: 'TZ-03', name: 'Tingatinga Art Canvas', category: 'Art', price: 85000, stock: 5, desc: 'Original authentic Tingatinga painting from Dar es Salaam.', img: 'https://images.unsplash.com/photo-1578301978693-85fa9c02614d?auto=format&fit=crop&w=300&q=80' },
+                { id: '4', sku: 'TZ-04', name: 'Maasai Shuka', category: 'Fashion', price: 25000, stock: 20, desc: 'Traditional warm Maasai blanket. Red and black check.', img: 'https://images.unsplash.com/photo-1610486846931-e6e2264bd797?auto=format&fit=crop&w=300&q=80' }
+            ],
+            orders: [],
+            cart: []
+        };
+
+        // Format Number to TZS Currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-TZ', { maximumFractionDigits: 0 }).format(amount) + ' ' + appState.storeConfig.currency;
+        }
+
+        // --- AUTHENTICATION ---
+        function switchAuthTab(tab) {
+            const btnLogin = document.getElementById('tab-login');
+            const btnReg = document.getElementById('tab-register');
+            if(tab === 'login') {
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded bg-white text-slate-800 shadow-sm transition";
+                btnReg.className = "flex-1 py-2 text-xs font-semibold rounded text-slate-500 hover:text-slate-800 transition";
+            } else {
+                btnReg.className = "flex-1 py-2 text-xs font-bold rounded bg-white text-slate-800 shadow-sm transition";
+                btnLogin.className = "flex-1 py-2 text-xs font-semibold rounded text-slate-500 hover:text-slate-800 transition";
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            loginSuccess(email);
+        }
+
+        function accessAsGuest() {
+            loginSuccess('demo@mlimanicity.co.tz');
+        }
+
+        function loginSuccess(email) {
+            appState.isAuthenticated = true;
+            appState.userEmail = email;
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-main-content').classList.remove('hidden');
+            document.getElementById('user-email-display').innerText = email;
+            initApp();
+        }
+
+        function handleLogout() {
+            appState.isAuthenticated = false;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('app-main-content').classList.add('hidden');
+        }
+
+        // --- DASHBOARD ADMIN FUNCTIONS ---
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btn.classList.add('text-slate-500');
+                btn.querySelector('i').classList.remove('text-tzgreen');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('text-slate-500');
+            activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            activeBtn.querySelector('i').classList.add('text-tzgreen');
+        }
+
+        function updateStoreConfig() {
+            appState.storeConfig.name = document.getElementById('config-store-name').value;
+            appState.storeConfig.slogan = document.getElementById('config-store-slogan').value;
+            appState.storeConfig.currency = document.getElementById('config-currency').value;
+            appState.storeConfig.banner = document.getElementById('config-banner-text').value;
+            
+            // Sync to phone
+            document.getElementById('phone-hero-title').innerText = appState.storeConfig.name;
+            document.getElementById('phone-hero-desc').innerText = appState.storeConfig.slogan;
+            document.getElementById('phone-promo-banner').innerText = appState.storeConfig.banner;
+            
+            updateDashboardStats();
+            renderPhoneProducts();
+            renderCart();
+        }
+
+        function changeThemeColor(hexCode) {
+            appState.themeColor = hexCode;
+            document.documentElement.style.setProperty('--primary-hex', hexCode);
+            document.documentElement.style.setProperty('--primary-rgb', hexCode); // Simplified for demo
+        }
+
+        // --- PRODUCT MANAGEMENT ---
+        function handleAddNewProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-prod-id').value;
+            const sku = document.getElementById('prod-code').value || 'TZ-' + Math.floor(Math.random()*1000);
+            const name = document.getElementById('prod-name').value;
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            const desc = document.getElementById('prod-desc').value;
+            
+            let img = document.getElementById('prod-img-url').value;
+            if(!img) img = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80'; // fallback
+
+            const product = { id: id || Date.now().toString(), sku, name, category, price, stock, desc, img };
+
+            if (id) {
+                const index = appState.products.findIndex(p => p.id === id);
+                if (index !== -1) appState.products[index] = product;
+            } else {
+                appState.products.unshift(product);
+            }
+
+            resetProductForm();
+            renderAdminProducts();
+            renderPhoneProducts();
+            updateDashboardStats();
+        }
+
+        function editProduct(id) {
+            const p = appState.products.find(p => p.id === id);
+            if (!p) return;
+            document.getElementById('edit-prod-id').value = p.id;
+            document.getElementById('prod-code').value = p.sku;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-category').value = p.category;
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-stock').value = p.stock;
+            document.getElementById('prod-desc').value = p.desc;
+            document.getElementById('prod-img-url').value = p.img;
+            
+            document.getElementById('prod-form-title').innerText = "Edit Product (Hariri)";
+            document.getElementById('prod-form-icon').className = "fa-solid fa-pen";
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteProduct(id) {
+            appState.products = appState.products.filter(p => p.id !== id);
+            renderAdminProducts();
+            renderPhoneProducts();
+            updateDashboardStats();
+        }
+
+        function resetProductForm() {
+            document.getElementById('add-product-form').reset();
+            document.getElementById('edit-prod-id').value = '';
+            document.getElementById('prod-form-title').innerText = "Add New Product (Ongeza Bidhaa)";
+            document.getElementById('prod-form-icon').className = "fa-solid fa-plus";
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+        }
+
+        function renderAdminProducts() {
+            const container = document.getElementById('admin-products-container');
+            document.getElementById('count-items-list').innerText = appState.products.length;
+            container.innerHTML = '';
+            
+            appState.products.forEach(p => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
+                        <img src="${p.img}" class="h-12 w-12 rounded-lg object-cover bg-slate-100" />
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-slate-900 truncate">${p.name}</h4>
+                            <div class="flex gap-2 text-[10px] text-slate-500 font-medium">
+                                <span>${p.sku}</span> • 
+                                <span class="text-tzgreen font-bold">${formatCurrency(p.price)}</span> • 
+                                <span>Stock: ${p.stock}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editProduct('${p.id}')" class="p-2 text-slate-400 hover:text-indigo-600 bg-white border border-slate-200 rounded-lg transition"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" class="p-2 text-slate-400 hover:text-rose-600 bg-white border border-slate-200 rounded-lg transition"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- PHONE SIMULATOR FUNCTIONS ---
+        function navigatePhoneTo(screenId) {
+            document.querySelectorAll('.phone-view').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+            
+            // Update nav bar active states
+            const navBtns = document.querySelectorAll('.phone-nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('text-tzgreen', 'dynamic-text');
+                btn.classList.add('text-slate-400');
+            });
+            
+            if(screenId === 'home') {
+                navBtns[0].classList.add('dynamic-text');
+                navBtns[0].classList.remove('text-slate-400');
+            } else if(screenId === 'cart') {
+                navBtns[1].classList.add('dynamic-text');
+                navBtns[1].classList.remove('text-slate-400');
+            }
+        }
+
+        function renderPhoneProducts() {
+            const container = document.getElementById('phone-products-list');
+            const searchTerm = document.getElementById('phone-search-input').value.toLowerCase();
+            
+            container.innerHTML = '';
+            
+            const filteredProducts = appState.products.filter(p => p.name.toLowerCase().includes(searchTerm));
+            
+            if(filteredProducts.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-6 text-xs text-slate-400">Hakuna bidhaa (No products found).</div>`;
+                return;
+            }
+
+            filteredProducts.forEach(p => {
+                container.innerHTML += `
+                    <div onclick="openProductDetail('${p.id}')" class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition flex flex-col active:scale-95">
+                        <div class="h-28 w-full bg-slate-100 relative">
+                            <img src="${p.img}" class="h-full w-full object-cover" />
+                            ${p.stock <= 5 ? `<span class="absolute top-1.5 right-1.5 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded">Low Stock</span>` : ''}
+                        </div>
+                        <div class="p-2 flex flex-col flex-1">
+                            <h4 class="text-[11px] font-bold text-slate-800 leading-tight mb-1 line-clamp-2 flex-1">${p.name}</h4>
+                            <div class="flex items-center justify-between mt-1">
+                                <span class="text-xs font-black text-slate-900">${formatCurrency(p.price)}</span>
+                                <button class="h-6 w-6 rounded-full dynamic-bg text-white flex items-center justify-center text-[10px] shadow">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handlePhoneSearch() {
+            renderPhoneProducts();
+        }
+
+        function filterCategory(cat) {
+            // Very simple demo filter visually
+            const input = document.getElementById('phone-search-input');
+            input.value = cat === 'all' ? '' : cat;
+            renderPhoneProducts();
+        }
+
+        let currentDetailProductId = null;
+        function openProductDetail(id) {
+            const p = appState.products.find(p => p.id === id);
+            if(!p) return;
+            currentDetailProductId = id;
+            
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-category').innerText = p.category;
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-price').innerText = formatCurrency(p.price);
+            document.getElementById('detail-desc').innerText = p.desc;
+            
+            const addBtn = document.getElementById('detail-add-btn');
+            const stockBadge = document.getElementById('detail-stock');
+            
+            if(p.stock > 0) {
+                stockBadge.className = "text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-md";
+                stockBadge.innerText = `In Stock (${p.stock})`;
+                addBtn.disabled = false;
+                addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                addBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Add to Cart (Weka Kikapuni)`;
+                addBtn.onclick = () => addToCart(p);
+            } else {
+                stockBadge.className = "text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-1 rounded-md";
+                stockBadge.innerText = "Out of Stock (Imeisha)";
+                addBtn.disabled = true;
+                addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                addBtn.innerHTML = "Out of Stock";
+            }
+            
+            navigatePhoneTo('detail');
+        }
+
+        function addToCart(product) {
+            const existing = appState.cart.find(item => item.id === product.id);
+            if(existing) {
+                if(existing.qty < product.stock) {
+                    existing.qty += 1;
+                } else {
+                    alert('Max stock reached for this item.');
+                }
+            } else {
+                appState.cart.push({ ...product, qty: 1 });
+            }
+            updateCartBadge();
+            renderCart();
+            // Show brief animation on cart icon
+            const badge = document.getElementById('phone-cart-badge');
+            badge.classList.add('animate-ping');
+            setTimeout(() => badge.classList.remove('animate-ping'), 300);
+            navigatePhoneTo('cart');
+        }
+
+        function removeFromCart(id) {
+            appState.cart = appState.cart.filter(item => item.id !== id);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('phone-cart-badge');
+            const totalItems = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+            if(totalItems > 0) {
+                badge.innerText = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('phone-cart-items');
+            container.innerHTML = '';
+            
+            if(appState.cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 text-xs font-medium py-10">Cart is empty. (Kikapu kiko wazi)</div>`;
+                document.getElementById('cart-subtotal').innerText = formatCurrency(0);
+                document.getElementById('cart-total').innerText = formatCurrency(0);
+                return;
+            }
+
+            let total = 0;
+            appState.cart.forEach(item => {
+                total += item.price * item.qty;
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 bg-white p-2 rounded-xl shadow-sm border border-slate-100">
+                        <img src="${item.img}" class="h-12 w-12 rounded-lg object-cover bg-slate-50" />
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
+                            <div class="text-[11px] font-black text-slate-900">${formatCurrency(item.price)}</div>
+                        </div>
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="bg-slate-100 rounded-md px-2 py-0.5 text-xs font-bold">${item.qty}x</div>
+                            <button onclick="removeFromCart('${item.id}')" class="text-[9px] text-rose-500 font-bold uppercase">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('cart-subtotal').innerText = formatCurrency(total);
+            document.getElementById('cart-total').innerText = formatCurrency(total);
+        }
+
+        function checkoutCart() {
+            if(appState.cart.length === 0) return;
+            
+            const total = appState.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const orderId = 'ORD-' + Math.floor(Math.random()*10000);
+            
+            const newOrder = {
+                id: orderId,
+                date: new Date().toLocaleTimeString(),
+                items: [...appState.cart],
+                total: total,
+                status: 'New'
+            };
+
+            // Deduct stock
+            appState.cart.forEach(cartItem => {
+                const prod = appState.products.find(p => p.id === cartItem.id);
+                if(prod) prod.stock -= cartItem.qty;
+            });
+
+            // Add order to admin
+            appState.orders.unshift(newOrder);
+            
+            // Empty cart
+            appState.cart = [];
+            updateCartBadge();
+            renderCart();
+            renderPhoneProducts();
+            renderAdminProducts();
+            updateDashboardStats();
+            renderOrders();
+            
+            navigatePhoneTo('home');
+            
+            // Notification badge on Admin Orders Tab
+            const adminBadge = document.getElementById('orders-badge');
+            adminBadge.innerText = appState.orders.length;
+            adminBadge.classList.remove('hidden');
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('admin-orders-container');
+            container.innerHTML = '';
+            
+            if(appState.orders.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 text-sm py-4">No orders yet.</div>`;
+                return;
+            }
+
+            appState.orders.forEach(order => {
+                const itemsList = order.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-4 bg-white border-l-4 border-tzgreen border-y border-r border-slate-200 rounded-r-xl shadow-sm hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-black text-slate-900">${order.id}</span>
+                                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-clock"></i> ${order.date}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 max-w-xs truncate">${itemsList}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-black text-tzgreen">${formatCurrency(order.total)}</div>
+                            <span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase tracking-wider">Pending</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function clearAllOrders() {
+            appState.orders = [];
+            document.getElementById('orders-badge').classList.add('hidden');
+            renderOrders();
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('dashboard-products-count').innerText = appState.products.length;
+            
+            const totalOrders = appState.orders.length;
+            document.getElementById('dashboard-orders-count').innerText = totalOrders;
+            
+            const totalRevenue = appState.orders.reduce((sum, ord) => sum + ord.total, 0);
+            document.getElementById('dashboard-sales').innerText = formatCurrency(totalRevenue);
+            
+            const avg = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
+            document.getElementById('dashboard-avg-cart').innerText = formatCurrency(avg);
+        }
+
+        // Live Clock for Phone
+        setInterval(() => {
+            const now = new Date();
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('phone-time').innerText = `${h}:${m}`;
+        }, 1000);
+
+        function initApp() {
+            renderAdminProducts();
+            renderPhoneProducts();
+            updateDashboardStats();
+            renderOrders();
+        }
+
+        // Run init if guest mode is bypassed (for demo purposes)
+        // initApp();
+
+    </script>
+</body>
+</html>

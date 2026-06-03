@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Propriétaire | Baniki Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200">
+    <nav class="p-6 border-b dark:border-slate-800 flex justify-between items-center">
+        <a href="immobilier.html" class="font-black text-xl">BANIKI <span class="text-yellow-500">LABS</span></a>
+        <span class="text-xs font-bold uppercase bg-brand-100 text-brand-700 px-3 py-1 rounded-full">Espace Propriétaire</span>
+    </nav>
+    <main class="max-w-6xl mx-auto p-6 md:p-12">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h1 class="text-4xl font-black">Mes Propriétés</h1>
+                <p class="text-slate-500">Gérez vos annonces et suivez les visites.</p>
+            </div>
+            <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:scale-105 transition-all">
+                <i class="fa-solid fa-plus-circle mr-2"></i> Ajouter un bien
+            </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                <span class="text-4xl font-black text-blue-500">03</span>
+                <p class="text-xs font-bold text-slate-400 uppercase mt-2">Biens en ligne</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                <span class="text-4xl font-black text-emerald-500">142</span>
+                <p class="text-xs font-bold text-slate-400 uppercase mt-2">Vues ce mois</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+                <span class="text-4xl font-black text-amber-500">08</span>
+                <p class="text-xs font-bold text-slate-400 uppercase mt-2">Demandes de contact</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

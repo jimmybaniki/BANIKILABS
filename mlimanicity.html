@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mlimani City - BanikiLabs Store</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        tzgreen: '#1EB53A',
+                        tzyellow: '#FCD116',
+                        tzblue: '#00A3E0',
+                        tzblack: '#0A0A0A',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-font-smoothing: antialiased; }
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hero-bg {
+            background-color: #0A0A0A;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(30, 181, 58, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(252, 209, 22, 0.1) 0%, transparent 50%),
+                linear-gradient(to bottom, rgba(10, 10, 10, 0.8), #0A0A0A),
+                url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Language Transition effect */
+        .lang-change {
+            animation: fadeInOut 0.3s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <header class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-tzgreen flex items-center justify-center shadow-lg shadow-tzgreen/30">
+                        <i class="fa-solid fa-shopping-bag text-white text-xl"></i>
+                    </div>
+                    <span class="font-black text-2xl tracking-tight text-tzblack hidden sm:block">
+                        Baniki<span class="text-tzgreen">Labs</span>
+                    </span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden lg:flex space-x-6 items-center">
+                    <a href="#shops" class="text-gray-800 hover:text-tzgreen font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
+                        <i class="fa-solid fa-store text-tzgreen"></i>
+                        <span data-en="All Shops" data-sw="Maduka Yote">All Shops</span>
+                    </a>
+                    <a href="#offers" class="text-gray-800 hover:text-red-500 font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
+                        <i class="fa-solid fa-tag text-red-500"></i>
+                        <span data-en="Offers" data-sw="Ofa Maalum">Offers</span>
+                    </a>
+                    <a href="#services" class="text-gray-800 hover:text-tzyellow font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
+                        <i class="fa-solid fa-headset text-tzyellow"></i>
+                        <span data-en="Services" data-sw="Huduma Zetu">Services</span>
+                    </a>
+                </nav>
+
+                <!-- Actions & Language Switcher -->
+                <div class="flex items-center space-x-3 md:space-x-4">
+                    <!-- Language Toggle -->
+                    <div class="bg-gray-100 p-1 rounded-lg flex items-center border border-gray-200">
+                        <button onclick="setLang('en')" id="btn-en" class="px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm">EN</button>
+                        <button onclick="setLang('sw')" id="btn-sw" class="px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700">SW</button>
+                    </div>
+
+                    <a href="#" class="hidden sm:flex bg-tzblack hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl font-bold transition items-center gap-2 text-sm">
+                        <i class="fa-regular fa-user"></i> 
+                        <span data-en="Login" data-sw="Ingia">Login</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="lg:hidden text-gray-800 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl">
+            <div class="px-4 py-6 space-y-2 flex flex-col">
+                <a href="#shops" class="px-4 py-3 rounded-xl bg-green-50 text-green-700 font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-store"></i> <span data-en="All Shops" data-sw="Maduka Yote">All Shops</span>
+                </a>
+                <a href="#offers" class="px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-tag"></i> <span data-en="Special Offers" data-sw="Ofa Maalum">Special Offers</span>
+                </a>
+                <a href="#services" class="px-4 py-3 rounded-xl bg-yellow-50 text-yellow-700 font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-headset"></i> <span data-en="Services" data-sw="Huduma Zetu">Services</span>
+                </a>
+                <div class="h-px bg-gray-100 my-4"></div>
+                <a href="#" class="px-4 py-3 rounded-xl bg-tzblack text-white text-center font-bold">
+                    <span data-en="Login / Register" data-sw="Ingia / Jisajili">Login / Register</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 hero-bg min-h-[85vh] flex items-center z-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="max-w-3xl text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-tzyellow text-xs font-black tracking-widest uppercase mb-6">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tzyellow opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-tzyellow"></span>
+                    </span>
+                    <!-- Updated Welcome Text -->
+                    <span data-en="Welcome to online shopping" data-sw="Karibu kwenye manunuzi mtandaoni">Welcome to online shopping</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6 tracking-tight">
+                    <span data-en="Shop Premium." data-sw="Fanya Manunuzi Bora.">Shop Premium.</span><br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-tzgreen to-tzyellow" data-en="Live Better." data-sw="Ishi Vizuri.">Live Better.</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-gray-300 mb-10 font-light max-w-2xl mx-auto md:mx-0" data-en="Everything you need, from farm-fresh produce to everyday household essentials, delivered to your door or ready for pickup." data-sw="Kila unachohitaji, kuanzia mazao mapya shambani hadi mahitaji ya kila siku ya nyumbani, yakiletwa mlangoni kwako au tayari kuchukuliwa.">
+                    Everything you need, from farm-fresh produce to everyday household essentials, delivered to your door or ready for pickup.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#shops" class="bg-tzgreen hover:bg-green-600 text-white px-8 py-4 rounded-xl font-black text-lg transition-all shadow-lg shadow-tzgreen/30 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-cart-shopping"></i> 
+                        <span data-en="Start Shopping" data-sw="Anza Manunuzi">Start Shopping</span>
+                    </a>
+                    <a href="#offers" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-bolt text-tzyellow"></i> 
+                        <span data-en="View Deals" data-sw="Tazama Ofa">View Deals</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The 8 Gateway Pages Section -->
+    <section id="shops" class="py-20 relative z-20 -mt-10 bg-gray-50 rounded-t-[3rem]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-black text-gray-900 mb-4" data-en="Explore Our Stores" data-sw="Gundua Maduka Yetu">Explore Our Stores</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto" data-en="Navigate directly to our main departments to find exactly what you're looking for." data-sw="Nenda moja kwa moja kwenye idara zetu kuu ili kupata kile unachotafuta.">Navigate directly to our main departments to find exactly what you're looking for.</p>
+            </div>
+
+            <!-- 8 Categories Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- 1: Supermarket -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600&auto=format&fit=crop" alt="Supermarket" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-tzblack/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-tzgreen rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Supermarket" data-sw="Supa Maketi">Supermarket</h3>
+                        <p class="text-gray-300 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Daily groceries" data-sw="Vyakula vya kila siku">Daily groceries</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-tzgreen opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 2: Jewelry -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=600&auto=format&fit=crop" alt="Jewelry" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-regular fa-gem"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Jewelry" data-sw="Urembo & Vito">Jewelry</h3>
+                        <p class="text-amber-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Luxury accessories" data-sw="Mapambo ya kifahari">Luxury accessories</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-amber-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 3: Clothing -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e07?q=80&w=600&auto=format&fit=crop" alt="Clothing" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-pink-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-shirt"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Clothing" data-sw="Mavazi">Clothing</h3>
+                        <p class="text-pink-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Fashion & apparel" data-sw="Fasheni na nguo">Fashion & apparel</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-pink-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 4: Restaurant -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop" alt="Restaurant" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Restaurants" data-sw="Migahawa">Restaurants</h3>
+                        <p class="text-orange-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Dine in or takeout" data-sw="Chakula kizuri">Dine in or takeout</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-orange-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 5: Carpentry -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1565118531796-763e5082d113?q=80&w=600&auto=format&fit=crop" alt="Carpentry" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-yellow-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-hammer"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Carpentry" data-sw="Useremala">Carpentry</h3>
+                        <p class="text-yellow-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Furniture & wood" data-sw="Samani na mbao">Furniture & wood</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-yellow-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 6: Plumbing -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=600&auto=format&fit=crop" alt="Plumbing" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-tzblue/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-tzblue rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-faucet-drip"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Plumbing" data-sw="Mabomba">Plumbing</h3>
+                        <p class="text-blue-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Fixtures & pipes" data-sw="Vifaa vya mabomba">Fixtures & pipes</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-white opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 7: Tiles -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1523413363574-c30aa1c2a516?q=80&w=600&auto=format&fit=crop" alt="Tiles" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-border-all"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Tiles" data-sw="Vigae">Tiles</h3>
+                        <p class="text-teal-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Ceramics & flooring" data-sw="Vigae vya sakafu">Ceramics & flooring</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-teal-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+                <!-- 8: Electronics -->
+                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format&fit=crop" alt="Electronics" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/90 via-tzblack/30 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1" data-en="Electronics" data-sw="Elektroniki">Electronics</h3>
+                        <p class="text-indigo-100 text-sm font-medium flex items-center gap-1">
+                            <span data-en="Gadgets & tech" data-sw="Vifaa vya kisasa">Gadgets & tech</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+                        </p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-tzgreen mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <!-- Brand Info -->
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-tzgreen flex items-center justify-center">
+                            <i class="fa-solid fa-shopping-bag text-white text-sm"></i>
+                        </div>
+                        <span class="font-black text-xl tracking-tight">
+                            Baniki<span class="text-tzgreen">Labs</span>
+                        </span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6" data-en="Your premier online shopping experience. Quality, variety, and value in every category." data-sw="Uzoefu bora wa manunuzi mtandaoni. Ubora, aina mbalimbali, na thamani kwa kila idara.">
+                        Your premier online shopping experience. Quality, variety, and value in every category.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Departments Links (Updated) -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-en="Our Departments" data-sw="Idara Zetu">Our Departments</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Supermarket" data-sw="Supa Maketi">Supermarket</a></li>
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Jewelry" data-sw="Urembo & Vito">Jewelry</a></li>
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Clothing" data-sw="Mavazi">Clothing</a></li>
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Plumbing & Tiles" data-sw="Mabomba & Vigae">Plumbing & Tiles</a></li>
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Carpentry" data-sw="Useremala">Carpentry</a></li>
+                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Electronics" data-sw="Elektroniki">Electronics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service Links -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-en="Customer Service" data-sw="Huduma kwa Wateja">Customer Service</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Contact Us" data-sw="Wasiliana Nasi">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Delivery Info" data-sw="Maelezo ya Uletaji">Delivery Info</a></li>
+                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Returns" data-sw="Kurudisha Bidhaa">Returns</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact (Updated) -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-en="Find Us" data-sw="Tupate">Find Us</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-globe text-tzgreen"></i>
+                            <a href="https://banikilabs.store" class="hover:text-white transition">banikilabs.store</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-tzgreen"></i>
+                            <a href="mailto:banikilabs@gmail.com" class="hover:text-white transition">banikilabs@gmail.com</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-tzgreen"></i>
+                            <a href="tel:+255793455303" class="hover:text-white transition">+255 793 455 303</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+                <p>&copy; 2024 BanikiLabs. <span data-en="All rights reserved." data-sw="Haki zote zimehifadhiwa.">All rights reserved.</span></p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-white" data-en="Privacy Policy" data-sw="Sera ya Faragha">Privacy Policy</a>
+                    <a href="#" class="hover:text-white" data-en="Terms of Service" data-sw="Vigezo na Masharti">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactions and Language Translation -->
+    <script>
+        // --- 1. Language Toggle Logic ---
+        let currentLang = 'en'; // Default language
+
+        function setLang(lang) {
+            currentLang = lang;
+            
+            // Update Toggle Button Styles
+            const btnEn = document.getElementById('btn-en');
+            const btnSw = document.getElementById('btn-sw');
+            
+            if (lang === 'en') {
+                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm";
+                btnSw.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700 bg-transparent shadow-none";
+            } else {
+                btnSw.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm";
+                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700 bg-transparent shadow-none";
+            }
+
+            // Find all elements with data-en and data-sw attributes
+            const elements = document.querySelectorAll('[data-en][data-sw]');
+            
+            elements.forEach(el => {
+                // Apply animation class for smooth transition
+                el.classList.remove('lang-change');
+                void el.offsetWidth; // Trigger reflow to restart animation
+                el.classList.add('lang-change');
+                
+                // Update text content
+                el.innerText = el.getAttribute(`data-${lang}`);
+            });
+        }
+
+        // --- 2. Navbar Scroll Effect ---
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md', 'bg-white/95');
+                navbar.classList.remove('glass', 'py-2');
+            } else {
+                navbar.classList.remove('shadow-md', 'bg-white/95');
+                navbar.classList.add('glass', 'py-2');
+            }
+        });
+
+        // --- 3. Mobile Menu Toggle ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        });
+
+        // Close mobile menu on link click
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileBtn.querySelector('i').classList.remove('fa-xmark');
+                mobileBtn.querySelector('i').classList.add('fa-bars');
+            });
+        });
+
+        // Initialize language on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLang('en'); // Ensure UI matches state
+        });
+    </script>
+</body>
+</html>

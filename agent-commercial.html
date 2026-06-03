@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T00CMP9WFH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T00CMP9WFH');
+    </script>
+    <title>Mlimani City - Sales Agent Portal / Eneo la Wakala</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tzgreen: '#1EB53A',
+                        tzyellow: '#FCD116',
+                        tzblue: '#00A3E0',
+                        tzblack: '#0A0A0A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        .sidebar { background: #0A0A0A; width: 280px; transition: all 0.3s; border-right: 4px solid #FCD116; }
+        .nav-link { 
+            display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; 
+            color: #94a3b8; border-radius: 0.75rem; transition: 0.2s; 
+        }
+        .nav-link:hover, .nav-link.active { background: #1EB53A; color: white; font-weight: bold; }
+        .glass-card { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .btn-action { background: #1EB53A; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: 0.2s; }
+        .btn-action:hover { background: #158229; }
+        .hidden { display: none !important; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar flex flex-col p-6 text-white shrink-0">
+        <div class="mb-10 px-2">
+            <div class="flex items-center gap-2">
+                <div class="bg-tzgreen text-white p-2 rounded-xl">
+                    <i class="fa-solid fa-city text-xl"></i>
+                </div>
+                <a href="index.html" class="text-xl font-black italic">Mlimani <span class="text-tzyellow">City</span></a>
+            </div>
+            <p class="text-[9px] uppercase tracking-widest text-tzblue font-bold mt-1">Sales Agent / Wakala wa Mauzo</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a href="#" onclick="showSection('overview')" class="nav-link active" id="nav-overview"><i class="fas fa-chart-line w-5"></i> Overview / Maelezo</a>
+            <a href="#" onclick="showSection('clients')" class="nav-link" id="nav-clients"><i class="fas fa-users w-5"></i> My Clients / Wasimamizi</a>
+            <a href="#" onclick="showSection('shops')" class="nav-link" id="nav-shops"><i class="fas fa-store w-5"></i> Managed Shops / Maduka</a>
+            <a href="#" onclick="showSection('tools')" class="nav-link" id="nav-tools"><i class="fas fa-plus-circle w-5"></i> Tools / Zana za Kazi</a>
+            <a href="#" onclick="showSection('tech')" class="nav-link" id="nav-tech"><i class="fas fa-tools w-5"></i> Tech Support / Msaada</a>
+        </nav>
+        <div class="mt-auto border-t border-white/10 pt-6">
+            <div id="cloud-status" class="flex items-center gap-2 mb-4 px-2 text-[10px] uppercase tracking-widest font-bold text-tzyellow">
+                <span class="w-2 h-2 rounded-full bg-tzyellow animate-pulse"></span> Connecting database / Muunganisho...
+            </div>
+            <button onclick="handleLogout()" class="nav-link w-full text-rose-400 hover:bg-rose-500/10 hover:text-rose-500">
+                <i class="fas fa-sign-out-alt w-5"></i> Logout / Toka Nje
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Area -->
+    <main class="flex-1 flex flex-col overflow-y-auto relative">
+        <!-- Top Toolbar -->
+        <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center sticky top-0 z-20">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors" title="Back Home / Nyumbani">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </a>
+                <h2 class="font-bold text-lg" id="section-title">Agent Dashboard / Dashibodi ya Wakala</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleNotifications()" class="relative text-gray-500 hover:text-black transition">
+                    <i class="fas fa-bell text-xl"></i>
+                    <span id="notification-count" class="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-rose-600 text-[9px] text-white font-black">0</span>
+                </button>
+                <div class="h-6 w-px bg-gray-200 mx-2"></div>
+                <div class="flex flex-col text-right">
+                    <span id="agent-name" class="font-bold text-sm">Agent</span>
+                    <span class="text-[10px] text-tzblue font-bold uppercase">Commercial Agent / Wakala</span>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-tzyellow flex items-center justify-center font-black text-tzblack shadow-sm">A</div>
+            </div>
+        </header>
+
+        <!-- Notifications Dropdown -->
+        <div id="notification-panel" class="absolute top-20 right-8 w-80 glass-card p-0 shadow-xl hidden z-30 overflow-hidden border border-gray-200">
+            <div class="bg-gray-50 p-4 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-black uppercase text-xs tracking-widest text-gray-800">Network Alerts / Arifa za Mtandao</h3>
+                </div>
+                <button onclick="clearNotifications()" class="text-[10px] font-bold text-gray-400 hover:text-rose-600 uppercase">Clear / Futa</button>
+            </div>
+            <div id="notification-list" class="max-h-80 overflow-y-auto p-2 space-y-1">
+                <p class="text-center text-xs text-gray-400 py-4">No notifications / Hakuna arifa.</p>
+            </div>
+        </div>
+
+        <div class="p-8 space-y-8">
+            <!-- OVERVIEW / VUE D'ENSEMBLE -->
+            <div id="section-overview" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 border-l-4 border-l-tzblack">
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Managers (Clients) / Wasimamizi (Wateja)</p>
+                        <h3 id="stat-clients" class="text-4xl font-black text-black">0</h3>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-arrow-up text-tzgreen"></i> Registered partners / Washirika waliosajiliwa</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-tzyellow">
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Deployed Shops / Maduka Yaliyounganishwa</p>
+                        <h3 id="stat-shops" class="text-4xl font-black text-black">0</h3>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-store text-tzgreen"></i> Active shops / Maduka yanayofanya kazi</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-tzgreen bg-emerald-50/30">
+                        <p class="text-tzgreen text-[10px] font-black uppercase tracking-widest mb-1">Estimated Commission (5%) / Kamisheni (5%)</p>
+                        <h3 id="stat-commissions" class="text-4xl font-black text-tzgreen">0 TZS</h3>
+                        <p class="text-xs text-tzgreen/70 mt-2 font-semibold">Based on total sales / Kutokana na mauzo yote</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-tzblue bg-sky-50/30">
+                        <p class="text-tzblue text-[10px] font-black uppercase tracking-widest mb-1">My Promo Code / Code Yangu ya Promo</p>
+                        <div class="flex gap-2 mt-2">
+                            <input type="text" id="agent-promo-code" placeholder="e.g. AGENT01" class="flex-1 p-2 bg-white border border-sky-200 rounded-lg text-sm font-mono font-bold uppercase focus:outline-none focus:ring-2 focus:ring-tzblue" />
+                            <button onclick="saveAgentPromoCode()" class="bg-tzblue text-white px-3 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-sky-600 transition shadow-sm">OK</button>
+                        </div>
+                        <p class="text-[9px] text-tzblue/70 mt-2 font-semibold italic">Identifies your network sales / Inatambua mauzo yako.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6">
+                    <h3 class="font-black uppercase text-sm mb-4">Recent Network Activity / Shughuli za Hivi Karibuni za Mtandao</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase font-black tracking-widest">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-tl-lg">Order ID / Namba ya Oda</th>
+                                    <th class="px-4 py-3">Shop / Duka</th>
+                                    <th class="px-4 py-3">Amount / Kiasi</th>
+                                    <th class="px-4 py-3">Agent Code / Code ya Wakala</th>
+                                    <th class="px-4 py-3 rounded-tr-lg">Status / Hali</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-activity-body" class="divide-y divide-gray-100">
+                                <tr><td colspan="5" class="px-4 py-8 text-center text-xs text-gray-400">Loading activity... / Inapakia shughuli...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LISTE CLIENTS (Gérants) -->
+            <div id="section-clients" class="hidden glass-card overflow-hidden">
+                <div class="p-6 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="font-black uppercase text-sm">Business Providers: Managers / Wasimamizi wa Maduka</h3>
+                    <p class="text-xs text-gray-500 mt-1">Unique shop owners listed under your network / Orodha ya wamiliki wa maduka.</p>
+                </div>
+                <div class="overflow-x-auto p-4">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-100 text-gray-500 text-[10px] uppercase font-black tracking-widest">
+                            <tr>
+                                <th class="px-6 py-3 rounded-l-lg">Owner ID / Namba ya Mmiliki</th>
+                                <th class="px-6 py-3">Total Shops / Idadi ya Maduka</th>
+                                <th class="px-6 py-3 rounded-r-lg">Network Status / Hali ya Mtandao</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-list-body" class="divide-y divide-gray-50">
+                            <!-- Populated in JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LISTE BOUTIQUES -->
+            <div id="section-shops" class="hidden glass-card overflow-hidden">
+                <div class="p-6 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="font-black uppercase text-sm">Network Management: Shops / Usimamizi wa Maduka</h3>
+                    <p class="text-xs text-gray-500 mt-1">All partner shops created on the Mlimani City platform / Maduka yote ya washirika.</p>
+                </div>
+                <div class="overflow-x-auto p-4">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-100 text-gray-500 text-[10px] uppercase font-black tracking-widest">
+                            <tr>
+                                <th class="px-6 py-3 rounded-l-lg">Shop / Duka</th>
+                                <th class="px-6 py-3">Category / Kategoria</th>
+                                <th class="px-6 py-3">Currency / Fedha</th>
+                                <th class="px-6 py-3 rounded-r-lg text-right">Actions / Hatua</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shops-list-body" class="divide-y divide-gray-50">
+                            <!-- Populated in JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- OUTILS & CRÉATION -->
+            <div id="section-tools" class="hidden space-y-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- CREATE MANAGER & SHOP -->
+                    <div class="glass-card p-8 border-t-4 border-t-tzyellow">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-yellow-100 text-tzyellow flex items-center justify-center"><i class="fas fa-store"></i></div>
+                            <h3 class="text-xl font-black uppercase">Create Manager & Shop / Sajili Msimamizi & Duka</h3>
+                        </div>
+                        <form onsubmit="handleCreateManagerAndShop(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black uppercase text-gray-400 ml-1">Manager Email / Barua Pepe</label>
+                                    <input type="email" id="new-manager-email" required placeholder="manager@example.com" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[9px] font-black uppercase text-gray-400 ml-1">Temporary Password / Nenosiri</label>
+                                    <input type="password" id="new-manager-pass" required placeholder="••••••••" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black uppercase text-gray-400 ml-1">WhatsApp Number / Namba ya Simu</label>
+                                <input type="tel" id="new-manager-phone" required placeholder="+255..." class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black uppercase text-gray-400 ml-1">Shop Name / Jina la Duka</label>
+                                <input type="text" id="new-manager-shop-name" required placeholder="e.g. Mlimani Fashion Hub" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
+                            </div>
+                            <button type="submit" id="btn-create-mgr" class="w-full bg-tzblack text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">
+                                Deploy Shop / Weka Duka Mtandaoni
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- CREATE CLIENT -->
+                    <div class="glass-card p-8 border-t-4 border-t-tzblue">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-tzblue flex items-center justify-center"><i class="fas fa-user-plus"></i></div>
+                            <h3 class="text-xl font-black uppercase">Create Customer Account / Sajili Akaunti ya Mteja</h3>
+                        </div>
+                        <form onsubmit="handleCreateClient(event)" class="space-y-4">
+                            <input type="email" id="new-client-email" required placeholder="Customer Email / Barua Pepe ya Mteja" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
+                            <input type="password" id="new-client-pass" required placeholder="Temporary Password / Nenosiri la Muda" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
+                            <input type="tel" id="new-client-phone" required placeholder="Customer WhatsApp / Namba ya WhatsApp ya Mteja" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
+                            <button type="submit" id="btn-create-cli" class="w-full bg-tzblue text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-sky-600 transition shadow-lg">
+                                Register Customer / Sajili Mteja
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUPPORT TECH -->
+            <div id="section-tech" class="hidden glass-card p-8 max-w-2xl">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-tzgreen flex items-center justify-center text-xl">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black uppercase">Technical Support / Msaada wa Kiufundi</h3>
+                        <p class="text-xs text-gray-500">Report a shop issue to administrators via WhatsApp / Ripoti tatizo la duka kupitia WhatsApp.</p>
+                    </div>
+                </div>
+                <form class="space-y-4" onsubmit="sendTechSupport(event)">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Affected Shop / Duka Linalohusika</label>
+                        <select id="tech-target" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-tzblack font-semibold text-sm">
+                            <option value="">Select a shop... / Chagua duka...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Problem Description / Maelezo ya Tatizo</label>
+                        <textarea id="tech-msg" required placeholder="Describe the technical issue faced by the manager... / Eleza tatizo la kiufundi la duka..." class="w-full p-4 bg-gray-50 rounded-xl h-32 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-tzblack text-sm"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-tzblack hover:bg-gray-800 transition text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                        <i class="fas fa-paper-plane"></i> Send to Admin / Tuma kwa Wasimamizi Wakuu
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Discount -->
+    <div id="discount-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative shadow-2xl transform transition-all">
+            <button onclick="closeDiscountModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            
+            <div class="w-12 h-12 bg-yellow-100 text-tzyellow rounded-xl flex items-center justify-center text-xl mb-4">
+                <i class="fas fa-tags"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-2">Apply a Discount / Weka Punguzo</h3>
+            <p class="text-xs text-gray-500 mb-6">Request a commercial discount for / Omba punguzo la bei kwa ajili ya: <span id="discount-shop-name" class="font-bold text-black"></span></p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Discount Percentage (%) / Asilimia ya Punguzo (%)</label>
+                    <input type="number" id="discount-val" placeholder="Ex: 10" min="1" max="100" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-tzyellow font-bold text-lg">
+                </div>
+                <button onclick="saveDiscount()" class="w-full bg-tzyellow hover:bg-yellow-500 text-tzblack py-4 rounded-xl font-black uppercase tracking-widest text-xs transition">
+                    Send Request / Tuma Ombi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secure Agent Access (Auth Overlay) -->
+    <div id="access-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 transition-all">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="bg-tzblack p-8 text-center relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-tzyellow/20 rounded-full blur-xl"></div>
+                <i class="fas fa-user-tie text-4xl text-tzyellow mb-3"></i>
+                <h3 class="text-2xl font-black uppercase text-white tracking-wide">Agent Portal / Eneo la Wakala</h3>
+                <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">Mlimani City Secure Access / Ufikiaji Salama</p>
+            </div>
+            
+            <div class="p-8 space-y-6">
+                <!-- Tabs Selector -->
+                <div class="bg-gray-100 p-1 rounded-xl flex gap-1 mb-2">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-tzblack shadow-sm transition">Login / Ingia</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:text-tzblack transition">Register / Jisajili</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-1.5 tracking-widest">Agent Email / Barua Pepe ya Wakala</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-3.5 text-gray-400"></i>
+                            <input id="login-email" type="email" required placeholder="agent@mlimanicity.com" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-1.5 tracking-widest">Password / Nenosiri</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-3.5 text-gray-400"></i>
+                            <input id="login-password" type="password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition" />
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-login" class="w-full bg-tzgreen hover:bg-green-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition mt-2">
+                        Login / Ingia
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-1.5 tracking-widest">Agent Email / Barua Pepe</label>
+                        <input id="reg-email" type="email" required placeholder="new-agent@mlimanicity.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-tzblue transition" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-gray-500 mb-1.5 tracking-widest">Password / Nenosiri</label>
+                        <input id="reg-password" type="password" required minlength="6" placeholder="Min. 6 characters" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-tzblue transition" />
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <p class="text-[9px] text-tzblue font-bold leading-tight uppercase"><i class="fas fa-info-circle mr-1"></i> New agents require admin validation before their commissions are tracked. / Mawakala wapya wanahitaji kuthibitishwa.</p>
+                    </div>
+                    <button type="submit" id="btn-register" class="w-full bg-tzblue hover:bg-sky-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition mt-2">
+                        Create Account / Fungua Akaunti
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Shop Details -->
+    <div id="shop-details-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative shadow-2xl transform transition-all">
+            <button onclick="closeShopDetailsModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            
+            <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl mb-4">
+                <i class="fas fa-store"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-2" id="details-shop-name">Shop Name</h3>
+            <p class="text-xs text-gray-500 mb-6" id="details-shop-slogan">Slogan</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <p class="text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Contact / Mawasiliano</p>
+                    <div class="flex items-center gap-3 mb-2" id="details-contact-phone-row">
+                        <i class="fa-brands fa-whatsapp text-green-500"></i>
+                        <a id="details-contact-phone" href="#" target="_blank" class="text-sm text-gray-700 hover:underline">+255...</a>
+                    </div>
+                    <div class="flex items-center gap-3" id="details-contact-address-row">
+                        <i class="fa-solid fa-location-dot text-indigo-500"></i>
+                        <span id="details-contact-address" class="text-sm text-gray-700">Address</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Social Links / Mitandao ya Kijamii</p>
+                    <div class="flex gap-4" id="details-social-links">
+                        <a id="details-social-fb" href="#" target="_blank" class="text-blue-600 hover:text-blue-800 text-xl hidden"><i class="fa-brands fa-facebook"></i></a>
+                        <a id="details-social-ig" href="#" target="_blank" class="text-pink-600 hover:text-pink-800 text-xl hidden"><i class="fa-brands fa-instagram"></i></a>
+                        <a id="details-social-tk" href="#" target="_blank" class="text-gray-800 hover:text-black text-xl hidden"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Owner ID / Namba ya Mmiliki</p>
+                    <span id="details-owner-id" class="text-xs font-mono text-gray-600"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SUPABASE CONFIGURATION ---
+        const CLOUD_URL = 'https://iiotlhjzuphhguukldbg.supabase.co';
+        const CLOUD_KEY = 'sb_publishable_iuno04EOYaNzSvUPojt_GQ_l9F0Z4QT';
+        
+        let sb = null;
+        let currentUser = null;
+        let allShops = [];
+        let allOrders = [];
+
+        window.onload = async function() {
+            initCloud();
+            await verifyAgentAccess();
+        };
+
+        let authMode = 'login';
+        function switchAuthTab(mode) {
+            authMode = mode;
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabReg = document.getElementById('tab-register');
+
+            if (mode === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-tzblack shadow-sm transition";
+                tabReg.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:text-tzblack transition";
+            } else {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                tabReg.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-tzblack shadow-sm transition";
+                tabLogin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:text-tzblack transition";
+            }
+        }
+
+        async function verifyAgentAccess() {
+            const { data: { user } } = await sb.auth.getUser();
+            
+            if (user) {
+                const role = user.user_metadata?.role;
+                // Allow specific admin email OR anyone with 'agent' role
+                if (role !== 'agent' && user.email !== 'banikimukishijimmy@gmail.com') {
+                    await sb.auth.signOut();
+                    window.location.href = 'boutiques.html';
+                }
+            }
+        }
+
+        function initCloud() {
+            try {
+                sb = supabase.createClient(CLOUD_URL, CLOUD_KEY);
+                document.getElementById('cloud-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-tzgreen animate-pulse"></span> Cloud Connected / Mfumo Unganishi`;
+                document.getElementById('cloud-status').className = "flex items-center gap-2 mb-4 px-2 text-[10px] uppercase tracking-widest font-bold text-tzgreen";
+                
+                // Auth Listener
+                sb.auth.onAuthStateChange((event, session) => {
+                    if (session) {
+                        const role = session.user.user_metadata?.role;
+                        if (role === 'agent' || session.user.email === 'banikimukishijimmy@gmail.com') {
+                            currentUser = session.user;
+                            finalizeLogin(currentUser.email);
+                        } else {
+                            alert("Access Denied: This account is not authorized as an agent. / Ufikiaji Umekataliwa.");
+                            sb.auth.signOut();
+                            window.location.href = 'boutiques.html';
+                        }
+                    } else {
+                        currentUser = null;
+                        document.getElementById('access-overlay').classList.remove('hidden');
+                    }
+                });
+            } catch (e) {
+                console.error("Supabase Init Error:", e);
+                document.getElementById('cloud-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-600"></span> Cloud Error / Hitilafu ya Mfumo`;
+                document.getElementById('cloud-status').className = "flex items-center gap-2 mb-4 px-2 text-[10px] uppercase tracking-widest font-bold text-rose-600";
+            }
+        }
+
+        // --- AUTHENTICATION ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            if (!sb) return alert("Cloud system is unavailable. / Mfumo haupatikani kwa sasa.");
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+            
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Connecting... / Inaingia...`;
+            btn.disabled = true;
+
+            try {
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+            } catch (err) {
+                alert("Login Error / Kosa la kuingia: " + err.message);
+                btn.innerHTML = `Login / Ingia`;
+                btn.disabled = false;
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            if (!sb) return;
+
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const btn = document.getElementById('btn-register');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Registering...`;
+
+            try {
+                const { data, error } = await sb.auth.signUp({ 
+                    email, 
+                    password,
+                    options: { data: { role: 'agent' } }
+                });
+                if (error) throw error;
+                alert("Account created successfully! You can now log in. / Akaunti imetengenezwa! Sasa unaweza kuingia.");
+                switchAuthTab('login');
+            } catch (err) {
+                alert("Registration Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Create Account / Fungua Akaunti";
+            }
+        }
+
+        function finalizeLogin(email) {
+            document.getElementById('agent-name').innerText = email.split('@')[0];
+            document.getElementById('access-overlay').classList.add('hidden');
+            loadData();
+        }
+
+        async function handleLogout() {
+            if (sb && currentUser && !currentUser.email.includes('demo')) {
+                await sb.auth.signOut();
+            } else {
+                currentUser = null;
+                document.getElementById('access-overlay').classList.remove('hidden');
+                document.getElementById('btn-login').innerHTML = `Login / Ingia`;
+                document.getElementById('btn-login').disabled = false;
+            }
+        }
+
+        // --- AGENT ACTIONS ---
+
+        async function saveAgentPromoCode() {
+            if (!currentUser) return;
+            const code = document.getElementById('agent-promo-code').value.trim().toUpperCase();
+            if (!code) return alert("Please enter a valid code. / Tafadhali ingiza code sahihi.");
+
+            localStorage.setItem(`agent_promo_${currentUser.id}`, code);
+
+            try {
+                const { error } = await sb.from('agent_profiles').upsert({
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    promo_code: code,
+                    updated_at: new Date().toISOString()
+                });
+                if (error) throw error;
+                alert("Your promo code is now active on the network! / Code yako imeamilishwa!");
+            } catch (err) {
+                console.error("Agent Profile Cloud Error (Missing Table?):", err.message);
+                alert("Promo Code saved locally! Note: Custom 'agent_profiles' table is not created in Supabase database yet.");
+            }
+        }
+
+        async function loadAgentProfile() {
+            if (!currentUser) return;
+
+            const localCode = localStorage.getItem(`agent_promo_${currentUser.id}`);
+            if (localCode) document.getElementById('agent-promo-code').value = localCode;
+
+            try {
+                const { data } = await sb.from('agent_profiles').select('promo_code').eq('id', currentUser.id).single();
+                if (data && data.promo_code) {
+                    document.getElementById('agent-promo-code').value = data.promo_code;
+                }
+            } catch (e) {}
+        }
+
+        async function createAccountSilent(email, password, metadata) {
+            const tempSb = supabase.createClient(CLOUD_URL, CLOUD_KEY, { auth: { persistSession: false } });
+            return await tempSb.auth.signUp({ email, password, options: { data: metadata } });
+        }
+
+        async function handleCreateManagerAndShop(e) {
+            e.preventDefault();
+            const email = document.getElementById('new-manager-email').value;
+            const password = document.getElementById('new-manager-pass').value;
+            const shopName = document.getElementById('new-manager-shop-name').value;
+            const phone = document.getElementById('new-manager-phone').value;
+            const btn = document.getElementById('btn-create-mgr');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Deploying... / Inatengeneza...`;
+
+            try {
+                // 1. Create Auth Account
+                const { data: authData, error: authErr } = await createAccountSilent(email, password, { role: 'gerant' });
+                if (authErr) throw authErr;
+
+                // 2. Create boutique configuration
+                const managerId = authData.user.id;
+                const shopId = 'shop_' + managerId.slice(0, 12);
+                
+                const { error: configErr } = await sb.from('boutique_config').insert({
+                    shop_id: shopId,
+                    owner_id: managerId,
+                    name: shopName,
+                    slogan: "Welcome to my Mlimani City Shop / Karibu kwenye duka langu",
+                    default_category: "General",
+                    currency: "TZS",
+                    exchange_rate: 2800,
+                    theme_color: "#1EB53A",
+                    theme_rgb: "30, 181, 58",
+                    layout: "grid",
+                    contact_info: { phone: phone, address: "Mlimani City Mall, Dar es Salaam" }
+                });
+                if (configErr) throw configErr;
+
+                alert(`Success! Manager ${email} was created and shop "${shopName}" is online! / Duka liko tayari!`);
+                
+                // WhatsApp notification message
+                const msg = encodeURIComponent(`Hello! Your Mlimani City shop "${shopName}" has been successfully set up.\n\nHere are your login credentials:\n📧 Email: ${email}\n🔑 Password: ${password}\n\nAccess your manager dashboard here: https://legrandart.org/dashboard.html`);
+                const waLink = `https://wa.me/${phone.replace(/\D/g, '')}?text=${msg}`;
+                
+                if (confirm("Would you like to send the login details to the manager via WhatsApp? / Je, utume maelezo ya kuingia kupitia WhatsApp?")) {
+                    window.open(waLink, '_blank');
+                }
+
+                e.target.reset();
+                loadData();
+            } catch (err) { alert("Deployment Error / Hitilafu ya Usajili: " + err.message); }
+            finally { btn.disabled = false; btn.innerText = "Deploy Shop / Weka Duka Mtandaoni"; }
+        }
+
+        async function handleCreateClient(e) {
+            e.preventDefault();
+            const email = document.getElementById('new-client-email').value;
+            const password = document.getElementById('new-client-pass').value;
+            const phone = document.getElementById('new-client-phone').value;
+            const btn = document.getElementById('btn-create-cli');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Saving... / Inasajili...`;
+
+            try {
+                const { error: authErr } = await createAccountSilent(email, password, { role: 'client' });
+                if (authErr) throw authErr;
+
+                alert(`Success! Customer account successfully registered for ${email}. / Akaunti ya mteja imesajiliwa.`);
+
+                // WhatsApp credentials notification
+                const msg = encodeURIComponent(`Hello! Your client account has been successfully set up on Mlimani City.\n\nHere are your access details:\n📧 Email: ${email}\n🔑 Password: ${password}\n\nStart shopping here: https://legrandart.org/boutiques.html`);
+                const waLink = `https://wa.me/${phone.replace(/\D/g, '')}?text=${msg}`;
+                
+                if (confirm("Send credentials to customer via WhatsApp? / Je, utume maelezo ya akaunti kupitia WhatsApp?")) {
+                    window.open(waLink, '_blank');
+                }
+
+                e.target.reset();
+            } catch (err) { alert("Error / Hitilafu: " + err.message); }
+            finally { btn.disabled = false; btn.innerText = "Register Customer / Sajili Mteja"; }
+        }
+
+        // --- DATA FETCHING & RENDERING ---
+        async function loadData() {
+            if (!sb) return;
+
+            try {
+                // 1. Fetch Shops
+                const { data: shopsData, error: shopsErr } = await sb.from('boutique_config').select('*').order('created_at', { ascending: false });
+                if (!shopsErr && shopsData) allShops = shopsData;
+
+                // 2. Fetch Orders
+                const { data: ordersData, error: ordersErr } = await sb.from('boutique_orders').select('*').order('created_at', { ascending: false });
+                if (!ordersErr && ordersData) allOrders = ordersData;
+
+                renderOverview();
+                renderClients();
+                renderShops();
+                populateTechSelect();
+                generateNotifications();
+                loadAgentProfile();
+
+            } catch (e) {
+                console.error("Error loading data / Hitilafu ya kupakia data:", e);
+            }
+        }
+
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('en-TZ', { style: 'currency', currency: 'TZS', maximumFractionDigits: 0 }).format(amount);
+        }
+
+        function renderOverview() {
+            const activeShopsCount = allShops.length;
+            
+            const uniqueOwners = new Set(allShops.filter(s => s.owner_id).map(s => s.owner_id));
+            const clientsCount = uniqueOwners.size > 0 ? uniqueOwners.size : (activeShopsCount > 0 ? activeShopsCount : 0);
+
+            const validOrders = allOrders.filter(o => o.status !== 'Refusé' && o.status !== 'Cancelled');
+            const totalRevenue = validOrders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+            const commission = totalRevenue * 0.05;
+
+            document.getElementById('stat-shops').innerText = activeShopsCount;
+            document.getElementById('stat-clients').innerText = clientsCount;
+            document.getElementById('stat-commissions').innerText = formatMoney(commission);
+
+            const activityBody = document.getElementById('recent-activity-body');
+            const recentOrders = allOrders.slice(0, 5);
+
+            if (recentOrders.length === 0) {
+                activityBody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-xs text-gray-400">No recent activity found. / Hakuna shughuli hivi karibuni.</td></tr>`;
+            } else {
+                activityBody.innerHTML = recentOrders.map(order => {
+                    const shopName = getShopNameById(order.shop_id);
+                    let statusBadge = `<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-md text-[9px] font-black uppercase">${order.status}</span>`;
+                    if (order.status === 'Livré' || order.status === 'Delivered') statusBadge = `<span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-[9px] font-black uppercase">Delivered</span>`;
+                    if (order.status === 'Refusé' || order.status === 'Cancelled') statusBadge = `<span class="px-2 py-1 bg-red-100 text-red-700 rounded-md text-[9px] font-black uppercase">Cancelled</span>`;
+
+                    return `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-3 text-xs font-bold">${order.id}</td>
+                        <td class="px-4 py-3 text-xs text-gray-600">${shopName}</td>
+                        <td class="px-4 py-3 text-xs font-black">${formatMoney(order.total)}</td>
+                        <td class="px-4 py-3 text-[10px] font-mono text-tzblue uppercase">${order.promo_code || '-'}</td>
+                        <td class="px-4 py-3">${statusBadge}</td>
+                    </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function renderClients() {
+            const tbody = document.getElementById('clients-list-body');
+            
+            const clientsMap = {};
+            allShops.forEach(shop => {
+                const oid = shop.owner_id || 'Unknown Manager / Msimamizi Asiyejulikana';
+                if(!clientsMap[oid]) clientsMap[oid] = { id: oid, shopCount: 0 };
+                clientsMap[oid].shopCount++;
+            });
+
+            const clientsArray = Object.values(clientsMap);
+
+            if (clientsArray.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-xs text-gray-400">No registered managers. / Hakuna wasimamizi waliosajiliwa.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = clientsArray.map(client => `
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900">${client.id.substring(0,8)}...</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-bold text-gray-500">${client.shopCount} Shop(s) / Maduka</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase flex items-center w-max gap-1">
+                            <span class="w-1.5 h-1.5 bg-tzgreen rounded-full"></span> Active / Kazi
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderShops() {
+            const tbody = document.getElementById('shops-list-body');
+            
+            if (allShops.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-xs text-gray-400">No deployed shops found. / Hakuna maduka yaliyounganishwa.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allShops.map(shop => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+                                ${shop.logo_url ? `<img src="${shop.logo_url}" class="w-full h-full object-cover">` : `<i class="fas fa-store text-gray-400"></i>`}
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">${shop.name}</h4>
+                                <p class="text-[10px] text-gray-400">${shop.slogan || 'No slogan / Hakuna slogan'}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-semibold text-gray-500">${shop.default_category || 'General / Jumla'}</td>
+                    <td class="px-6 py-4 text-xs font-bold text-gray-900">${shop.currency || 'TZS'}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="openDiscount('${shop.name}')" class="px-3 py-1.5 bg-yellow-100 text-yellow-700 hover:bg-yellow-200 rounded-lg text-[10px] font-black uppercase transition tooltip-trigger">
+                            <i class="fas fa-tag"></i> Discount / Punguzo
+                        </button>
+                        <button onclick="jumpToTechSupport('${shop.name}')" class="px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-[10px] font-black uppercase transition">
+                            <i class="fas fa-headset"></i> Support / Msaada
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateTechSelect() {
+            const select = document.getElementById('tech-target');
+            select.innerHTML = `<option value="">Select a shop... / Chagua duka...</option>`;
+            allShops.forEach(shop => {
+                select.innerHTML += `<option value="${shop.name}">${shop.name}</option>`;
+            });
+        }
+
+        function generateNotifications() {
+            const list = document.getElementById('notification-list');
+            const count = document.getElementById('notification-count');
+            
+            const recentOrders = allOrders.slice(0, 5);
+            
+            if (recentOrders.length > 0) {
+                count.innerText = recentOrders.length;
+                count.classList.remove('hidden');
+                
+                list.innerHTML = recentOrders.map(order => {
+                    const shopName = getShopNameById(order.shop_id);
+                    return `
+                    <div class="p-3 bg-white rounded-xl border border-gray-100 hover:bg-gray-50 transition cursor-default">
+                        <div class="flex justify-between items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-tzgreen flex items-center justify-center shrink-0">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900 truncate">Sale: ${shopName}</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Order ${order.id} of value ${formatMoney(order.total)}.</p>
+                            </div>
+                        </div>
+                        <p class="text-[8px] text-right uppercase tracking-widest text-gray-400 mt-2">${order.date || 'Recently / Sasa hivi'}</p>
+                    </div>
+                    `;
+                }).join('');
+            } else {
+                count.innerText = '0';
+                count.classList.add('hidden');
+            }
+        }
+
+        // --- HELPERS ---
+        function getShopNameById(id) {
+            const shop = allShops.find(s => s.shop_id === id);
+            return shop ? shop.name : 'Unknown Shop / Duka Lisilojulikana';
+        }
+
+        // --- NAVIGATION & UI LOGIC ---
+        function showSection(id) {
+            ['overview', 'clients', 'shops', 'tech', 'tools'].forEach(s => {
+                document.getElementById('section-' + s).classList.add('hidden');
+                if(document.getElementById('nav-' + s)) document.getElementById('nav-' + s).classList.remove('active');
+            });
+            document.getElementById('section-' + id).classList.remove('hidden');
+            document.getElementById('nav-' + id).classList.add('active');
+            document.getElementById('section-title').innerText = id === 'tools' ? "Tools & Creation / Zana za Kazi" : document.getElementById('nav-' + id).innerText.trim();
+        }
+
+        function jumpToTechSupport(shopName) {
+            showSection('tech');
+            const select = document.getElementById('tech-target');
+            if (select) select.value = shopName;
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notification-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        function clearNotifications() {
+            document.getElementById('notification-list').innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No notifications / Hakuna arifa.</p>';
+            const count = document.getElementById('notification-count');
+            count.innerText = '0';
+            count.classList.add('hidden');
+            document.getElementById('notification-panel').classList.add('hidden');
+        }
+
+        // --- MODAL DISCOUNT ---
+        let currentDiscountTarget = '';
+        function openDiscount(name) {
+            currentDiscountTarget = name;
+            document.getElementById('discount-shop-name').innerText = name;
+            document.getElementById('discount-val').value = '';
+            document.getElementById('discount-modal').classList.remove('hidden');
+        }
+
+        function closeDiscountModal() { 
+            document.getElementById('discount-modal').classList.add('hidden'); 
+        }
+
+        function saveDiscount() {
+            const val = document.getElementById('discount-val').value;
+            if (!val || val <= 0) return alert("Please enter a valid percentage. / Weka asilimia sahihi.");
+            
+            const msg = `*DISCOUNT REQUEST / OMBI LA PUNGUZO*\n\nShop: ${currentDiscountTarget}\nRequested Discount: ${val}%\nAgent: ${document.getElementById('agent-name').innerText}`;
+            window.open(`https://wa.me/255712345678?text=${encodeURIComponent(msg)}`, '_blank');
+            closeDiscountModal();
+        }
+
+        // --- SUPPORT TECHNIQUE ---
+        function sendTechSupport(e) {
+            e.preventDefault();
+            const target = document.getElementById('tech-target').value;
+            const msg = document.getElementById('tech-msg').value;
+            if (!target) return alert("Please select a shop. / Chagua duka.");
+
+            const wa = `*MLIMANI CITY AGENT SUPPORT*\n\nAgent: ${document.getElementById('agent-name').innerText}\nAffected Shop: ${target}\nIssue: ${msg}`;
+            window.open(`https://wa.me/255712345678?text=${encodeURIComponent(wa)}`, '_blank');
+            
+            document.getElementById('tech-msg').value = '';
+        }
+
+        // --- SHOP DETAILS MODAL ---
+        function openShopDetailsModal(shopId) {
+            const shop = allShops.find(s => s.shop_id === shopId);
+            if (!shop) return;
+
+            document.getElementById('details-shop-name').innerText = shop.name;
+            document.getElementById('details-shop-slogan').innerText = shop.slogan || 'No slogan / Hakuna slogan';
+            document.getElementById('details-owner-id').innerText = shop.owner_id;
+
+            // Contact Info
+            const phone = shop.contact_info?.phone;
+            const address = shop.contact_info?.address;
+            document.getElementById('details-contact-phone').innerText = phone || 'Not provided / Haijawekwa';
+            document.getElementById('details-contact-phone').href = phone ? `https://wa.me/${phone.replace(/\D/g,'')}` : '#';
+            document.getElementById('details-contact-phone-row').classList.toggle('hidden', !phone);
+            document.getElementById('details-contact-address').innerText = address || 'Not provided / Haijawekwa';
+            document.getElementById('details-contact-address-row').classList.toggle('hidden', !address);
+
+            // Social Links
+            const social = shop.social_links || {};
+            const fb = document.getElementById('details-social-fb');
+            const ig = document.getElementById('details-social-ig');
+            const tk = document.getElementById('details-social-tk');
+            if (fb) { fb.href = social.facebook || '#'; fb.classList.toggle('hidden', !social.facebook); }
+            if (ig) { ig.href = social.instagram || '#'; ig.classList.toggle('hidden', !social.instagram); }
+            if (tk) { tk.href = social.tiktok || '#'; tk.classList.toggle('hidden', !social.tiktok); }
+            document.getElementById('details-social-links').classList.toggle('hidden', !(social.facebook || social.instagram || social.tiktok));
+
+            document.getElementById('shop-details-modal').classList.remove('hidden');
+        }
+
+        function closeShopDetailsModal() {
+            document.getElementById('shop-details-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
