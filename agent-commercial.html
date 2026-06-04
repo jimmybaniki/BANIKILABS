@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-T00CMP9WFH"></script>
     <script>
@@ -18,6 +18,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -36,28 +39,36 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
-        .sidebar { background: #0A0A0A; width: 280px; transition: all 0.3s; border-right: 4px solid #FCD116; }
+        .sidebar { background: #0A0A0A; transition: transform 0.3s ease-in-out, width 0.3s; border-right: 4px solid #FCD116; }
         .nav-link { 
             display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; 
             color: #94a3b8; border-radius: 0.75rem; transition: 0.2s; 
         }
         .nav-link:hover, .nav-link.active { background: #1EB53A; color: white; font-weight: bold; }
-        .glass-card { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .glass-card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
         .btn-action { background: #1EB53A; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: 0.2s; }
         .btn-action:hover { background: #158229; }
         .hidden { display: none !important; }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden relative">
+
+    <!-- Sidebar Backdrop for mobile -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-300"></div>
     
     <!-- Sidebar -->
-    <aside class="sidebar flex flex-col p-6 text-white shrink-0">
-        <div class="mb-10 px-2">
+    <aside id="app-sidebar" class="sidebar fixed md:relative inset-y-0 left-0 z-50 flex flex-col p-6 text-white w-[280px] shrink-0 -translate-x-full md:translate-x-0">
+        <!-- Close button for mobile -->
+        <button onclick="toggleSidebar(false)" class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white transition p-2">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <div class="mb-8 px-2">
             <div class="flex items-center gap-2">
                 <div class="bg-tzgreen text-white p-2 rounded-xl">
                     <i class="fa-solid fa-city text-xl"></i>
@@ -66,6 +77,7 @@
             </div>
             <p class="text-[9px] uppercase tracking-widest text-tzblue font-bold mt-1">Sales Agent / Wakala wa Mauzo</p>
         </div>
+        
         <nav class="flex-1 space-y-2">
             <a href="#" onclick="showSection('overview')" class="nav-link active" id="nav-overview"><i class="fas fa-chart-line w-5"></i> Overview / Maelezo</a>
             <a href="#" onclick="showSection('clients')" class="nav-link" id="nav-clients"><i class="fas fa-users w-5"></i> My Clients / Wasimamizi</a>
@@ -73,9 +85,10 @@
             <a href="#" onclick="showSection('tools')" class="nav-link" id="nav-tools"><i class="fas fa-plus-circle w-5"></i> Tools / Zana za Kazi</a>
             <a href="#" onclick="showSection('tech')" class="nav-link" id="nav-tech"><i class="fas fa-tools w-5"></i> Tech Support / Msaada</a>
         </nav>
+        
         <div class="mt-auto border-t border-white/10 pt-6">
             <div id="cloud-status" class="flex items-center gap-2 mb-4 px-2 text-[10px] uppercase tracking-widest font-bold text-tzyellow">
-                <span class="w-2 h-2 rounded-full bg-tzyellow animate-pulse"></span> Connecting database / Muunganisho...
+                <span class="w-2 h-2 rounded-full bg-tzyellow animate-pulse"></span> Connecting database...
             </div>
             <button onclick="handleLogout()" class="nav-link w-full text-rose-400 hover:bg-rose-500/10 hover:text-rose-500">
                 <i class="fas fa-sign-out-alt w-5"></i> Logout / Toka Nje
@@ -84,34 +97,39 @@
     </aside>
 
     <!-- Main Area -->
-    <main class="flex-1 flex flex-col overflow-y-auto relative">
+    <main class="flex-1 flex flex-col overflow-y-auto relative w-full">
         <!-- Top Toolbar -->
-        <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center sticky top-0 z-20">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors" title="Back Home / Nyumbani">
-                    <i class="fa-solid fa-house text-sm"></i>
-                </a>
-                <h2 class="font-bold text-lg" id="section-title">Agent Dashboard / Dashibodi ya Wakala</h2>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="toggleNotifications()" class="relative text-gray-500 hover:text-black transition">
-                    <i class="fas fa-bell text-xl"></i>
-                    <span id="notification-count" class="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-rose-600 text-[9px] text-white font-black">0</span>
+        <header class="bg-white border-b border-gray-200 px-4 md:px-8 py-4 flex justify-between items-center sticky top-0 z-20">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger button -->
+                <button onclick="toggleSidebar(true)" class="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg focus:outline-none transition" title="Open Menu">
+                    <i class="fa-solid fa-bars text-lg"></i>
                 </button>
-                <div class="h-6 w-px bg-gray-200 mx-2"></div>
-                <div class="flex flex-col text-right">
-                    <span id="agent-name" class="font-bold text-sm">Agent</span>
-                    <span class="text-[10px] text-tzblue font-bold uppercase">Commercial Agent / Wakala</span>
+                <a href="index.html" class="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors" title="Back Home / Nyumbani">
+                    <i class="fa-solid fa-house text-xs md:text-sm"></i>
+                </a>
+                <h2 class="font-bold text-sm md:text-lg truncate max-w-[160px] sm:max-w-xs md:max-w-none" id="section-title">Agent Dashboard</h2>
+            </div>
+            
+            <div class="flex items-center gap-2 md:gap-4">
+                <button onclick="toggleNotifications()" class="relative text-gray-500 hover:text-black transition p-2">
+                    <i class="fas fa-bell text-lg md:text-xl"></i>
+                    <span id="notification-count" class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-rose-600 text-[9px] text-white font-black">0</span>
+                </button>
+                <div class="h-6 w-px bg-gray-200 mx-1 md:mx-2"></div>
+                <div class="flex flex-col text-right hidden sm:flex">
+                    <span id="agent-name" class="font-bold text-xs md:text-sm">Agent</span>
+                    <span class="text-[9px] text-tzblue font-bold uppercase">Commercial Agent / Wakala</span>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-tzyellow flex items-center justify-center font-black text-tzblack shadow-sm">A</div>
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-tzyellow flex items-center justify-center font-black text-tzblack text-sm md:text-base shadow-sm">A</div>
             </div>
         </header>
 
         <!-- Notifications Dropdown -->
-        <div id="notification-panel" class="absolute top-20 right-8 w-80 glass-card p-0 shadow-xl hidden z-30 overflow-hidden border border-gray-200">
+        <div id="notification-panel" class="absolute top-16 right-4 md:right-8 w-72 md:w-80 glass-card p-0 shadow-xl hidden z-30 overflow-hidden border border-gray-200">
             <div class="bg-gray-50 p-4 border-b border-gray-100 flex items-center justify-between">
                 <div>
-                    <h3 class="font-black uppercase text-xs tracking-widest text-gray-800">Network Alerts / Arifa za Mtandao</h3>
+                    <h3 class="font-black uppercase text-xs tracking-widest text-gray-800">Network Alerts</h3>
                 </div>
                 <button onclick="clearNotifications()" class="text-[10px] font-bold text-gray-400 hover:text-rose-600 uppercase">Clear / Futa</button>
             </div>
@@ -120,39 +138,45 @@
             </div>
         </div>
 
-        <div class="p-8 space-y-8">
+        <div class="p-4 md:p-8 space-y-6 md:space-y-8">
             <!-- OVERVIEW / VUE D'ENSEMBLE -->
-            <div id="section-overview" class="space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-card p-6 border-l-4 border-l-tzblack">
-                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Managers (Clients) / Wasimamizi (Wateja)</p>
-                        <h3 id="stat-clients" class="text-4xl font-black text-black">0</h3>
-                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-arrow-up text-tzgreen"></i> Registered partners / Washirika waliosajiliwa</p>
+            <div id="section-overview" class="space-y-6 md:space-y-8">
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <div class="glass-card p-5 md:p-6 border-l-4 border-l-tzblack">
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Managers (Clients) / Wasimamizi</p>
+                        <h3 id="stat-clients" class="text-3xl md:text-4xl font-black text-black">0</h3>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-arrow-up text-tzgreen"></i> Registered partners / Washirika</p>
                     </div>
-                    <div class="glass-card p-6 border-l-4 border-l-tzyellow">
+                    <div class="glass-card p-5 md:p-6 border-l-4 border-l-tzyellow">
                         <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Deployed Shops / Maduka Yaliyounganishwa</p>
-                        <h3 id="stat-shops" class="text-4xl font-black text-black">0</h3>
-                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-store text-tzgreen"></i> Active shops / Maduka yanayofanya kazi</p>
+                        <h3 id="stat-shops" class="text-3xl md:text-4xl font-black text-black">0</h3>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-store text-tzgreen"></i> Active shops / Maduka</p>
                     </div>
-                    <div class="glass-card p-6 border-l-4 border-l-tzgreen bg-emerald-50/30">
+                    <div class="glass-card p-5 md:p-6 border-l-4 border-l-tzgreen bg-emerald-50/30">
                         <p class="text-tzgreen text-[10px] font-black uppercase tracking-widest mb-1">Estimated Commission (5%) / Kamisheni (5%)</p>
-                        <h3 id="stat-commissions" class="text-4xl font-black text-tzgreen">0 TZS</h3>
-                        <p class="text-xs text-tzgreen/70 mt-2 font-semibold">Based on total sales / Kutokana na mauzo yote</p>
+                        <h3 id="stat-commissions" class="text-2xl md:text-3xl lg:text-4xl font-black text-tzgreen">0 TZS</h3>
+                        <p class="text-xs text-tzgreen/70 mt-2 font-semibold">Based on total sales / Kutokana na mauzo</p>
                     </div>
-                    <div class="glass-card p-6 border-l-4 border-l-tzblue bg-sky-50/30">
-                        <p class="text-tzblue text-[10px] font-black uppercase tracking-widest mb-1">My Promo Code / Code Yangu ya Promo</p>
+                    <div class="glass-card p-5 md:p-6 border-l-4 border-l-tzblue bg-sky-50/30">
+                        <p class="text-tzblue text-[10px] font-black uppercase tracking-widest mb-1">My Promo Code / Code Yangu</p>
                         <div class="flex gap-2 mt-2">
-                            <input type="text" id="agent-promo-code" placeholder="e.g. AGENT01" class="flex-1 p-2 bg-white border border-sky-200 rounded-lg text-sm font-mono font-bold uppercase focus:outline-none focus:ring-2 focus:ring-tzblue" />
+                            <input type="text" id="agent-promo-code" placeholder="e.g. AGENT01" class="flex-1 p-2 bg-white border border-sky-200 rounded-lg text-xs font-mono font-bold uppercase focus:outline-none focus:ring-2 focus:ring-tzblue" />
                             <button onclick="saveAgentPromoCode()" class="bg-tzblue text-white px-3 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-sky-600 transition shadow-sm">OK</button>
                         </div>
                         <p class="text-[9px] text-tzblue/70 mt-2 font-semibold italic">Identifies your network sales / Inatambua mauzo yako.</p>
                     </div>
                 </div>
 
-                <div class="glass-card p-6">
-                    <h3 class="font-black uppercase text-sm mb-4">Recent Network Activity / Shughuli za Hivi Karibuni za Mtandao</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
+                <div class="glass-card p-4 md:p-6">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                        <h3 class="font-black uppercase text-xs md:text-sm tracking-wide">Recent Network Activity / Shughuli za Mtandao</h3>
+                        <button onclick="exportOrdersPDF()" class="bg-rose-600 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-rose-700 transition shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <table class="w-full text-left min-w-[600px]">
                             <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase font-black tracking-widest">
                                 <tr>
                                     <th class="px-4 py-3 rounded-tl-lg">Order ID / Namba ya Oda</th>
@@ -172,12 +196,12 @@
 
             <!-- LISTE CLIENTS (Gérants) -->
             <div id="section-clients" class="hidden glass-card overflow-hidden">
-                <div class="p-6 border-b border-gray-100 bg-gray-50/50">
-                    <h3 class="font-black uppercase text-sm">Business Providers: Managers / Wasimamizi wa Maduka</h3>
+                <div class="p-4 md:p-6 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="font-black uppercase text-xs md:text-sm">Business Providers: Managers / Wasimamizi wa Maduka</h3>
                     <p class="text-xs text-gray-500 mt-1">Unique shop owners listed under your network / Orodha ya wamiliki wa maduka.</p>
                 </div>
-                <div class="overflow-x-auto p-4">
-                    <table class="w-full text-left">
+                <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <table class="w-full text-left min-w-[500px]">
                         <thead class="bg-gray-100 text-gray-500 text-[10px] uppercase font-black tracking-widest">
                             <tr>
                                 <th class="px-6 py-3 rounded-l-lg">Owner ID / Namba ya Mmiliki</th>
@@ -194,12 +218,12 @@
 
             <!-- LISTE BOUTIQUES -->
             <div id="section-shops" class="hidden glass-card overflow-hidden">
-                <div class="p-6 border-b border-gray-100 bg-gray-50/50">
-                    <h3 class="font-black uppercase text-sm">Network Management: Shops / Usimamizi wa Maduka</h3>
+                <div class="p-4 md:p-6 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="font-black uppercase text-xs md:text-sm">Network Management: Shops / Usimamizi wa Maduka</h3>
                     <p class="text-xs text-gray-500 mt-1">All partner shops created on the Mlimani City platform / Maduka yote ya washirika.</p>
                 </div>
-                <div class="overflow-x-auto p-4">
-                    <table class="w-full text-left">
+                <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <table class="w-full text-left min-w-[600px]">
                         <thead class="bg-gray-100 text-gray-500 text-[10px] uppercase font-black tracking-widest">
                             <tr>
                                 <th class="px-6 py-3 rounded-l-lg">Shop / Duka</th>
@@ -216,16 +240,16 @@
             </div>
 
             <!-- OUTILS & CRÉATION -->
-            <div id="section-tools" class="hidden space-y-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div id="section-tools" class="hidden space-y-6 md:space-y-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                     <!-- CREATE MANAGER & SHOP -->
-                    <div class="glass-card p-8 border-t-4 border-t-tzyellow">
+                    <div class="glass-card p-5 md:p-8 border-t-4 border-t-tzyellow">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-yellow-100 text-tzyellow flex items-center justify-center"><i class="fas fa-store"></i></div>
-                            <h3 class="text-xl font-black uppercase">Create Manager & Shop / Sajili Msimamizi & Duka</h3>
+                            <div class="w-10 h-10 rounded-xl bg-yellow-100 text-tzyellow flex items-center justify-center shrink-0"><i class="fas fa-store"></i></div>
+                            <h3 class="text-lg md:text-xl font-black uppercase">Create Manager & Shop / Sajili Msimamizi & Duka</h3>
                         </div>
                         <form onsubmit="handleCreateManagerAndShop(event)" class="space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="space-y-1">
                                     <label class="text-[9px] font-black uppercase text-gray-400 ml-1">Manager Email / Barua Pepe</label>
                                     <input type="email" id="new-manager-email" required placeholder="manager@example.com" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
@@ -243,23 +267,23 @@
                                 <label class="text-[9px] font-black uppercase text-gray-400 ml-1">Shop Name / Jina la Duka</label>
                                 <input type="text" id="new-manager-shop-name" required placeholder="e.g. Mlimani Fashion Hub" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none" />
                             </div>
-                            <button type="submit" id="btn-create-mgr" class="w-full bg-tzblack text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg">
+                            <button type="submit" id="btn-create-mgr" class="w-full bg-tzblack text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition shadow-lg active:scale-[0.98]">
                                 Deploy Shop / Weka Duka Mtandaoni
                             </button>
                         </form>
                     </div>
 
                     <!-- CREATE CLIENT -->
-                    <div class="glass-card p-8 border-t-4 border-t-tzblue">
+                    <div class="glass-card p-5 md:p-8 border-t-4 border-t-tzblue">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-tzblue flex items-center justify-center"><i class="fas fa-user-plus"></i></div>
-                            <h3 class="text-xl font-black uppercase">Create Customer Account / Sajili Akaunti ya Mteja</h3>
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-tzblue flex items-center justify-center shrink-0"><i class="fas fa-user-plus"></i></div>
+                            <h3 class="text-lg md:text-xl font-black uppercase">Create Customer / Sajili Mteja</h3>
                         </div>
                         <form onsubmit="handleCreateClient(event)" class="space-y-4">
                             <input type="email" id="new-client-email" required placeholder="Customer Email / Barua Pepe ya Mteja" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
                             <input type="password" id="new-client-pass" required placeholder="Temporary Password / Nenosiri la Muda" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
                             <input type="tel" id="new-client-phone" required placeholder="Customer WhatsApp / Namba ya WhatsApp ya Mteja" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-tzblue" />
-                            <button type="submit" id="btn-create-cli" class="w-full bg-tzblue text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-sky-600 transition shadow-lg">
+                            <button type="submit" id="btn-create-cli" class="w-full bg-tzblue text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-sky-600 transition shadow-lg active:scale-[0.98]">
                                 Register Customer / Sajili Mteja
                             </button>
                         </form>
@@ -268,13 +292,13 @@
             </div>
 
             <!-- SUPPORT TECH -->
-            <div id="section-tech" class="hidden glass-card p-8 max-w-2xl">
+            <div id="section-tech" class="hidden glass-card p-5 md:p-8 max-w-2xl mx-auto lg:mx-0">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-tzgreen flex items-center justify-center text-xl">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-tzgreen flex items-center justify-center text-xl shrink-0">
                         <i class="fab fa-whatsapp"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black uppercase">Technical Support / Msaada wa Kiufundi</h3>
+                        <h3 class="text-lg md:text-xl font-black uppercase">Technical Support / Msaada wa Kiufundi</h3>
                         <p class="text-xs text-gray-500">Report a shop issue to administrators via WhatsApp / Ripoti tatizo la duka kupitia WhatsApp.</p>
                     </div>
                 </div>
@@ -289,7 +313,7 @@
                         <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Problem Description / Maelezo ya Tatizo</label>
                         <textarea id="tech-msg" required placeholder="Describe the technical issue faced by the manager... / Eleza tatizo la kiufundi la duka..." class="w-full p-4 bg-gray-50 rounded-xl h-32 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-tzblack text-sm"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-tzblack hover:bg-gray-800 transition text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                    <button type="submit" class="w-full bg-tzblack hover:bg-gray-800 transition text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 active:scale-[0.98]">
                         <i class="fas fa-paper-plane"></i> Send to Admin / Tuma kwa Wasimamizi Wakuu
                     </button>
                 </form>
@@ -297,20 +321,47 @@
         </div>
     </main>
 
+    <!-- Custom Alert Overlay (To replace alert) -->
+    <div id="custom-alert-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl relative">
+            <div id="custom-alert-icon" class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl mb-4 mx-auto">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 id="custom-alert-title" class="text-lg font-black uppercase mb-2">Notification</h3>
+            <p id="custom-alert-msg" class="text-xs text-gray-500 mb-6">Message goes here...</p>
+            <button onclick="closeCustomAlert()" class="w-full bg-tzblack text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-gray-800 transition">OK</button>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Overlay (To replace confirm) -->
+    <div id="custom-confirm-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl relative">
+            <div class="w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl mb-4 mx-auto">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 id="custom-confirm-title" class="text-lg font-black uppercase mb-2">Are you sure?</h3>
+            <p id="custom-confirm-msg" class="text-xs text-gray-500 mb-6">Confirmation request message...</p>
+            <div class="flex gap-3">
+                <button onclick="closeCustomConfirm(false)" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-gray-200 transition">Cancel</button>
+                <button onclick="closeCustomConfirm(true)" class="flex-1 bg-tzgreen text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-green-600 transition">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Discount -->
-    <div id="discount-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative shadow-2xl transform transition-all">
+    <div id="discount-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 md:p-8 relative shadow-2xl">
             <button onclick="closeDiscountModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
             
             <div class="w-12 h-12 bg-yellow-100 text-tzyellow rounded-xl flex items-center justify-center text-xl mb-4">
                 <i class="fas fa-tags"></i>
             </div>
-            <h3 class="text-xl font-black uppercase mb-2">Apply a Discount / Weka Punguzo</h3>
-            <p class="text-xs text-gray-500 mb-6">Request a commercial discount for / Omba punguzo la bei kwa ajili ya: <span id="discount-shop-name" class="font-bold text-black"></span></p>
+            <h3 class="text-lg md:text-xl font-black uppercase mb-2">Apply a Discount / Weka Punguzo</h3>
+            <p class="text-xs text-gray-500 mb-6">Request a commercial discount for: <span id="discount-shop-name" class="font-bold text-black"></span></p>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Discount Percentage (%) / Asilimia ya Punguzo (%)</label>
+                    <label class="block text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Discount Percentage (%) / Asilimia</label>
                     <input type="number" id="discount-val" placeholder="Ex: 10" min="1" max="100" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-tzyellow font-bold text-lg">
                 </div>
                 <button onclick="saveDiscount()" class="w-full bg-tzyellow hover:bg-yellow-500 text-tzblack py-4 rounded-xl font-black uppercase tracking-widest text-xs transition">
@@ -322,15 +373,15 @@
 
     <!-- Secure Agent Access (Auth Overlay) -->
     <div id="access-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 transition-all">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-tzblack p-8 text-center relative overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="bg-tzblack p-6 md:p-8 text-center relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-tzyellow/20 rounded-full blur-xl"></div>
                 <i class="fas fa-user-tie text-4xl text-tzyellow mb-3"></i>
                 <h3 class="text-2xl font-black uppercase text-white tracking-wide">Agent Portal / Eneo la Wakala</h3>
                 <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">Mlimani City Secure Access / Ufikiaji Salama</p>
             </div>
             
-            <div class="p-8 space-y-6">
+            <div class="p-6 md:p-8 space-y-6">
                 <!-- Tabs Selector -->
                 <div class="bg-gray-100 p-1 rounded-xl flex gap-1 mb-2">
                     <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-tzblack shadow-sm transition">Login / Ingia</button>
@@ -380,8 +431,8 @@
     </div>
 
     <!-- Modal Shop Details -->
-    <div id="shop-details-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative shadow-2xl transform transition-all">
+    <div id="shop-details-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button onclick="closeShopDetailsModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
             
             <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl mb-4">
@@ -412,7 +463,7 @@
                 </div>
                 <div class="pt-4 border-t border-gray-100">
                     <p class="text-[10px] font-black uppercase text-gray-500 mb-2 tracking-widest">Owner ID / Namba ya Mmiliki</p>
-                    <span id="details-owner-id" class="text-xs font-mono text-gray-600"></span>
+                    <span id="details-owner-id" class="text-xs font-mono text-gray-600 break-all"></span>
                 </div>
             </div>
         </div>
@@ -432,6 +483,66 @@
             initCloud();
             await verifyAgentAccess();
         };
+
+        // --- CUSTOM ALERT & CONFIRM DIALOG SYSTEM ---
+        let activeConfirmCallback = null;
+        
+        function showCustomAlert(title, message, type = 'success') {
+            const modal = document.getElementById('custom-alert-modal');
+            const iconContainer = document.getElementById('custom-alert-icon');
+            const titleEl = document.getElementById('custom-alert-title');
+            const msgEl = document.getElementById('custom-alert-msg');
+            
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            
+            if (type === 'error') {
+                iconContainer.className = "w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl mb-4 mx-auto";
+                iconContainer.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            } else if (type === 'warning') {
+                iconContainer.className = "w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl mb-4 mx-auto";
+                iconContainer.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            } else {
+                iconContainer.className = "w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl mb-4 mx-auto";
+                iconContainer.innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('custom-alert-modal').classList.add('hidden');
+        }
+
+        function showCustomConfirm(title, message, callback) {
+            const modal = document.getElementById('custom-confirm-modal');
+            document.getElementById('custom-confirm-title').innerText = title;
+            document.getElementById('custom-confirm-msg').innerText = message;
+            activeConfirmCallback = callback;
+            modal.classList.remove('hidden');
+        }
+
+        function closeCustomConfirm(confirmed) {
+            document.getElementById('custom-confirm-modal').classList.add('hidden');
+            if (confirmed && activeConfirmCallback) {
+                activeConfirmCallback();
+            }
+            activeConfirmCallback = null;
+        }
+
+        // --- MOBILE SIDEBAR DRAWER CONTROLLER ---
+        function toggleSidebar(open) {
+            const sidebar = document.getElementById('app-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            if (open) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
 
         let authMode = 'login';
         function switchAuthTab(mode) {
@@ -459,7 +570,6 @@
             
             if (user) {
                 const role = user.user_metadata?.role;
-                // Allow specific admin email OR anyone with 'agent' role
                 if (role !== 'agent' && user.email !== 'banikimukishijimmy@gmail.com') {
                     await sb.auth.signOut();
                     window.location.href = 'boutiques.html';
@@ -481,7 +591,7 @@
                             currentUser = session.user;
                             finalizeLogin(currentUser.email);
                         } else {
-                            alert("Access Denied: This account is not authorized as an agent. / Ufikiaji Umekataliwa.");
+                            showCustomAlert("Access Denied", "This account is not authorized as an agent. / Ufikiaji Umekataliwa.", "error");
                             sb.auth.signOut();
                             window.location.href = 'boutiques.html';
                         }
@@ -500,20 +610,20 @@
         // --- AUTHENTICATION ---
         async function handleLogin(e) {
             e.preventDefault();
-            if (!sb) return alert("Cloud system is unavailable. / Mfumo haupatikani kwa sasa.");
+            if (!sb) return showCustomAlert("System Error", "Cloud system is unavailable. / Mfumo haupatikani kwa sasa.", "error");
             
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('btn-login');
             
-            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Connecting... / Inaingia...`;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Connecting...`;
             btn.disabled = true;
 
             try {
                 const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
             } catch (err) {
-                alert("Login Error / Kosa la kuingia: " + err.message);
+                showCustomAlert("Login Error", "Kosa la kuingia: " + err.message, "error");
                 btn.innerHTML = `Login / Ingia`;
                 btn.disabled = false;
             }
@@ -537,10 +647,10 @@
                     options: { data: { role: 'agent' } }
                 });
                 if (error) throw error;
-                alert("Account created successfully! You can now log in. / Akaunti imetengenezwa! Sasa unaweza kuingia.");
+                showCustomAlert("Success", "Account created successfully! You can now log in. / Akaunti imetengenezwa! Sasa unaweza kuingia.", "success");
                 switchAuthTab('login');
             } catch (err) {
-                alert("Registration Error: " + err.message);
+                showCustomAlert("Registration Error", err.message, "error");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = "Create Account / Fungua Akaunti";
@@ -565,11 +675,10 @@
         }
 
         // --- AGENT ACTIONS ---
-
         async function saveAgentPromoCode() {
             if (!currentUser) return;
             const code = document.getElementById('agent-promo-code').value.trim().toUpperCase();
-            if (!code) return alert("Please enter a valid code. / Tafadhali ingiza code sahihi.");
+            if (!code) return showCustomAlert("Invalid Entry", "Please enter a valid code. / Tafadhali ingiza code sahihi.", "warning");
 
             localStorage.setItem(`agent_promo_${currentUser.id}`, code);
 
@@ -581,10 +690,10 @@
                     updated_at: new Date().toISOString()
                 });
                 if (error) throw error;
-                alert("Your promo code is now active on the network! / Code yako imeamilishwa!");
+                showCustomAlert("Success", "Your promo code is now active on the network! / Code yako imeamilishwa!", "success");
             } catch (err) {
-                console.error("Agent Profile Cloud Error (Missing Table?):", err.message);
-                alert("Promo Code saved locally! Note: Custom 'agent_profiles' table is not created in Supabase database yet.");
+                console.error("Agent Profile Cloud Error:", err.message);
+                showCustomAlert("Saved Locally", "Promo Code saved locally! Note: Custom 'agent_profiles' table is not created in Supabase database yet.", "warning");
             }
         }
 
@@ -616,14 +725,12 @@
             const btn = document.getElementById('btn-create-mgr');
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Deploying... / Inatengeneza...`;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Deploying...`;
 
             try {
-                // 1. Create Auth Account
                 const { data: authData, error: authErr } = await createAccountSilent(email, password, { role: 'gerant' });
                 if (authErr) throw authErr;
 
-                // 2. Create boutique configuration
                 const managerId = authData.user.id;
                 const shopId = 'shop_' + managerId.slice(0, 12);
                 
@@ -642,20 +749,25 @@
                 });
                 if (configErr) throw configErr;
 
-                alert(`Success! Manager ${email} was created and shop "${shopName}" is online! / Duka liko tayari!`);
+                showCustomAlert("Registration Success", `Manager ${email} was created and shop "${shopName}" is online!`, "success");
                 
-                // WhatsApp notification message
-                const msg = encodeURIComponent(`Hello! Your Mlimani City shop "${shopName}" has been successfully set up.\n\nHere are your login credentials:\n📧 Email: ${email}\n🔑 Password: ${password}\n\nAccess your manager dashboard here: https://legrandart.org/dashboard.html`);
+                const msg = encodeURIComponent(`Hello! Your Mlimani City shop "${shopName}" has been successfully set up.\n\nHere are your login credentials:\n📧 Email: ${email}\n🔑 Password: ${password}\n\nAccess your dashboard here: https://legrandart.org/dashboard.html`);
                 const waLink = `https://wa.me/${phone.replace(/\D/g, '')}?text=${msg}`;
                 
-                if (confirm("Would you like to send the login details to the manager via WhatsApp? / Je, utume maelezo ya kuingia kupitia WhatsApp?")) {
-                    window.open(waLink, '_blank');
-                }
+                showCustomConfirm(
+                    "WhatsApp Notification", 
+                    "Would you like to send the login details to the manager via WhatsApp? / Je, utume maelezo ya kuingia kupitia WhatsApp?",
+                    () => { window.open(waLink, '_blank'); }
+                );
 
                 e.target.reset();
                 loadData();
-            } catch (err) { alert("Deployment Error / Hitilafu ya Usajili: " + err.message); }
-            finally { btn.disabled = false; btn.innerText = "Deploy Shop / Weka Duka Mtandaoni"; }
+            } catch (err) { 
+                showCustomAlert("Deployment Error", "Hitilafu ya Usajili: " + err.message, "error"); 
+            } finally { 
+                btn.disabled = false; 
+                btn.innerText = "Deploy Shop / Weka Duka Mtandaoni"; 
+            }
         }
 
         async function handleCreateClient(e) {
@@ -666,25 +778,30 @@
             const btn = document.getElementById('btn-create-cli');
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Saving... / Inasajili...`;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Saving...`;
 
             try {
                 const { error: authErr } = await createAccountSilent(email, password, { role: 'client' });
                 if (authErr) throw authErr;
 
-                alert(`Success! Customer account successfully registered for ${email}. / Akaunti ya mteja imesajiliwa.`);
+                showCustomAlert("Registered", `Success! Customer account successfully registered for ${email}.`, "success");
 
-                // WhatsApp credentials notification
                 const msg = encodeURIComponent(`Hello! Your client account has been successfully set up on Mlimani City.\n\nHere are your access details:\n📧 Email: ${email}\n🔑 Password: ${password}\n\nStart shopping here: https://legrandart.org/boutiques.html`);
                 const waLink = `https://wa.me/${phone.replace(/\D/g, '')}?text=${msg}`;
                 
-                if (confirm("Send credentials to customer via WhatsApp? / Je, utume maelezo ya akaunti kupitia WhatsApp?")) {
-                    window.open(waLink, '_blank');
-                }
+                showCustomConfirm(
+                    "Send Access Credentials", 
+                    "Send credentials to customer via WhatsApp? / Je, utume maelezo ya akaunti kupitia WhatsApp?",
+                    () => { window.open(waLink, '_blank'); }
+                );
 
                 e.target.reset();
-            } catch (err) { alert("Error / Hitilafu: " + err.message); }
-            finally { btn.disabled = false; btn.innerText = "Register Customer / Sajili Mteja"; }
+            } catch (err) { 
+                showCustomAlert("Error / Hitilafu", err.message, "error"); 
+            } finally { 
+                btn.disabled = false; 
+                btn.innerText = "Register Customer / Sajili Mteja"; 
+            }
         }
 
         // --- DATA FETCHING & RENDERING ---
@@ -692,11 +809,11 @@
             if (!sb) return;
 
             try {
-                // 1. Fetch Shops
+                // Fetch Shops
                 const { data: shopsData, error: shopsErr } = await sb.from('boutique_config').select('*').order('created_at', { ascending: false });
                 if (!shopsErr && shopsData) allShops = shopsData;
 
-                // 2. Fetch Orders
+                // Fetch Orders
                 const { data: ordersData, error: ordersErr } = await sb.from('boutique_orders').select('*').order('created_at', { ascending: false });
                 if (!ordersErr && ordersData) allOrders = ordersData;
 
@@ -718,7 +835,6 @@
 
         function renderOverview() {
             const activeShopsCount = allShops.length;
-            
             const uniqueOwners = new Set(allShops.filter(s => s.owner_id).map(s => s.owner_id));
             const clientsCount = uniqueOwners.size > 0 ? uniqueOwners.size : (activeShopsCount > 0 ? activeShopsCount : 0);
 
@@ -757,8 +873,8 @@
 
         function renderClients() {
             const tbody = document.getElementById('clients-list-body');
-            
             const clientsMap = {};
+            
             allShops.forEach(shop => {
                 const oid = shop.owner_id || 'Unknown Manager / Msimamizi Asiyejulikana';
                 if(!clientsMap[oid]) clientsMap[oid] = { id: oid, shopCount: 0 };
@@ -802,25 +918,25 @@
 
             tbody.innerHTML = allShops.map(shop => `
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 cursor-pointer" onclick="openShopDetailsModal('${shop.shop_id}')" title="Click for details">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+                            <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 shrink-0">
                                 ${shop.logo_url ? `<img src="${shop.logo_url}" class="w-full h-full object-cover">` : `<i class="fas fa-store text-gray-400"></i>`}
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold text-gray-900">${shop.name}</h4>
-                                <p class="text-[10px] text-gray-400">${shop.slogan || 'No slogan / Hakuna slogan'}</p>
+                                <h4 class="text-sm font-bold text-gray-900 hover:text-tzgreen hover:underline transition">${shop.name}</h4>
+                                <p class="text-[10px] text-gray-400 line-clamp-1">${shop.slogan || 'No slogan'}</p>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 text-xs font-semibold text-gray-500">${shop.default_category || 'General / Jumla'}</td>
                     <td class="px-6 py-4 text-xs font-bold text-gray-900">${shop.currency || 'TZS'}</td>
-                    <td class="px-6 py-4 text-right space-x-2">
-                        <button onclick="openDiscount('${shop.name}')" class="px-3 py-1.5 bg-yellow-100 text-yellow-700 hover:bg-yellow-200 rounded-lg text-[10px] font-black uppercase transition tooltip-trigger">
-                            <i class="fas fa-tag"></i> Discount / Punguzo
+                    <td class="px-6 py-4 text-right space-y-2 md:space-y-0 md:space-x-2">
+                        <button onclick="openDiscount('${shop.name}')" class="w-full md:w-auto px-3 py-1.5 bg-yellow-100 text-yellow-700 hover:bg-yellow-200 rounded-lg text-[10px] font-black uppercase transition inline-flex items-center justify-center gap-1">
+                            <i class="fas fa-tag"></i> Discount
                         </button>
-                        <button onclick="jumpToTechSupport('${shop.name}')" class="px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-[10px] font-black uppercase transition">
-                            <i class="fas fa-headset"></i> Support / Msaada
+                        <button onclick="jumpToTechSupport('${shop.name}')" class="w-full md:w-auto px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-[10px] font-black uppercase transition inline-flex items-center justify-center gap-1">
+                            <i class="fas fa-headset"></i> Support
                         </button>
                     </td>
                 </tr>
@@ -838,7 +954,6 @@
         function generateNotifications() {
             const list = document.getElementById('notification-list');
             const count = document.getElementById('notification-count');
-            
             const recentOrders = allOrders.slice(0, 5);
             
             if (recentOrders.length > 0) {
@@ -858,7 +973,7 @@
                                 <p class="text-[10px] text-gray-500 mt-0.5">Order ${order.id} of value ${formatMoney(order.total)}.</p>
                             </div>
                         </div>
-                        <p class="text-[8px] text-right uppercase tracking-widest text-gray-400 mt-2">${order.date || 'Recently / Sasa hivi'}</p>
+                        <p class="text-[8px] text-right uppercase tracking-widest text-gray-400 mt-2">${order.created_at ? new Date(order.created_at).toLocaleDateString() : 'Recently'}</p>
                     </div>
                     `;
                 }).join('');
@@ -882,7 +997,12 @@
             });
             document.getElementById('section-' + id).classList.remove('hidden');
             document.getElementById('nav-' + id).classList.add('active');
-            document.getElementById('section-title').innerText = id === 'tools' ? "Tools & Creation / Zana za Kazi" : document.getElementById('nav-' + id).innerText.trim();
+            
+            const textContent = id === 'tools' ? "Tools & Creation" : document.getElementById('nav-' + id).innerText.trim();
+            document.getElementById('section-title').innerText = textContent;
+            
+            // Auto close mobile drawer on section change
+            toggleSidebar(false);
         }
 
         function jumpToTechSupport(shopName) {
@@ -919,7 +1039,7 @@
 
         function saveDiscount() {
             const val = document.getElementById('discount-val').value;
-            if (!val || val <= 0) return alert("Please enter a valid percentage. / Weka asilimia sahihi.");
+            if (!val || val <= 0) return showCustomAlert("Invalid Input", "Please enter a valid percentage. / Weka asilimia sahihi.", "warning");
             
             const msg = `*DISCOUNT REQUEST / OMBI LA PUNGUZO*\n\nShop: ${currentDiscountTarget}\nRequested Discount: ${val}%\nAgent: ${document.getElementById('agent-name').innerText}`;
             window.open(`https://wa.me/255712345678?text=${encodeURIComponent(msg)}`, '_blank');
@@ -931,7 +1051,7 @@
             e.preventDefault();
             const target = document.getElementById('tech-target').value;
             const msg = document.getElementById('tech-msg').value;
-            if (!target) return alert("Please select a shop. / Chagua duka.");
+            if (!target) return showCustomAlert("Required Field", "Please select a shop. / Chagua duka.", "warning");
 
             const wa = `*MLIMANI CITY AGENT SUPPORT*\n\nAgent: ${document.getElementById('agent-name').innerText}\nAffected Shop: ${target}\nIssue: ${msg}`;
             window.open(`https://wa.me/255712345678?text=${encodeURIComponent(wa)}`, '_blank');
@@ -972,6 +1092,45 @@
 
         function closeShopDetailsModal() {
             document.getElementById('shop-details-modal').classList.add('hidden');
+        }
+
+        // --- PDF GENERATOR UTILITY ---
+        function exportOrdersPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(16);
+                doc.text("MLIMANI CITY - SALES AGENT PORTAL", 14, 20);
+                
+                doc.setFontSize(10);
+                doc.setFont("Helvetica", "normal");
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 26);
+                doc.text(`Agent ID: ${currentUser ? currentUser.email : 'Unknown'}`, 14, 32);
+                
+                const tableData = allOrders.map(order => [
+                    order.id || '-',
+                    getShopNameById(order.shop_id),
+                    formatMoney(order.total),
+                    order.promo_code || '-',
+                    order.status || '-'
+                ]);
+
+                doc.autoTable({
+                    startY: 38,
+                    head: [['Order ID', 'Shop Name', 'Amount', 'Promo Code', 'Status']],
+                    body: tableData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [30, 181, 58] } // Mlimani Green
+                });
+                
+                doc.save(`mlimani-agent-orders-${new Date().toISOString().split('T')[0]}.pdf`);
+                showCustomAlert("Export Success", "Your activity report has been compiled and downloaded as PDF.", "success");
+            } catch (e) {
+                console.error("PDF Compilation Failed:", e);
+                showCustomAlert("Compilation Failed", "Unable to assemble PDF. Please make sure the table has active data.", "error");
+            }
         }
     </script>
 </body>

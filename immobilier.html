@@ -6,6 +6,8 @@
     <title>Banikilabs - L'Immobilier de Rêve en RDC</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,14 +29,14 @@
                             50: '#f0f7ff',
                             100: '#e0effe',
                             200: '#bae0fd',
-                            500: '#0084ff', // Bleu azur RDC
+                            500: '#0084ff',
                             600: '#0066cc',
                             700: '#004c99',
                             800: '#003366',
                             900: '#0c2340',
                         },
                         accent: {
-                            500: '#FFD700', // Or royal
+                            500: '#FFD700',
                             600: '#e6c200',
                         }
                     }
@@ -60,7 +62,6 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -100,9 +101,8 @@
     <header class="sticky top-0 z-40 w-full transition-all duration-300 glassmorphism border-b border-slate-200/80 dark:border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="flex items-center gap-3 group">
+                    <a href="#" class="flex items-center gap-3 group">
                         <div class="w-11 h-11 bg-accent-500 flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110">
                             <span class="text-black font-black text-lg">BL</span>
                         </div>
@@ -115,7 +115,6 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links - Desktop -->
                 <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
                     <a href="#catalogue" class="hover:text-brand-500 transition-colors">Propriétés</a>
                     <a href="#demandes-clients" class="hover:text-brand-500 transition-colors">Demandes de Biens</a>
@@ -125,23 +124,16 @@
                     <a href="#calculator" class="hover:text-brand-500 transition-colors">Simulateur Budget</a>
                 </nav>
 
-                <!-- Action Controls -->
                 <div class="flex items-center gap-3">
-                    <!-- Light/Dark Mode Toggle -->
                     <button id="themeToggleBtn" onclick="toggleTheme()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle Theme">
                         <i id="themeIcon" class="fa-solid fa-moon text-slate-600 dark:text-slate-300"></i>
                     </button>
-
-                    <!-- Authentication / User Area -->
                     <div id="authHeaderControl" class="flex items-center gap-2">
-                        <!-- Default state: Connexion Button -->
                         <button onclick="openAuthModal()" class="flex items-center gap-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
                             <i class="fa-solid fa-user-plus"></i>
                             <span>Mon Espace / Compte</span>
                         </button>
                     </div>
-
-                    <!-- Mobile Menu Trigger -->
                     <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                         <i id="mobileMenuIcon" class="fa-solid fa-bars text-lg"></i>
                     </button>
@@ -149,7 +141,6 @@
             </div>
         </div>
 
-        <!-- Mobile Drawer -->
         <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-6 space-y-4">
             <a href="#catalogue" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500">Chercher un bien</a>
             <a href="#demandes-clients" onclick="toggleMobileMenu()" class="block text-lg font-medium hover:text-brand-500">Demandes de Biens</a>
@@ -177,10 +168,10 @@
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="dashUsername">Utilisateur Baniki</h3>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-brand-100 text-brand-800 dark:bg-brand-950/50 dark:text-brand-400" id="dashRoleBadge">Chercheur</span>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="dashUsername">Utilisateur</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-brand-100 text-brand-800 dark:bg-brand-950/50 dark:text-brand-400" id="dashRoleBadge">Rôle</span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400" id="dashUserEmail">email@exemple.com</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="dashUserEmail">email</p>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
@@ -190,13 +181,15 @@
                         <button onclick="openRequestModal()" id="dashPublishRequestBtn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5">
                             <i class="fa-solid fa-bullhorn"></i> Demander une Propriété
                         </button>
+                        <button onclick="openProfileModal()" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs px-4 py-2.5 rounded-xl transition-all border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-gear"></i> Éditer Profil
+                        </button>
                         <button onclick="logoutUser()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
                             Déconnexion
                         </button>
                     </div>
                 </div>
 
-                <!-- Custom Dashboard statistics depending on user role -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                     <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
                         <span class="block text-xs text-slate-400 font-bold uppercase tracking-wider">Mes Annonces</span>
@@ -213,9 +206,18 @@
                     <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
                         <span class="block text-xs text-slate-400 font-bold uppercase tracking-wider">Statut Compte</span>
                         <span class="block text-xs font-extrabold text-emerald-500 mt-2 flex items-center gap-1">
-                            <i class="fa-solid fa-circle-check"></i> Actif (Vérifié)
+                            <i class="fa-solid fa-circle-check"></i> Actif
                         </span>
                     </div>
+                </div>
+
+                <!-- GESTION DES ANNONCES (AJOUTÉ) -->
+                <div id="dashManagementSection" class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6 hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-bold font-outfit text-slate-900 dark:text-white">Gérer mes annonces</h4>
+                        <button onclick="toggleUserListings()" id="btnToggleUserListings" class="text-xs font-bold text-brand-500 hover:underline uppercase tracking-wider">Voir la liste</button>
+                    </div>
+                    <div id="userListingsList" class="hidden space-y-3"></div>
                 </div>
             </div>
         </div>
@@ -223,9 +225,7 @@
 
     <!-- HERO SECTION -->
     <section class="relative bg-gradient-to-b from-brand-900 via-brand-850 to-slate-900 text-white py-16 md:py-24 overflow-hidden">
-        <!-- Abstract Background Glows -->
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,132,255,0.15),transparent_45%)]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,215,0,0.05),transparent_40%)]"></div>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-12">
@@ -235,12 +235,9 @@
                 <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight font-outfit">
                     Le Réseau Immobilier Intelligent de la <span class="bg-gradient-to-r from-brand-400 via-brand-200 to-white bg-clip-text text-transparent">RDC</span>
                 </h1>
-                <p class="mt-4 text-sm md:text-base text-slate-300 font-light max-w-2xl mx-auto">
-                    Que vous soyez Propriétaire, Commissionnaire agréé, Agence de renom ou à la recherche de votre maison idéale, connectez-vous en toute sérénité.
-                </p>
             </div>
 
-            <!-- FAST COMPREHENSIVE SEARCH PANEL -->
+            <!-- SEARCH PANEL -->
             <div class="max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-2xl shadow-black/40 border border-slate-100/10 text-slate-900 dark:text-white">
                 <div class="flex flex-wrap gap-2 mb-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                     <button onclick="setSearchType('louer')" id="btnTabLouer" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
@@ -255,15 +252,13 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                    <!-- Keyword Search -->
                     <div class="md:col-span-12 lg:col-span-3">
                         <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Recherche libre</label>
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="filterKeyword" placeholder="Ex: Meublé, piscine..." class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-700 dark:text-white">
+                            <input type="text" id="filterKeyword" placeholder="Ex: Meublé..." class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-700 dark:text-white">
                         </div>
                     </div>
-                    <!-- City Selector -->
                     <div class="md:col-span-4 lg:col-span-3">
                         <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Ville</label>
                         <div class="relative">
@@ -278,44 +273,36 @@
                             </select>
                         </div>
                     </div>
-
-                    <!-- Type Selector -->
                     <div class="md:col-span-4 lg:col-span-2">
-                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Type de bien</label>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Type</label>
                         <div class="relative">
                             <i class="fa-solid fa-building absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <select id="filterType" class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none appearance-none cursor-pointer text-slate-700 dark:text-white">
                                 <option value="all">Tous types</option>
                                 <option value="Appartement">Appartement</option>
                                 <option value="Maison">Maison</option>
-                                <option value="Villa">Villa / Duplex</option>
-                                <option value="Parcelle">Parcelle / Terrain</option>
-                                <option value="Bureau">Bureau / Commerce</option>
+                                <option value="Villa">Villa</option>
+                                <option value="Parcelle">Parcelle</option>
+                                <option value="Bureau">Bureau</option>
                             </select>
                         </div>
                     </div>
-
-                    <!-- Price Range Selector -->
                     <div class="md:col-span-4 lg:col-span-2">
-                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Budget Max ($)</label>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Max ($)</label>
                         <div class="relative">
                             <i class="fa-solid fa-wallet absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <select id="filterPrice" class="w-full bg-slate-100 dark:bg-slate-800 border-0 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none appearance-none cursor-pointer text-slate-700 dark:text-white">
                                 <option value="all">Illimité</option>
-                                <option value="500">Moins de 500 $</option>
-                                <option value="1500">Moins de 1 500 $</option>
-                                <option value="5000">Moins de 5 000 $</option>
-                                <option value="100000">Moins de 100 000 $</option>
-                                <option value="500000">Moins de 500 000 $</option>
+                                <option value="500">Moins de 500</option>
+                                <option value="1500">Moins de 1 500</option>
+                                <option value="5000">Moins de 5 000</option>
+                                <option value="100000">Moins de 100 000</option>
                             </select>
                         </div>
                     </div>
-
-                    <!-- Trigger Search -->
                     <div class="md:col-span-12 lg:col-span-2">
                         <button onclick="applyFilters()" class="w-full bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-filter"></i>
-                            <span>Filtrer</span>
+                            <i class="fa-solid fa-filter"></i> Filtrer
                         </button>
                     </div>
                 </div>
@@ -323,10 +310,8 @@
         </div>
     </section>
 
-    <!-- SPLIT CONTENT FEED: listings versus demands -->
+    <!-- CONTENT FEED -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="catalogue">
-        
-        <!-- Toggle main feed between listings (Offres) and seeker requests (Demandes) -->
         <div class="flex items-center justify-center mb-10 border-b border-slate-200 dark:border-slate-800 pb-5 gap-4">
             <button onclick="switchFeedTab('listings')" id="tabFeedListings" class="px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border-2 border-brand-500 bg-brand-500 text-white shadow-lg shadow-brand-500/15 flex items-center gap-2 transition-all">
                 <i class="fa-solid fa-house-circle-check"></i>
@@ -334,53 +319,40 @@
             </button>
             <button onclick="switchFeedTab('demands')" id="tabFeedDemands" class="px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all">
                 <i class="fa-solid fa-hand-holding-heart"></i>
-                <span>Demandes de Biens (${demandsCount})</span>
+                <span id="demandsCounterTitle">Demandes de Biens (0)</span>
             </button>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            
-            <!-- LEFT LISTINGS AREA (62%) -->
             <div class="w-full lg:w-[62%]">
-                
-                <!-- Listings View Container -->
                 <div id="listingsFeedSection" class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit">Annonces Recommandées</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400" id="resultsCount">Affichage de propriétés trouvées</p>
+                            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit">Annonces</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="resultsCount">Chargement...</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <select id="sortSelector" onchange="sortProperties()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none text-slate-700 dark:text-white">
-                                <option value="featured">En Vedette</option>
+                                <option value="featured">Récents</option>
                                 <option value="priceAsc">Prix croissant</option>
                                 <option value="priceDesc">Prix décroissant</option>
                             </select>
                         </div>
                     </div>
-
-                    <div id="listingsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Listings cards injected dynamically -->
-                    </div>
+                    <div id="listingsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 </div>
 
-                <!-- Demands View Container (Initially Hidden) -->
                 <div id="demandsFeedSection" class="hidden space-y-6">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit">Ils cherchent en RDC <span class="text-accent-500">(Demandes)</span></h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Propriétaires & Agences : contactez ces clients directement pour leur proposer vos biens !</p>
+                            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit">Ils cherchent en RDC</h2>
                         </div>
                         <button onclick="openRequestModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow">
-                            <i class="fa-solid fa-plus-circle"></i> Demander un bien
+                            <i class="fa-solid fa-plus-circle"></i> Publier Demande
                         </button>
                     </div>
-
-                    <div id="demandsGrid" class="space-y-4">
-                        <!-- Seeker demand cards injected dynamically -->
-                    </div>
+                    <div id="demandsGrid" class="space-y-4"></div>
                 </div>
-
             </div>
 
             <!-- RIGHT INTERACTIVE MAP & EXTRA VALUE AREA (38%) -->
@@ -392,53 +364,42 @@
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                             <h3 class="font-bold text-sm tracking-wide uppercase text-slate-600 dark:text-slate-300">Géo-localisation RDC</h3>
                         </div>
-                        <span class="text-xs font-medium text-brand-500">Carte interactive</span>
                     </div>
-
-                    <!-- Canvas/SVG Custom Map Simulation representing regions of Congo -->
                     <div class="relative w-full h-64 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center overflow-hidden">
                         <svg class="absolute inset-0 w-full h-full text-slate-300/60 dark:text-slate-800/65 transition-all p-4" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M50,40 Q65,10 90,20 T140,25 T180,60 T150,110 T160,160 T110,180 T70,140 T30,120 T20,70 Z" />
                         </svg>
 
-                        <!-- Kinshasa dot -->
+                        <!-- Map dots -->
                         <button onclick="zoomToCity('Kinshasa')" class="absolute top-[110px] left-[45px] group focus:outline-none">
                             <span class="absolute inline-flex h-5 w-5 rounded-full bg-brand-500/30 animate-ping"></span>
                             <span class="relative block w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white"></span>
-                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Kinshasa</span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold opacity-80 group-hover:opacity-100">Kinshasa</span>
                         </button>
-
-                        <!-- Lubumbashi dot -->
                         <button onclick="zoomToCity('Lubumbashi')" class="absolute top-[165px] left-[140px] group focus:outline-none">
                             <span class="absolute inline-flex h-5 w-5 rounded-full bg-brand-500/30 animate-ping"></span>
                             <span class="relative block w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white"></span>
-                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Lubumbashi</span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold opacity-80 group-hover:opacity-100">Lubumbashi</span>
                         </button>
-
-                        <!-- Goma dot -->
                         <button onclick="zoomToCity('Goma')" class="absolute top-[65px] left-[155px] group focus:outline-none">
                             <span class="absolute inline-flex h-5 w-5 rounded-full bg-red-500/30 animate-ping"></span>
                             <span class="relative block w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white"></span>
-                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap opacity-80 group-hover:opacity-100 transition-all">Goma</span>
+                            <span class="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1.5 py-0.5 rounded font-bold opacity-80 group-hover:opacity-100">Goma</span>
                         </button>
-
-                        <div class="absolute bottom-2 left-2 right-2 bg-white/95 dark:bg-slate-900/95 p-2 rounded-xl border border-slate-100 dark:border-slate-800 text-[10px] text-center text-slate-500 dark:text-slate-400 shadow">
-                            Cliquez sur une province pour filtrer instantanément.
-                        </div>
                     </div>
                 </div>
 
-                <!-- PREFABRICATED HOUSES & CONCESSIONS PROMO -->
+                <!-- PREFABRICATED HOUSES -->
                 <div class="bg-gradient-to-br from-brand-900 to-slate-900 rounded-3xl p-6 text-white border border-slate-800 relative overflow-hidden shadow-2xl">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/10 rounded-full blur-2xl"></div>
                     <div class="relative z-10">
                         <span class="px-2.5 py-1 bg-accent-500 text-brand-950 text-[10px] rounded-lg font-bold tracking-wider uppercase">Baniki Services</span>
                         <h3 class="text-xl font-bold mt-3 mb-2 font-outfit">Constructions Préfabriquées</h3>
                         <p class="text-xs text-slate-300 mb-4 font-light leading-relaxed">
-                            Besoin d'une villa clé en main en RDC ? Commandez nos structures écologiques modulaires montées en 45 jours.
+                            Besoin d'une villa clé en main en RDC ? Commandez nos structures écologiques modulaires.
                         </p>
                         <button onclick="triggerPrefabricatedInquiry()" class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-brand-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-transform active:scale-95">
-                            <span>Voir le catalogue</span>
+                            <span>Demander un devis</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -446,87 +407,6 @@
             </div>
         </div>
     </main>
-
-    <!-- CHATBOT BANIKI AI ASSISTANT SECTION -->
-    <section id="ai-assistant" class="bg-gradient-to-tr from-brand-950 to-slate-900 text-slate-200 py-16 border-y border-brand-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <div class="lg:col-span-5 space-y-6">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-500 text-black text-xs font-black uppercase rounded-lg tracking-wider shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                        <i class="fa-solid fa-microchip"></i> Agent Intelligent RDC
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-black leading-tight font-outfit text-accent-500">
-                        Trouvez votre maison avec <span class="text-white">Baniki AI</span>
-                    </h2>
-                    <p class="text-slate-300 font-light leading-relaxed text-xs md:text-sm">
-                        Baniki AI comprend vos phrases naturelles. Écrivez-lui directement "Je cherche un appartement meublé à Gombe pour 1200$" ou "Quelles sont les demandes actives à Lubumbashi ?", il s'occupe de chercher pour vous !
-                    </p>
-                    
-                    <div class="space-y-2.5">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Commandes rapides :</p>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="sendChatMessage('Recherche appartement meublé à Gombe')" class="text-xs bg-slate-800/50 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all text-left">
-                                🏠 Appartement Gombe
-                            </button>
-                            <button onclick="sendChatMessage('Maison journalière à 100$')" class="text-xs bg-accent-500/10 hover:bg-accent-500/20 text-accent-500 px-3.5 py-2 rounded-xl border border-accent-500/30 transition-all text-left font-bold">
-                                📅 Location Journalière
-                            </button>
-                            <button onclick="sendChatMessage('Je cherche un terrain à Kintambo')" class="text-xs bg-slate-800/50 hover:bg-slate-800 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all text-left">
-                                🌍 Terrain Kintambo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Simulated iPhone Agent interface -->
-                <div class="lg:col-span-7 flex justify-center">
-                    <div class="w-full max-w-md bg-slate-900 rounded-[2.5rem] p-4 shadow-2xl border-4 border-slate-800 relative">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-5 bg-slate-800 rounded-b-xl z-20"></div>
-                        
-                        <div class="bg-slate-950 rounded-[2rem] overflow-hidden flex flex-col h-[480px]">
-                            <div class="bg-slate-900 px-4 pt-6 pb-4 border-b border-slate-800 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white text-lg">
-                                            <i class="fa-solid fa-robot"></i>
-                                        </div>
-                                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm">Baniki AI Agent</h4>
-                                        <p class="text-[10px] text-slate-400">En ligne • Intelligence Connectée</p>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">3.0v</span>
-                            </div>
-
-                            <div id="chatMessages" class="flex-grow overflow-y-auto p-4 space-y-3 scroll-smooth text-xs">
-                                <div class="flex gap-2.5 max-w-[85%]">
-                                    <div class="w-6 h-6 rounded-full bg-brand-500 flex-shrink-0 flex items-center justify-center text-[10px] text-white">
-                                        <i class="fa-solid fa-robot"></i>
-                                    </div>
-                                    <div class="bg-slate-900 rounded-2xl rounded-tl-none p-3 text-slate-200 leading-relaxed shadow-sm">
-                                        Bonjour ! Je suis l'intelligence artificielle de Baniki Labs. Demandez-moi de chercher des biens, de vérifier des prix ou d'explorer les demandes des locataires.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="p-3 bg-slate-900/50 border-t border-slate-800">
-                                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex gap-2">
-                                    <input type="text" id="chatInput" placeholder="Posez votre question à l'IA..." class="flex-1 bg-slate-950 border-0 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                                    <button type="submit" class="w-11 h-11 bg-brand-500 hover:bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform active:scale-95">
-                                        <i class="fa-solid fa-paper-plane text-sm"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
 
     <!-- INTERACTIVE ESTIMATION CALCULATOR -->
     <section id="calculator" class="py-16 bg-slate-100 dark:bg-slate-950 border-t border-slate-200/50 dark:border-slate-800/50">
@@ -622,10 +502,10 @@
                 <div>
                     <h4 class="font-bold text-sm tracking-widest uppercase text-slate-400 mb-4">Rôles de compte</h4>
                     <ul class="space-y-2 text-xs text-slate-300">
-                        <li><a href="compte-proprietaire.html" class="hover:underline">Compte Propriétaire</a></li>
-                        <li><a href="compte-commissionnaire.html" class="hover:underline">Compte Commissionnaire</a></li>
-                        <li><a href="compte-agence.html" class="hover:underline">Compte Agence Immobilière</a></li>
-                        <li><a href="compte-chercheur.html" class="hover:underline">Compte Chercheur de Maison</a></li>
+                        <li><a href="#" class="hover:underline">Compte Propriétaire</a></li>
+                        <li><a href="#" class="hover:underline">Compte Commissionnaire</a></li>
+                        <li><a href="#" class="hover:underline">Compte Agence Immobilière</a></li>
+                        <li><a href="#" class="hover:underline">Compte Chercheur de Maison</a></li>
                     </ul>
                 </div>
 
@@ -646,7 +526,7 @@
         </div>
     </footer>
 
-    <!-- USER AUTHENTICATION MODAL (REGISTER & LOGIN) -->
+    <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeAuthModal()">
@@ -656,55 +536,48 @@
 
             <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200/50 dark:border-slate-800">
                 <div class="p-6 md:p-8">
-                    <!-- Tab toggle between register & login -->
                     <div class="flex border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
                         <button onclick="setAuthTab('register')" id="tabAuthRegister" class="flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-brand-500 text-slate-900 dark:text-white">Créer mon Compte</button>
                         <button onclick="setAuthTab('login')" id="tabAuthLogin" class="flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600">Connexion</button>
                     </div>
 
-                    <!-- Register form -->
                     <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 text-xs">
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Nom complet / Nom d'agence</label>
-                            <input type="text" id="regName" required placeholder="Ex: Jean Mukendi ou Agence Congo Immo" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Nom / Agence</label>
+                            <input type="text" id="regName" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Adresse Email</label>
-                            <input type="email" id="regEmail" required placeholder="Ex: jean.m@example.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Email</label>
+                            <input type="email" id="regEmail" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Numéro WhatsApp (RDC)</label>
-                            <input type="text" id="regPhone" required placeholder="Ex: +243978415814" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de compte / Rôle</label>
-                            <select id="regRole" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none cursor-pointer">
-                                <option value="seeker">Chercheur de Maison (M'installer / Louer / Acheter)</option>
-                                <option value="owner">Propriétaire de bien (Lister mes propriétés privées)</option>
-                                <option value="commissioner">Commissionnaire / Courtier indépendant</option>
-                                <option value="agency">Agence Immobilière Professionnelle</option>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Rôle</label>
+                            <select id="regRole" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="Chercheur">Chercheur de Maison</option>
+                                <option value="Propriétaire">Propriétaire de bien</option>
+                                <option value="Commissionnaire">Commissionnaire</option>
+                                <option value="Agence">Agence Immobilière</option>
                             </select>
                         </div>
                         <div>
                             <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Mot de passe</label>
-                            <input type="password" id="regPassword" required placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <input type="password" id="regPassword" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
-                        <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md">
-                            Créer mon Compte Baniki
+                        <button type="submit" id="regBtn" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md">
+                            Créer mon Compte
                         </button>
                     </form>
 
-                    <!-- Login form (Initially Hidden) -->
                     <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-xs hidden">
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Adresse Email</label>
-                            <input type="email" id="loginEmail" required placeholder="jean.m@example.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Email</label>
+                            <input type="email" id="loginEmail" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Mot de passe</label>
-                            <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <input type="password" id="loginPassword" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
-                        <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md">
+                        <button type="submit" id="loginBtn" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md">
                             Se connecter
                         </button>
                     </form>
@@ -713,7 +586,162 @@
         </div>
     </div>
 
-    <!-- SEEKER REQUEST / DEMAND COMPONENT CREATOR MODAL -->
+    <!-- PROFILE EDIT MODAL -->
+    <div id="profileModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeProfileModal()">
+                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200/50 dark:border-slate-800">
+                <div class="p-6 md:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold font-outfit text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-user-pen text-brand-500"></i> Modifier mon profil
+                        </h3>
+                        <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+
+                    <form id="editProfileForm" onsubmit="handleProfileUpdate(event)" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Photo de profil</label>
+                            <div class="flex items-center gap-4">
+                                <div id="editProfileImagePreview" class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full border-2 border-brand-500 overflow-hidden shrink-0 flex items-center justify-center">
+                                    <i class="fa-solid fa-user text-slate-400 text-2xl"></i>
+                                </div>
+                                <input type="file" id="profileFileInput" accept="image/*" onchange="previewProfileImage(this)" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer w-full">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Lien direct de l'image (Optionnel)</label>
+                            <input type="text" id="editProfileAvatarUrl" placeholder="https://..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Nom d'utilisateur</label>
+                            <input type="text" id="editProfileUsername" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Nouveau mot de passe</label>
+                                <input type="password" id="editProfileNewPassword" placeholder="Optionnel" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Confirmer mot de passe</label>
+                                <input type="password" id="editProfileConfirmNewPassword" placeholder="Optionnel" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" id="btnSubmitProfile" class="w-full bg-brand-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg">
+                                Sauvegarder les changements
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUBLISH NEW LISTING MODAL -->
+    <div id="publishModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closePublishModal()">
+                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-slate-200/50 dark:border-slate-800">
+                <div class="p-6 md:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl md:text-2xl font-bold font-outfit text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-brand-500"></i> Publier une Offre
+                        </h3>
+                        <button onclick="closePublishModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+
+                    <form id="newListingForm" onsubmit="handleNewListingSubmit(event)" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+                        <input type="hidden" id="addListingId">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Titre de l'annonce</label>
+                                <input type="text" id="addTitle" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Ville</label>
+                                <select id="addCity" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="Kinshasa">Kinshasa</option>
+                                    <option value="Lubumbashi">Lubumbashi</option>
+                                    <option value="Goma">Goma</option>
+                                    <option value="Kolwezi">Kolwezi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de bien</label>
+                                <select id="addType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="Appartement">Appartement</option>
+                                    <option value="Maison">Maison</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Parcelle">Parcelle</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Contrat</label>
+                                <select id="addDeal" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="louer">À Louer</option>
+                                    <option value="vendre">À Vendre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Prix ($)</label>
+                                <input type="number" id="addPrice" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Lien Image (Optionnel)</label>
+                                <input type="text" id="addImageTheme" placeholder="https://..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Image de la propriété</label>
+                            <div class="flex items-center gap-4">
+                                <div id="addListingImagePreview" class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                                    <i class="fa-solid fa-camera text-slate-400"></i>
+                                </div>
+                                <input type="file" id="publishImage" accept="image/*" onchange="previewListingImage(this)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Descriptif</label>
+                            <textarea id="addDesc" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white" rows="3"></textarea>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" id="btnSubmitListing" class="w-full bg-brand-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg">
+                                Publier l'offre
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST MODAL -->
     <div id="requestModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeRequestModal()">
@@ -734,14 +762,14 @@
 
                     <form id="newRequestForm" onsubmit="handleRequestSubmit(event)" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Que cherchez-vous ? (Titre)</label>
-                            <input type="text" id="reqTitle" required placeholder="Ex: Cherche appartement meublé à louer" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Que cherchez-vous ?</label>
+                            <input type="text" id="reqTitle" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Ville</label>
-                                <select id="reqCity" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                <select id="reqCity" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                                     <option value="Kinshasa">Kinshasa</option>
                                     <option value="Lubumbashi">Lubumbashi</option>
                                     <option value="Goma">Goma</option>
@@ -749,36 +777,27 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de contrat</label>
-                                <select id="reqDeal" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                                    <option value="louer">À Louer</option>
-                                    <option value="vendre">À Acheter</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Budget maximum ($)</label>
-                                <input type="number" id="reqPrice" required placeholder="Ex: 1200" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                            <div>
                                 <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de bien</label>
-                                <select id="reqType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
+                                <select id="reqType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                                     <option value="Appartement">Appartement</option>
                                     <option value="Maison">Maison</option>
-                                    <option value="Villa">Villa / Duplex</option>
-                                    <option value="Parcelle">Parcelle / Terrain</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Parcelle">Parcelle</option>
                                 </select>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Description détaillée de votre besoin</label>
-                            <textarea id="reqDesc" required placeholder="Expliquez en quelques lignes votre besoin (ex: nombre de chambres requis, quartier préféré, accès eau/électricité...)" rows="3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white"></textarea>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Budget maximum ($)</label>
+                            <input type="number" id="reqPrice" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
 
-                        <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-95">
+                        <div>
+                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Description détaillée</label>
+                            <textarea id="reqDesc" required rows="3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <button type="submit" id="btnSubmitRequest" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg">
                             Publier ma demande
                         </button>
                     </form>
@@ -787,171 +806,7 @@
         </div>
     </div>
 
-    <!-- DETAILS DIALOG MODAL -->
-    <div id="detailsModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeDetailsModal()">
-                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
-            </div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-slate-200/50 dark:border-slate-800">
-                <div class="relative">
-                    <button onclick="closeDetailsModal()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white flex items-center justify-center transition-transform active:scale-95">
-                        <i class="fa-solid fa-xmark text-sm"></i>
-                    </button>
-                    <img id="modalImg" src="" alt="Détail du bien" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex gap-2">
-                        <span id="modalTag" class="px-3 py-1 bg-brand-500 text-white text-xs font-black uppercase rounded-lg"></span>
-                        <span id="modalCity" class="px-3 py-1 bg-black/60 backdrop-blur text-white text-xs font-semibold rounded-lg"></span>
-                    </div>
-                </div>
-
-                <div class="p-6 md:p-8 space-y-6">
-                    <div>
-                        <h3 id="modalTitle" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white font-outfit"></h3>
-                        <p id="modalPrice" class="text-2xl font-black text-brand-500 mt-2 font-outfit"></p>
-                    </div>
-                    <p id="modalDesc" class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed italic"></p>
-
-                    <div class="grid grid-cols-3 gap-4 border-y border-slate-100 dark:border-slate-800 py-4 text-center">
-                        <div class="space-y-1">
-                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Chambres</span>
-                            <span id="modalBeds" class="block font-bold text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-bed text-brand-400 mr-1"></i> -</span>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Salles de bain</span>
-                            <span id="modalBaths" class="block font-bold text-slate-800 dark:text-white text-sm"><i class="fa-solid fa-bath text-brand-400 mr-1"></i> -</span>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="block text-slate-400 text-[10px] uppercase font-bold">Auteur de l'offre</span>
-                            <span id="modalAgent" class="block font-bold text-emerald-500 text-sm"><i class="fa-solid fa-user-shield mr-1"></i> Oui</span>
-                        </div>
-                    </div>
-
-                    <div id="modalAlert" class="hidden p-3 text-xs font-semibold rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span id="modalAlertText"></span>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <a id="whatsappLink" href="" target="_blank" class="flex-1 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-center py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-md">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>Contacter via WhatsApp</span>
-                        </a>
-                        <button onclick="copyListingLink()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-white font-bold py-3 rounded-xl transition-all text-sm">
-                            <i class="fa-solid fa-share-nodes mr-1.5"></i> Partager l'annonce
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PUBLISH NEW LISTING MODAL -->
-    <div id="publishModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closePublishModal()">
-                <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
-            </div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-slate-200/50 dark:border-slate-800">
-                <div class="p-6 md:p-8">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl md:text-2xl font-bold font-outfit text-slate-900 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-circle-plus text-brand-500"></i> Publier une Offre (Bien)
-                        </h3>
-                        <button onclick="closePublishModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                            <i class="fa-solid fa-xmark text-sm"></i>
-                        </button>
-                    </div>
-
-                    <form id="newListingForm" onsubmit="handleNewListingSubmit(event)" class="space-y-4 text-xs text-slate-700 dark:text-slate-300">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Titre de l'annonce</label>
-                                <input type="text" id="addTitle" placeholder="Ex: Bel appartement moderne" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Ville</label>
-                                <select id="addCity" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                                    <option value="Kinshasa">Kinshasa</option>
-                                    <option value="Lubumbashi">Lubumbashi</option>
-                                    <option value="Goma">Goma</option>
-                                    <option value="Kolwezi">Kolwezi</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Type de bien</label>
-                                <select id="addType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                                    <option value="Appartement">Appartement</option>
-                                    <option value="Maison">Maison</option>
-                                    <option value="Villa">Villa / Duplex</option>
-                                    <option value="Parcelle">Parcelle / Terrain</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Contrat</label>
-                                <select id="addDeal" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                                    <option value="louer">À Louer</option>
-                                    <option value="vendre">À Vendre</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Prix ($)</label>
-                                <input type="number" id="addPrice" placeholder="Ex: 800" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Fréquence/Précision prix</label>
-                                <input type="text" id="addPeriod" placeholder="Ex: par mois, global" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Chambres (Optionnel)</label>
-                                <input type="number" id="addBeds" value="2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Douches (Optionnel)</label>
-                                <input type="number" id="addBaths" value="2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Descriptif complet du bien</label>
-                            <textarea id="addDesc" required placeholder="Décrivez l'état de la maison, quartier précis, points d'eau, etc..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white" rows="3"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Image Thématique</label>
-                            <select id="addImageTheme" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none text-slate-900 dark:text-white">
-                                <option value="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80">Appartement Moderne Chic</option>
-                                <option value="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80">Grande Villa Moderne</option>
-                                <option value="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80">Maison de Confort</option>
-                                <option value="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80">Villa de luxe avec Piscine</option>
-                            </select>
-                        </div>
-
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-95">
-                                Publier l'offre
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- NOTIFICATION NOTIFIER CHIP -->
+    <!-- TOAST -->
     <div id="notificationToast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200">
         <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center flex-shrink-0">
             <i class="fa-solid fa-bell"></i>
@@ -965,737 +820,464 @@
     </div>
 
     <script>
-        // Core application database models
-        let properties = [
-            {
-                id: 1,
-                title: "Bel Appartement Moderne meublé",
-                price: 1200,
-                period: "par mois",
-                city: "Kinshasa",
-                type: "Appartement",
-                deal: "louer",
-                beds: 3,
-                baths: 2,
-                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-                agent: "Agence Congo Immo",
-                badge: "En Vedette",
-                verified: true,
-                description: "Appartement tout confort situé à Kinshasa Gombe. Inclus : Wifi haut débit, climatiseur, cuisine équipée, groupe électrogène de secours."
-            },
-            {
-                id: 2,
-                title: "Maison de luxe à vendre",
-                price: 250000,
-                period: "global",
-                city: "Lubumbashi",
-                type: "Villa",
-                deal: "vendre",
-                beds: 4,
-                baths: 3,
-                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-                agent: "Cabinet Lubum Brokers",
-                badge: "Populaire",
-                verified: true,
-                description: "Superbe duplex situé dans un quartier sécurisé de Lubumbashi. Grand jardin, parking intérieur spacieux pour 4 véhicules, finitions premium."
-            },
-            {
-                id: 3,
-                title: "Villa Basse de standing - Goma",
-                price: 1500,
-                period: "par mois",
-                city: "Goma",
-                type: "Maison",
-                deal: "louer",
-                beds: 3,
-                baths: 2,
-                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
-                agent: "M&M Commissionnaires",
-                badge: "Nouveau",
-                verified: true,
-                description: "Charmante villa moderne avec vue partielle sur le lac. Idéal pour une famille, citerne d'eau installée."
-            },
-            {
-                id: 4,
-                title: "Terrain/Parcelle constructible",
-                price: 45000,
-                period: "prix total",
-                city: "Kolwezi",
-                type: "Parcelle",
-                deal: "vendre",
-                beds: 0,
-                baths: 0,
-                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-                agent: "Lualaba Agence",
-                badge: "Terrain",
-                verified: true,
-                description: "Excellente parcelle idéalement située au centre de Kolwezi, raccordement eau et électricité déjà disponible sur rue."
-            }
-        ];
+        // INIT SUPABASE
+        const { createClient } = window.supabase;
+        const supabaseUrl = 'https://vheabkmptbxjfgwlupln.supabase.co';
+        const supabaseKey = 'sb_publishable_aBG0KR5cU7_JTrnEOfL0KA_oYLO5oy0';
+        
+        // CORRECTION: Changement du nom de la variable pour éviter le conflit avec window.supabase
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-        // Seeker demands / Client search database
-        let demands = [
-            {
-                id: 101,
-                seekerName: "Placide Mwamba",
-                seekerRole: "seeker",
-                title: "Cherche Appartement meublé de 2 chambres",
-                city: "Kinshasa",
-                price: 1000,
-                deal: "louer",
-                type: "Appartement",
-                description: "Je recherche d'urgence un appartement meublé pour une durée de 6 mois, de préférence vers Gombe ou Lingwala, avec électricité stable ou panneaux solaires.",
-                phone: "+24399876543"
-            },
-            {
-                id: 102,
-                seekerName: "Arlette Kavira",
-                seekerRole: "seeker",
-                title: "Achat Villa moderne ou parcelle bien située",
-                city: "Goma",
-                price: 180000,
-                deal: "vendre",
-                type: "Villa",
-                description: "Je cherche à acheter une maison de haut standing prête à être habitée ou une parcelle de dimensions minimales 15m x 20m avec vue sur le Lac Kivu.",
-                phone: "+24381234567"
-            },
-            {
-                id: 103,
-                seekerName: "Patrice Ngoy",
-                seekerRole: "commissioner",
-                title: "Recherche Maison 4 chambres pour client sérieux",
-                city: "Lubumbashi",
-                price: 2000,
-                deal: "louer",
-                type: "Maison",
-                description: "En tant que commissionnaire, je recherche pour le compte d'une multinationale une belle maison d'habitation avec piscine sécurisée au quartier Golf.",
-                phone: "+24397123456"
-            }
-        ];
-
-        // User session state
+        // STATE
         let currentUser = null;
+        let userProfile = null;
+        let properties = [];
+        let demands = [];
         let currentSearchType = 'all'; 
-        let activeFeedTab = 'listings'; // 'listings' | 'demands'
-        let currentAuthTab = 'register'; // 'register' | 'login'
-        let demandsCount = demands.length;
 
-        // Initialize App on load
-        window.onload = function() {
-            renderProperties(properties);
-            renderDemands(demands);
-            calculateBudget();
-            updateStatsCounts();
+        window.onload = async function() {
+            calculateBudget(); // Calculateur de budget restauré
+            await checkSession();
+            await fetchProperties();
+            await fetchDemands();
         };
 
-        // Authentication tab selector
-        function setAuthTab(tab) {
-            currentAuthTab = tab;
-            const tabReg = document.getElementById('tabAuthRegister');
-            const tabLog = document.getElementById('tabAuthLogin');
-            const formReg = document.getElementById('registerForm');
-            const formLog = document.getElementById('loginForm');
-
-            if (tab === 'register') {
-                tabReg.className = "flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-brand-500 text-slate-900 dark:text-white";
-                tabLog.className = "flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600";
-                formReg.classList.remove('hidden');
-                formLog.classList.add('hidden');
-            } else {
-                tabLog.className = "flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-brand-500 text-slate-900 dark:text-white";
-                tabReg.className = "flex-1 text-center font-bold font-outfit text-base pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600";
-                formLog.classList.remove('hidden');
-                formReg.classList.add('hidden');
+        // --- AUTHENTICATION ---
+        async function checkSession() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    currentUser = session.user;
+                    await fetchUserProfile(currentUser.id);
+                }
+                applyUserSessionUI();
+            } catch (error) {
+                console.error("Session check error:", error);
             }
         }
 
-        // Handle user registration simulation
-        function handleRegister(e) {
+        async function fetchUserProfile(userId) {
+            const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
+            if (data) {
+                userProfile = data;
+            } else if (error) {
+                console.error("Error fetching profile:", error.message);
+            }
+        }
+
+        async function handleRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const phone = document.getElementById('regPhone').value;
-            const role = document.getElementById('regRole').value;
+            const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
+            const username = document.getElementById('regName').value.trim();
+            const role = document.getElementById('regRole').value;
 
-            // Simple validation
-            if (!name || !email || !phone || !password) {
-                showToast("Veuillez remplir tous les champs !");
-                return;
+            document.getElementById('regBtn').innerText = "Création...";
+            document.getElementById('regBtn').disabled = true;
+
+            // Inscription Supabase Auth
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: { 
+                    data: { 
+                        username: username, 
+                        role: role 
+                    } 
+                }
+            });
+
+            document.getElementById('regBtn').innerText = "Créer mon Compte";
+            document.getElementById('regBtn').disabled = false;
+
+            if (error) {
+                console.error("Supabase SignUp Error:", error);
+                showToast("Erreur: " + error.message);
+            } else {
+                showToast("Inscription réussie ! Connexion en cours...");
+                closeAuthModal();
+                await checkSession();
             }
-
-            // Mock profile session creation
-            currentUser = { name, email, phone, role };
-            applyUserSessionUI();
-            closeAuthModal();
-            showToast(`🎉 Bienvenue sur Baniki Labs, ${name} ! Votre compte ${getRoleLabel(role)} a été créé.`);
         }
 
-        // Handle login simulation
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!email || !password) {
-                showToast("Veuillez remplir tous les champs !");
-                return;
+            document.getElementById('loginBtn').innerText = "Connexion...";
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            document.getElementById('loginBtn').innerText = "Se connecter";
+
+            if (error) {
+                showToast("Identifiants incorrects.");
+            } else {
+                showToast("Bon retour sur Baniki Labs !");
+                closeAuthModal();
+                await checkSession();
             }
-
-            // Quick default mock profile based on input role estimation
-            let mockRole = 'seeker';
-            if (email.includes('agence')) mockRole = 'agency';
-            else if (email.includes('com')) mockRole = 'commissioner';
-            else if (email.includes('prop')) mockRole = 'owner';
-
-            currentUser = {
-                name: email.split('@')[0].toUpperCase(),
-                email: email,
-                phone: "+243978415814",
-                role: mockRole
-            };
-
-            applyUserSessionUI();
-            closeAuthModal();
-            showToast(`Mambo ! Content de vous revoir.`);
         }
 
-        // Logout user
-        function logoutUser() {
+        async function logoutUser() {
+            await supabaseClient.auth.signOut();
             currentUser = null;
+            userProfile = null;
             document.getElementById('userDashboard').classList.add('hidden');
-            
-            // Restore default connect button in navbar
             document.getElementById('authHeaderControl').innerHTML = `
                 <button onclick="openAuthModal()" class="flex items-center gap-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
                     <i class="fa-solid fa-user-plus"></i>
                     <span>Mon Espace / Compte</span>
-                </button>
-            `;
-            showToast("À bientôt sur Baniki Labs !");
+                </button>`;
+            
+            // Restaurer le bouton original dans le menu mobile
+            document.getElementById('mobileAuthControl').innerHTML = `
+                <button onclick="toggleMobileMenu(); openAuthModal()" class="w-full flex items-center justify-center gap-2 bg-brand-500 text-white font-semibold py-3 rounded-xl">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Créer un Compte / Connexion</span>
+                </button>`;
+                
+            showToast("Déconnexion réussie.");
         }
 
-        // Display user dashboard and tailor features according to roles
-        function applyUserSessionUI() {
-            if (!currentUser) return;
+        // --- DASHBOARD UI ---
+        async function applyUserSessionUI() {
+            if (!userProfile) return;
 
-            // Nav update
             document.getElementById('authHeaderControl').innerHTML = `
-                <button onclick="toggleDashboard()" class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span>Mon Espace (${currentUser.name})</span>
-                </button>
-            `;
-
-            // Dashboard content update
-            document.getElementById('dashAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
-            document.getElementById('dashUsername').innerText = currentUser.name;
-            document.getElementById('dashUserEmail').innerText = currentUser.email;
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDashboard()" class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <span class="hidden sm:inline">Espace (${userProfile.username})</span>
+                    </button>
+                    <button onclick="logoutUser()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 text-red-600 hover:bg-red-100 transition-colors border border-red-100" title="Déconnexion">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>`;
             
-            const roleBadge = document.getElementById('dashRoleBadge');
-            roleBadge.innerText = getRoleLabel(currentUser.role);
+            // Mise à jour du menu mobile pour afficher la déconnexion
+            document.getElementById('mobileAuthControl').innerHTML = `
+                <button onclick="toggleMobileMenu(); logoutUser()" class="w-full flex items-center justify-center gap-2 bg-red-500 text-white font-semibold py-3 rounded-xl">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>Déconnexion</span>
+                </button>`;
 
-            // Tailor Action buttons inside the dashboard depending on roles
+            document.getElementById('dashAvatar').innerText = userProfile.username ? userProfile.username.charAt(0).toUpperCase() : 'U';
+            document.getElementById('dashUsername').innerText = userProfile.username || 'Utilisateur';
+            document.getElementById('dashUserEmail').innerText = userProfile.email || currentUser.email;
+            document.getElementById('dashRoleBadge').innerText = userProfile.role || 'Chercheur';
+
             const btnPublishList = document.getElementById('dashPublishListingBtn');
             const btnPublishReq = document.getElementById('dashPublishRequestBtn');
 
-            // Set buttons active state per role:
-            // Seekers cannot list houses, they can only "Ask / Demander"
-            if (currentUser.role === 'seeker') {
+            if (userProfile.role === 'Chercheur') {
                 btnPublishList.classList.add('hidden');
                 btnPublishReq.classList.remove('hidden');
-            } else if (currentUser.role === 'owner') {
-                // Owners can list houses
+            } else if (userProfile.role === 'Propriétaire') {
                 btnPublishList.classList.remove('hidden');
                 btnPublishReq.classList.add('hidden');
             } else {
-                // Agencies and Commissioners can do both
                 btnPublishList.classList.remove('hidden');
                 btnPublishReq.classList.remove('hidden');
             }
 
-            // Update stats
-            document.getElementById('dashStatAnnonces').innerText = properties.filter(p => p.agent === currentUser.name || p.agent.includes("Vous")).length;
-            document.getElementById('dashStatDemandes').innerText = demands.filter(d => d.seekerName === currentUser.name).length;
-            document.getElementById('dashStatMatches').innerText = "1";
+            // UPDATE AVATAR
+            if (userProfile.avatar_url) {
+                document.getElementById('dashAvatar').innerHTML = `<img src="${userProfile.avatar_url}" class="w-full h-full object-cover rounded-full">`;
+                document.getElementById('dashAvatar').classList.remove('bg-brand-500', 'text-white');
+            } else {
+                document.getElementById('dashAvatar').innerHTML = userProfile.username ? userProfile.username.charAt(0).toUpperCase() : 'U';
+                document.getElementById('dashAvatar').classList.add('bg-brand-500', 'text-white');
+            }
+
+            // Show management section if user can publish listings
+            if (userProfile.role !== 'Chercheur') {
+                document.getElementById('dashManagementSection').classList.remove('hidden');
+            }
+
+            // LOAD STATS FROM SUPABASE RPC
+            try {
+                const { data: stats } = await supabaseClient.rpc('get_user_dashboard_stats', { user_uuid: userProfile.id });
+                if (stats && stats.length > 0) {
+                    document.getElementById('dashStatAnnonces').innerText = stats[0].annonces_count || 0;
+                    document.getElementById('dashStatDemandes').innerText = stats[0].demandes_count || 0;
+                    document.getElementById('dashStatMatches').innerText = stats[0].matches_count || 0;
+                }
+            } catch (rpcErr) {
+                console.warn("RPC Statistics function may not exist yet:", rpcErr);
+            }
 
             document.getElementById('userDashboard').classList.remove('hidden');
-            document.getElementById('userDashboard').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function toggleDashboard() {
-            const dash = document.getElementById('userDashboard');
-            if (dash.classList.contains('hidden')) {
-                dash.classList.remove('hidden');
-                dash.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                dash.classList.add('hidden');
+        // --- FETCH & RENDER DATA ---
+        async function fetchProperties() {
+            const { data, error } = await supabaseClient
+                .from('listings')
+                .select(`*, profiles(username)`)
+                .order('created_at', { ascending: false });
+            
+            if (data) {
+                properties = data;
+                applyFilters(); // render
             }
         }
 
-        function getRoleLabel(role) {
-            switch(role) {
-                case 'seeker': return 'Chercheur de Maison';
-                case 'owner': return 'Propriétaire de bien';
-                case 'commissioner': return 'Commissionnaire';
-                case 'agency': return 'Agence Immobilière';
-                default: return 'Membre';
+        async function fetchDemands() {
+            const { data, error } = await supabaseClient
+                .from('demands')
+                .select(`*, profiles(username, role)`)
+                .order('created_at', { ascending: false });
+
+            if (data) {
+                demands = data;
+                applyFilters(); // render
+                document.getElementById('demandsCounterTitle').innerText = `Demandes de Biens (${demands.length})`;
             }
         }
 
-        // Toggle Feed Tab Listings vs Seeker Demands
-        function switchFeedTab(tab) {
-            activeFeedTab = tab;
-            const tabListings = document.getElementById('tabFeedListings');
-            const tabDemands = document.getElementById('tabFeedDemands');
-            const listSection = document.getElementById('listingsFeedSection');
-            const demandSection = document.getElementById('demandsFeedSection');
-
-            if (tab === 'listings') {
-                tabListings.className = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border-2 border-brand-500 bg-brand-500 text-white shadow-lg shadow-brand-500/15 flex items-center gap-2 transition-all";
-                tabDemands.className = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all";
-                listSection.classList.remove('hidden');
-                demandSection.classList.add('hidden');
-            } else {
-                tabDemands.className = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border-2 border-amber-500 bg-amber-500 text-white shadow-lg shadow-amber-500/15 flex items-center gap-2 transition-all";
-                tabListings.className = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all";
-                listSection.classList.add('hidden');
-                demandSection.classList.remove('hidden');
-            }
-        }
-
-        // Render listings inside the main grid dynamically
         function renderProperties(data) {
             const grid = document.getElementById('listingsGrid');
             const counter = document.getElementById('resultsCount');
             grid.innerHTML = '';
-            
-            counter.innerText = `Affichage de ${data.length} propriété(s) trouvée(s)`;
+            counter.innerText = `Affichage de ${data.length} propriété(s)`;
 
             if (data.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-12 px-4 text-center">
-                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                            <i class="fa-solid fa-magnifying-glass text-slate-400 text-xl"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-700 dark:text-slate-300">Aucun bien trouvé</h4>
-                        <p class="text-xs text-slate-400 mt-1">Essayez d'ajuster vos critères de recherche.</p>
-                    </div>
-                `;
+                grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">Aucun bien trouvé pour vos critères.</p>`;
                 return;
             }
 
-            data.forEach(property => {
-                const card = document.createElement('div');
-                card.className = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 relative group cursor-pointer";
-                card.onclick = () => openDetailsModal(property.id);
+            data.forEach(p => {
+                const badge = p.offer_type === 'louer' ? 'À Louer' : 'À Vendre';
+                const agent = p.profiles?.username || "Agent";
                 
-                card.innerHTML = `
-                    <div class="relative h-48 overflow-hidden">
-                        <img src="${property.image}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" onerror="this.src='https://placehold.co/600x400/0084ff/ffffff?text=Immo+RDC'">
-                        <div class="absolute top-3 left-3 flex gap-1.5">
-                            <span class="px-2.5 py-1 bg-brand-500 text-white text-[10px] font-black uppercase rounded-lg">${property.badge}</span>
-                            <span class="px-2.5 py-1 bg-black/60 backdrop-blur text-white text-[10px] font-bold rounded-lg uppercase">${property.deal === 'louer' ? 'À Louer' : 'À Vendre'}</span>
-                        </div>
-                    </div>
-                    <div class="p-5 space-y-3">
-                        <div class="flex items-center gap-1 text-[11px] font-bold text-brand-500 uppercase tracking-widest">
-                            <i class="fa-solid fa-map-pin"></i>
-                            <span>${property.city}</span>
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-800 dark:text-white line-clamp-1">${property.title}</h3>
-                        
-                        <div class="flex items-center gap-4 text-[11px] text-slate-400 font-semibold border-y border-slate-50 dark:border-slate-800 py-2.5">
-                            ${property.beds > 0 ? `<span><i class="fa-solid fa-bed text-brand-400 mr-1.5"></i>${property.beds} Chambres</span>` : ''}
-                            ${property.baths > 0 ? `<span><i class="fa-solid fa-bath text-brand-400 mr-1.5"></i>${property.baths} Douches</span>` : ''}
-                            <span><i class="fa-solid fa-shield-halved text-emerald-500 mr-1.5"></i>Vérifié</span>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-1">
-                            <div>
-                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Budget exigé</span>
-                                <span class="text-base font-extrabold text-brand-900 dark:text-brand-400 font-outfit">$ ${property.price.toLocaleString()} <span class="text-xs font-medium text-slate-400">${property.period}</span></span>
+                grid.innerHTML += `
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 relative group cursor-pointer">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${p.image_url || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition-all">
+                            <div class="absolute top-3 left-3 flex gap-1.5">
+                                <span class="px-2.5 py-1 bg-brand-500 text-white text-[10px] font-black uppercase rounded-lg">${badge}</span>
                             </div>
-                            <span class="text-xs font-bold text-brand-500 group-hover:translate-x-1 transition-all">Contacter <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center gap-1 text-[11px] font-bold text-brand-500 uppercase">
+                                <i class="fa-solid fa-map-pin"></i> <span>${p.city}</span>
+                            </div>
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-white line-clamp-1">${p.title}</h3>
+                            <div class="flex items-center gap-4 text-[11px] text-slate-400 font-semibold border-y border-slate-50 dark:border-slate-800 py-2.5">
+                                <span><i class="fa-solid fa-building text-brand-400 mr-1.5"></i>${p.property_type}</span>
+                                <span><i class="fa-solid fa-user-shield text-emerald-500 mr-1.5"></i>${agent}</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <div>
+                                    <span class="block text-[10px] text-slate-400 uppercase font-semibold">Budget</span>
+                                    <span class="text-base font-extrabold text-brand-900 dark:text-brand-400 font-outfit">$ ${p.price.toLocaleString()}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
             });
         }
 
-        // Render seeker demands inside the second tab dynamically
         function renderDemands(data) {
             const grid = document.getElementById('demandsGrid');
             grid.innerHTML = '';
 
             if (data.length === 0) {
-                grid.innerHTML = `
-                    <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
-                        <p class="text-sm text-slate-400">Aucune demande de bien active enregistrée pour le moment.</p>
-                    </div>
-                `;
+                grid.innerHTML = `<p class="text-center text-slate-500 py-10">Aucune demande trouvée.</p>`;
                 return;
             }
 
-            data.forEach(demand => {
-                const card = document.createElement('div');
-                card.className = "bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between gap-4 items-start md:items-center";
+            data.forEach(d => {
+                const seeker = d.profiles?.username || "Anonyme";
+                const role = d.profiles?.role || "Chercheur";
                 
-                // Prefilled WhatsApp message for owners/brokers to reach out to seekers
-                const contactMessage = `Bonjour ${demand.seekerName}, je vous contacte suite à votre demande sur Baniki Labs concernant : "${demand.title}" à ${demand.city}. J'ai des biens correspondants à vous proposer.`;
-                const contactUrl = `https://api.whatsapp.com/send?phone=${encodeURIComponent(demand.phone || '243978415814')}&text=${encodeURIComponent(contactMessage)}`;
-
-                card.innerHTML = `
-                    <div class="space-y-2 flex-1">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">Demande de bien</span>
-                            <span class="text-slate-400 text-xs">• Publiée par <strong>${demand.seekerName}</strong> (${getRoleLabel(demand.seekerRole)})</span>
+                grid.innerHTML += `
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row justify-between gap-4">
+                        <div class="space-y-2 flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-black uppercase">Demande</span>
+                                <span class="text-slate-400 text-xs">• Par <strong>${seeker}</strong> (${role})</span>
+                            </div>
+                            <h3 class="font-extrabold text-slate-950 dark:text-white font-outfit text-base">${d.title}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${d.description || ""}</p>
+                            <div class="flex gap-4 pt-1 text-[11px] text-slate-400 font-bold">
+                                <span><i class="fa-solid fa-map-pin text-brand-500"></i> ${d.city}</span>
+                                <span><i class="fa-solid fa-building text-brand-500"></i> ${d.property_type}</span>
+                            </div>
                         </div>
-                        <h3 class="font-extrabold text-slate-950 dark:text-white font-outfit text-base">${demand.title}</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${demand.description}</p>
-                        
-                        <div class="flex flex-wrap gap-4 pt-1 text-[11px] text-slate-400 font-bold">
-                            <span><i class="fa-solid fa-map-pin text-brand-500"></i> ${demand.city}</span>
-                            <span><i class="fa-solid fa-building text-brand-500"></i> ${demand.type}</span>
-                            <span><i class="fa-solid fa-circle-check text-emerald-500"></i> Vérification Baniki</span>
+                        <div class="flex flex-col items-end gap-3 min-w-[140px] border-t md:border-t-0 border-slate-100 dark:border-slate-800 pt-4 md:pt-0">
+                            <div class="text-right">
+                                <span class="block text-[9px] text-slate-400 uppercase font-black">Budget Max</span>
+                                <span class="text-lg font-black text-amber-600 font-outfit">$ ${d.budget_max ? d.budget_max.toLocaleString() : 'N/A'}</span>
+                            </div>
+                            <button class="w-full text-center bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Proposer
+                            </button>
                         </div>
-                    </div>
-                    <div class="flex flex-col items-end gap-3 min-w-[140px] w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800">
-                        <div class="text-right">
-                            <span class="block text-[9px] text-slate-400 uppercase font-black">Budget Max</span>
-                            <span class="text-lg font-black text-amber-600 dark:text-amber-400 font-outfit">$ ${demand.price.toLocaleString()} ${demand.deal === 'louer' ? '/ mois' : 'global'}</span>
-                        </div>
-                        <a href="${contactUrl}" target="_blank" class="w-full text-center bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <i class="fa-brands fa-whatsapp text-sm"></i> Proposer un bien
-                        </a>
                     </div>
                 `;
-                grid.appendChild(card);
             });
         }
 
-        // Set main deal category (Louer / Vendre)
-        function setSearchType(type) {
-            currentSearchType = type;
-            const btnLouer = document.getElementById('btnTabLouer');
-            const btnVendre = document.getElementById('btnTabVendre');
-            const btnAll = document.getElementById('btnTabAll');
+        // --- SUBMIT DATA TO SUPABASE ---
+        async function handleNewListingSubmit(e) {
+            e.preventDefault();
+            if (!userProfile) return openAuthModal();
 
-            [btnLouer, btnVendre, btnAll].forEach(btn => {
-                btn.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-all flex items-center justify-center gap-2";
-            });
+            const btn = document.getElementById('btnSubmitListing');
+            const originalText = btn.innerText;
+            btn.innerText = "Publication en cours...";
+            btn.disabled = true;
 
-            if (type === 'louer') {
-                btnLouer.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
-            } else if (type === 'vendre') {
-                btnVendre.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
-            } else {
-                btnAll.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-bold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2";
+            let finalImageUrl = document.getElementById('addImageTheme').value;
+
+            // SI UN FICHIER EST SÉLECTIONNÉ, ON L'UPLOAD D'ABORD
+            if (selectedListingFile) {
+                try {
+                    // Génération d'un nom de fichier unique et organisation par dossier utilisateur
+                    const fileExtension = selectedListingFile.name.split('.').pop();
+                    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExtension}`;
+                    const filePath = `${userProfile.id}/${fileName}`; 
+
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                        .from('listing-images')
+                        .upload(filePath, selectedListingFile, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+                    
+                    if (uploadError) throw uploadError;
+
+                    const { data: publicUrlData } = supabaseClient.storage
+                        .from('listing-images')
+                        .getPublicUrl(filePath);
+                    
+                    finalImageUrl = publicUrlData.publicUrl;
+                } catch (err) {
+                    console.error("Upload error:", err);
+                    showToast("Erreur upload image: " + err.message);
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    return;
+                }
             }
 
+            const payload = {
+                publisher_id: userProfile.id,
+                title: document.getElementById('addTitle').value,
+                city: document.getElementById('addCity').value,
+                property_type: document.getElementById('addType').value,
+                offer_type: document.getElementById('addDeal').value,
+                price: parseFloat(document.getElementById('addPrice').value),
+                image_url: finalImageUrl,
+                description: document.getElementById('addDesc').value
+            };
+
+            const listingId = document.getElementById('addListingId').value;
+            let result;
+            if (listingId) {
+                result = await supabaseClient.from('listings').update(payload).eq('id', listingId);
+            } else {
+                result = await supabaseClient.from('listings').insert([payload]);
+            }
+            
+            btn.innerText = originalText;
+            btn.disabled = false;
+
+            if (result.error) {
+                showToast("Erreur: " + result.error.message);
+            } else {
+                showToast(listingId ? "Annonce mise à jour !" : "Annonce publiée avec succès !");
+                closePublishModal();
+                await fetchProperties();
+                if (userProfile) {
+                    applyUserSessionUI();
+                    if (!document.getElementById('userListingsList').classList.contains('hidden')) {
+                        fetchUserListings();
+                    }
+                }
+            }
+        }
+
+        async function handleRequestSubmit(e) {
+            e.preventDefault();
+            if (!userProfile) return openAuthModal();
+
+            const payload = {
+                seeker_id: userProfile.id,
+                title: document.getElementById('reqTitle').value,
+                city: document.getElementById('reqCity').value,
+                property_type: document.getElementById('reqType').value,
+                budget_max: parseInt(document.getElementById('reqPrice').value),
+                description: document.getElementById('reqDesc').value
+            };
+
+            document.getElementById('btnSubmitRequest').innerText = "Publication...";
+            const { error } = await supabaseClient.from('demands').insert([payload]);
+            document.getElementById('btnSubmitRequest').innerText = "Publier ma demande";
+
+            if (error) {
+                showToast("Erreur: " + error.message);
+            } else {
+                showToast("Demande de bien publiée !");
+                closeRequestModal();
+                await fetchDemands();
+                if (userProfile) applyUserSessionUI();
+            }
+        }
+
+        async function triggerPrefabricatedInquiry() {
+            if (!userProfile) return openAuthModal();
+            const { error } = await supabaseClient.from('prefabricated_inquiries').insert([{ user_id: userProfile.id }]);
+            if (!error) showToast("Demande de devis enregistrée ! Un conseiller va vous contacter.");
+        }
+
+        // --- FILTERS & UTILS ---
+        function setSearchType(type) {
+            currentSearchType = type;
             applyFilters();
         }
 
-        // Filter engine
         function applyFilters() {
             const city = document.getElementById('filterCity').value;
             const type = document.getElementById('filterType').value;
             const maxPrice = document.getElementById('filterPrice').value;
             const keyword = document.getElementById('filterKeyword').value.toLowerCase();
 
-            // Apply listing filters
+            // Client-side filtering logic for Listings
             let filteredListings = properties;
-            if (currentSearchType !== 'all') {
-                filteredListings = filteredListings.filter(p => p.deal === currentSearchType);
-            }
-            if (city !== 'all') {
-                filteredListings = filteredListings.filter(p => p.city === city);
-            }
-            if (type !== 'all') {
-                filteredListings = filteredListings.filter(p => p.type === type);
-            }
-            if (maxPrice !== 'all') {
-                filteredListings = filteredListings.filter(p => p.price <= parseInt(maxPrice));
-            }
-            if (keyword) {
-                filteredListings = filteredListings.filter(p => 
-                    p.title.toLowerCase().includes(keyword) || p.description.toLowerCase().includes(keyword)
-                );
-            }
+            if (currentSearchType !== 'all') filteredListings = filteredListings.filter(p => p.offer_type === currentSearchType);
+            if (city !== 'all') filteredListings = filteredListings.filter(p => p.city === city);
+            if (type !== 'all') filteredListings = filteredListings.filter(p => p.property_type === type);
+            if (maxPrice !== 'all') filteredListings = filteredListings.filter(p => p.price <= parseInt(maxPrice));
+            if (keyword) filteredListings = filteredListings.filter(p => p.title.toLowerCase().includes(keyword) || p.description?.toLowerCase().includes(keyword));
+            
             renderProperties(filteredListings);
 
-            // Apply demands filter
+            // Client-side filtering logic for Demands
             let filteredDemands = demands;
-            if (currentSearchType !== 'all') {
-                filteredDemands = filteredDemands.filter(d => d.deal === currentSearchType);
-            }
-            if (city !== 'all') {
-                filteredDemands = filteredDemands.filter(d => d.city === city);
-            }
-            if (type !== 'all') {
-                filteredDemands = filteredDemands.filter(d => d.type === type);
-            }
-            if (maxPrice !== 'all') {
-                filteredDemands = filteredDemands.filter(d => d.price <= parseInt(maxPrice));
-            }
-            if (keyword) {
-                filteredDemands = filteredDemands.filter(d => 
-                    d.title.toLowerCase().includes(keyword) || d.description.toLowerCase().includes(keyword)
-                );
-            }
+            if (city !== 'all') filteredDemands = filteredDemands.filter(d => d.city === city);
+            if (type !== 'all') filteredDemands = filteredDemands.filter(d => d.property_type === type);
+            if (maxPrice !== 'all') filteredDemands = filteredDemands.filter(d => d.budget_max <= parseInt(maxPrice));
+            if (keyword) filteredDemands = filteredDemands.filter(d => d.title.toLowerCase().includes(keyword) || d.description?.toLowerCase().includes(keyword));
+            
             renderDemands(filteredDemands);
+        }
+
+        function zoomToCity(cityName) {
+            document.getElementById('filterCity').value = cityName;
+            applyFilters();
+            showToast(`Filtré sur la ville : ${cityName}`);
         }
 
         function sortProperties() {
             const criteria = document.getElementById('sortSelector').value;
             let sorted = [...properties];
-            
-            if (criteria === 'priceAsc') {
-                sorted.sort((a, b) => a.price - b.price);
-            } else if (criteria === 'priceDesc') {
-                sorted.sort((a, b) => b.price - a.price);
-            } else {
-                sorted.sort((a, b) => b.id - a.id);
-            }
+            if (criteria === 'priceAsc') sorted.sort((a, b) => a.price - b.price);
+            else if (criteria === 'priceDesc') sorted.sort((a, b) => b.price - a.price);
             renderProperties(sorted);
-        }
-
-        // Map Interaction
-        function zoomToCity(cityName) {
-            document.getElementById('filterCity').value = cityName;
-            applyFilters();
-            showToast(`Secteur géo-localisé sur la province de : ${cityName}`);
-        }
-
-        // Submit dynamic property requests / demands
-        function handleRequestSubmit(e) {
-            e.preventDefault();
-            const title = document.getElementById('reqTitle').value;
-            const city = document.getElementById('reqCity').value;
-            const deal = document.getElementById('reqDeal').value;
-            const price = parseInt(document.getElementById('reqPrice').value);
-            const type = document.getElementById('reqType').value;
-            const desc = document.getElementById('reqDesc').value;
-
-            const name = currentUser ? currentUser.name : "Un locataire anonyme";
-            const role = currentUser ? currentUser.role : "seeker";
-            const phone = currentUser ? currentUser.phone : "+243978415814";
-
-            const newDemand = {
-                id: demands.length + 101,
-                seekerName: name,
-                seekerRole: role,
-                title: title,
-                city: city,
-                deal: deal,
-                price: price,
-                type: type,
-                description: desc,
-                phone: phone
-            };
-
-            demands.unshift(newDemand);
-            renderDemands(demands);
-            updateStatsCounts();
-            closeRequestModal();
-
-            showToast("🎉 Votre demande a été publiée avec succès ! Les propriétaires peuvent vous faire des offres.");
-            switchFeedTab('demands');
-            document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Submit new property listing (offres)
-        function handleNewListingSubmit(e) {
-            e.preventDefault();
-            const title = document.getElementById('addTitle').value;
-            const city = document.getElementById('addCity').value;
-            const type = document.getElementById('addType').value;
-            const deal = document.getElementById('addDeal').value;
-            const price = parseInt(document.getElementById('addPrice').value);
-            const period = document.getElementById('addPeriod').value || (deal === 'louer' ? 'par mois' : 'prix global');
-            const beds = parseInt(document.getElementById('addBeds').value) || 0;
-            const baths = parseInt(document.getElementById('addBaths').value) || 0;
-            const desc = document.getElementById('addDesc').value;
-            const image = document.getElementById('addImageTheme').value;
-
-            const agentName = currentUser ? currentUser.name : "Particulier certifié";
-
-            const newProperty = {
-                id: properties.length + 1,
-                title: `${type} à ${deal === 'louer' ? 'Louer' : 'Vendre'} – ${title}`,
-                price: price,
-                period: period,
-                city: city,
-                type: type,
-                deal: deal,
-                beds: beds,
-                baths: baths,
-                image: image,
-                agent: agentName,
-                badge: "Nouveau",
-                verified: true,
-                description: desc
-            };
-
-            properties.unshift(newProperty);
-            renderProperties(properties);
-            closePublishModal();
-
-            showToast("🎉 Votre annonce a été mise en ligne ! Elle est maintenant visible sur le catalogue.");
-            switchFeedTab('listings');
-            document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function updateStatsCounts() {
-            demandsCount = demands.length;
-            document.getElementById('tabFeedDemands').innerHTML = `
-                <i class="fa-solid fa-hand-holding-heart"></i>
-                <span>Demandes de Biens (${demandsCount})</span>
-            `;
-        }
-
-        // AI Conversational System with smart matches querying the custom memory DB
-        function sendChatMessage(text) {
-            document.getElementById('chatInput').value = text;
-            handleChatSubmit(null);
-        }
-
-        function handleChatSubmit(e) {
-            if (e) e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const query = input.value.trim();
-            if (!query) return;
-
-            appendChatMessage(query, 'user');
-            input.value = '';
-
-            setTimeout(() => {
-                const response = processBotIntelligence(query);
-                appendChatMessage(response, 'bot');
-            }, 700);
-        }
-
-        function appendChatMessage(text, sender) {
-            const chatBox = document.getElementById('chatMessages');
-            const msgDiv = document.createElement('div');
-            
-            if (sender === 'user') {
-                msgDiv.className = "flex justify-end gap-2.5 max-w-[85%] ml-auto";
-                msgDiv.innerHTML = `
-                    <div class="bg-brand-500 text-white rounded-2xl rounded-tr-none p-3 shadow-sm">
-                        ${text}
-                    </div>
-                `;
-            } else {
-                msgDiv.className = "flex gap-2.5 max-w-[85%]";
-                msgDiv.innerHTML = `
-                    <div class="w-6 h-6 rounded-full bg-brand-500 flex-shrink-0 flex items-center justify-center text-[10px] text-white">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <div class="bg-slate-900 rounded-2xl rounded-tl-none p-3 text-slate-200 leading-relaxed shadow-sm">
-                        ${text}
-                    </div>
-                `;
-            }
-
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function processBotIntelligence(query) {
-            const q = query.toLowerCase();
-            
-            // Check in-memory offers (properties)
-            if (q.includes('appartement') && q.includes('gombe')) {
-                const match = properties.find(p => p.city === 'Kinshasa' && p.type === 'Appartement');
-                if (match) {
-                    return `J'ai trouvé une excellente offre correspondante à Gombe : **${match.title}** pour **${match.price}$/mois**. <button onclick="openDetailsModal(${match.id})" class="text-brand-400 underline font-bold ml-1">Voir les détails</button>`;
-                }
-            }
-
-            if (q.includes('journalier') || q.includes('jour')) {
-                return `Nous avons actuellement plusieurs villas ou appartements meublés disponibles pour de courtes durées. Laissez-moi savoir votre budget idéal !`;
-            }
-
-            if (q.includes('terrain') || q.includes('parcelle') || q.includes('kintambo')) {
-                const match = properties.find(p => p.type === 'Parcelle');
-                if (match) {
-                    return `J'ai une opportunité de terrain à vous proposer : **${match.title}** pour **${match.price}$**. <button onclick="openDetailsModal(${match.id})" class="text-brand-400 underline font-bold ml-1">Voir les détails</button>`;
-                }
-            }
-
-            // Check in-memory seeker demands
-            if (q.includes('demande') || q.includes('cherche')) {
-                return `Il y a actuellement **${demands.length} demandes actives** postées par des chercheurs de logement en RDC. Par exemple, **${demands[0].seekerName}** cherche un appartement pour un budget de **${demands[0].price}$**. <button onclick="switchFeedTab('demands')" class="text-amber-400 underline font-bold ml-1">Consulter l'espace demande</button>`;
-            }
-
-            return `D'accord ! En tant qu'assistant immobilier de confiance en RDC, je peux trier nos **${properties.length} propriétés** et **${demands.length} demandes de clients**. Précisez-moi votre ville (Kinshasa, Lubumbashi, Goma) et votre budget !`;
-        }
-
-        // Custom UI Modal triggers
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
-
-        function openRequestModal() {
-            document.getElementById('requestModal').classList.remove('hidden');
-        }
-
-        function closeRequestModal() {
-            document.getElementById('requestModal').classList.add('hidden');
-        }
-
-        function openPublishModal() {
-            document.getElementById('publishModal').classList.remove('hidden');
-        }
-
-        function closePublishModal() {
-            document.getElementById('publishModal').classList.add('hidden');
-        }
-
-        function openDetailsModal(id) {
-            const property = properties.find(p => p.id === id);
-            if (!property) return;
-
-            document.getElementById('modalImg').src = property.image;
-            document.getElementById('modalTag').innerText = property.badge;
-            document.getElementById('modalCity').innerText = property.city;
-            document.getElementById('modalTitle').innerText = property.title;
-            document.getElementById('modalPrice').innerText = `$ ${property.price.toLocaleString()} ${property.period}`;
-            document.getElementById('modalBeds').innerHTML = `<i class="fa-solid fa-bed text-brand-400 mr-1"></i> ${property.beds} Chambres`;
-            document.getElementById('modalBaths').innerHTML = `<i class="fa-solid fa-bath text-brand-400 mr-1"></i> ${property.baths} Douches`;
-            document.getElementById('modalAgent').innerHTML = `<i class="fa-solid fa-user-shield text-emerald-500 mr-1"></i> ${property.agent}`;
-            document.getElementById('modalDesc').innerText = property.description || "Description complète bientôt disponible.";
-
-            const whatsappText = `Bonjour, je vous contacte depuis Baniki Labs pour l'annonce "${property.title}" à ${property.price}$ : https://banikilabs.com/property/${property.id}`;
-            document.getElementById('whatsappLink').href = `https://api.whatsapp.com/send?phone=243978415814&text=${encodeURIComponent(whatsappText)}`;
-
-            document.getElementById('modalAlert').classList.add('hidden');
-            document.getElementById('detailsModal').classList.remove('hidden');
-        }
-
-        function closeDetailsModal() {
-            document.getElementById('detailsModal').classList.add('hidden');
-        }
-
-        function copyListingLink() {
-            const dummyUrl = window.location.href + '#listing';
-            const tempInput = document.createElement('input');
-            tempInput.value = dummyUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            const alertBox = document.getElementById('modalAlert');
-            const alertText = document.getElementById('modalAlertText');
-            alertText.innerText = "Lien de l'offre copié avec succès !";
-            alertBox.classList.remove('hidden');
         }
 
         function calculateBudget() {
@@ -1712,48 +1294,271 @@
             document.getElementById('outCommission').innerText = `$ ${commission.toLocaleString()}`;
         }
 
-        // Theme and Toast utils
-        function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon text-slate-600';
+        // TAB & UI TOGGLES
+        function setAuthTab(tab) {
+            if (tab === 'register') {
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
             } else {
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-slate-300';
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
             }
+        }
+
+        function switchFeedTab(tab) {
+            if (tab === 'listings') {
+                document.getElementById('listingsFeedSection').classList.remove('hidden');
+                document.getElementById('demandsFeedSection').classList.add('hidden');
+            } else {
+                document.getElementById('demandsFeedSection').classList.remove('hidden');
+                document.getElementById('listingsFeedSection').classList.add('hidden');
+            }
+        }
+
+        // Dashboard toggle helper
+        function toggleDashboard() {
+            const dash = document.getElementById('userDashboard');
+            dash.classList.toggle('hidden');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
         }
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const icon = document.getElementById('mobileMenuIcon');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.className = 'fa-solid fa-xmark text-lg';
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+        function openRequestModal() { document.getElementById('requestModal').classList.remove('hidden'); }
+        function closeRequestModal() { document.getElementById('requestModal').classList.add('hidden'); }
+        function openPublishModal() { document.getElementById('publishModal').classList.remove('hidden'); }
+        function closePublishModal() { 
+            document.getElementById('publishModal').classList.add('hidden'); 
+            document.getElementById('newListingForm').reset();
+            document.getElementById('addListingId').value = '';
+            document.getElementById('addListingImagePreview').innerHTML = `<i class="fa-solid fa-camera text-slate-400"></i>`;
+            selectedListingFile = null;
+            document.getElementById('btnSubmitListing').innerText = "Publier l'offre";
+        }
+
+        // --- NEW MANAGEMENT FUNCTIONS ---
+        async function fetchUserListings() {
+            if (!userProfile) return;
+            const { data, error } = await supabaseClient
+                .from('listings')
+                .select('*')
+                .eq('publisher_id', userProfile.id)
+                .order('created_at', { ascending: false });
+            
+            if (data) renderUserListings(data);
+        }
+
+        function renderUserListings(data) {
+            const container = document.getElementById('userListingsList');
+            if (data.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic py-4">Vous n'avez pas encore publié d'annonces.</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(p => `
+                <div class="flex items-center justify-between p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <img src="${p.image_url}" class="w-10 h-10 rounded-lg object-cover">
+                        <div>
+                            <h5 class="text-xs font-bold text-slate-900 dark:text-white">${p.title}</h5>
+                            <p class="text-[10px] text-slate-400">${p.city} • $${p.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editListing('${p.id}')" class="p-2 text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-950 rounded-lg transition-all" title="Modifier">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteListing('${p.id}')" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950 rounded-lg transition-all" title="Supprimer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteListing(id) {
+            if (!confirm("Voulez-vous vraiment supprimer cette annonce ?")) return;
+            const { error } = await supabaseClient.from('listings').delete().eq('id', id);
+            if (error) {
+                showToast("Erreur de suppression.");
             } else {
-                menu.classList.add('hidden');
-                icon.className = 'fa-solid fa-bars text-lg';
+                showToast("Annonce supprimée.");
+                await fetchProperties();
+                await fetchUserListings();
+                applyUserSessionUI();
             }
         }
 
-        function triggerPrefabricatedInquiry() {
-            showToast("Redirection vers l'espace de configuration des Villas Préfabriquées...");
+        let selectedListingFile = null;
+        function previewListingImage(input) {
+            const file = input.files[0];
+            if (file) {
+                selectedListingFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('addListingImagePreview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function editListing(id) {
+            const p = properties.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('addListingId').value = p.id;
+            document.getElementById('addTitle').value = p.title;
+            document.getElementById('addCity').value = p.city;
+            document.getElementById('addType').value = p.property_type;
+            document.getElementById('addDeal').value = p.offer_type;
+            document.getElementById('addPrice').value = p.price;
+            document.getElementById('addImageTheme').value = p.image_url || '';
+
+            if (p.image_url) {
+                document.getElementById('addListingImagePreview').innerHTML = `<img src="${p.image_url}" class="w-full h-full object-cover">`;
+            } else {
+                document.getElementById('addListingImagePreview').innerHTML = `<i class="fa-solid fa-camera text-slate-400"></i>`;
+            }
+
+            document.getElementById('addDesc').value = p.description;
+
+            document.getElementById('btnSubmitListing').innerText = "Mettre à jour l'offre";
+            openPublishModal();
+        }
+
+        function toggleUserListings() {
+            const list = document.getElementById('userListingsList');
+            const btn = document.getElementById('btnToggleUserListings');
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+                btn.innerText = "Masquer la liste";
+                fetchUserListings();
+            } else {
+                list.classList.add('hidden');
+                btn.innerText = "Voir la liste";
+            }
+        }
+
+        // --- PROFILE EDIT FUNCTIONS ---
+        function openProfileModal() {
+            if (!userProfile) return;
+            document.getElementById('editProfileUsername').value = userProfile.username || '';
+            document.getElementById('editProfileAvatarUrl').value = userProfile.avatar_url || '';
+            
+            if (userProfile.avatar_url) {
+                document.getElementById('editProfileImagePreview').innerHTML = `<img src="${userProfile.avatar_url}" class="w-full h-full object-cover">`;
+            } else {
+                document.getElementById('editProfileImagePreview').innerHTML = `<i class="fa-solid fa-user text-slate-400 text-2xl"></i>`;
+            }
+            
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            selectedProfileFile = null;
+            document.getElementById('editProfileNewPassword').value = '';
+            document.getElementById('editProfileConfirmNewPassword').value = '';
+        }
+
+        let selectedProfileFile = null;
+        function previewProfileImage(input) {
+            const file = input.files[0];
+            if (file) {
+                selectedProfileFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editProfileImagePreview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            if (!userProfile) return;
+
+            const username = document.getElementById('editProfileUsername').value.trim();
+            const newPassword = document.getElementById('editProfileNewPassword').value;
+            const confirmNewPassword = document.getElementById('editProfileConfirmNewPassword').value;
+            const btn = document.getElementById('btnSubmitProfile');
+            const originalText = btn.innerText;
+            btn.innerText = "Mise à jour...";
+            btn.disabled = true;
+
+            let avatarUrl = document.getElementById('editProfileAvatarUrl').value.trim() || userProfile.avatar_url;
+
+            if (selectedProfileFile) {
+                const fileName = `avatar_${userProfile.id}_${Date.now()}`;
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('avatars')
+                    .upload(fileName, selectedProfileFile);
+                
+                if (uploadError) {
+                    console.error("Upload error:", uploadError);
+                    showToast("Erreur upload avatar: " + uploadError.message);
+                } else {
+                    const { data: publicUrlData } = supabaseClient.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName);
+                    avatarUrl = publicUrlData.publicUrl;
+                }
+            }
+
+            let profileUpdateError = null;
+            let passwordUpdateError = null;
+
+            // 1. Update profile (username and avatar)
+            const { error: profileErr } = await supabaseClient
+                .from('profiles')
+                .update({ username, avatar_url: avatarUrl, updated_at: new Date().toISOString() })
+                .eq('id', userProfile.id);
+            profileUpdateError = profileErr;
+
+            // 2. Update password if provided
+            if (newPassword) {
+                if (newPassword !== confirmNewPassword) {
+                    showToast("Les nouveaux mots de passe ne correspondent pas.");
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+                const { error: passwordErr } = await supabaseClient.auth.updateUser({ password: newPassword });
+                passwordUpdateError = passwordErr;
+            }
+
+            if (profileUpdateError || passwordUpdateError) {
+                showToast("Erreur lors de la mise à jour: " + (profileUpdateError?.message || passwordUpdateError?.message));
+            } else {
+                showToast("Profil et mot de passe mis à jour avec succès !");
+                await fetchUserProfile(userProfile.id); 
+                applyUserSessionUI(); 
+                closeProfileModal(); 
+            }
+
+            btn.innerText = originalText;
+            btn.disabled = false;
         }
 
         function showToast(message) {
             const toast = document.getElementById('notificationToast');
-            const toastText = document.getElementById('notificationToastText');
-            
-            toastText.innerText = message;
-            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200";
-
-            setTimeout(() => { hideToast(); }, 5000);
+            document.getElementById('notificationToastText').innerText = message;
+            toast.classList.replace('translate-y-24', 'translate-y-0');
+            toast.classList.replace('opacity-0', 'opacity-100');
+            setTimeout(() => hideToast(), 5000);
         }
 
         function hideToast() {
             const toast = document.getElementById('notificationToast');
-            toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm w-full bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200";
+            toast.classList.replace('translate-y-0', 'translate-y-24');
+            toast.classList.replace('opacity-100', 'opacity-0');
         }
     </script>
 </body>

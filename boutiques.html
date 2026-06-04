@@ -76,6 +76,31 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
+
+        /* Quota Alert Styling */
+        .quota-alert-base {
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0.625rem; /* p-2.5 */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* gap-2 */
+        }
+        .quota-alert-warning {
+            background-color: #fffbeb; /* bg-amber-50 */
+            border-color: #fcd34d; /* border-amber-200 */
+            color: #b45309; /* text-amber-700 */
+        }
+        .quota-alert-critical {
+            background-color: #fef2f2; /* red-50 */
+            border-color: #fecaca; /* red-200 */
+            color: #dc2626; /* red-600 */
+            animation: pulse-red 1.5s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-slate-800 h-full flex flex-col selection:bg-tzgreen selection:text-white">
@@ -330,6 +355,13 @@
                                 
                                 <!-- SCREEN: HOME / SHOPPING -->
                                 <div id="screen-home" class="phone-view active space-y-4">
+                                    <!-- Quota Alert Box -->
+                                    <div id="quota-alert-box" class="hidden px-3 pt-3">
+                                        <div class="quota-alert-base" id="quota-alert-inner">
+                                            <i class="fa-solid fa-circle-exclamation text-xs"></i>
+                                            <p id="quota-alert-msg" class="text-[9px] font-bold leading-tight"></p>
+                                        </div>
+                                    </div>
                                     <!-- Phone Header Banner / Hero Section -->
                                     <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 pt-5 pb-6 flex flex-col justify-end space-y-1 relative overflow-hidden shadow-inner border-b-2 border-tzyellow">
                                         <div class="absolute right-0 bottom-0 opacity-10 text-7xl translate-y-2 translate-x-2"><i class="fa-solid fa-bag-shopping"></i></div>
@@ -588,7 +620,10 @@
                 delivery: { active: false, info: "" }
             },
             contact: { phone: "", address: "" },
-            social: { facebook: "", instagram: "", tiktok: "" }
+            social: { facebook: "", instagram: "", tiktok: "" },
+            orderLimitDay: 20,
+            orderLimitMonth: 500,
+            productLimit: 50
         };
 
         // Live Clock logic
@@ -755,7 +790,10 @@
                             logoUrl: configData.logo_url || '',
                             paymentMethods: configData.payment_methods || storeConfig.paymentMethods,
                             contact: configData.contact_info || storeConfig.contact,
-                            social: configData.social_links || storeConfig.social
+                            social: configData.social_links || storeConfig.social,
+                            orderLimitDay: configData.order_limit_day || 20,
+                            orderLimitMonth: configData.order_limit_month || 500,
+                            productLimit: configData.product_limit || 50
                         };
                     }
 
@@ -776,6 +814,37 @@
                     }
 
                     applyStoreConfig();
+
+                    // --- LOGIQUE D'ALERTE DE QUOTA ---
+                    const startOfToday = new Date();
+                    startOfToday.setHours(0,0,0,0);
+
+                    const alertBox = document.getElementById('quota-alert-box');
+                    const alertInner = document.getElementById('quota-alert-inner');
+                    const quotaLimit = storeConfig.orderLimitDay || 20;
+
+                    alertBox.classList.add('hidden'); // Hide by default
+                    alertInner.classList.remove('quota-alert-warning', 'quota-alert-critical'); // Clean up classes
+
+                    const { count: todayCount, error: countErr } = await sb
+                        .from('boutique_orders')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('shop_id', activeShopId)
+                        .gte('created_at', startOfToday.toISOString());
+
+                    if (!countErr && todayCount >= quotaLimit) {
+                        // Strictly reached or exceeded
+                        alertBox.classList.remove('hidden');
+                        alertInner.classList.add('quota-alert-critical');
+                        document.getElementById('quota-alert-msg').innerText = `ALERTE: Limite de commandes journalière atteinte (${todayCount}/${quotaLimit} oda leo). / TAHADHARI: Kikomo cha oda kimefikiwa!`;
+                    } else if (!countErr && todayCount >= (quotaLimit * 0.8)) {
+                        // Almost reached (80%)
+                        alertBox.classList.remove('hidden');
+                        alertInner.classList.add('quota-alert-warning');
+                        document.getElementById('quota-alert-msg').innerText = `Attention: Quota presque atteint (${todayCount}/${storeConfig.orderLimitDay} oda leo). / Tahadhari: Kikomo kimekaribia.`;
+                    } else {
+                        alertBox.classList.add('hidden');
+                    }
                     renderPhoneProducts();
                     showNotification(`Shop loaded / Duka limepakiwa: ${storeConfig.name}`);
                 }
@@ -1330,6 +1399,11 @@
             e.preventDefault();
             if (!activeShopId) return;
 
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Checking Quota...`;
+
             const name = document.getElementById('cust-name').value;
             const whatsapp = document.getElementById('cust-whatsapp').value;
             const address = document.getElementById('cust-address').value;
@@ -1356,6 +1430,22 @@
 
             if (useSupabase) {
                 try {
+                    // --- VALIDATION DU QUOTA JOURNALIER (ORDER LIMIT DAY) ---
+                    const startOfToday = new Date();
+                    startOfToday.setHours(0,0,0,0);
+                    
+                    const { count, error: countErr } = await sb
+                        .from('boutique_orders')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('shop_id', activeShopId)
+                        .gte('created_at', startOfToday.toISOString());
+
+                    if (!countErr && count >= (storeConfig.orderLimitDay || 20)) {
+                        alert("Désolé, cette boutique a atteint sa limite de commandes pour aujourd'hui. / Pole, duka hili limefikia kikomo cha oda leo.");
+                        btn.disabled = false; btn.innerHTML = originalText;
+                        return;
+                    }
+
                     // Send to Cloud Database
                     const { error } = await sb.from('boutique_orders').insert({
                         id: orderId,
@@ -1397,9 +1487,12 @@
                 } catch (e) {
                     console.error("Supabase Error:", e);
                     alert("Order error. Please try again. / Kosa wakati wa kuagiza.");
+                    btn.disabled = false; btn.innerHTML = originalText;
                     return;
                 }
             }
+
+            btn.disabled = false; btn.innerHTML = originalText;
 
             cart = [];
             updatePhoneCartBadge();

@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -139,9 +142,9 @@
             
             <div class="flex items-center gap-3">
                 <!-- User account identity -->
-                <div id="user-profile-badge" class="hidden sm:flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+                <div id="user-profile-badge" class="hidden flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
                     <span class="h-2 w-2 rounded-full bg-tzgreen"></span>
-                    <span id="user-email-display" class="font-semibold text-slate-700">admin@mlimanicity.co.tz</span>
+                    <span id="user-email-display" class="hidden sm:inline font-semibold text-slate-700">admin@mlimanicity.co.tz</span>
                     <button onclick="handleLogout()" class="text-slate-400 hover:text-rose-600 transition pl-1" title="Logout">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
@@ -198,6 +201,36 @@
                     </div>
                 </div>
 
+                <!-- Stock History Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                        <span class="bg-slate-100 text-tzblue p-1.5 rounded-lg text-xs"><i class="fa-solid fa-timeline"></i></span>
+                        Stock History (Historia ya Akiba)
+                    </h3>
+                    <div id="stock-history-container" class="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar pr-1">
+                        <!-- Stock history entries will be rendered here -->
+                        <p class="text-xs text-slate-400 text-center py-4">No recent stock movements. / Hakuna mabadiliko ya akiba.</p>
+                    </div>
+                    <button onclick="switchAdminTab('products-tab')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked"></i> Manage Products
+                    </button>
+                </div>
+
+                <!-- Low Stock Alerts Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                        <span class="bg-slate-100 text-rose-500 p-1.5 rounded-lg text-xs"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        Low Stock Alerts (Akiba Chini)
+                    </h3>
+                    <div id="low-stock-alerts-container" class="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar pr-1">
+                        <!-- Low stock products will be rendered here -->
+                        <p class="text-xs text-slate-400 text-center py-4">No low stock items. / Hakuna bidhaa zenye akiba ndogo.</p>
+                    </div>
+                    <button onclick="switchAdminTab('products-tab')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked"></i> Manage Products
+                    </button>
+                </div>
+
                 <!-- Tab Controls -->
                 <div class="bg-slate-100 p-1.5 rounded-xl flex gap-1 self-stretch overflow-x-auto hide-scrollbar sticky top-[73px] lg:top-[-24px] lg:-mx-6 lg:px-6 lg:py-4 lg:rounded-none z-20 shadow-sm border-b border-slate-200/60">
                     <button onclick="switchAdminTab('settings-tab')" id="btn-settings-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 bg-white text-slate-900 shadow-sm border border-slate-200 whitespace-nowrap">
@@ -210,6 +243,21 @@
                         <i class="fa-solid fa-receipt"></i> Orders (Oda)
                         <span id="orders-badge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] h-4 w-4 rounded-full flex items-center justify-center animate-bounce">0</span>
                     </button>
+                    <button onclick="switchAdminTab('stock-history-tab')" id="btn-stock-history-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-900 hover:bg-white/50 border border-transparent whitespace-nowrap">
+                        <i class="fa-solid fa-warehouse"></i> Stock History (Akiba)
+                    </button>
+                </div>
+                <!-- TAB 4: STOCK HISTORY -->
+                <div id="stock-history-tab" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Stock History (Historia ya Akiba)</h3>
+                        <div id="stock-history-container-tab" class="space-y-3 min-h-[150px] flex flex-col justify-center">
+                            <p class="text-xs text-slate-400 text-center py-4">No recent stock movements. / Hakuna mabadiliko ya akiba.</p>
+                        </div>
+                        <button onclick="clearStockHistory()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> Clear History
+                        </button>
+                    </div>
                 </div>
 
                 <!-- TAB 1: DESIGN & IDENTITY -->
@@ -422,18 +470,20 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1.5">Product Image URL (Picha)</label>
-                                <input type="url" id="prod-img-url" placeholder="https://example.com/image.jpg" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition mb-2">
-                                
-                                <p class="text-[10px] text-slate-400 uppercase font-black mb-2 text-center">Or choose quick theme</p>
-                                <div class="grid grid-cols-5 gap-2">
-                                    <label class="relative border-2 border-green-500 cursor-pointer rounded-lg overflow-hidden h-14 group">
-                                        <input type="radio" name="prod-img" value="fashion-1" checked class="hidden">
-                                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=150&q=80" class="h-full w-full object-cover" alt="Watch">
-                                        <div class="absolute inset-0 bg-green-900/30 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
-                                    </label>
-                                    <!-- other radios handled via JS mapping for simplicity in this demo, defaulting to image URL input -->
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5">Product Image (Picha ya Bidhaa)</label>
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div id="prod-img-preview" class="h-20 w-20 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                                        <i class="fa-solid fa-image text-2xl text-slate-300"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="block w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-xl text-[10px] font-black uppercase cursor-pointer transition shadow-sm text-center tracking-widest">
+                                            <i class="fa-solid fa-camera mr-2"></i> Select File / Chagua Picha
+                                            <input type="file" id="prod-image-file" class="hidden" accept="image/*" onchange="previewProductImage(this)">
+                                        </label>
+                                        <p class="text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-wider">Format: PNG, JPG, JPEG</p>
+                                    </div>
                                 </div>
+                                <input type="url" id="prod-img-url" placeholder="Or enter Image URL / Au weka URL ya picha..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
                             </div>
 
                             <button type="submit" class="w-full bg-tzgreen text-white hover:bg-green-600 font-bold py-2.5 rounded-lg text-sm transition duration-200 flex items-center justify-center gap-2 shadow-md">
@@ -462,6 +512,14 @@
                             <button onclick="clearAllOrders()" class="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                                 <i class="fa-solid fa-trash-can"></i> Clear All
                             </button>
+                            <div class="flex gap-2">
+                                <button onclick="exportOrdersPDF()" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> Export PDF
+                                </button>
+                                <button onclick="clearAllOrders()" class="text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can"></i> Clear All
+                                </button>
+                            </div>
                         </div>
 
                         <div id="admin-orders-container" class="space-y-3 min-h-[150px] flex flex-col justify-center">
@@ -604,6 +662,21 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                <!-- SCREEN: SUCCESS -->
+                                <div id="screen-success" class="phone-view hidden p-6 flex flex-col items-center justify-center text-center h-full space-y-4">
+                                    <div class="h-16 w-16 bg-green-100 text-tzgreen rounded-full flex items-center justify-center text-3xl animate-bounce shadow-md">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h4 class="text-sm font-extrabold text-slate-900">Oda Imekamilika!</h4>
+                                        <p class="text-[11px] text-slate-400">Oda yako imepokelewa na inafanyiwa kazi. / Order received!</p>
+                                    </div>
+                                    <button onclick="navigatePhoneTo('home')" class="w-full dynamic-bg text-white text-xs font-bold py-2 rounded-xl transition duration-200">
+                                        Back to Shop / Rudi Dukani
+                                    </button>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Phone Bottom Navigation Bar -->
@@ -640,6 +713,7 @@
         let appState = {
             isAuthenticated: false,
             userEmail: '',
+            activeShopId: null,
             themeColor: '#1eb53a',
             storeConfig: {
                 name: 'Mlimani City Store',
@@ -649,15 +723,22 @@
                 phone: '+255 712 345 678',
                 address: 'Sam Nujoma Rd, Dar es Salaam'
             },
-            products: [
+            products: [],
+            initialProducts: [ // Keep initial products for reset
                 { id: '1', sku: 'TZ-01', name: 'Kitenge Dress', category: 'Fashion', price: 45000, stock: 15, desc: 'Beautiful high-quality Kitenge fabric dress made in Tanzania.', img: 'https://images.unsplash.com/photo-1549062572-544a64fb0c56?auto=format&fit=crop&w=300&q=80' },
-                { id: '2', sku: 'TZ-02', name: 'Kilimanjaro Coffee', category: 'Food', price: 15000, stock: 30, desc: 'Premium roasted Arabica coffee beans from Mount Kilimanjaro.', img: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=300&q=80' },
-                { id: '3', sku: 'TZ-03', name: 'Tingatinga Art Canvas', category: 'Art', price: 85000, stock: 5, desc: 'Original authentic Tingatinga painting from Dar es Salaam.', img: 'https://images.unsplash.com/photo-1578301978693-85fa9c02614d?auto=format&fit=crop&w=300&q=80' },
-                { id: '4', sku: 'TZ-04', name: 'Maasai Shuka', category: 'Fashion', price: 25000, stock: 20, desc: 'Traditional warm Maasai blanket. Red and black check.', img: 'https://images.unsplash.com/photo-1610486846931-e6e2264bd797?auto=format&fit=crop&w=300&q=80' }
+                { id: '2', sku: 'TZ-02', name: 'Zanzibar Spices Set', category: 'Food', price: 25000, stock: 30, desc: 'Authentic collection of organic spices from the spice islands.', img: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=300&q=80' },
+                { id: '3', sku: 'TZ-03', name: 'Tingatinga Art Canvas', category: 'Art', price: 85000, stock: 5, desc: 'Original authentic Tingatinga painting from Dar es Salaam.', img: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=300&q=80' },
+                { id: '4', sku: 'TZ-04', name: 'Maasai Shuka', category: 'Fashion', price: 35000, stock: 20, desc: 'Traditional warm Maasai blanket. Red and black check.', img: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=300&q=80' }
             ],
             orders: [],
-            cart: []
+            cart: [],
+            stockHistory: []
         };
+
+        // --- INIT CLOUD ---
+        try {
+            sb = supabase.createClient(CLOUD_URL, CLOUD_KEY);
+        } catch(e) { console.error("Cloud Error", e); }
 
         // Format Number to TZS Currency
         function formatCurrency(amount) {
@@ -692,14 +773,68 @@
             appState.userEmail = email;
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app-main-content').classList.remove('hidden');
+            document.getElementById('user-profile-badge').classList.remove('hidden');
             document.getElementById('user-email-display').innerText = email;
-            initApp();
+            
+            // For demo mode, populate products from initialProducts
+            if (email === 'demo@mlimanicity.co.tz') {
+                appState.products = [...appState.initialProducts];
+            }
+            // Change from local demo to real DB load
+            loadStoreData();
         }
 
-        function handleLogout() {
-            appState.isAuthenticated = false;
-            document.getElementById('auth-screen').classList.remove('hidden');
-            document.getElementById('app-main-content').classList.add('hidden');
+        async function handleLogout() {
+            if (sb) await sb.auth.signOut();
+            window.location.reload();
+        }
+
+        async function loadStoreData() {
+            if (!sb || !appState.isAuthenticated) return;
+            const { data: { user } } = await sb.auth.getUser();
+            if (!user) return;
+
+            const badge = document.getElementById('cloud-status-badge');
+            badge.innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-500"></span> Live Sync`;
+            badge.className = "text-xs font-bold text-emerald-600 flex items-center justify-end gap-1";
+
+            // Fetch all shops to get owner_id for the current user
+            const { data: allShopsData, error: allShopsError } = await sb.from('boutique_config').select('*');
+            if (!allShopsError && allShopsData) appState.allShops = allShopsData;
+
+            // 1. Fetch Store Config
+            const { data: config } = await sb.from('boutique_config').select('*').eq('owner_id', user.id).single();
+            if (config) {
+                appState.storeConfig = {
+                    name: config.name,
+                    slogan: config.slogan,
+                    currency: config.currency || 'TZS',
+                    banner: config.banner || ''
+                };
+                appState.activeShopId = config.shop_id; // Set activeShopId from fetched config
+                document.getElementById('config-store-name').value = config.name;
+                document.getElementById('config-store-slogan').value = config.slogan;
+                updateStoreConfig();
+            } else {
+                // If no config found, use default and set activeShopId to a derived value
+                appState.activeShopId = 'shop_' + user.id.slice(0, 12);
+            }
+
+
+            // 2. Fetch Products
+            const { data: dbProducts } = await sb.from('boutique_products').select('*').eq('owner_id', user.id);
+            if (dbProducts) {
+                appState.products = dbProducts.map(p => ({
+                    id: p.id, sku: p.sku, name: p.name, category: p.category, 
+                    price: p.price, stock: p.stock, desc: p.description, img: p.img_url
+                }));
+            }
+
+            // 3. Fetch Orders
+            const { data: dbOrders } = await sb.from('boutique_orders').select('*').eq('owner_id', user.id);
+            if (dbOrders) appState.orders = dbOrders;
+            
+            initApp();
         }
 
         // --- DASHBOARD ADMIN FUNCTIONS ---
@@ -741,9 +876,29 @@
             document.documentElement.style.setProperty('--primary-rgb', hexCode); // Simplified for demo
         }
 
+        let selectedProductImageBase64 = null;
+        function previewProductImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedProductImageBase64 = e.target.result;
+                    document.getElementById('prod-img-preview').innerHTML = `<img src="${selectedProductImageBase64}" class="h-full w-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         // --- PRODUCT MANAGEMENT ---
-        function handleAddNewProduct(e) {
+        async function handleAddNewProduct(e) {
             e.preventDefault();
+            if (!sb) return;
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Saving...`;
+
             const id = document.getElementById('edit-prod-id').value;
             const sku = document.getElementById('prod-code').value || 'TZ-' + Math.floor(Math.random()*1000);
             const name = document.getElementById('prod-name').value;
@@ -752,22 +907,53 @@
             const stock = parseInt(document.getElementById('prod-stock').value);
             const desc = document.getElementById('prod-desc').value;
             
-            let img = document.getElementById('prod-img-url').value;
+            let img = selectedProductImageBase64 || document.getElementById('prod-img-url').value;
             if(!img) img = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80'; // fallback
 
-            const product = { id: id || Date.now().toString(), sku, name, category, price, stock, desc, img };
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if (!user) throw new Error("Please log in again.");
 
-            if (id) {
-                const index = appState.products.findIndex(p => p.id === id);
-                if (index !== -1) appState.products[index] = product;
-            } else {
-                appState.products.unshift(product);
+                const productData = {
+                    sku,
+                    name,
+                    category,
+                    price,
+                    stock,
+                    description: desc,
+                    img_url: img,
+                    owner_id: user.id,
+                    shop_id: appState.activeShopId || ('shop_' + user.id.slice(0, 12))
+                };
+
+                let res;
+                if (id) {
+                    res = await sb.from('boutique_products').update(productData).eq('id', id);
+                    // Add to stock history for updates
+                    if (stock !== oldStock) {
+                        const type = stock > oldStock ? 'addition' : 'deduction';
+                        appState.stockHistory.unshift({ type, productId: id, productName: name, quantity: Math.abs(stock - oldStock), oldStock, newStock: stock, timestamp: new Date().toLocaleString() });
+                    }
+                } else {
+                    res = await sb.from('boutique_products').insert([productData]);
+                }
+
+                if (res.error) throw res.error;
+
+                alert("Bidhaa imehifadhiwa! / Product saved!");
+                resetProductForm();
+                // Add to stock history for new product
+                if (!id) {
+                    appState.stockHistory.unshift({ type: 'addition', productId: res.data[0].id, productName: name, quantity: stock, oldStock: 0, newStock: stock, timestamp: new Date().toLocaleString() });
+                }
+
+                loadStoreData();
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
-
-            resetProductForm();
-            renderAdminProducts();
-            renderPhoneProducts();
-            updateDashboardStats();
         }
 
         function editProduct(id) {
@@ -781,6 +967,7 @@
             document.getElementById('prod-stock').value = p.stock;
             document.getElementById('prod-desc').value = p.desc;
             document.getElementById('prod-img-url').value = p.img;
+            document.getElementById('prod-img-preview').innerHTML = `<img src="${p.img}" class="h-full w-full object-cover">`;
             
             document.getElementById('prod-form-title').innerText = "Edit Product (Hariri)";
             document.getElementById('prod-form-icon').className = "fa-solid fa-pen";
@@ -788,7 +975,23 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function deleteProduct(id) {
+        async function deleteProduct(id) {
+            if (!confirm("Are you sure? / Una uhakika?")) return;
+            
+            const productToDelete = appState.products.find(p => p.id === id);
+
+            if (sb) {
+                const { error } = await sb.from('boutique_products').delete().eq('id', id);
+                if (error) return alert("Delete failed: " + error.message);
+            }
+            
+            // Add to stock history for deletion
+            if (productToDelete) {
+                appState.stockHistory.unshift({ type: 'deletion', productId: productToDelete.id, productName: productToDelete.name, quantity: productToDelete.stock, oldStock: productToDelete.stock, newStock: 0, timestamp: new Date().toLocaleString() });
+                renderStockHistory('stock-history-container'); // Update overview card
+                renderStockHistory('stock-history-container-tab'); // Update new tab
+            }
+            
             appState.products = appState.products.filter(p => p.id !== id);
             renderAdminProducts();
             renderPhoneProducts();
@@ -798,6 +1001,8 @@
         function resetProductForm() {
             document.getElementById('add-product-form').reset();
             document.getElementById('edit-prod-id').value = '';
+            selectedProductImageBase64 = null;
+            document.getElementById('prod-img-preview').innerHTML = `<i class="fa-solid fa-image text-2xl text-slate-300"></i>`;
             document.getElementById('prod-form-title').innerText = "Add New Product (Ongeza Bidhaa)";
             document.getElementById('prod-form-icon').className = "fa-solid fa-plus";
             document.getElementById('btn-cancel-edit').classList.add('hidden');
@@ -1018,6 +1223,20 @@
                 if(prod) prod.stock -= cartItem.qty;
             });
 
+            // Add to stock history for each item deducted
+            appState.cart.forEach(cartItem => {
+                const prod = appState.products.find(p => p.id === cartItem.id);
+                appState.stockHistory.unshift({
+                    type: 'deduction',
+                    productId: cartItem.id,
+                    productName: cartItem.name,
+                    quantity: cartItem.qty,
+                    oldStock: prod.stock + cartItem.qty,
+                    newStock: prod.stock,
+                    timestamp: new Date().toLocaleString()
+                });
+            });
+
             // Add order to admin
             appState.orders.unshift(newOrder);
             
@@ -1029,13 +1248,60 @@
             renderAdminProducts();
             updateDashboardStats();
             renderOrders();
+            renderStockHistory('stock-history-container'); // Update overview card
+            renderStockHistory('stock-history-container-tab'); // Update new tab
             
-            navigatePhoneTo('home');
+            navigatePhoneTo('success');
             
             // Notification badge on Admin Orders Tab
             const adminBadge = document.getElementById('orders-badge');
             adminBadge.innerText = appState.orders.length;
             adminBadge.classList.remove('hidden');
+        }
+
+        function renderStockHistory(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (appState.stockHistory.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No recent stock movements. / Hakuna mabadiliko ya akiba.</p>`;
+                return;
+            }
+
+            container.innerHTML = appState.stockHistory.map(entry => {
+                let typeClass = '';
+                let icon = '';
+                let actionText = '';
+
+                if (entry.type === 'deduction') {
+                    typeClass = 'text-rose-500';
+                    icon = 'fa-minus-circle';
+                    actionText = `Deducted ${entry.quantity} from stock. New stock: ${entry.newStock}`;
+                } else if (entry.type === 'addition') {
+                    typeClass = 'text-emerald-500';
+                    icon = 'fa-plus-circle';
+                    actionText = `Added ${entry.quantity} to stock. New stock: ${entry.newStock}`;
+                } else if (entry.type === 'deletion') {
+                    typeClass = 'text-red-700';
+                    icon = 'fa-trash-alt';
+                    actionText = `Product deleted. All ${entry.quantity} stock removed.`;
+                } else { // For initial stock set or other changes
+                    typeClass = 'text-blue-500';
+                    icon = 'fa-info-circle';
+                    actionText = `Stock updated to ${entry.newStock}`;
+                }
+
+                return `
+                    <div class="flex items-center gap-3 p-2 border border-slate-100 bg-slate-50 rounded-lg">
+                        <span class="text-xs ${typeClass}"><i class="fa-solid ${icon}"></i></span>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-slate-800 truncate">${entry.productName}</h4>
+                            <p class="text-[10px] text-slate-500">${actionText}</p>
+                        </div>
+                        <p class="text-[10px] text-slate-400">${entry.timestamp}</p>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderOrders() {
@@ -1065,6 +1331,46 @@
                     </div>
                 `;
             });
+        }
+
+        function exportOrdersPDF() {
+            if (!appState.orders || appState.orders.length === 0) return alert("No orders to export / Hakuna oda.");
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(30, 181, 58); // TZ Green
+            doc.text(`${appState.storeConfig.name} - Sales Report`, 14, 22);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
+            
+            const tableData = appState.orders.map(order => [
+                order.id,
+                order.date,
+                order.items.map(i => `${i.qty}x ${i.name}`).join(', '),
+                formatCurrency(order.total),
+                'Pending'
+            ]);
+            
+            doc.autoTable({
+                startY: 35,
+                head: [['Order ID', 'Date', 'Items', 'Total Amount', 'Status']],
+                body: tableData,
+                headStyles: { fillColor: [30, 181, 58] }
+            });
+            
+            doc.save(`Orders_Report_${new Date().getTime()}.pdf`);
+        }
+
+        function clearStockHistory() {
+            if (confirm("Are you sure you want to clear all stock history? / Una uhakika unataka kufuta historia yote?")) {
+                appState.stockHistory = [];
+                renderStockHistory('stock-history-container');
+                renderStockHistory('stock-history-container-tab');
+            }
         }
 
         function clearAllOrders() {
