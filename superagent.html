@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Mobile - Super Agent</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- jsPDF pour l'exportation des relevés -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    /* Custom Scrollbar pour un look premium */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a; /* slate-900 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #115e59; /* teal-800 */
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0d9488; /* teal-600 */
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <!-- Zone de Notifications (Toast) -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <!-- Application Super Agent -->
+  <div class="min-h-screen flex flex-col bg-slate-900 text-slate-200 relative max-w-2xl mx-auto border-x border-slate-800 shadow-2xl" id="phone-1">
+    <!-- Chargé dynamiquement par JS -->
+  </div>
+
+  <script>
+    let currentUserData = null;
+    let managedAgents = []; // To store agents managed by this super agent
+    let managedClients = []; // To store clients managed by agents of this super agent
+    let transactions = [];
+    
+    // Supabase Client Initialization
+    const SUPABASE_URL = 'https://fcbsmfcbzyyeksqfajdu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjYnNtZmNienl5ZWtzcWZhamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQyNDQsImV4cCI6MjA5NjUwMDI0NH0.NoPwKmQ8sbH1o-mt-O2yQgm7P1Bv0BRoeiCa8kJ1C0E';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // État de navigation
+    let currentUserId = null;
+    let currentTab = "home";
+    let isLoggedIn = false;
+    let tempTargetUserForRejection = null; // Stockage temporaire du client à rejeter
+
+    // --- INITIALISATION AU CHARGEMENT ---
+    window.onload = async function() {
+      const storedUserId = sessionStorage.getItem('currentUserId');
+      const storedUserRole = sessionStorage.getItem('currentUserRole');
+      
+      if (storedUserId && storedUserRole === 'super_agent') {
+        currentUserId = storedUserId;
+        isLoggedIn = true;
+        await fetchSuperAgentData();
+        renderPhone();
+        showToast("Session Super Agent active. Réseau opérationnel.", "success");
+      } else {
+        // Rediriger vers la page de connexion générale si non authentifié ou rôle incorrect
+        window.location.href = 'login.html';
+      }
+    };
+
+    async function fetchSuperAgentData() {
+      const { data, error } = await supabaseClient.from('users').select('*').eq('id', currentUserId).single();
+      if (error) {
+        console.error('Error fetching Super Agent data:', error.message);
+        showToast('Erreur lors du chargement des données du Super Agent.', 'error');
+        // Fallback or redirect if data cannot be fetched
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUserData = {
+        ...data,
+        balance: data.balance_usd || 0,
+        balanceCDF: data.balance_cdf || 0,
+        code: data.pin_code,
+        commission: data.commission || 0
+      };
+      
+      // Récupérer aussi les agents gérés par ce super agent
+      const { data: agents } = await supabaseClient.from('users').select('*').eq('managedBy', currentUserId);
+      managedAgents = (agents || []).map(a => ({
+        ...a,
+        balance: a.balance_usd || 0,
+        limit: a.limit || 0,
+        balanceCDF: a.balance_cdf || 0,
+        code: a.pin_code
+      }));
+
+      // Récupérer les clients gérés par les agents de ce super agent
+      const myAgentIds = managedAgents.map(a => a.id);
+      const { data: clients } = await supabaseClient.from('users').select('*').in('managedBy', myAgentIds);
+      managedClients = (clients || []).map(c => ({
+        ...c,
+        balance: c.balance_usd || 0,
+        limit: c.limit || 0,
+        balanceCDF: c.balance_cdf || 0,
+        code: c.pin_code
+      }));
+
+      // Fusionner pour la variable globale usersData utilisée dans les listes
+      usersData = [...managedAgents, ...managedClients];
+
+      // Fetch transactions relevant to this super agent
+      const { data: txs } = await supabaseClient.from('transactions')
+        .select('*')
+        .or(`from_user_id.eq.${currentUserId},to_user_id.eq.${currentUserId}`)
+        .order('created_at', { ascending: false });
+      
+      transactions = (txs || []).map(tx => ({
+        ...tx,
+        from: tx.from_user_id,
+        to: tx.to_user_id,
+        date: new Date(tx.created_at).toLocaleDateString()
+      }));
+    }
+
+    // --- GESTION DES NOTIFICATIONS (TOAST) ---
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold transition-all duration-300 transform -translate-y-2 opacity-0 z-50`;
+      
+      if (type === "success") {
+        toast.className += " bg-emerald-950 border-emerald-800 text-emerald-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+      } else if (type === "error") {
+        toast.className += " bg-rose-950 border-rose-800 text-rose-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else if (type === "warning") {
+        toast.className += " bg-amber-950 border-amber-800 text-amber-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else {
+        toast.className += " bg-indigo-950 border-indigo-800 text-indigo-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${message}</span>`;
+      }
+
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.classList.remove("-translate-y-2", "opacity-0"), 50);
+      setTimeout(() => {
+        toast.classList.add("-translate-y-2", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // --- RENDU DU TÉLÉPHONE SUPER AGENT ---
+    function renderPhone() {
+      const container = document.getElementById("phone-1");
+
+      const user = currentUserData;
+
+      // Header de l'app Master
+      let headerHTML = `
+        <div class="px-4 py-3 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(255,215,0,0.3)]">
+              <span class="text-black font-black text-[9px] tracking-tighter">BL</span>
+            </div>
+            <span class="font-extrabold text-[10px] tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
+          </div>
+        </div>
+        <div class="p-4 bg-slate-950/40 flex items-center justify-between border-b border-slate-800">
+          <div class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded-lg transition" onclick="changeTab('profile')">
+            <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center text-sm font-bold shadow-inner">
+              <i class="fa-solid fa-users-line"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-white">${user.name}</h4>
+              <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Super Agent Distributeur</p>
+            </div>
+          </div>
+          <span class="text-[10px] px-2 py-1 rounded-full font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+            ${user.status}
+          </span>
+        </div>
+      `;
+
+      let contentHTML = "";
+      if (currentTab === "profile") {
+        contentHTML = renderProfileScreen(user);
+      } else {
+        contentHTML = renderSuperAgentScreen(user, currentTab);
+      }
+
+      container.innerHTML = `
+        ${headerHTML}
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 pb-20 relative">
+          ${contentHTML}
+        </div>
+        ${renderSuperAgentFooter(currentTab)}
+      `;
+    }
+
+    // --- NAVIGATION ---
+    function changeTab(newTab) {
+      currentTab = newTab;
+      renderPhone();
+    }
+
+    // --- ÉCRANS DU SUPER AGENT ---
+    function renderSuperAgentScreen(user, tab) {
+      if (tab === "home") {
+        return `
+          <!-- Dashboard Super Agent -->
+          <div class="bg-gradient-to-br from-teal-600 to-emerald-800 rounded-3xl p-5 shadow-xl border border-teal-500/30 relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            
+            <p class="text-xs text-teal-100 uppercase tracking-wider font-semibold">Liquidités Globales (Master)</p>
+            <h2 class="text-3xl font-black text-white mt-1">${user.balance.toFixed(2)} $</h2>
+            <p class="text-sm font-bold text-teal-100 mt-2">${(user.balanceCDF || 0).toLocaleString()} FC</p>
+
+            <div class="flex justify-between items-center mt-4 pt-3 border-t border-white/20 text-xs text-teal-100">
+              <span>Super-Commissions : <strong class="text-white">${user.commission.toFixed(2)} $</strong></span>
+              <span>ID : <strong class="text-white">${user.code}</strong></span>
+            </div>
+          </div>
+
+          <!-- Section Outils de Gestion -->
+          <p class="text-xs text-teal-400 font-bold uppercase tracking-wider mt-6 mb-2">Gestion du Réseau Détaillant</p>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="changeTab('distribute')" class="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-2xl transition flex flex-col items-start gap-2 text-left group">
+              <div class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center group-hover:bg-teal-500/20 transition">
+                <i class="fa-solid fa-boxes-packing text-lg"></i>
+              </div>
+              <div>
+                <span class="text-sm font-bold text-white block">Allocation Float</span>
+                <span class="text-[10px] text-slate-400">Allouer du numérique</span>
+              </div>
+            </button>
+
+            <button onclick="changeTab('create-agent')" class="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-2xl transition flex flex-col items-start gap-2 text-left group">
+              <div class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center group-hover:bg-teal-500/20 transition">
+                <i class="fa-solid fa-user-plus text-lg"></i>
+              </div>
+              <div>
+                <span class="text-sm font-bold text-white block">Créer un Agent</span>
+                <span class="text-[10px] text-slate-400">Enrôler un nouvel agent</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Réseau de Points de Service Actuels -->
+          <div class="mt-6">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Mon Réseau d'Agents</h4>
+            <div class="space-y-2 max-h-40 overflow-y-auto">
+              ${usersData.filter(u => u.managedBy === user.id).map(u => `
+                <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex justify-between items-center">
+                  <div>
+                    <span class="text-sm font-bold text-white block">${u.name}</span>
+                    <span class="text-[10px] text-slate-500">Matricule: ${u.id} • Code: ${u.code}</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-sm font-bold text-teal-400 block">${u.balance.toFixed(2)} $</span>
+                    <span class="text-[9px] text-slate-400">${(u.balanceCDF || 0).toLocaleString()} FC</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } 
+      
+      else if (tab === "distribute") {
+        const agents = managedAgents;
+        let optionsHTML = agents.map(a => `<option value="${a.id}">${a.name} (Float actuel: ${a.balance.toFixed(2)}$)</option>`).join("");
+        
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-boxes-packing text-teal-400"></i> Distribution de Liquidités (Float)
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Sélectionner l'Agent Destinataire</label>
+              <select id="float-agent" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+                ${optionsHTML}
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Montant USD à allouer ($)</label>
+              <input type="number" id="float-amount" placeholder="0.00" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+            </div>
+            <button onclick="allouerFloat()" class="w-full py-3 bg-teal-600 hover:bg-teal-500 text-sm font-bold text-white rounded-xl transition shadow-lg shadow-teal-600/20">
+              Envoyer la liquidité numérique
+            </button>
+            <button onclick="changeTab('home')" class="w-full py-2 text-sm text-slate-400 hover:text-white text-center block">
+              Annuler
+            </button>
+          </div>
+        `;
+      } 
+      
+      else if (tab === "create-agent") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-user-plus text-teal-400"></i> Enrôler un Nouvel Agent
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Nom Complet de l'Agent</label>
+              <input type="text" id="ag-name" placeholder="Nom de l'agent" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Numéro de Téléphone</label>
+              <input type="text" id="ag-phone" placeholder="Ex: 2430000007" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-[10px] text-slate-400 uppercase font-bold">N° Identité / KYC</label>
+                <input type="text" id="ag-doc" placeholder="N° Document" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 uppercase font-bold">Justificatif & Photo</label>
+                <div class="flex gap-2 items-center mt-1">
+                  <div id="ag-photo-preview-container" class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden border border-slate-700">
+                    <img id="ag-photo-preview" src="" alt="Aperçu" class="hidden w-full h-full object-cover">
+                    <i id="ag-photo-placeholder" class="fa-solid fa-image text-slate-500 text-sm"></i>
+                  </div>
+                  <input type="hidden" id="ag-photo-url">
+                  <div class="flex flex-col gap-1">
+                    <button onclick="simulerCaptureImage('ag-photo')" class="p-1 bg-slate-800 rounded hover:bg-slate-700 text-white text-[10px]" title="Prendre Photo">
+                      <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <button onclick="simulerUploadImage('ag-photo')" class="p-1 bg-slate-800 rounded hover:bg-slate-700 text-white text-[10px]" title="Importer Doc">
+                      <i class="fa-solid fa-upload"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-teal-950/20 border border-dashed border-teal-800/50 rounded-2xl text-[10px] text-teal-300">
+              Note : Le compte de l'agent est créé avec un PIN par défaut "1111" et nécessite un premier float d'amorçage.
+            </div>
+
+            <button onclick="creerAgentParSuperAgent()" class="w-full py-3 bg-teal-600 hover:bg-teal-500 text-sm font-bold text-white rounded-xl transition shadow-lg">
+              Confirmer la création
+            </button>
+            <button onclick="changeTab('home')" class="w-full py-2 text-sm text-slate-400 hover:text-white text-center block">
+              Annuler
+            </button>
+          </div>
+        `;
+      }
+
+      else if (tab === "approvals") {
+        // Obtenir tous les dossiers de clients "En attente d'approbation" gérés par ses agents
+        const myAgentIds = managedAgents.map(u => u.id);
+        const pendingClients = usersData.filter(u => u.role === "client" && u.status === "En attente d'approbation" && myAgentIds.includes(u.managedBy));
+
+        let listHTML = "";
+        if (pendingClients.length === 0) {
+          listHTML = `
+            <div class="p-6 text-center text-slate-500 text-xs">
+              <i class="fa-solid fa-circle-check text-teal-500 text-2xl mb-2"></i>
+              <p>Aucun dossier client en attente de vérification KYC dans votre réseau.</p>
+            </div>
+          `;
+        } else {
+          pendingClients.forEach(c => {
+            const managingAgent = managedAgents.find(u => u.id === c.managedBy);
+            listHTML += `
+              <div class="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-3 mb-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <span class="text-sm font-bold text-white block">${c.name}</span>
+                    <span class="text-[10px] text-slate-400">Tél : ${c.phone}</span>
+                  </div>
+                  <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
+                    KYC En attente
+                  </span>
+                </div>
+                <div class="text-xs text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                  <p>Document d'identité : <strong class="text-slate-300 font-mono">${c.kycDoc || 'Non fourni'}</strong></p>
+                  <p class="mt-1">Soumis par l'Agent : <strong class="text-slate-300">${managingAgent ? managingAgent.name : 'Inconnu'}</strong></p>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="approuverCompte('${c.id}')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+                    Approuver
+                  </button>
+                  <button onclick="preparerRejet('${c.id}')" class="flex-1 py-2 bg-rose-900 hover:bg-rose-800 text-xs font-bold text-white rounded-xl transition">
+                    Rejeter
+                  </button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-user-check text-teal-400"></i> Dossiers Clients (KYC)
+          </h3>
+          <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+            En tant que Super Agent, validez la conformité réglementaire des clients recrutés par vos agents de terrain.
+          </p>
+          <div class="space-y-1">
+            ${listHTML}
+          </div>
+        `;
+      }
+
+      else if (tab === "reject-client") {
+        const target = usersData.find(u => u.id === tempTargetUserForRejection);
+        return `
+          <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-user-slash text-rose-500"></i> Notification de Rejet KYC
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs">
+              <span class="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">Client concerné</span>
+              <span class="text-sm font-bold text-white block mt-1">${target ? target.name : 'Inconnu'}</span>
+              <span class="text-slate-500 block mt-1">N° Document : ${target ? target.kycDoc : 'N/A'}</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Motif réglementaire du rejet</label>
+              <textarea id="rejection-reason" placeholder="Ex: Pièce d'identité floue ou expirée..." class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-rose-500 h-28 resize-none"></textarea>
+            </div>
+            <button onclick="soumettreRejetClient()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-sm font-bold text-white rounded-xl transition shadow-lg">
+              Confirmer le rejet KYC
+            </button>
+            <button onclick="changeTab('approvals')" class="w-full py-2 text-sm text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      }
+
+      else if (tab === "history") {
+        const myTx = transactions.filter(t => t.from === user.id || t.to === user.id);
+        let txListHTML = "";
+
+        myTx.slice().reverse().forEach(tx => {
+          const isOutgoing = tx.from === user.id;
+          const otherUser = usersData.find(u => u.id === (isOutgoing ? tx.to : tx.from));
+          txListHTML += `
+            <div class="p-3 mb-2 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
+              <div>
+                <p class="text-white font-bold capitalize">${tx.type.replace('_', ' ')}</p>
+                <p class="text-slate-500 mt-1">${otherUser ? otherUser.name : 'Réseau'} • ${tx.date}</p>
+              </div>
+              <span class="font-bold ${isOutgoing ? 'text-rose-400' : 'text-emerald-400'} text-sm">
+                ${isOutgoing ? '-' : '+'}${tx.amount.toFixed(2)}$
+              </span>
+            </div>
+          `;
+        });
+
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-clock-rotate-left text-teal-400"></i> Historique Master
+          </h3>
+          <button onclick="exportHistoryPDF()" class="w-full mb-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-file-pdf text-rose-500"></i> Exporter Relevé Master (PDF)
+          </button>
+          <div class="space-y-1">
+            ${txListHTML || '<p class="text-center py-6 text-slate-500 text-xs">Aucune transaction master enregistrée.</p>'}
+          </div>
+        `;
+      }
+    }
+
+    // --- SECONDARY SCREENS ---
+    function renderProfileScreen(user) {
+      return `
+        <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-circle text-teal-400"></i> Mon Profil
+        </h3>
+        <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+          <div class="space-y-2">
+            <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">Matricule Distributeur</p>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <p class="text-sm text-white font-semibold">${user.name}</p>
+                <p class="text-xs text-slate-400 mt-2">Code Master : <span class="text-teal-400 font-bold">${user.code}</span></p>
+                <p class="text-xs text-slate-400 mt-1">Téléphone Rattaché : ${user.phone}</p>
+            </div>            
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-800/80">
+              <div>
+                <p class="text-xs text-slate-500 uppercase font-bold">Code PIN Actuel</p>
+                <p id="display-pin" class="text-lg text-teal-400 font-mono font-bold mt-1">••••</p>
+              </div>
+              <button onclick="togglePinVisibility('${user.code}')" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition flex items-center justify-center">
+                <i class="fa-solid fa-eye" id="pin-icon"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-slate-800/80">
+            <label class="text-xs text-slate-400 uppercase font-bold">Nouveau Code PIN</label>
+            <input type="password" id="new-pin" placeholder="Ex: 5678" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-teal-500">
+            <button onclick="updateUserPin()" class="w-full mt-3 py-3 bg-teal-600 hover:bg-teal-500 text-sm font-bold text-white rounded-xl transition shadow-lg">Mettre à jour le PIN</button>
+          </div>
+          <button onclick="logout()" class="w-full py-3 mt-4 bg-slate-800 hover:bg-slate-700 text-sm font-bold text-white rounded-xl transition">
+            <i class="fa-solid fa-right-from-bracket mr-2"></i> Déconnexion
+          </button>
+        </div>
+        <button onclick="changeTab('home')" class="w-full py-3 mt-2 text-sm font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition">Retour au tableau de bord</button>
+      `;
+    }
+
+    // --- UTILITAIRES PROFILE ---
+    function togglePinVisibility(pin) {
+      const el = document.getElementById(`display-pin`);
+      const icon = document.getElementById(`pin-icon`);
+      if (el.innerText === "••••") {
+        el.innerText = pin;
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        el.innerText = "••••";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
+
+    function updateUserPin() {
+      // Correction: Ajouter la persistance Supabase
+      const newPin = document.getElementById(`new-pin`).value;
+      if (newPin.length < 4) { showToast("Le code PIN doit comporter au moins 4 caractères.", "error"); return; }
+      supabaseClient.from('users').update({ pin_code: newPin }).eq('id', currentUserId).then(() => {
+        currentUserData.code = newPin; // Mettre à jour les données locales après succès
+      showToast("Votre code PIN a été modifié avec succès.", "success");
+      changeTab("profile");
+      });
+    }
+
+    function logout() {
+      sessionStorage.removeItem('currentUserId');
+      sessionStorage.removeItem('currentUserRole');
+      window.location.href = 'login.html';
+    }
+
+    // --- BARRE DE NAVIGATION INFÉRIEURE ---
+    function renderSuperAgentFooter(activeTab) {
+      return `
+        <div class="absolute bottom-0 left-0 w-full bg-slate-950/90 backdrop-blur-md border-t border-slate-800 pb-safe pt-2">
+            <div class="flex justify-around items-center px-2 pb-2">
+                <button onclick="changeTab('home')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'home' || activeTab === 'distribute' || activeTab === 'create-agent' ? 'text-teal-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <i class="fa-solid fa-briefcase text-xl mb-1"></i>
+                    <span class="text-[10px] font-semibold">Coffre Master</span>
+                </button>
+                <button onclick="changeTab('approvals')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'approvals' || activeTab === 'reject-client' ? 'text-teal-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <div class="bg-slate-900 p-2.5 rounded-2xl border border-slate-800 -mt-5 mb-0.5 shadow-lg ${activeTab === 'approvals' || activeTab === 'reject-client' ? 'bg-teal-900/40 border-teal-500/50' : ''}">
+                        <i class="fa-solid fa-user-check text-2xl"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold">Approvals</span>
+                </button>
+                <button onclick="changeTab('history')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'history' ? 'text-teal-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <i class="fa-solid fa-clock-rotate-left text-xl mb-1"></i>
+                    <span class="text-[10px] font-semibold">Historique</span>
+                </button>
+            </div>
+        </div>
+      `;
+    }
+
+    // --- ACTIONS LOGIQUES DU SUPER AGENT ---
+
+    function allouerFloat() {
+      const targetAgentId = document.getElementById("float-agent").value;
+      const amount = parseFloat(document.getElementById("float-amount").value);
+      const superAgent = currentUserData;
+      const targetAgent = usersData.find(u => u.id === targetAgentId);
+
+      const pin = prompt("Confirmez votre code PIN pour valider cette distribution de float :");
+      if (pin !== superAgent.code) {
+        showToast("Code PIN incorrect. Accès refusé.", "error");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Veuillez saisir un montant d'allocation valide.", "error");
+        return;
+      }
+      if (superAgent.balance < amount) {
+        showToast("Vos liquidités master sont insuffisantes.", "error");
+        return;
+      }
+
+      superAgent.balance -= amount;
+      targetAgent.balance += amount;
+
+      // Commission bonus pour le super agent sur chaque allocation (0.5%)
+      const bonus = amount * 0.005;
+      superAgent.commission += bonus;
+
+      transactions.push({
+        id: "TX-" + Date.now(),
+        from: superAgent.id,
+        to: targetAgent.id,
+        amount: amount,
+        type: "allocation_float",
+        date: "À l'instant"
+      });
+
+      showToast(`Float de ${amount}$ envoyé à ${targetAgent.name}. Commission master : +${bonus.toFixed(2)}$`, "success");
+      changeTab('home');
+    }
+
+    async function creerAgentParSuperAgent() {
+      const name = document.getElementById("ag-name").value.trim();
+      const phone = document.getElementById("ag-phone").value.trim();
+      const doc = document.getElementById("ag-doc").value.trim();
+      const photo = document.getElementById("ag-photo-url").value.trim();
+      const superAgent = currentUserData;
+
+      if (!name || !phone || !doc || !photo) {
+        showToast("Veuillez remplir tous les champs requis, y compris le KYC.", "error");
+        return;
+      }
+
+      // Vérifier si le numéro de téléphone existe déjà
+      const phoneExists = [...managedAgents, ...managedClients].some(u => u.phone === phone) || (currentUserData.phone === phone);
+      if (phoneExists) {
+        showToast("Ce numéro de téléphone est déjà enregistré.", "error");
+        return;
+      }
+
+      const newUser = {
+        name: name,
+        role: "agent",
+        balance_usd: 0,
+        balance_cdf: 0,
+        phone: phone,
+        status: "Actif",
+        pin_code: Math.floor(1000 + Math.random() * 9000).toString(),
+        limit: 5000, // Plafond agent par défaut
+        kyc_doc: doc,
+        photo_url: photo,
+        managedBy: superAgent.id
+      };
+
+      const { error } = await supabaseClient.from('users').insert([newUser]);
+      if (error) {
+        showToast("Erreur lors de la création de l'agent.", "error");
+        return;
+      }
+
+      showToast(`Agent ${name} créé avec succès ! (Code affecté par défaut : 1111)`, "success");
+      changeTab('home'); // Refresh home to show new agent in list
+    }
+
+    function approuverCompte(targetId) {
+      const target = managedClients.find(u => u.id === targetId);
+      if (target) {
+        target.status = "Actif";
+        showToast(`Compte client de ${target.name} approuvé et activé !`, "success");
+        renderPhone(); // Refresh to update approvals list
+      }
+    }
+
+    function preparerRejet(targetId) {
+      tempTargetUserForRejection = targetId;
+      changeTab("reject-client");
+    }
+
+    function soumettreRejetClient() {
+      const reason = document.getElementById("rejection-reason").value.trim();
+      if (!reason) {
+        showToast("Veuillez fournir un motif réglementaire de rejet.", "error");
+        return;
+      }
+
+      const target = managedClients.find(u => u.id === tempTargetUserForRejection);
+      if (target) {
+        target.status = "Rejeté";
+        target.rejectionReason = reason;
+        
+        showToast(`Dossier de ${target.name} rejeté pour le motif : ${reason}`, "error");
+        // In a real application, you might also remove the client or move them to a 'rejected' list
+        // Retirer de la base ou changer le statut pour simulation
+        tempTargetUserForRejection = null;
+        changeTab("approvals");
+      }
+    }
+
+    // --- SIMULATIONS PHOTO KYC (Camera/Upload) ---
+    function simulerCaptureImage(inputIdSuffix) {
+      showToast("Accès à la caméra sécurisée... Souriez !", "info");
+      setTimeout(() => {
+        const imageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=" + Math.random();
+        const previewImg = document.getElementById(`${inputIdSuffix}-preview`);
+        const hiddenInput = document.getElementById(`${inputIdSuffix}-url`);
+        const placeholder = document.getElementById(`${inputIdSuffix}-placeholder`);
+
+        if (previewImg && hiddenInput) {
+          previewImg.src = imageUrl;
+          previewImg.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+          hiddenInput.value = imageUrl;
+          showToast("Photo réglementaire capturée.", "success");
+        }
+      }, 1500);
+    }
+
+    function simulerUploadImage(inputIdSuffix) {
+      showToast("Recherche de documents numérisés...", "info");
+      setTimeout(() => {
+        const imageUrl = "https://api.dicebear.com/7.x/identicon/svg?seed=" + Math.random();
+        const previewImg = document.getElementById(`${inputIdSuffix}-preview`);
+        const hiddenInput = document.getElementById(`${inputIdSuffix}-url`);
+        const placeholder = document.getElementById(`${inputIdSuffix}-placeholder`);
+
+        if (previewImg && hiddenInput) {
+          previewImg.src = imageUrl;
+          previewImg.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+          hiddenInput.value = imageUrl;
+          showToast("Document importé avec succès !", "success");
+        }
+      }, 1000);
+    }
+
+    // --- EXPORTATION DU REGISTRE MASTER PDF ---
+    function exportHistoryPDF() {
+      const user = currentUserData;
+      const myTx = transactions.filter(t => t.from === user.id || t.to === user.id);
+      
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20); 
+      doc.setTextColor(13, 148, 136); // Teal color
+      doc.text("Registre Financier Master - Super Agent", 20, 20);
+      
+      doc.setFontSize(12); 
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Distributeur : ${user.name} (Code : ${user.code})`, 20, 32);
+      doc.text(`Solde Disponible : ${user.balance.toFixed(2)}$ / ${(user.balanceCDF || 0).toLocaleString()} FC`, 20, 40);
+      doc.text(`Super-Commissions : ${user.commission.toFixed(2)}$`, 20, 48);
+      
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, 56, 190, 56);
+      
+      doc.setFontSize(10);
+      doc.text("Registre des flux de distribution :", 20, 66);
+      
+      let y = 76;
+      myTx.reverse().forEach(tx => { 
+        if(y > 280) { doc.addPage(); y = 20; }
+        const isOutgoing = tx.from === user.id;
+        const sign = isOutgoing ? "-" : "+";
+        doc.text(`${tx.date} | ${tx.type.replace('_', ' ')} : ${sign}${tx.amount.toFixed(2)}$ (ID: ${tx.id})`, 20, y); 
+        y += 10; 
+      });
+      
+      doc.save(`Rapport_Master_${user.name.replace(/\s+/g, '_')}.pdf`);
+      showToast("Téléchargement du rapport Master PDF démarré !", "success");
+    }
+  </script>
+</body>
+</html>
