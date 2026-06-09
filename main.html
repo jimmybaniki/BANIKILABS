@@ -1,0 +1,3332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulateur Multi-Appareils & Support Technique</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- jsPDF pour l'exportation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    /* Custom Scrollbar pour un look premium */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* Simulation de l'écran du téléphone */
+    .phone-screen {
+      height: 560px;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+  <!-- En-tête Principale -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="w-11 h-11 bg-[#FFD700] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+          <span class="text-black font-black text-xl tracking-tighter">BL</span>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-xl tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></h1>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Simulateur Multi-Appareils v2.0</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-xs bg-slate-900/90 px-4 py-2 rounded-lg border border-slate-800">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Réseau Actif</span>
+        <span class="text-slate-500">|</span>
+        <span class="text-indigo-400" id="global-stats-txt">Chargement des données réseau...</span>
+        <div class="flex gap-3" id="global-rates-display">
+          <span class="text-rose-400">Achat: <span id="rate-buy-txt">...</span></span>
+          <span class="text-emerald-400">Vente: <span id="rate-sell-txt">...</span></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 bg-indigo-950/50 px-3 py-1.5 rounded-lg border border-indigo-500/30">
+        <i class="fa-solid fa-vault text-indigo-400 text-[10px]"></i>
+        <span class="text-[10px] text-slate-300 font-bold uppercase tracking-tighter">Bénéfices Change:</span>
+        <span class="text-[10px] text-white font-black" id="profit-change-txt">0 FC</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Zone de Notifications Globales (Toast) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <!-- Contenu Principal / Grille des Téléphones -->
+  <main class="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 justify-items-center">
+
+      <!-- TÉLÉPHONE 1 : CLIENT 1 -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-slate-800 rounded-b-xl z-20 flex justify-center items-center">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-slate-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-1">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 2 : CLIENT 2 -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-slate-800 rounded-b-xl z-20 flex justify-center items-center">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-slate-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-2">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 3 : COMMERÇANT -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-slate-800 rounded-b-xl z-20 flex justify-center items-center">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-slate-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-3">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 4 : AGENT DE TERRAIN -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-slate-800 rounded-b-xl z-20 flex justify-center items-center">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-slate-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-4">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 5 : ADMINISTRATEUR -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-slate-800 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-slate-800 rounded-b-xl z-20 flex justify-center items-center">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-slate-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-5">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 6 : ASSISTANCE TECHNIQUE (NOUVEAU) -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-indigo-900/60 shadow-[0_0_25px_rgba(99,102,241,0.25)] relative overflow-hidden ring-1 ring-indigo-500/30">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-indigo-950 rounded-b-xl z-20 flex justify-center items-center border-b border-indigo-800/30">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-indigo-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-6">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 7 : RÉGULATEUR -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-fuchsia-900/60 shadow-[0_0_25px_rgba(217,70,239,0.15)] relative overflow-hidden ring-1 ring-fuchsia-500/30">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-fuchsia-950 rounded-b-xl z-20 flex justify-center items-center border-b border-fuchsia-800/30">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-fuchsia-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-7">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+      <!-- TÉLÉPHONE 8 : SUPER AGENT -->
+      <div class="w-full max-w-[360px] bg-slate-950 rounded-[40px] p-4 border-4 border-teal-900/60 shadow-[0_0_25px_rgba(20,184,166,0.15)] relative overflow-hidden ring-1 ring-teal-500/30">
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-teal-950 rounded-b-xl z-20 flex justify-center items-center border-b border-teal-800/30">
+          <div class="w-3 h-3 rounded-full bg-black mr-2"></div>
+          <div class="w-12 h-1 bg-teal-700 rounded"></div>
+        </div>
+        <div class="phone-screen bg-slate-900 text-slate-200 rounded-[30px] overflow-hidden relative pt-6 flex flex-col" id="phone-8">
+          <!-- Chargé dynamiquement par JS -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Global de Recherche Utilisateur -->
+  <div id="search-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+      <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-times text-lg"></i>
+      </button>
+      
+      <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+        <i class="fa-solid fa-user-gear text-indigo-500"></i> Changer d'utilisateur
+      </h3>
+      <p class="text-xs text-slate-400 mb-4">Sélectionnez ou recherchez un utilisateur pour l'affecter à cet appareil.</p>
+      
+      <div class="relative mb-4">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-500"></i>
+        <input type="text" id="user-search-input" oninput="filterUsersList()" placeholder="Rechercher par nom, rôle, ID..." class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <div class="max-h-60 overflow-y-auto space-y-2" id="search-results-list">
+        <!-- Généré par JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- PASSERELLE DE CONNEXION CEO ---
+    if (sessionStorage.getItem('authenticated') !== 'true') {
+      window.location.href = 'admin_login.html';
+    }
+
+    // --- BASE DE DONNÉES SIMULÉE ---
+    let lastPhoneSequence = 2430000008;
+    let usersData = [
+      { id: "U001", name: "Marc Dupuis", role: "client", balance: 1250.50, balanceCDF: 250000, phone: "2430000001", code: "1234", status: "Actif", limit: 2000, savingsUSD: 500, savingsCDF: 0 },
+      { id: "U002", name: "Sophie Martin", role: "client", balance: 450.00, balanceCDF: 12500, phone: "2430000002", code: "1234", status: "Actif", limit: 1500, savingsUSD: 0, savingsCDF: 0 },
+      { id: "U003", name: "Thomas Legrand", role: "client", balance: 15.25, balanceCDF: 3000, phone: "2430000003", code: "1234", status: "Suspendu", limit: 500, savingsUSD: 0, savingsCDF: 0 },
+      { id: "U004", name: "Boutique Bio-Zen", role: "merchant", balance: 3420.00, balanceCDF: 850000, phone: "2430000004", code: "1234", status: "Actif", merchantCode: "771", items: [{name: "Panier Bio", price: 25}, {name: "Huile Essentielle", price: 12}] },
+      { id: "U005", name: "Café de la Gare", role: "merchant", balance: 890.00, balanceCDF: 45000, phone: "2430000005", code: "1234", status: "Actif", merchantCode: "882", items: [{name: "Café", price: 2}, {name: "Croissant", price: 1.5}] },
+      { id: "U006", name: "Jean L'Agent", role: "agent", balance: 500.00, balanceCDF: 1000000, phone: "2430000006", code: "1111", status: "Actif", commission: 124.50 },
+      { id: "U007", name: "Marie Transfert", role: "agent", balance: 250.00, balanceCDF: 500000, phone: "2430000007", code: "1111", status: "Actif", commission: 45.00 },
+      { id: "U008", name: "Luc Admin", role: "admin", balance: 0, balanceCDF: 0, phone: "2430000008", code: "0000", status: "En Ligne" },
+      { id: "U010", name: "Support Technique", role: "support", status: "En Ligne" },
+      { id: "U011", name: "Régulateur BCC", role: "regulator", balance: 1000000, balanceCDF: 500000000, status: "Actif" },
+      { id: "U012", name: "Master Super Agent", role: "super_agent", balance: 25000, balanceCDF: 10000000, code: "9999", status: "Actif", commission: 550.20 }
+    ]; 
+
+
+    // Tickets de support simulés
+    let supportTickets = [
+      { id: "T-101", userId: "U003", userName: "Thomas Legrand", issue: "Compte suspendu par erreur", severity: "high", status: "Ouvert", timestamp: "Il y a 5 min" },
+      { id: "T-102", userId: "U002", userName: "Sophie Martin", issue: "Échec virement vers Boutique Bio-Zen", severity: "medium", status: "Ouvert", timestamp: "Il y a 12 min" },
+      { id: "T-103", userId: "U001", userName: "Marc Dupuis", issue: "Demande de relèvement de plafond", severity: "low", status: "Résolu", timestamp: "Il y a 30 min" }
+    ];
+
+    // Transactions bancaires simulées
+    let transactions = [
+      { id: "TX-1001", from: "U001", to: "U004", amount: 25.00, type: "virement", date: "Aujourd'hui" },
+      { id: "TX-1002", from: "U002", to: "U006", amount: 100.00, type: "retrait", date: "Aujourd'hui" }
+    ];
+    let facturesEnAttente = [];
+
+    // --- CONFIGURATION INITIALE DES TÉLÉPHONES ---
+    // Chaque téléphone affiche par défaut un utilisateur initial
+    const phoneAssignments = {
+      "phone-1": "U001", // Marc Dupuis (Client)
+      "phone-2": "U002", // Sophie Martin (Client)
+      "phone-3": "U004", // Boutique Bio-Zen (Merchant)
+      "phone-4": "U006", // Jean L'Agent (Agent)
+      "phone-5": "U008", // SuperAdmin Luc (Admin)
+      "phone-6": "U010", // Support
+      "phone-7": "U011", // Régulateur
+      "phone-8": "U012"  // Super Agent
+    };
+
+    let EXCHANGE_RATE_LEGACY = 2850; // Conservé pour compatibilité si besoin
+    // --- CONFIGURATION FINANCIÈRE ---
+    let RATE_BUY = 2450;    // Le prix auquel le système achète le dollar (donne des FC)
+    let RATE_SELL = 2550;   // Le prix auquel le système vend le dollar (reçoit des FC)
+    let RATE_MARKET = 2500; // Le taux de référence pour le calcul du bénéfice
+    let EXCHANGE_RATE = 2500; // Alias pour compatibilité avec l'affichage
+
+    // Suivi de l'onglet actif par téléphone pour conserver l'état de navigation locale
+    let networkProfits = {
+      exchange: 0,    // Bénéfices sur le change (en CDF)
+      txFees: 0,      // Bénéfices sur les frais de transactions (en USD)
+      commissions: 0  // Part retenue par le système sur les commissions
+    };
+
+    const phoneNavState = {
+      "phone-1": "home",
+      "phone-2": "envoi",
+      "phone-3": "home",
+      "phone-4": "home",
+      "phone-5": "home",
+      "phone-6": "home",
+      "phone-7": "home",
+      "phone-8": "home"
+    };
+
+    // Variables de navigation temporaires pour les formulaires
+    let activePhoneForSearch = "";
+
+    // --- INITIALISATION AU CHARGEMENT ---
+    // Supabase Client Initialization
+    const SUPABASE_URL = 'https://fcbsmfcbzyyeksqfajdu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjYnNtZmNienl5ZWtzcWZhamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQyNDQsImV4cCI6MjA5NjUwMDI0NH0.NoPwKmQ8sbH1o-mt-O2yQgm7P1Bv0BRoeiCa8kJ1C0E';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function fetchUsersFromSupabase() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('users') // Assuming a 'users' table exists in Supabase
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching users from Supabase:', error.message);
+          // showToast('Erreur de connexion à la base de données Supabase. Utilisation des données locales.', 'error'); // Handled by caller
+          return null;
+        }
+        if (data && data.length > 0) {
+          // console.log('Users fetched from Supabase:', data); // Handled by caller
+          return data.map(u => ({
+            ...u,
+            role: (u.role || "").toLowerCase(), // Normalise en minuscules pour les comparaisons
+            balance: u.balance_usd || 0,
+            balanceCDF: u.balance_cdf || 0,
+            code: u.pin_code,
+            merchantCode: u.merchant_code,
+            savingsUSD: u.savings_usd || 0,
+            savingsCDF: u.savings_cdf || 0,
+            commission: u.commission || 0,
+            limit: u.limit || 0, // Ajout de la propriété 'limit'
+            items: u.items || [] // Assure que items est toujours une liste, même vide
+          }));
+        } else {
+          // console.log('No users found in Supabase. Using local data.'); // Handled by caller
+          return null; // Fallback to local data
+        }
+      } catch (e) {
+        console.error('Exception during Supabase fetch:', e);
+        // showToast('Erreur inattendue lors de la récupération des données Supabase. Utilisation des données locales.', 'error'); // Handled by caller
+        return null;
+      }
+    }
+    window.onload = async function() { // Made async
+      const supabaseUsers = await fetchUsersFromSupabase();
+      if (supabaseUsers) {
+        usersData = supabaseUsers;
+        showToast('Données utilisateurs chargées depuis Supabase.', 'success');
+      }
+      
+      // Charger aussi les transactions initiales si nécessaire
+      const { data: initialTxs } = await supabaseClient.from('transactions').select('*').order('created_at', { ascending: false }).limit(20);
+      if (initialTxs) {
+        transactions = initialTxs.map(tx => ({
+          ...tx,
+          from: tx.from_user_id,
+          to: tx.to_user_id,
+          date: new Date(tx.created_at).toLocaleDateString()
+        }));
+      }
+
+      renderAllPhones();
+      updateRateDisplay();
+      updateGlobalStats();
+      setupRealtimeSubscription();
+      showToast("Système démarré. 8 terminaux connectés.", "success");
+    };
+
+    // --- FONCTION DE RAFRAÎCHISSEMENT INDIVIDUEL ---
+    async function refreshPhoneData(phoneId) {
+      showToast(`Rafraîchissement des données pour ${phoneId}...`, "info");
+      const fetchedUsers = await fetchUsersFromSupabase();
+      if (fetchedUsers) {
+        usersData = fetchedUsers;
+        showToast(`Données rafraîchies pour ${phoneId}.`, "success");
+      } else {
+        showToast(`Échec du rafraîchissement des données pour ${phoneId}.`, "error");
+      }
+      renderPhone(phoneId); // Re-render the specific phone
+    }
+
+    // --- SYNCHRONISATION TEMPS RÉEL ---
+    function setupRealtimeSubscription() {
+      // S'abonner aux changements sur la table 'users'
+      supabaseClient
+        .channel('db-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, async (payload) => {
+          console.log('Mise à jour utilisateur reçue:', payload);
+          // On rafraîchit les données locales
+          const fetchedUsers = await fetchUsersFromSupabase();
+          if (fetchedUsers) {
+            usersData = fetchedUsers;
+            renderAllPhones();
+            updateGlobalStats();
+          }
+        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, (payload) => {
+          console.log('Nouvelle transaction reçue:', payload);
+          const tx = payload.new;
+          const mappedTx = {
+            ...tx,
+            from: tx.from_user_id,
+            to: tx.to_user_id,
+            date: new Date(tx.created_at).toLocaleDateString()
+          };
+          transactions.push(mappedTx);
+          showToast(`Nouvelle transaction détectée : ${payload.new.type}`, "info");
+          renderAllPhones();
+        })
+        .subscribe();
+    }
+
+    // --- UTILITAIRES ---
+    function calculateTransactionFee(amount, isTransfer) {
+      let baseFee = 0;
+      if (amount <= 5) baseFee = 0.10;
+      else if (amount <= 20) baseFee = 0.25;
+      else if (amount <= 50) baseFee = 0.50;
+      else if (amount <= 100) baseFee = 1.00;
+      else baseFee = amount * 0.015; 
+
+      return isTransfer ? baseFee * 1.5 : baseFee;
+    }
+
+    function toFC(usd) {
+      return (usd * RATE_MARKET).toLocaleString('fr-FR') + " FC";
+    }
+
+    function updateRateDisplay() {
+      const el = document.getElementById("global-stats-txt");
+      if (el) el.innerText = `Taux Marché : 1$ = ${RATE_MARKET} FC`;
+    }
+
+    function updateGlobalStats() {
+      document.getElementById("rate-buy-txt").innerText = RATE_BUY + " FC";
+      document.getElementById("rate-sell-txt").innerText = RATE_SELL + " FC";
+      document.getElementById("profit-change-txt").innerText = Math.round(networkProfits.exchange).toLocaleString() + " FC";
+    }
+
+    // --- GESTION DES NOTIFICATIONS (TOAST) ---
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold transition-all duration-300 transform translate-y-2 opacity-0`;
+      
+      if (type === "success") {
+        toast.className += " bg-emerald-950 border-emerald-800 text-emerald-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+      } else if (type === "error") {
+        toast.className += " bg-rose-950 border-rose-800 text-rose-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else if (type === "warning") {
+        toast.className += " bg-amber-950 border-amber-800 text-amber-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else {
+        toast.className += " bg-indigo-950 border-indigo-800 text-indigo-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${message}</span>`;
+      }
+
+      container.appendChild(toast);
+      
+      // Animation d'entrée
+      setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+      }, 50);
+
+      // Animation de sortie et suppression
+      setTimeout(() => {
+        toast.classList.add("translate-y-2", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // --- GESTION DU MODAL DE RECHERCHE D'UTILISATEUR ---
+    function openSearchModal(phoneId) {
+      activePhoneForSearch = phoneId;
+      document.getElementById("search-modal").classList.remove("hidden");
+      document.getElementById("user-search-input").value = "";
+      document.getElementById("user-search-input").focus();
+      filterUsersList();
+    }
+
+    function closeSearchModal() {
+      document.getElementById("search-modal").classList.add("hidden");
+      activePhoneForSearch = "";
+    }
+
+    function filterUsersList() {
+      const query = document.getElementById("user-search-input").value.toLowerCase();
+      const listContainer = document.getElementById("search-results-list");
+      listContainer.innerHTML = "";
+
+      // Filtrer les utilisateurs qui ne sont pas déjà assignés au téléphone en cours de modification (facultatif)
+      const filtered = usersData.filter(user => {
+        return user.name.toLowerCase().includes(query) || 
+               user.role.toLowerCase().includes(query) || 
+               user.id.toLowerCase().includes(query);
+      });
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Aucun utilisateur trouvé.</p>`;
+        return;
+      }
+
+      filtered.forEach(user => {
+        let badgeColor = "bg-slate-800 text-slate-300";
+        let icon = "fa-user";
+        if (user.role === "client") { badgeColor = "bg-sky-500/10 text-sky-400"; icon = "fa-user"; }
+        else if (user.role === "merchant") { badgeColor = "bg-amber-500/10 text-amber-400"; icon = "fa-store"; }
+        else if (user.role === "agent") { badgeColor = "bg-emerald-500/10 text-emerald-400"; icon = "fa-user-tie"; }
+        else if (user.role === "admin") { badgeColor = "bg-rose-500/10 text-rose-400"; icon = "fa-user-shield"; }
+        else if (user.role === "support") { badgeColor = "bg-indigo-500/10 text-indigo-400"; icon = "fa-headset"; }
+        else if (user.role === "regulator") { badgeColor = "bg-fuchsia-500/10 text-fuchsia-400"; icon = "fa-scale-balanced"; }
+        else if (user.role === "super_agent") { badgeColor = "bg-teal-500/10 text-teal-400"; icon = "fa-users-line"; }
+
+        const div = document.createElement("button");
+        div.className = "w-full flex items-center justify-between p-3 rounded-xl bg-slate-950 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-500/30 transition text-left";
+        div.onclick = () => selectUserForPhone(user.id);
+        
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full ${badgeColor} flex items-center justify-center text-sm">
+              <i class="fa-solid ${icon}"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-white">${user.name}</p>
+              <p class="text-xs text-slate-400">${user.id} • ${user.phone || 'Sans tel'}</p>
+            </div>
+          </div>
+          <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${badgeColor}">${user.role}</span>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    function selectUserForPhone(userId) {
+      if (!activePhoneForSearch) return;
+      
+      // Assigner le nouvel utilisateur au téléphone concerné
+      phoneAssignments[activePhoneForSearch] = userId;
+      // Réinitialiser la navigation du téléphone à l'accueil
+      phoneNavState[activePhoneForSearch] = "home";
+      
+      const user = usersData.find(u => u.id === userId);
+      showToast(`Téléphone configuré sur le compte de : ${user.name}`, "info");
+      
+      closeSearchModal();
+      renderPhone(activePhoneForSearch);
+    }
+
+    // --- RENDU GÉNÉRAL DES TÉLÉPHONES ---
+    function renderAllPhones() {
+      Object.keys(phoneAssignments).forEach(phoneId => {
+        renderPhone(phoneId);
+      });
+    }
+
+    // --- RENDU INDIVIDUEL D'UN TÉLÉPHONE ---
+    function renderPhone(phoneId) {
+      const container = document.getElementById(phoneId);
+      if (!container) return;
+
+      const expectedRoles = {
+        "phone-1": "client", 
+        "phone-2": "client", 
+        "phone-3": "merchant",
+        "phone-4": "agent", 
+        "phone-5": "admin", 
+        "phone-6": "support",
+        "phone-7": "regulator", 
+        "phone-8": "super_agent"
+      };
+
+      const targetRole = expectedRoles[phoneId];
+      let user;
+
+      // Logique de sélection dynamique
+      if (phoneId === "phone-1") {
+        user = usersData.find(u => (u.role || "").toLowerCase() === "client"); 
+      } else if (phoneId === "phone-2") {
+        const allClients = usersData.filter(u => (u.role || "").toLowerCase() === "client");
+        user = allClients[1] || allClients[0]; 
+      } else {
+        user = usersData.find(u => (u.role || "").toLowerCase() === targetRole);
+      }
+
+      if (!user) {
+        console.error(`Aucun utilisateur trouvé pour le rôle: ${targetRole}`);
+        container.innerHTML = `
+          <div class="p-4 flex flex-col items-center justify-center h-full text-center">
+            <i class="fa-solid fa-bug text-rose-500 text-3xl mb-2"></i>
+            <p class="text-sm font-semibold">Utilisateur non trouvé</p>
+            <button onclick="openSearchModal('${phoneId}')" class="mt-4 px-3 py-1.5 bg-indigo-600 text-xs rounded-lg hover:bg-indigo-500 transition">
+              Choisir un compte
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const activeTab = phoneNavState[phoneId];
+
+      // Construction de l'interface en fonction du rôle
+      let headerHTML = `
+        <div class="px-4 py-2 bg-slate-950/60 border-b border-slate-800 flex justify-between items-center text-xs">
+          <button onclick="openSearchModal('${phoneId}')" class="flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-medium transition max-w-[180px] truncate">
+            <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+            <span class="truncate">Chercher/Connecter</span>
+          </button>
+          <button onclick="refreshPhoneData('${phoneId}')" class="flex items-center gap-1.5 text-slate-400 hover:text-white font-medium transition">
+            <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+            <span class="truncate">Rafraîchir</span>
+          </button>
+        </div>
+        <div class="p-3 bg-slate-950/20 flex items-center justify-between border-b border-slate-800">
+          <div class="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-1 rounded-lg transition" onclick="changeTab('${phoneId}', 'profile')">
+            <div class="w-8 h-8 rounded-full ${getRoleColorClass(user.role)} flex items-center justify-center text-xs font-bold">
+              ${user.name.substring(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white max-w-[130px] truncate">${user.name}</h4>
+              <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">${user.role}</p>
+            </div>
+          </div>
+          <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${user.status === 'Actif' || user.status === 'En Ligne' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+            ${user.status}
+          </span>
+        </div>
+      `;
+
+      let contentHTML = "";
+      let footerHTML = "";
+
+      // Vérifier le statut de l'utilisateur (sauf pour l'assistance technique et l'admin)
+      if ((user.status === "Suspendu" || user.status === "Gelé (Régulateur)") && user.role !== "admin" && user.role !== "support" && activeTab !== "support") {
+        contentHTML = renderSuspendedScreen(phoneId, user);
+      } else {
+        if (activeTab === "profile") {
+          contentHTML = renderProfileScreen(phoneId, user);
+        } else {
+        // Sélectionner l'écran selon le rôle et l'onglet actif
+        switch (user.role) {
+          case "client":
+            contentHTML = renderClientScreen(phoneId, user, activeTab);
+            footerHTML = renderClientFooter(phoneId, activeTab);
+            break;
+          case "merchant":
+            contentHTML = renderMerchantScreen(phoneId, user, activeTab);
+            footerHTML = renderMerchantFooter(phoneId, activeTab);
+            break;
+          case "agent":
+            contentHTML = renderAgentScreen(phoneId, user, activeTab);
+            footerHTML = renderAgentFooter(phoneId, activeTab);
+            break;
+          case "admin":
+            contentHTML = renderAdminScreen(phoneId, user, activeTab);
+            footerHTML = renderAdminFooter(phoneId, activeTab);
+            break;
+          case "support":
+            contentHTML = renderSupportScreen(phoneId, user, activeTab);
+            footerHTML = renderSupportFooter(phoneId, activeTab);
+            break;
+          case "regulator":
+            contentHTML = renderRegulatorScreen(phoneId, user, activeTab);
+            footerHTML = renderRegulatorFooter(phoneId, activeTab);
+            break;
+          case "super_agent":
+            contentHTML = renderSuperAgentScreen(phoneId, user, activeTab);
+            footerHTML = renderSuperAgentFooter(phoneId, activeTab);
+            break;
+        }
+        }
+      }
+
+      container.innerHTML = `
+        ${headerHTML}
+        <div class="flex-1 overflow-y-auto p-4 space-y-4">
+          ${contentHTML}
+        </div>
+        ${footerHTML}
+      `;
+    }
+
+    function renderProfileScreen(phoneId, user) {
+      const currentPin = user.code || "1234";
+      return `
+        <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-user-circle text-indigo-400"></i> Mon Profil
+        </h3>
+        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
+          <div class="space-y-1">
+            <p class="text-[10px] text-slate-500 uppercase font-bold">Informations Compte</p>
+            <p class="text-xs text-white">ID : ${user.id}</p>
+            <p class="text-xs text-white">Tél : ${user.phone || 'N/A'}</p>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/50">
+              <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold">Code PIN Actuel</p>
+                <p id="${phoneId}-display-pin" class="text-xs text-indigo-400 font-mono font-bold text-slate-600 italic">Protégé par le système</p>
+              </div>
+              <button onclick="togglePinVisibility('${phoneId}', '${currentPin}')" class="text-slate-500 hover:text-white transition">
+                <i class="fa-solid fa-eye" id="${phoneId}-pin-icon"></i>
+              </button>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <label class="text-[10px] text-slate-400 uppercase font-bold">Modifier mon Code PIN / Accès</label>
+            <input type="password" id="${phoneId}-new-pin" placeholder="Nouveau code" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            <button onclick="updateUserPin('${phoneId}', '${user.id}')" class="w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white rounded-xl transition">Mettre à jour</button>
+          </div>
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1 text-xs text-slate-500 hover:text-white transition">Retour à l'accueil</button>
+        </div>
+      `;
+    }
+
+    function getRoleColorClass(role) {
+      switch (role) {
+        case "client": return "bg-sky-500/20 text-sky-400 border border-sky-500/30";
+        case "merchant": return "bg-amber-500/20 text-amber-400 border border-amber-500/30";
+        case "agent": return "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        case "admin": return "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        case "support": return "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30";
+        case "regulator": return "bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30";
+        case "super_agent": return "bg-teal-500/20 text-teal-400 border border-teal-500/30";
+        default: return "bg-slate-700 text-slate-300";
+      }
+    }
+
+    // --- ÉCRAN DE COMPTE SUSPENDU ---
+    function renderSuspendedScreen(phoneId, user) {
+      return `
+        <div class="flex flex-col items-center justify-center text-center py-12 space-y-4">
+          <div class="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 animate-bounce">
+            <i class="fa-solid fa-user-slash text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Compte ${user.status}</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-[220px] mx-auto">
+              Votre accès a été restreint. Toute opération financière est bloquée.
+            </p>
+          </div>
+          <button onclick="ouvrirTicketDepuisSuspense('${phoneId}', '${user.id}')" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white rounded-xl transition shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-headset"></i> Ouvrir un Ticket d'Assistance
+          </button>
+        </div>
+      `;
+    }
+
+    function ouvrirTicketDepuisSuspense(phoneId, userId) {
+      const user = usersData.find(u => u.id === userId);
+      const newTicketId = "T-" + (101 + supportTickets.length);
+      
+      // Éviter les doublons
+      const ticketExiste = supportTickets.find(t => t.userId === userId && t.status === "Ouvert");
+      if (ticketExiste) {
+        showToast("Un ticket est déjà en cours de traitement pour ce compte.", "warning");
+        return;
+      }
+
+      supportTickets.push({
+        id: newTicketId,
+        userId: userId,
+        userName: user.name,
+        issue: "Contestation de suspension de compte",
+        severity: "high",
+        status: "Ouvert",
+        timestamp: "À l'instant"
+      });
+
+      showToast(`Ticket ${newTicketId} ouvert ! Résolvez-le sur le Téléphone Support (Appareil 6).`, "success");
+      renderPhone("phone-6"); // Mettre à jour le téléphone du support si affiché
+      renderPhone(phoneId);
+    }
+
+
+    // ==========================================
+    // 1. MODULE CLIENT
+    // ==========================================
+    function renderClientScreen(phoneId, user, tab) {
+      if (tab === "home") {
+        // Liste des transactions de ce client
+        const userTransactions = transactions.filter(t => t.from === user.id || t.to === user.id);
+        let txListHTML = `<div class="flex justify-between items-center mb-1">
+                            <h4 class="text-[10px] font-bold text-slate-400 uppercase">Dernières transactions</h4>
+                          </div>`;
+        
+        if (userTransactions.length === 0) {
+          txListHTML += `<p class="text-[10px] text-slate-500 text-center py-2">Aucune transaction.</p>`;
+        } else {
+          userTransactions.slice(-4).reverse().forEach(tx => {
+            const isOutgoing = tx.from === user.id;
+            const otherUser = usersData.find(u => u.id === (isOutgoing ? tx.to : tx.from));
+            const icon = isOutgoing ? "fa-arrow-up-right-from-square text-rose-400" : "fa-arrow-down-left-from-circle text-emerald-400";
+            txListHTML += `
+              <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/40 border border-slate-800/60 text-xs">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid ${icon}"></i>
+                  <div>
+                    <p class="font-semibold text-white truncate max-w-[110px]">${otherUser ? otherUser.name : 'Inconnu'}</p>
+                    <p class="text-[9px] text-slate-500">${tx.type}</p>
+                  </div>
+                </div>
+                <span class="font-bold ${isOutgoing ? 'text-rose-400' : 'text-emerald-400'}">${isOutgoing ? '-' : '+'}${tx.amount.toFixed(2)} $</span>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <!-- Solde Card -->
+          <div class="bg-gradient-to-br from-sky-600 to-indigo-700 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+            <p class="text-[10px] text-sky-100 uppercase tracking-wider font-semibold">Solde Disponible</p>
+              <div class="flex items-end gap-2">
+                <h2 class="text-2xl font-black text-white">${user.balance.toFixed(2)} $</h2>
+                <p class="text-[10px] text-sky-200 mb-1">USD</p>
+              </div>
+              <div class="flex items-end gap-2 border-t border-white/10 pt-1">
+                <h3 class="text-lg font-bold text-white">${(user.balanceCDF || 0).toLocaleString('fr-FR')} FC</h3>
+                <p class="text-[10px] text-sky-200 mb-0.5">CDF</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-2 text-[9px] text-sky-100/70">
+              <span>ID: ${user.id}</span>
+              <span class="bg-white/10 px-1.5 py-0.5 rounded">Plafond: ${user.limit} $</span>
+            </div>
+          </div>
+
+          <!-- Actions Rapides -->
+          <div class="grid grid-cols-4 gap-2">
+              <button onclick="changeTab('${phoneId}', 'envoi')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-sky-400 border border-slate-700">
+                  <i class="fa-solid fa-paper-plane text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Envoi</span>
+              </button>
+              <button onclick="changeTab('${phoneId}', 'retrait')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 border border-slate-700">
+                  <i class="fa-solid fa-money-bill-transfer text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Retrait</span>
+              </button>
+              <button onclick="changeTab('${phoneId}', 'marchand')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-amber-400 border border-slate-700">
+                  <i class="fa-solid fa-store text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Marchand</span>
+              </button>
+              <button onclick="changeTab('${phoneId}', 'facture')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-fuchsia-400 border border-slate-700">
+                  <i class="fa-solid fa-file-invoice-dollar text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Facture</span>
+              </button>
+              <button onclick="changeTab('${phoneId}', 'exchange')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-rose-400 border border-slate-700">
+                  <i class="fa-solid fa-right-left text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Change</span>
+              </button>
+              <button onclick="changeTab('${phoneId}', 'savings')" class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700">
+                  <i class="fa-solid fa-piggy-bank text-xs"></i>
+                </div>
+                <span class="text-[9px] font-bold">Épargne</span>
+              </button>
+          </div>
+
+          <!-- Dernières Transactions -->
+          <div>
+              ${txListHTML}
+          </div>
+        `;
+      } 
+      
+      else if (tab === "retrait") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i> Retrait d'espèces
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Numéro de l'agent</label>
+              <input type="text" id="${phoneId}-agent-phone" placeholder="243..." class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Montant à retirer ($)</label>
+              <input type="number" id="${phoneId}-withdraw-amount" oninput="updatePhoneFeeDisplay('${phoneId}', 'withdraw')" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Code PIN</label>
+              <input type="password" id="${phoneId}-client-pin" placeholder="••••" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div id="${phoneId}-withdraw-fee-info" class="p-2 bg-slate-900 border border-dashed border-slate-700 rounded-lg text-[8px] text-slate-500 text-center">
+              Les frais de retrait seront calculés ici.
+            </div>
+            <button onclick="executeDigitalWithdrawal('${phoneId}', '${user.id}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+              Confirmer le retrait
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white transition">Retour</button>
+          </div>
+        `;
+      }
+
+      else if (tab === "envoi") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-paper-plane text-sky-500"></i> Envoi d'argent
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Numéro du destinataire</label>
+              <input type="text" id="${phoneId}-transfer-num" placeholder="243..." class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant ($)</label>
+              <input type="number" id="${phoneId}-transfer-amount" oninput="updatePhoneFeeDisplay('${phoneId}', 'transfer')" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div id="${phoneId}-transfer-fee-info"></div>
+            <button onclick="executerVirementClient('${phoneId}', '${user.id}')" class="w-full py-2 bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white rounded-xl transition">
+              Confirmer l'envoi
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition">
+              Annuler
+            </button>
+          </div>
+        `;
+      } 
+
+      else if (tab === "marchand") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-store text-amber-500"></i> Payer un Marchand
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Code Marchand ou Facture</label>
+              <input type="text" id="${phoneId}-pay-mcode" placeholder="Saisir code numérique..." class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant ($)</label>
+              <input type="number" id="${phoneId}-pay-mamount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="payerMarchandClient('${phoneId}', '${user.id}')" class="py-2 bg-amber-600 hover:bg-amber-500 text-[10px] font-bold text-white rounded-xl transition">
+                Payer Boutique
+              </button>
+              <button onclick="payerFactureClient('${phoneId}', '${user.id}')" class="py-2 bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white rounded-xl transition">
+                Régler Facture
+              </button>
+            </div>
+            <div class="p-3 bg-slate-900 rounded-xl border border-dashed border-slate-700 text-center">
+               <i class="fa-solid fa-qrcode text-2xl text-slate-500 mb-1"></i>
+               <p class="text-[9px] text-slate-400">Pour payer par scan, utilisez l'option "Payer Boutique" après avoir saisi le code scanné.</p>
+            </div>
+            <button onclick="simulerScanQRCode('${phoneId}', '${user.id}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+              <i class="fa-solid fa-camera mr-2"></i> Scanner QR Code
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 text-center block">Retour</button>
+          </div>
+        `;
+      }
+
+      
+      else if (tab === "facture") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-file-invoice-dollar text-fuchsia-500"></i> Mes Factures
+          </h3>
+          <div class="space-y-2">
+            <button class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
+              <span class="text-xs">SNEL (Électricité)</span>
+              <i class="fa-solid fa-chevron-right text-slate-600"></i>
+            </button>
+            <button class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
+              <span class="text-xs">REGIDESO (Eau)</span>
+              <i class="fa-solid fa-chevron-right text-slate-600"></i>
+            </button>
+            <button class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
+              <span class="text-xs">Canal+</span>
+              <i class="fa-solid fa-chevron-right text-slate-600"></i>
+            </button>
+          </div>
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full mt-4 py-1.5 text-xs text-slate-400 text-center block">
+            Retour
+          </button>
+        `;
+      }
+
+      else if (tab === "exchange") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-money-bill-transfer text-rose-500"></i> Bureau de Change
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <p class="text-[10px] text-slate-400 italic text-center">Taux du réseau : 1 USD = ${EXCHANGE_RATE} CDF</p>
+            <p class="text-[10px] text-slate-400 italic text-center">Taux Marché : 1 USD = ${RATE_MARKET} CDF</p>
+            <p class="text-[10px] text-slate-400 italic text-center">Achat: ${RATE_BUY} | Vente: ${RATE_SELL}</p>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Sens de conversion</label>
+              <select id="${phoneId}-ex-direction" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="usd_to_cdf">Vendre Dollars ($ → FC)</option>
+                <option value="cdf_to_usd">Acheter Dollars (FC → $)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant à convertir</label>
+              <input type="number" id="${phoneId}-ex-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="executerChangeClient('${phoneId}', '${user.id}')" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white rounded-xl transition">
+              Confirmer l'opération
+            </button>
+            <div class="p-2 bg-slate-900 rounded-lg border border-dashed border-slate-700 text-[10px] text-slate-400">
+              Note: Les frais de change (1%) sont inclus dans le taux.
+              Note: Opération instantanée sécurisée par le réseau.
+            </div>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 text-center block">Retour</button>
+          </div>
+        `;
+      }
+
+      else if (tab === "savings") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-piggy-bank text-emerald-500"></i> Mon Coffre-fort
+          </h3>
+          
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-2xl p-4 shadow-xl mb-4">
+            <p class="text-[10px] text-emerald-100 uppercase font-bold">Épargne Totale (Intérêts 2%/mois)</p>
+            <div class="mt-2 space-y-1">
+              <h2 class="text-xl font-black text-white">${(user.savingsUSD || 0).toFixed(2)} $</h2>
+              <h3 class="text-base font-bold text-emerald-100">${(user.savingsCDF || 0).toLocaleString()} FC</h3>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <p class="text-[10px] text-slate-400">Gérez vos fonds entre votre solde courant et votre coffre-fort.</p>
+            
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Devise</label>
+              <select id="${phoneId}-sv-currency" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="USD">Dollars ($)</option>
+                <option value="CDF">Francs Congolais (FC)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant</label>
+              <input type="number" id="${phoneId}-sv-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="gererEpargne('${phoneId}', '${user.id}', 'deposit')" class="py-2 bg-emerald-600 hover:bg-emerald-500 text-[10px] font-bold text-white rounded-xl transition">
+                Épargner
+              </button>
+              <button onclick="gererEpargne('${phoneId}', '${user.id}', 'withdraw')" class="py-2 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-white rounded-xl transition">
+                Récupérer
+              </button>
+            </div>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 text-center block">Retour</button>
+          </div>
+        `;
+      }
+      
+      else if (tab === "support") {
+        // Tickets de l'utilisateur
+        const clientTickets = supportTickets.filter(t => t.userId === user.id);
+        let ticketsListHTML = "";
+
+        if (clientTickets.length === 0) {
+          ticketsListHTML = `<p class="text-[10px] text-slate-500 text-center py-2">Aucun ticket ouvert.</p>`;
+        } else {
+          clientTickets.forEach(t => {
+            const statusColor = t.status === "Ouvert" ? "text-amber-400" : "text-emerald-400";
+            ticketsListHTML += `
+              <div class="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-white">${t.id}</span>
+                  <span class="font-bold ${statusColor} text-[10px] uppercase">${t.status}</span>
+                </div>
+                <p class="text-slate-300">${t.issue}</p>
+                <div class="flex justify-between text-[9px] text-slate-500 pt-1 border-t border-slate-800/40">
+                  <span>Urgence: ${t.severity}</span>
+                  <span>${t.timestamp}</span>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-1">
+            <i class="fa-solid fa-headset text-indigo-500"></i> Centre d'Assistance
+          </h3>
+          <p class="text-[10px] text-slate-400 mb-3">Rencontrez-vous un souci technique ou une réclamation ?</p>
+
+          <!-- Formulaire Nouveau Ticket -->
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-3">
+            <p class="text-[11px] font-bold text-indigo-400">Signaler un problème</p>
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Sélectionner le type de souci</label>
+              <select id="${phoneId}-issue-type" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="Échec de paiement ou virement">Échec de paiement ou virement</option>
+                <option value="Plafond insuffisant pour achat urgent">Plafond insuffisant pour achat urgent</option>
+                <option value="Erreur d'affichage du solde">Erreur d'affichage du solde</option>
+                <option value="Autre demande urgente">Autre demande urgente</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Sévérité</label>
+              <select id="${phoneId}-issue-severity" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="medium">Moyenne (Bloqué temporairement)</option>
+                <option value="high">Critique (Opération impossible)</option>
+                <option value="low">Faible (Simple question)</option>
+              </select>
+            </div>
+            <button onclick="soumettreTicketClient('${phoneId}', '${user.id}')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Envoyer le ticket au support
+            </button>
+          </div>
+
+          <!-- Liste des tickets existants -->
+          <div class="space-y-2">
+            <h4 class="text-xs font-bold text-slate-400">Mes requêtes</h4>
+            ${ticketsListHTML}
+          </div>
+        `;
+      }
+    }
+
+    function renderClientFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-3 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px]">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-sky-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-house text-base"></i>
+            <span>Accueil</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'envoi')" class="flex flex-col items-center gap-1 ${activeTab === 'envoi' ? 'text-sky-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-paper-plane text-base"></i>
+            <span>Envoi</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'support')" class="flex flex-col items-center gap-1 ${activeTab === 'support' ? 'text-sky-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-headset text-base"></i>
+            <span>Assistance</span>
+          </button>
+        </div>
+      `;
+    }
+
+    async function executerVirementClient(phoneId, senderId) {
+      const destNum = document.getElementById(`${phoneId}-transfer-num`).value.trim();
+      const amount = parseFloat(document.getElementById(`${phoneId}-transfer-amount`).value);
+      const sender = usersData.find(u => u.id === senderId);
+      const dest = usersData.find(u => u.phone === destNum);
+
+      if (sender.status === "Gelé (Régulateur)") {
+        showToast("Action refusée : Vos fonds sont saisis par le Régulateur.", "error");
+        return;
+      }
+
+      if (!dest) {
+        showToast("Numéro de destinataire introuvable.", "error");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Veuillez saisir un montant valide.", "error");
+        return;
+      }
+      if (sender.balance < amount) {
+        showToast("Solde insuffisant.", "error");
+        return;
+      }
+      if (amount > sender.limit) {
+        showToast("Le montant dépasse votre plafond autorisé.", "error");
+        return;
+      }
+
+      // Calcul des frais dynamiques
+      const systemFee = calculateTransactionFee(amount, true);
+
+      // Traitement Supabase
+      const newSenderBal = sender.balance - (amount + systemFee);
+      const newDestBal = dest.balance + amount;
+
+      await supabaseClient.from('users').update({ balance_usd: newSenderBal }).eq('id', senderId);
+      await supabaseClient.from('users').update({ balance_usd: newDestBal }).eq('id', dest.id);
+      
+      await supabaseClient.from('transactions').insert([{ 
+        from_user_id: senderId, 
+        to_user_id: dest.id, 
+        amount: amount, 
+        type: "virement" 
+      }]);
+
+      networkProfits.txFees += systemFee;
+
+      showToast(`Virement de ${amount.toFixed(2)} $ réussi vers ${dest.name} (Frais: ${systemFee.toFixed(2)}$)`, "success");
+      
+      // Mettre à jour l'ensemble des téléphones affichés (au cas où le destinataire y figure)
+      updateGlobalStats();
+      renderAllPhones();
+    }
+
+    function updatePhoneFeeDisplay(phoneId, type) {
+      const amountInput = document.getElementById(`${phoneId}-${type}-amount`);
+      const infoDiv = document.getElementById(`${phoneId}-${type}-fee-info`);
+      if (!amountInput || !infoDiv) return;
+      
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        infoDiv.innerHTML = type === 'withdraw' ? "Les frais de retrait seront calculés ici." : "";
+        infoDiv.className = type === 'withdraw' ? "p-2 bg-slate-900 border border-dashed border-slate-700 rounded-lg text-[8px] text-slate-500 text-center" : "";
+        return;
+      }
+      
+      const isTransfer = type === 'transfer';
+      const fee = calculateTransactionFee(amount, isTransfer);
+      const colorClass = isTransfer ? 'text-sky-400' : 'text-emerald-400';
+      
+      infoDiv.innerHTML = `<span class="${colorClass} font-bold">Frais : ${fee.toFixed(2)} $</span><br><span class="text-[8px]">Total : ${(amount + fee).toFixed(2)} $</span>`;
+      infoDiv.className = "p-2 bg-slate-900 border border-dashed border-slate-700 rounded-lg text-[10px] text-slate-400 text-center mt-1";
+    }
+
+    async function executeDigitalWithdrawal(phoneId, clientId) {
+      const agentPhone = document.getElementById(`${phoneId}-agent-phone`).value.trim();
+      const amount = parseFloat(document.getElementById(`${phoneId}-withdraw-amount`).value);
+      const clientPin = document.getElementById(`${phoneId}-client-pin`).value.trim();
+      const client = usersData.find(u => u.id === clientId);
+
+      if (!agentPhone || !amount || !clientPin) {
+        showToast("Veuillez remplir tous les champs.", "error");
+        return;
+      }
+
+      if (client.code !== clientPin) {
+        showToast("Code PIN incorrect.", "error");
+        return;
+      }
+
+      const agent = usersData.find(u => u.phone === agentPhone && u.role === 'agent');
+      if (!agent) {
+        showToast("Agent introuvable avec ce numéro.", "error");
+        return;
+      }
+
+      if (amount > client.limit) {
+        showToast("Le montant dépasse le plafond autorisé du client.", "error");
+        return;
+      }
+
+      const withdrawalFee = calculateTransactionFee(amount, false);
+      const totalAmountToDeduct = amount + withdrawalFee;
+
+      if (client.balance < totalAmountToDeduct) {
+        showToast("Solde insuffisant (frais inclus).", "error");
+        return;
+      }
+
+      // Update client balance
+      const newClientBalance = client.balance - totalAmountToDeduct;
+      const { error: clientUpdateError } = await supabaseClient.from('users').update({ balance_usd: newClientBalance }).eq('id', client.id);
+
+      if (clientUpdateError) {
+        showToast("Erreur lors de la mise à jour client.", "error");
+        return;
+      }
+
+      // Update agent balance
+      const newAgentBalance = agent.balance + amount;
+      await supabaseClient.from('users').update({ balance_usd: newAgentBalance }).eq('id', agent.id);
+
+      // Record transaction
+      await supabaseClient.from('transactions').insert([
+        { from_user_id: client.id, to_user_id: agent.id, amount: amount, type: "retrait_digital", fee: withdrawalFee }
+      ]);
+
+      networkProfits.txFees += withdrawalFee;
+      showToast(`Retrait de ${amount.toFixed(2)}$ réussi via l'agent ${agent.name}. Frais: ${withdrawalFee.toFixed(2)}$`, "success");
+      
+      updateGlobalStats();
+      renderAllPhones();
+    }
+
+    async function payerMarchandClient(phoneId, senderId) {
+      const mCode = document.getElementById(`${phoneId}-pay-mcode`).value.trim();
+      const amount = parseFloat(document.getElementById(`${phoneId}-pay-mamount`).value);
+      const sender = usersData.find(u => u.id === senderId);
+      const merchant = usersData.find(u => u.merchantCode === mCode);
+
+      if (!merchant) {
+        showToast("Code Marchand incorrect.", "error");
+        return;
+      }
+      if (sender.balance < amount) {
+        showToast("Solde insuffisant.", "error");
+        return;
+      }
+
+      const newSenderBal = sender.balance - amount;
+      const newMerchantBal = merchant.balance + amount;
+
+      await supabaseClient.from('users').update({ balance_usd: newSenderBal }).eq('id', senderId);
+      await supabaseClient.from('users').update({ balance_usd: newMerchantBal }).eq('id', merchant.id);
+
+      await supabaseClient.from('transactions').insert([{ 
+        from_user_id: senderId, 
+        to_user_id: merchant.id, 
+        amount: amount, 
+        type: "achat" 
+      }]);
+
+      showToast(`Paiement de ${amount} $ à ${merchant.name} réussi.`, "success");
+      renderAllPhones();
+    }
+
+    function soumettreTicketClient(phoneId, userId) {
+      const issue = document.getElementById(`${phoneId}-issue-type`).value;
+      const severity = document.getElementById(`${phoneId}-issue-severity`).value;
+      const user = usersData.find(u => u.id === userId);
+      const newTicketId = "T-" + (101 + supportTickets.length);
+
+      supportTickets.push({
+        id: newTicketId,
+        userId: userId,
+        userName: user.name,
+        issue: issue,
+        severity: severity,
+        status: "Ouvert",
+        timestamp: "À l'instant"
+      });
+
+      showToast(`Votre ticket ${newTicketId} a été envoyé au support technique.`, "success");
+      changeTab(phoneId, "support");
+      renderPhone("phone-6"); // Forcer le refresh de l'appareil support si affiché
+    }
+
+    function executerChangeClient(phoneId, userId) {
+      const direction = document.getElementById(`${phoneId}-ex-direction`).value;
+      const amount = parseFloat(document.getElementById(`${phoneId}-ex-amount`).value);
+      const user = usersData.find(u => u.id === userId);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+
+      let profitCDF = 0;
+
+      if (direction === "usd_to_cdf") {
+        // Le client vend du USD (Le système achète au taux bas RATE_BUY)
+        if (user.balance < amount) {
+          showToast("Solde Dollars insuffisant.", "error");
+          return;
+        }
+        let converted = amount * RATE_BUY;
+        // Bénéfice = (Valeur Marché - Valeur Achat)
+        profitCDF = (amount * RATE_MARKET) - (amount * RATE_BUY);
+        
+        user.balance -= amount;
+        user.balanceCDF = (user.balanceCDF || 0) + converted;
+        showToast(`Change réussi : -${amount}$ → +${converted.toLocaleString()} FC`, "success");
+      } else {
+        // Le client achète du USD (Le système vend au taux haut RATE_SELL)
+        if ((user.balanceCDF || 0) < amount) {
+          showToast("Solde Francs Congolais insuffisant.", "error");
+          return;
+        }
+        let converted = amount / RATE_SELL;
+        // Bénéfice = Ce que le client a payé - Valeur réelle du USD donné
+        profitCDF = amount - (converted * RATE_MARKET);
+        user.balanceCDF -= amount;
+        user.balance = (user.balance || 0) + converted;
+        showToast(`Change réussi : -${amount.toLocaleString()} FC → +${converted.toFixed(2)}$`, "success");
+      }
+
+      transactions.push({
+        id: "EX-" + Date.now(),
+        from: userId,
+        to: userId,
+        amount: amount,
+        type: "Opération de Change",
+        date: "Aujourd'hui"
+      });
+
+      networkProfits.exchange += profitCDF;
+      updateGlobalStats();
+      
+      renderPhone(phoneId);
+    }
+
+    function gererEpargne(phoneId, userId, type) {
+      const currency = document.getElementById(`${phoneId}-sv-currency`).value;
+      const amount = parseFloat(document.getElementById(`${phoneId}-sv-amount`).value);
+      const user = usersData.find(u => u.id === userId);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+
+      if (type === 'deposit') {
+        const balanceField = currency === "USD" ? "balance" : "balanceCDF";
+        const savingsField = currency === "USD" ? "savingsUSD" : "savingsCDF";
+
+        if ((user[balanceField] || 0) < amount) {
+          showToast("Solde insuffisant pour épargner.", "error");
+          return;
+        }
+        user[balanceField] -= amount;
+        user[savingsField] = (user[savingsField] || 0) + amount;
+        showToast(`Dépôt dans le coffre-fort réussi (${amount} ${currency}).`, "success");
+      } else {
+        const balanceField = currency === "USD" ? "balance" : "balanceCDF";
+        const savingsField = currency === "USD" ? "savingsUSD" : "savingsCDF";
+
+        if ((user[savingsField] || 0) < amount) {
+          showToast("Fonds insuffisants dans le coffre-fort.", "error");
+          return;
+        }
+        user[savingsField] -= amount;
+        user[balanceField] = (user[balanceField] || 0) + amount;
+        showToast(`Retrait du coffre-fort réussi (${amount} ${currency}).`, "success");
+      }
+
+      renderPhone(phoneId);
+    }
+
+    function simulerScanQRCode(phoneId, userId) {
+      showToast("Ouverture de la caméra pour scanner le QR Code...", "info");
+
+      // Simulate QR code scanning by prompting the user for input
+      const scannedCode = prompt("Veuillez entrer le code scanné (Code Marchand ou Facture):");
+
+      if (!scannedCode) {
+        showToast("Scan annulé ou code vide.", "warning");
+        return;
+      }
+
+      // Try to find a merchant by merchantCode
+      const merchant = usersData.find(u => u.role === "merchant" && u.merchantCode === scannedCode);
+
+      if (merchant) {
+        const amountStr = prompt(`Code Marchand "${merchant.name}" détecté. Veuillez entrer le montant à payer en USD:`);
+        const amount = parseFloat(amountStr);
+
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Montant invalide pour le paiement.", "error");
+          return;
+        }
+
+        // Populate the input fields and call the existing payment function
+        document.getElementById(`${phoneId}-pay-mcode`).value = scannedCode;
+        document.getElementById(`${phoneId}-pay-mamount`).value = amount;
+        payerMarchandClient(phoneId, userId);
+
+      } else {
+        // Try to find a pending invoice by billCode
+        const facture = facturesEnAttente.find(f => f.code === scannedCode);
+
+        if (facture) {
+          document.getElementById(`${phoneId}-pay-mcode`).value = scannedCode;
+          payerFactureClient(phoneId, userId);
+        } else {
+          showToast("QR Code non reconnu comme un code marchand ou une facture valide.", "error");
+        }
+      }
+    }
+
+
+    // ==========================================
+    // 2. MODULE COMMERÇANT
+    // ==========================================
+    function renderMerchantScreen(phoneId, user, tab) {
+      if (tab === "home") {
+        let itemsListHTML = (user.items || []).map(p => `
+          <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/40 border border-slate-800 text-xs">
+            <span class="font-semibold text-white">${p.name}</span>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-amber-400">${p.price.toFixed(2)} $</span>
+              <button onclick="genererVenteDirecte('${phoneId}', ${p.price}, '${p.name}')" class="px-2 py-0.5 bg-amber-600 hover:bg-amber-500 rounded text-[10px] font-bold text-white transition">
+                Encaisser
+              </button>
+            </div>
+          </div>
+        `).join("");
+
+        return `
+          <!-- Solde Commerce -->
+          <div class="bg-gradient-to-br from-amber-600 to-orange-700 rounded-2xl p-4 shadow-xl relative">
+            <button onclick="exportHistoryPDF('${user.id}')" class="absolute top-2 right-2 text-white/50 hover:text-white transition">
+              <i class="fa-solid fa-file-pdf"></i>
+            </button>
+            
+            <p class="text-[10px] text-amber-100 uppercase tracking-wider font-semibold">Chiffre d'Affaires Encaissé</p>
+            <div class="flex items-baseline justify-between">
+              <h2 class="text-2xl font-black text-white mt-1">${user.balance.toFixed(2)} $</h2>
+              <p class="text-xs font-bold text-amber-100">${(user.balanceCDF || 0).toLocaleString()} FC</p>
+            </div>
+            <p class="text-[11px] text-amber-100 font-bold">Code Marchand : ${user.merchantCode}</p>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/10 text-[10px] text-amber-100">
+              <span>Statut : Certifié</span>
+              <span>ID : ${user.id}</span>
+            </div>
+          </div>
+
+          <!-- Générateur de QR Code pour Paiement -->
+          <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 text-center space-y-3 mt-4">
+            <p class="text-xs font-bold text-white">Générer un QR Code de Paiement</p>
+            <div class="bg-white p-2.5 rounded-xl inline-block">
+              <i class="fa-solid fa-qrcode text-slate-900 text-6xl"></i>
+            </div>
+            <p class="text-[9px] text-slate-400">Scannable ou encaissable directement depuis ce terminal.</p>
+          </div>
+
+          <!-- Liste des Produits de la Boutique -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="text-xs font-bold text-slate-400">Articles en vente rapide</h4>
+              <button onclick="changeTab('${phoneId}', 'products')" class="text-[10px] text-amber-400 hover:underline">Gérer</button>
+            </div>
+            <div class="space-y-1.5">
+              ${itemsListHTML}
+            </div>
+          </div>
+        `;
+      } 
+      else if (tab === "history") {
+        return renderCommonHistoryTab(phoneId, user);
+      }
+      
+      else if (tab === "products") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-store text-amber-500"></i> Ajouter un nouvel article
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Nom de l'article</label>
+              <input type="text" id="${phoneId}-item-name" placeholder="ex: Jus d'orange frais" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Prix de vente ($)</label>
+              <input type="number" id="${phoneId}-item-price" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+            </div>
+            <button onclick="ajouterProduitCommercant('${phoneId}', '${user.id}')" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-xs font-bold text-white rounded-xl transition shadow-lg shadow-amber-600/20">
+              Enregistrer l'article
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition">
+              Retour
+            </button>
+          </div>
+        `;
+      }
+      
+      else if (tab === "billing") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-file-invoice-dollar text-amber-500"></i> Créer une Facture
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-center">
+             <p class="text-[10px] text-slate-400">Générez un code que le client pourra saisir pour vous payer.</p>
+             <div>
+                <label class="text-[10px] text-slate-400 uppercase font-bold text-left block">Montant à facturer ($)</label>
+                <input type="number" id="${phoneId}-bill-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+             </div>
+             <button onclick="genererFactureBoutique('${phoneId}', '${user.id}')" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-xs font-bold text-white rounded-xl transition">
+               Générer Code de Facture
+             </button>
+             <div id="${phoneId}-qr-area" class="hidden pt-4 space-y-2 border-t border-slate-800 mt-2">
+                <p class="text-[10px] text-amber-400 font-bold">CODE À SCANNER / SAISIR :</p>
+                <div class="bg-white p-2 rounded-lg inline-block">
+                   <i class="fa-solid fa-qrcode text-4xl text-black"></i>
+                </div>
+                <p id="${phoneId}-bill-code-display" class="text-xl font-black text-white tracking-widest"></p>
+                <p class="text-[9px] text-slate-500 italic">Ce code expire dans 15 minutes.</p>
+             </div>
+             <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white transition">Retour</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderMerchantFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-4 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px] w-full">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-amber-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-house text-base"></i>
+            <span>Boutique</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'products')" class="flex flex-col items-center gap-1 ${activeTab === 'products' ? 'text-amber-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-plus text-base"></i>
+            <span>Articles</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'billing')" class="flex flex-col items-center gap-1 ${activeTab === 'billing' ? 'text-amber-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-file-invoice text-base"></i>
+            <span>Facturation</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'history')" class="flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-amber-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-clock-rotate-left text-base"></i>
+            <span>Historique</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function ajouterProduitCommercant(phoneId, merchantId) {
+      const name = document.getElementById(`${phoneId}-item-name`).value.trim();
+      const price = parseFloat(document.getElementById(`${phoneId}-item-price`).value);
+      const merchant = usersData.find(u => u.id === merchantId);
+
+      if (!name || isNaN(price) || price <= 0) {
+        showToast("Informations de produit incorrectes.", "error");
+        return;
+      }
+
+      merchant.items.push({
+        id: Date.now(),
+        name: name,
+        price: price
+      });
+
+      showToast(`Article "${name}" ajouté avec succès.`, "success");
+      changeTab(phoneId, "home");
+    }
+    
+    function genererFactureBoutique(phoneId, merchantId) {
+      const amount = parseFloat(document.getElementById(`${phoneId}-bill-amount`).value);
+      if(isNaN(amount) || amount <= 0) return;
+      const billCode = Math.floor(100000 + Math.random() * 900000).toString();
+      facturesEnAttente.push({ code: billCode, amount: amount, merchantId: merchantId });
+      
+      document.getElementById(`${phoneId}-qr-area`).classList.remove('hidden');
+      document.getElementById(`${phoneId}-bill-code-display`).innerText = billCode;
+      
+      showToast(`Facture de ${amount}$ créée. Code: ${billCode}`, "info");
+    }
+
+    function genererVenteDirecte(phoneId, amount, itemName) {
+      // Pour simuler la vente directe d'un produit, on propose de débiter le client 1 ou client 2
+      const merchant = usersData.find(u => u.id === phoneAssignments[phoneId]);
+      
+      // On va débiter automatiquement un client qui a assez d'argent pour la simulation
+      const client = usersData.find(u => u.role === "client" && u.status === "Actif" && u.balance >= amount);
+
+      if (!client) {
+        showToast("Aucun client actif simulé n'a le solde nécessaire pour cet achat.", "warning");
+        return;
+      }
+
+      // Transaction
+      client.balance -= amount;
+      merchant.balance += amount;
+
+      transactions.push({
+        id: "TX-" + (1001 + transactions.length),
+        from: client.id,
+        to: merchant.id,
+        amount: amount,
+        type: `achat (${itemName})`,
+        date: "Aujourd'hui"
+      });
+      showToast(`Achat de ${amount.toFixed(2)} $ complété ! Débité de ${client.name}`, "success");
+      renderAllPhones();
+    }
+    
+    function payerFactureClient(phoneId, senderId) {
+      const billCode = document.getElementById(`${phoneId}-pay-mcode`).value.trim();
+      const facture = facturesEnAttente.find(f => f.code === billCode);
+      const sender = usersData.find(u => u.id === senderId);
+      
+      if(!facture) { showToast("Code de facture invalide ou expiré.", "error"); return; }
+      if(sender.balance < facture.amount) { showToast("Solde insuffisant.", "error"); return; }
+      
+      const merchant = usersData.find(u => u.id === facture.merchantId);
+      sender.balance -= facture.amount;
+      merchant.balance += facture.amount;
+      
+      transactions.push({
+        id: "BILL-" + billCode,
+        from: senderId,
+        to: merchant.id,
+        amount: facture.amount,
+        type: "Paiement Facture",
+        date: "Aujourd'hui"
+      });
+      
+      facturesEnAttente = facturesEnAttente.filter(f => f.code !== billCode);
+      showToast(`Facture payée : ${facture.amount}$ à ${merchant.name}`, "success");
+      renderAllPhones();
+    }
+
+
+    // ==========================================
+    // 3. MODULE AGENT DE TERRAIN
+    // ==========================================
+    function renderAgentScreen(phoneId, user, tab) {
+      let content = "";
+      if (tab === "home") {
+        content = `
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-4 shadow-xl relative">
+            <button onclick="exportHistoryPDF('${user.id}')" class="absolute top-2 right-2 text-white/50 hover:text-white transition"><i class="fa-solid fa-file-pdf"></i></button>
+            <p class="text-[10px] text-emerald-100 uppercase tracking-wider font-semibold">Commissions Récoltées</p>
+            <div class="flex justify-between items-end">
+              <h2 class="text-2xl font-black text-white mt-1">${user.commission.toFixed(2)} $</h2>
+              <div class="text-right">
+                <p class="text-[10px] text-emerald-100 uppercase font-bold">Encaisse Cash</p>
+                <p class="text-xs font-black text-white">${user.balance.toFixed(2)} $ / ${(user.balanceCDF || 0).toLocaleString()} FC</p>
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-white/10 text-[9px] text-emerald-100 flex justify-between">
+                <span>Code: ${user.code}</span>
+              </div>
+          </div>
+          <p class="text-[10px] text-emerald-400 font-bold uppercase pt-2">Ma Flotte de Gestion</p>
+
+          <!-- Services de Terrain -->
+          <div class="space-y-2">
+            <button onclick="changeTab('${phoneId}', 'deposit')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-money-bill-transfer text-emerald-400 text-base"></i>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-white">Dépôt d'Espèces</p>
+                  <p class="text-[9px] text-slate-400">Créditer le compte d'un client</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+            </button>
+
+            <button onclick="changeTab('${phoneId}', 'withdraw')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-hand-holding-dollar text-emerald-400 text-base"></i>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-white">Retrait d'Espèces</p>
+                  <p class="text-[9px] text-slate-400">Remettre du cash physique</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+            </button>
+          </div>
+          <div class="mt-4">
+            <h4 class="text-xs font-bold text-slate-400 mb-2">Mes Clients gérés</h4>
+            <div class="space-y-1">
+              ${usersData.filter(u => u.managedBy === user.id).map(u => `
+                <div class="p-2 bg-slate-950/60 rounded-lg text-[10px] border border-slate-800 flex justify-between items-center">
+                  <span>${u.name}</span>
+                  <button onclick="prepareChangeClientCode('${phoneId}', '${u.id}')" class="text-emerald-400 hover:text-emerald-300 p-1">
+                    <i class="fa-solid fa-key"></i>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (tab === "history") {
+        content = renderCommonHistoryTab(phoneId, user);
+      } else if (tab === "manage-client-pin") {
+        const targetId = tempTargetClient[phoneId];
+        const target = usersData.find(u => u.id === targetId);
+        if (!target) return `<p class="text-xs p-4">Aucun client sélectionné.</p>`;
+        content = `
+          <h3 class="text-sm font-bold text-white mb-2">Gérer Code Client</h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <p class="text-[10px] text-slate-400 italic">Modification pour : ${target.name}</p>
+            <input type="password" id="${phoneId}-client-new-pin" placeholder="Nouveau PIN" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            <button onclick="agentUpdateClientPin('${phoneId}', '${user.id}', '${targetId}')" class="w-full py-2 bg-emerald-600 font-bold text-xs text-white rounded-xl">Changer le Code</button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1 text-xs text-slate-500">Annuler</button>
+          </div>
+        `;
+      } else if (tab === "deposit") {
+        const clients = usersData.filter(u => u.role === "client");
+        let optionsHTML = clients.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-money-bill-transfer text-emerald-500"></i> Effectuer un Dépôt
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Sélectionner le Client</label>
+              <select id="${phoneId}-deposit-client" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                ${optionsHTML}
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant déposé ($)</label>
+              <input type="number" id="${phoneId}-deposit-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="validerOperationAgent('${phoneId}', 'deposit')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+              Valider le dépôt physique
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      } else if (tab === "withdraw") {
+        const clients = usersData.filter(u => u.role === "client");
+        let optionsHTML = clients.map(c => `<option value="${c.id}">${c.name} (${c.balance.toFixed(2)} $)</option>`).join("");
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i> Valider un Retrait
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Sélectionner le Client</label>
+              <select id="${phoneId}-withdraw-client" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                ${optionsHTML}
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant retiré ($)</label>
+              <input type="number" id="${phoneId}-withdraw-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="validerOperationAgent('${phoneId}', 'withdraw')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+              Autoriser la remise de Cash
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      } else if (tab === "new-user") {
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-user-plus text-sky-500"></i> Création de Compte
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Identité Complète (Nom, Prénom)</label>
+              <input type="text" id="${phoneId}-new-name" placeholder="ex: Alice Dubois" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[9px] text-slate-400 uppercase font-bold">Pièce Identité / Passeport</label>
+                <input type="text" id="${phoneId}-new-doc" placeholder="N° Document" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              </div>
+              <div>
+                <label class="text-[9px] text-slate-400 uppercase font-bold">Téléphone (Obligatoire)</label>
+                <input type="text" id="${phoneId}-new-phone" placeholder="243..." class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              </div>
+            </div>
+            <div>
+              <label class="text-[9px] text-slate-400 uppercase font-bold">Photo Client / Signature</label>
+              <div class="flex gap-3 items-center mt-1">
+                <div id="${phoneId}-new-photo-preview-container" class="w-16 h-16 bg-slate-800 rounded-lg flex items-center justify-center overflow-hidden border border-slate-700">
+                  <img id="${phoneId}-new-photo-preview" src="" alt="Preview" class="hidden w-full h-full object-cover">
+                  <i id="${phoneId}-new-photo-placeholder" class="fa-solid fa-image text-slate-500 text-xl"></i>
+                </div>
+                <input type="hidden" id="${phoneId}-new-photo-url">
+                <div class="flex flex-col gap-1">
+                  <button onclick="simulerCaptureImage('${phoneId}', 'new-photo')" class="p-2 bg-slate-800 rounded-lg text-white hover:bg-slate-700 text-xs" title="Utiliser Caméra">
+                  <i class="fa-solid fa-camera"></i>
+                  </button>
+                  <button onclick="simulerUploadImage('${phoneId}', 'new-photo')" class="p-2 bg-slate-800 rounded-lg text-white hover:bg-slate-700 text-xs" title="Uploader fichier">
+                  <i class="fa-solid fa-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Dépôt initial ($)</label>
+              <input type="number" id="${phoneId}-new-deposit" placeholder="0.00 (Espèces confiées)" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="creerClientExpress('${phoneId}')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Finaliser l'enrôlement KYC
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Annuler
+            </button>
+          </div>
+        `;
+      }
+      return content;
+    }
+
+    function renderAgentFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-3 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px] w-full">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-emerald-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-handshake-angle text-base"></i>
+            <span>Mes Services</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'new-user')" class="flex flex-col items-center gap-1 ${activeTab === 'new-user' ? 'text-emerald-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-user-plus text-base"></i>
+            <span>Enrôlement</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'history')" class="flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-emerald-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-clock-rotate-left text-base"></i>
+            <span>Historique</span>
+          </button>
+        </div>
+      `;
+    }
+
+    async function validerOperationAgent(phoneId, type) {
+      const agent = usersData.find(u => u.id === phoneAssignments[phoneId]);
+      
+      if (type === 'deposit') {
+        const clientId = document.getElementById(`${phoneId}-deposit-client`).value;
+        const amount = parseFloat(document.getElementById(`${phoneId}-deposit-amount`).value);
+        const client = usersData.find(u => u.id === clientId);
+
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Veuillez saisir un montant de dépôt valide.", "error");
+          return;
+        }
+        
+        const newClientBal = client.balance + amount;
+        const newAgentBal = agent.balance + amount;
+
+        // Action de dépôt physique : L'agent récolte les espèces et augmente le solde numérique du client
+        await supabaseClient.from('users').update({ balance_usd: newClientBal }).eq('id', clientId);
+        await supabaseClient.from('users').update({ balance_usd: newAgentBal }).eq('id', agent.id);
+        client.balance = newClientBal;
+        agent.balance = newAgentBal;
+        // Commission agent (1.5% du montant)
+        const comm = amount * 0.015;
+        agent.commission += comm;
+        showToast(`Dépôt physique réussi ! +${amount}$ crédités à ${client.name}. Commission : +${comm.toFixed(2)}$`, "success");
+      } 
+      
+      else if (type === 'withdraw') {
+        const clientId = document.getElementById(`${phoneId}-withdraw-client`).value;
+        const amount = parseFloat(document.getElementById(`${phoneId}-withdraw-amount`).value);
+        const client = usersData.find(u => u.id === clientId);
+
+        if (isNaN(amount) || amount <= 0) {
+          showToast("Montant invalide.", "error");
+          return;
+        }
+        if (client.balance < amount) {
+          showToast("Le solde du client est insuffisant pour ce retrait.", "error");
+          return;
+        }
+        if (amount > client.limit) {
+          showToast("Opération refusée : Le montant dépasse le plafond du client.", "error");
+          return;
+        }
+
+        const newClientBal = client.balance - amount;
+        const newAgentBal = agent.balance - amount;
+
+        // Action de retrait : L'agent décompte le solde numérique du client et donne du cash physique
+        await supabaseClient.from('users').update({ balance_usd: newClientBal }).eq('id', clientId);
+        await supabaseClient.from('users').update({ balance_usd: newAgentBal }).eq('id', agent.id);
+        client.balance = newClientBal;
+        agent.balance = newAgentBal;
+        
+        // Commission agent (1% du montant)
+        const comm = amount * 0.01;
+        agent.commission += comm;
+        showToast(`Retrait cash de ${amount}$ autorisé pour ${client.name}. Commission : +${comm.toFixed(2)}$`, "success");
+      }
+      renderAllPhones();
+    }
+
+    async function creerClientExpress(phoneId) {
+      const name = document.getElementById(`${phoneId}-new-name`).value.trim();
+      let phoneInput = document.getElementById(`${phoneId}-new-phone`).value.trim();
+      const deposit = parseFloat(document.getElementById(`${phoneId}-new-deposit`).value);
+      const doc = document.getElementById(`${phoneId}-new-doc`).value.trim();
+      const photo = document.getElementById(`${phoneId}-new-photo-url`).value.trim();
+      const agent = usersData.find(u => u.id === phoneAssignments[phoneId]);
+
+      if (!name || !phoneInput || !doc || !photo || isNaN(deposit) || deposit < 0) {
+        showToast("Champs manquants ou invalides.", "error");
+        return;
+      }
+
+      // Gestion du numéro personnalisé ou auto
+      if (phoneInput) {
+        const exists = usersData.find(u => u.phone === phoneInput);
+        if (exists) {
+          showToast("Ce numéro est déjà attribué. Choisissez-en un autre.", "error");
+          return;
+        }
+      } else {
+        lastPhoneSequence++;
+        phoneInput = lastPhoneSequence.toString();
+      }
+
+      // Vérifier si le numéro de téléphone existe déjà
+      const phoneExists = usersData.some(u => u.phone === phoneInput);
+      if (phoneExists) {
+        showToast("Ce numéro de téléphone est déjà utilisé par un autre compte.", "error");
+        return;
+      }
+
+      const newUser = {
+        name: name,
+        role: "client",
+        balance_usd: deposit,
+        phone: phoneInput,
+        status: "En attente d'approbation", // Initial status for KYC
+        limit: 1500, // Plafond par défaut enregistré en DB
+        kyc_doc: doc,
+        photo_url: photo,
+        managedBy: agent.id
+      };
+
+      const { error } = await supabaseClient.from('users').insert([newUser]);
+      if (!error) {
+        agent.commission += 5.00;
+        showToast(`Compte de ${name} créé et enregistré dans la base de données.`, "success");
+        const updated = await fetchUsersFromSupabase();
+        if (updated) usersData = updated;
+        changeTab(phoneId, "home");
+      } else {
+        showToast("Erreur lors de l'enregistrement du nouveau client.", "error");
+      }
+    }
+
+    // --- LOGIQUE DE GESTION DES CODES PIN ---
+    let tempTargetClient = {};
+
+    // --- LOGIQUE DE GESTION DES REJETS ---
+    async function updateUserPin(phoneId, userId) {
+      const newPin = document.getElementById(`${phoneId}-new-pin`).value;
+      if (newPin.length < 4) { showToast("Le code doit avoir au moins 4 caractères.", "error"); return; }
+      const user = usersData.find(u => u.id === userId);
+      
+      const { error } = await supabaseClient.from('users').update({ pin_code: newPin }).eq('id', userId);
+      
+      if (error) {
+        showToast("Erreur lors de la mise à jour sur le serveur.", "error");
+      } else {
+        user.code = newPin;
+        showToast("Votre code PIN a été modifié avec succès.", "success");
+        changeTab(phoneId, "home");
+      }
+    }
+
+    function prepareChangeClientCode(phoneId, clientId) {
+      tempTargetClient[phoneId] = clientId;
+      changeTab(phoneId, "manage-client-pin");
+    }
+
+    async function agentUpdateClientPin(phoneId, agentId, clientId) {
+      const newPin = document.getElementById(`${phoneId}-client-new-pin`).value;
+      if (newPin.length < 4) { showToast("Code trop court.", "error"); return; }
+      
+      await supabaseClient.from('users').update({ pin_code: newPin }).eq('id', clientId);
+      const client = usersData.find(u => u.id === clientId);
+      client.code = newPin;
+      
+      showToast(`Code PIN de ${client.name} mis à jour par l'agent.`, "success");
+      delete tempTargetClient[phoneId];
+      changeTab(phoneId, "home");
+    }
+
+    let tempTargetUserForRejection = {}; // Stores { phoneId: { userId: "Uxxx", role: "client" | "agent" } }
+
+    function prepareRejection(phoneId, targetId, targetRole) {
+      tempTargetUserForRejection[phoneId] = { userId: targetId, role: targetRole };
+      if (targetRole === 'client') {
+        changeTab(phoneId, "reject-client");
+      } else if (targetRole === 'agent') {
+        changeTab(phoneId, "reject-agent");
+      }
+    }
+
+    function renderRejectionScreen(phoneId, targetUser, rejectionType) {
+      return ``; // This will be filled in the specific render functions
+    }
+
+    // 4. MODULE ADMINISTRATEUR
+    // ==========================================
+    function renderAdminScreen(phoneId, user, tab) {
+      if (tab === "home") {
+        // Obtenir des statistiques globales rapides
+        const totalCash = usersData.reduce((acc, u) => acc + (u.balance || 0), 0);
+        const totalCashFC = usersData.reduce((acc, u) => acc + (u.balanceCDF || 0), 0);
+        const activeUsersCount = usersData.filter(u => u.status === "Actif" || u.status === "En Ligne").length;
+
+        return `
+          <!-- Tableau de contrôle Admin -->
+          <div class="bg-gradient-to-br from-rose-600 to-red-800 rounded-2xl p-4 shadow-xl">
+            <button onclick="exportHistoryPDF('${user.id}')" class="absolute top-2 right-2 text-white/50 hover:text-white transition"><i class="fa-solid fa-file-pdf"></i></button>
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-[9px] text-rose-100 uppercase font-bold">Taux Réseau Actuel</p>
+                <h4 class="text-lg font-black text-white">1$ = ${EXCHANGE_RATE} FC</h4>
+                <h4 class="text-lg font-black text-white">Ref: 1$ = ${RATE_MARKET} FC</h4>
+              </div>
+              <button onclick="changeTab('${phoneId}', 'settings')" class="p-2 bg-white/10 rounded-lg text-white hover:bg-white/20 transition">
+                <i class="fa-solid fa-gear"></i>
+              </button>
+            </div>
+            <div class="border-t border-white/10 pt-3">
+              <p class="text-[10px] text-rose-100 uppercase tracking-wider font-semibold">Volume Financier Total</p>
+              <h2 class="text-2xl font-black text-white mt-1">${totalCash.toFixed(2)} $</h2>
+              <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/10 text-[10px] text-rose-100">
+                <span>Utilisateurs actifs : ${activeUsersCount} / ${usersData.length}</span>
+                <span>Réseau : Sécurisé</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Raccourcis Administrateur -->
+          <div class="p-3 bg-slate-950 rounded-xl border border-rose-500/20">
+            <p class="text-[10px] text-rose-400 font-bold uppercase mb-2">Trésorerie Multidevise</p>
+            <p class="text-xs font-bold text-white flex justify-between"><span>Total USD:</span> <span>${totalCash.toFixed(2)} $</span></p>
+            <p class="text-xs font-bold text-white flex justify-between"><span>Total CDF:</span> <span>${totalCashFC.toLocaleString()} FC</span></p>
+          </div>
+
+          <!-- Bourses de Bénéfices -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-2 bg-indigo-950 border border-indigo-800 rounded-lg">
+              <p class="text-[8px] text-indigo-400 font-bold uppercase">Bénéfices Frais</p>
+              <p class="text-xs font-black text-white">${networkProfits.txFees.toFixed(2)} $</p>
+            </div>
+          </div>
+          
+          <div class="bg-slate-900 border border-emerald-500/30 p-3 rounded-xl">
+            <p class="text-[10px] text-emerald-400 font-bold uppercase mb-2">Simulateur Temporel</p>
+            <button onclick="appliquerInteretsMensuels()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-[10px] font-bold text-white rounded-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left"></i> Générer Intérêts Mensuels (2%)
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-xs font-bold text-slate-400">Outils d'administration rapide</h4>
+            
+            <button onclick="changeTab('${phoneId}', 'users-mgmt')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-users-gear text-rose-400 text-base"></i>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-white">Gérer les comptes</p>
+                  <p class="text-[9px] text-slate-400">Suspendre / Activer / Augmenter les plafonds</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+            </button>
+
+            <button onclick="changeTab('${phoneId}', 'audit')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-receipt text-rose-400 text-base"></i>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-white">Registre des Transactions</p>
+                  <p class="text-[9px] text-slate-400">Consulter tous les flux financiers réseau</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+            </button>
+          </div>
+        `;
+      } 
+      
+      else if (tab === "users-mgmt") {
+        // Afficher tous les clients et commerçants
+        let usersListHTML = "";
+        usersData.forEach(u => {
+          if (u.role === "admin" || u.role === "support") return;
+          const statusIcon = u.status === "Actif" ? "fa-toggle-on text-emerald-400" : "fa-toggle-off text-rose-500";
+          usersListHTML += `
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+              <div>
+                <p class="font-bold text-white text-[11px]">${u.name}</p>
+                <p class="text-[9px] text-slate-400">${u.id} • ${u.role} • Plafond: ${u.limit || 0} $</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="toggleUserStatus('${phoneId}', '${u.id}')" title="Changer l'état" class="text-base transition">
+                  <i class="fa-solid ${statusIcon}"></i>
+                </button>
+                <button onclick="augmenterPlafond('${phoneId}', '${u.id}')" title="Augmenter plafond +1000 $" class="px-1.5 py-0.5 bg-rose-950 border border-rose-800 text-rose-400 text-[9px] font-bold rounded">
+                  +1k Plafond
+                </button>
+                <button onclick="diminuerPlafond('${phoneId}', '${u.id}')" title="Diminuer plafond -1000 $" class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[9px] font-bold rounded hover:bg-slate-700 transition">
+                  -1k Plafond
+                </button>
+                <button onclick="reinitialiserPin('${phoneId}', '${u.id}')" title="Réinitialiser PIN" class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[9px] font-bold rounded hover:bg-slate-700 transition">
+                  Reset PIN
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-users-gear text-rose-500"></i> Administration des Utilisateurs
+          </h3>
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto">
+            ${usersListHTML}
+          </div>
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full mt-2 py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+            Retour
+          </button>
+        `;
+      }
+
+      else if (tab === "settings") {
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-gears text-rose-500"></i> Configuration Réseau
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Taux d'Achat (Système reçoit USD)</label>
+              <div class="flex items-center gap-2 mt-1">
+                <input type="number" id="${phoneId}-rate-buy" value="${RATE_BUY}" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-sm text-white focus:ring-rose-500">
+                <span class="text-xs font-bold text-slate-500">FC</span>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Taux de Vente (Système donne USD)</label>
+              <div class="flex items-center gap-2 mt-1">
+                <input type="number" id="${phoneId}-rate-sell" value="${RATE_SELL}" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-sm text-white focus:ring-rose-500">
+                <span class="text-xs font-bold text-slate-500">FC</span>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] text-indigo-400 uppercase font-bold">Taux de Référence (Marché)</label>
+              <input type="number" id="${phoneId}-rate-market" value="${RATE_MARKET}" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-sm text-white focus:ring-indigo-500">
+            </div>
+
+            <button onclick="modifierTauxChangeComplex('${phoneId}')" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Appliquer le nouveau taux
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 text-center block">Annuler</button>
+          </div>
+        `;
+      } 
+      
+      else if (tab === "audit") {
+        let txListHTML = "";
+        transactions.slice().reverse().forEach(tx => {
+          const fromUser = usersData.find(u => u.id === tx.from);
+          const toUser = usersData.find(u => u.id === tx.to);
+          txListHTML += `
+            <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800/80 text-[10px] space-y-1">
+              <div class="flex justify-between font-bold text-slate-300">
+                <span>${tx.id}</span>
+            <span class="text-rose-400">${tx.amount.toFixed(2)} $</span>
+              </div>
+              <p class="text-slate-400">
+                De: <span class="text-white">${fromUser ? fromUser.name : tx.from}</span> <br>
+                À: <span class="text-white">${toUser ? toUser.name : tx.to}</span>
+              </p>
+              <div class="text-[8px] text-slate-500">Type : ${tx.type}</div>
+            </div>
+          `;
+        });
+
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-receipt text-rose-500"></i> Audit Réseau Global
+          </h3>
+          <button onclick="exportHistoryPDF('${user.id}')" class="w-full mb-3 py-1.5 bg-rose-600/20 border border-rose-500/40 text-rose-400 rounded-lg text-[10px] font-bold flex items-center justify-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i> Exporter Registre Complet
+          </button>
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto">
+            ${txListHTML}
+          </div>
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full mt-2 py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+            Retour
+          </button>
+        `;
+      }
+    }
+
+    function renderAdminFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-2 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px]">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-rose-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-chart-line text-base"></i>
+            <span>Admin</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'users-mgmt')" class="flex flex-col items-center gap-1 ${activeTab === 'users-mgmt' ? 'text-rose-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-users-gear text-base"></i>
+            <span>Comptes</span>
+          </button>
+        </div>
+      `;
+    }
+
+    async function toggleUserStatus(phoneId, userId) {
+      const target = usersData.find(u => u.id === userId);
+      const newStatus = target.status === "Actif" ? "Suspendu" : "Actif";
+      await supabaseClient.from('users').update({ status: newStatus }).eq('id', userId);
+      target.status = newStatus;
+      showToast(`Le statut de ${target.name} est maintenant : ${target.status}`, "warning");
+      renderAllPhones();
+    }
+
+    async function reinitialiserPin(phoneId, userId) {
+      const target = usersData.find(u => u.id === userId);
+      if (target) {
+        if (!confirm(`Voulez-vous vraiment réinitialiser le code PIN de ${target.name} à 1234 ?`)) return;
+        await supabaseClient.from('users').update({ pin_code: "1234" }).eq('id', userId);
+        showToast(`Le code PIN de ${target.name} a été réinitialisé à 1234`, "info");
+        renderPhone(phoneId);
+      }
+    }
+
+    async function diminuerPlafond(phoneId, userId) {
+      const target = usersData.find(u => u.id === userId);
+      if (target) {
+        const newLimit = Math.max(0, (target.limit || 0) - 1000);
+        const { error } = await supabaseClient.from('users').update({ limit: newLimit }).eq('id', userId);
+        if (error) {
+          showToast("Erreur lors de l'enregistrement du plafond dans Supabase.", "error");
+        } else {
+          target.limit = newLimit;
+          showToast(`Plafond de ${target.name} diminué à ${newLimit} $`, "warning");
+          renderAllPhones();
+        }
+      }
+    }
+
+    async function augmenterPlafond(phoneId, userId) {
+      const target = usersData.find(u => u.id === userId);
+      if (target) {
+        const newLimit = (target.limit || 0) + 1000;
+        const { error } = await supabaseClient.from('users').update({ limit: newLimit }).eq('id', userId);
+        if (error) {
+          showToast("Erreur lors de l'enregistrement du plafond dans Supabase.", "error");
+        } else {
+          target.limit = newLimit;
+          showToast(`Nouveau plafond pour ${target.name} : ${target.limit} $`, "success");
+          renderAllPhones();
+        }
+      }
+    }
+
+    function modifierTauxChange(phoneId) {
+      const newRate = parseInt(document.getElementById(`${phoneId}-new-rate`).value);
+      if (isNaN(newRate) || newRate < 500) { showToast("Taux invalide.", "error"); return; }
+      EXCHANGE_RATE = newRate;
+      RATE_MARKET = newRate;
+      updateRateDisplay();
+    }
+
+    function modifierTauxChangeComplex(phoneId) {
+      const b = parseInt(document.getElementById(`${phoneId}-rate-buy`).value);
+      const s = parseInt(document.getElementById(`${phoneId}-rate-sell`).value);
+      const m = parseInt(document.getElementById(`${phoneId}-rate-market`).value);
+      
+      if (isNaN(b) || isNaN(s) || isNaN(m)) { showToast("Taux invalides.", "error"); return; }
+      
+      RATE_BUY = b;
+      RATE_SELL = s;
+      RATE_MARKET = m;
+      
+      updateGlobalStats();
+      showToast(`Politique de change mise à jour.`, "success");
+      changeTab(phoneId, "home");
+    }
+
+    function appliquerInteretsMensuels() {
+      let totalInterestsUSD = 0;
+      usersData.forEach(u => {
+        if (u.savingsUSD > 0) {
+          const gain = u.savingsUSD * 0.02;
+          u.savingsUSD += gain;
+        }
+        if (u.savingsCDF > 0) {
+          u.savingsCDF += u.savingsCDF * 0.02;
+        }
+      });
+      showToast("Un mois s'est écoulé. Les intérêts de 2% ont été versés dans tous les coffres-forts.", "success");
+      renderAllPhones();
+    }
+
+
+    // ==========================================
+    // 5. NOUVEAU MODULE : ASSISTANCE TECHNIQUE (6ème Téléphone)
+    // ==========================================
+    function renderSupportScreen(phoneId, user, tab) {
+      const openTickets = supportTickets.filter(t => t.status === "Ouvert");
+      const solvedTickets = supportTickets.filter(t => t.status === "Résolu");
+
+      if (tab === "home") {
+        let ticketsHTML = "";        
+        if (openTickets.length === 0) {
+          ticketsHTML = `
+            <div class="p-6 text-center text-slate-500 text-xs">
+              <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mb-2"></i>
+              <p>Aucun ticket ouvert actuellement ! Tout est sous contrôle.</p>
+            </div>
+          `;
+        } else {
+          openTickets.forEach(t => {
+            let priorityBadge = "bg-sky-500/10 text-sky-400";
+            if (t.severity === "high") priorityBadge = "bg-rose-500/15 text-rose-400 animate-pulse border border-rose-500/20";
+            if (t.severity === "medium") priorityBadge = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+
+            ticketsHTML += `
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 relative mb-2">
+                <div class="flex justify-between items-center text-[10px]">
+                  <span class="font-bold text-white">${t.id}</span>
+                  <span class="font-bold px-1.5 py-0.5 rounded text-[9px] ${priorityBadge}">${t.severity.toUpperCase()}</span>
+                </div>
+                <div class="text-xs">
+                  <p class="text-slate-400 text-[10px]">Utilisateur: <span class="font-semibold text-indigo-300">${t.userName} (${t.userId})</span></p>
+                  <p class="text-slate-200 mt-1 font-medium">${t.issue}</p>
+                </div>
+                <div class="flex gap-1.5 pt-2 border-t border-slate-800/60">
+                  <button onclick="resoudreTicket('${phoneId}', '${t.id}')" class="flex-1 py-1 px-2 bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white rounded transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Résoudre
+                  </button>
+                  <button onclick="analyserCompte('${phoneId}', '${t.userId}')" class="py-1 px-2 bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 rounded transition" title="Inspecter le compte">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <!-- Résumé des Tickets -->
+          <div class="bg-gradient-to-tr from-indigo-950 to-slate-900 border border-indigo-500/20 rounded-2xl p-3 flex justify-between items-center relative mb-4">
+            <div>
+              <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-wider">Tickets urgents</p>
+              <h3 class="text-base font-black text-white">${openTickets.length} À traiter</h3>
+            </div>
+            <span class="text-[10px] text-slate-400">${solvedTickets.length} Résolus</span>
+          </div>
+
+          <div class="space-y-2">
+          <!-- Flux d'appels / Alertes -->
+            <div class="flex justify-between items-center">
+              <h4 class="text-xs font-bold text-slate-400">Flux d'appels / Alertes</h4>
+              <button onclick="simulerAlerteSupport()" class="text-[9px] bg-slate-800 hover:bg-indigo-950/40 border border-slate-700/50 text-slate-300 px-2 py-0.5 rounded-lg transition">+ Simuler Souci</button>
+            </div>
+            ${ticketsHTML}
+          </div>
+        `;
+      } 
+      
+      else if (tab === "solved") {
+        let solvedListHTML = "";
+
+        if (solvedTickets.length === 0) {
+          solvedListHTML = `<p class="text-xs text-slate-500 text-center py-6">Aucun incident n'a été classé résolu aujourd'hui.</p>`;
+        } else {
+          solvedTickets.forEach(t => {
+            solvedListHTML += `
+              <div class="p-2.5 rounded-xl bg-slate-950/50 border border-slate-800/80 text-[10px] space-y-1 opacity-70">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-emerald-400">${t.id}</span>
+                  <span class="font-bold text-slate-500 uppercase">Résolu</span>
+                </div>
+                <p class="text-slate-300">${t.issue}</p>
+                <p class="text-[9px] text-slate-500">Initié par: ${t.userName}</p>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-circle-check text-emerald-500"></i> Historique des interventions
+          </h3>
+          <button onclick="exportHistoryPDF('${user.id}')" class="w-full mb-3 py-1.5 bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 rounded-lg text-[10px] font-bold flex items-center justify-center gap-2"> 
+            <i class="fa-solid fa-file-pdf"></i> Exporter Rapport de Support
+          </button>
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto">
+            ${solvedListHTML}
+          </div>
+        `;
+      } 
+    }
+
+    function renderSupportFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-2 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px]">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-indigo-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-headset text-base"></i>
+            <span>File d'attente</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'solved')" class="flex flex-col items-center gap-1 ${activeTab === 'solved' ? 'text-indigo-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-circle-check text-base"></i>
+            <span>Interventions</span>
+          </button>
+        </div>
+      `;
+    }
+
+    // Fonction maîtresse pour résoudre tous les soucis d'un coup ou au cas par cas
+    function resoudreTicket(phoneId, ticketId) {
+      const ticket = supportTickets.find(t => t.id === ticketId);
+      if (!ticket) return;
+
+      const user = usersData.find(u => u.id === ticket.userId);
+
+      // Traiter intelligemment l'incident en fonction de la situation
+      if (user.status === "Suspendu") {
+        user.status = "Actif"; // Rétablir le compte s'il était suspendu
+        showToast(`[Support] Compte de ${user.name} rétabli et réactivé !`, "success");
+      }
+
+      // Si le problème concerne le plafond, on l'augmente directement pour lui rendre service
+      if (ticket.issue.includes("Plafond") && user.limit !== undefined) {
+        user.limit += 2000;
+        showToast(`[Support] Plafond de ${user.name} élevé à ${user.limit} $ !`, "success");
+      }
+
+      // S'il s'agit d'un échec de virement ou solde, on lui offre un geste commercial bonus symbolique de 10 $
+      if (ticket.issue.includes("Échec") && user.balance !== undefined) {
+        user.balance += 10.00;
+        showToast(`[Support] Geste de 10.00 $ crédité à ${user.name} !`, "success");
+        showToast(`[Support] Geste de 10.00 $ crédité à ${user.name} !`, "success");
+      }
+
+      ticket.status = "Résolu";
+      showToast(`Ticket ${ticketId} marqué résolu avec succès !`, "success");
+
+      // Mettre à jour tous les téléphones (les changements s'appliquent immédiatement partout)
+      renderAllPhones();
+    }
+
+    // Inspecter et changer un des téléphones vers l'utilisateur concerné par le ticket
+    function analyserCompte(phoneId, targetUserId) {
+      // On affecte le client du ticket sur l'appareil 1 pour l'aider directement
+      phoneAssignments["phone-1"] = targetUserId;
+      phoneNavState["phone-1"] = "home";
+      showToast(`Téléphone 1 synchronisé sur l'utilisateur ${targetUserId} pour inspection.`, "info");
+      renderAllPhones();
+    }
+
+    function simulerAlerteSupport() {
+      // Simule un nouvel appel client entrant
+      const randomClient = usersData.filter(u => u.role === "client")[Math.floor(Math.random() * 3)];
+      const randomIssues = [
+        "Carte physique perdue ou bloquée",
+        "Prélèvement inconnu détecté",
+        "Application lente au moment du virement",
+        "Impossible d'afficher le solde en direct"
+      ];
+      
+      const newTicketId = "T-" + (101 + supportTickets.length);
+      supportTickets.push({
+        id: newTicketId,
+        userId: randomClient.id,
+        userName: randomClient.name,
+        issue: randomIssues[Math.floor(Math.random() * randomIssues.length)],
+        severity: "medium",
+        status: "Ouvert",
+        timestamp: "À l'instant"
+      });
+
+      showToast(`Nouvel incident entrant : ${newTicketId} !`, "warning");
+      renderPhone("phone-6");
+    }
+
+    // ==========================================
+    // 6. MODULE RÉGULATEUR (Banque Centrale)
+    // ==========================================
+    function renderRegulatorScreen(phoneId, user, tab) {
+      let content = "";
+      // Calcul de la masse monétaire globale
+      const totalMoneySupply = usersData.reduce((acc, u) => acc + (u.balance || 0), 0);
+      const totalMoneySupplyFC = usersData.reduce((acc, u) => acc + (u.balanceCDF || 0), 0);
+      const totalTxVolume = transactions.reduce((acc, tx) => acc + tx.amount, 0);
+
+      if (tab === "home") {
+        return `
+          <!-- Dashboard Macro-Économique -->
+          <div class="bg-gradient-to-br from-fuchsia-700 to-purple-900 rounded-2xl p-4 shadow-xl border border-fuchsia-500/30 relative overflow-hidden">
+            
+            <i class="fa-solid fa-scale-balanced absolute -right-4 -bottom-4 text-7xl text-white/5"></i>
+            <p class="text-[10px] text-fuchsia-200 uppercase tracking-wider font-semibold">Masse Monétaire Circulante</p>
+            <h2 class="text-2xl font-black text-white mt-1">${totalMoneySupply.toFixed(2)} $</h2>
+            <p class="text-[10px] text-fuchsia-200 uppercase tracking-wider font-semibold mt-2">Masse Monétaire CDF</p>
+            <h2 class="text-xl font-black text-white">${totalMoneySupplyFC.toLocaleString()} FC</h2>
+            
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/10 text-[10px] text-fuchsia-200">
+              <span>Vol. Échanges : ${totalTxVolume.toFixed(2)} $</span>
+              <span>Trésorerie: ${(user.balance || 0).toFixed(2)} $</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-4">
+            <button onclick="changeTab('${phoneId}', 'mint')" class="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left transition flex flex-col gap-2">
+              <i class="fa-solid fa-coins text-fuchsia-400 text-sm"></i>
+              <span class="text-[10px] font-bold text-white uppercase">Frapper Monnaie</span>
+            </button>
+            <button onclick="changeTab('${phoneId}', 'float')" class="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left transition flex flex-col gap-2">
+              <i class="fa-solid fa-truck-ramp-box text-fuchsia-400 text-sm"></i>
+              <span class="text-[10px] font-bold text-white uppercase">Injecter Float</span>
+            </button>
+            <button onclick="changeTab('${phoneId}', 'create')" class="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left transition flex flex-col gap-2">
+              <i class="fa-solid fa-user-plus text-fuchsia-400 text-sm"></i>
+              <span class="text-[10px] font-bold text-white uppercase">Créer Acteur</span>
+            </button>
+            <button onclick="changeTab('${phoneId}', 'audit')" class="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left transition flex flex-col gap-2">
+              <i class="fa-solid fa-file-shield text-fuchsia-400 text-sm"></i>
+              <span class="text-[10px] font-bold text-white uppercase">Conformité</span>
+            </button>
+          </div>
+        `;
+      } else if (tab === "mint") {
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-coins text-fuchsia-500"></i> Émission Monétaire
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant à émettre ($)</label>
+              <select id="${phoneId}-mint-currency" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="USD">Dollars ($)</option>
+                <option value="CDF">Francs Congolais (FC)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant à émettre</label>
+              <input type="number" id="${phoneId}-mint-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="validerMintRegulateur('${phoneId}', '${user.id}')" class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-xs font-bold text-white rounded-xl transition shadow-lg mb-2">
+              Frapper la monnaie
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      } else if (tab === "float") {
+        const recipients = usersData.filter(u => u.role === "super_agent" || u.role === "agent");
+        let optionsHTML = recipients.map(r => `<option value="${r.id}">${r.name} (${r.role} • ${r.balance.toFixed(2)}$ / ${(r.balanceCDF || 0).toLocaleString()} FC)</option>`).join("");
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-truck-ramp-box text-fuchsia-500"></i> Injection de Float
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Acteur Destinataire</label>
+              <select id="${phoneId}-float-dest" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                ${optionsHTML}
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant ($)</label>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Devise</label>
+              <select id="${phoneId}-float-currency" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="USD">Dollars ($)</option>
+                <option value="CDF">Francs Congolais (FC)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Montant</label>
+              <input type="number" id="${phoneId}-float-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <button onclick="validerFloatRegulateur('${phoneId}', '${user.id}')" class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Injecter les fonds
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      } else if (tab === "create") {
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-user-plus text-fuchsia-500"></i> Créer un Nouvel Acteur
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Nom complet</label>
+              <input type="text" id="${phoneId}-create-name" placeholder="ex: Jean Dupond" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Rôle</label>
+              <select id="${phoneId}-create-role" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                <option value="client">Client</option>
+                <option value="merchant">Commerçant</option>
+                <option value="agent">Agent</option>
+                <option value="super_agent">Super Agent</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Téléphone</label>
+              <input type="text" id="${phoneId}-create-phone" placeholder="+33..." class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[9px] text-slate-400 uppercase font-bold">N° Document</label>
+                <input type="text" id="${phoneId}-create-doc" placeholder="ABC12345" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              </div>
+              <div class="space-y-1">
+                <label class="text-[9px] text-slate-400 uppercase font-bold block">Photo/ID</label>
+                <div class="flex gap-2 items-center">
+                  <div id="${phoneId}-create-photo-preview-container" class="w-12 h-12 bg-slate-800 rounded flex items-center justify-center overflow-hidden border border-slate-700">
+                    <img id="${phoneId}-create-photo-preview" src="" alt="Preview" class="hidden w-full h-full object-cover">
+                    <i id="${phoneId}-create-photo-placeholder" class="fa-solid fa-image text-slate-500 text-lg"></i>
+                  </div>
+                  <input type="hidden" id="${phoneId}-create-photo-url">
+                  <div class="flex flex-col gap-1">
+                    <button onclick="simulerCaptureImage('${phoneId}', 'create-photo')" class="p-1.5 bg-slate-800 rounded text-white" title="Caméra">
+                    <i class="fa-solid fa-camera text-[10px]"></i>
+                    </button>
+                    <button onclick="simulerUploadImage('${phoneId}', 'create-photo')" class="p-1.5 bg-slate-800 rounded text-white" title="Upload">
+                    <i class="fa-solid fa-upload text-[10px]"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button onclick="validerCreateRegulateur('${phoneId}')" class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Enregistrer l'acteur
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Annuler
+            </button>
+          </div>
+        `;
+      } else if (tab === "history") {
+        let txListHTML = "";
+        transactions.slice().reverse().forEach(tx => {
+          const fromU = usersData.find(u => u.id === tx.from);
+          const toU = usersData.find(u => u.id === tx.to);
+          txListHTML += `
+            <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[10px] space-y-1 mb-1">
+              <div class="flex justify-between font-bold">
+                <span class="text-fuchsia-400">${tx.id}</span>
+                <span class="text-white">${tx.amount.toLocaleString()} ${tx.currency || '$'}</span>
+              </div>
+              <p class="text-[9px] text-slate-400">
+                De: <span class="text-slate-200">${fromU ? fromU.name : tx.from}</span> → 
+                À: <span class="text-slate-200">${toU ? toU.name : tx.to}</span>
+              </p>
+              <p class="text-[8px] italic text-slate-500">${tx.type}</p>
+            </div>
+          `;
+        });
+
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-list-ul text-fuchsia-500"></i> Historique Global
+          </h3>
+          <button onclick="exportHistoryPDF('${user.id}')" class="w-full mb-3 py-1.5 bg-fuchsia-600/20 border border-fuchsia-500/40 text-fuchsia-400 rounded-lg text-[10px] font-bold flex items-center justify-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i> Exporter Données Macro
+          </button>
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto pr-1">
+            ${txListHTML || '<p class="text-center py-4 text-slate-500">Aucune transaction.</p>'}
+          </div>
+        `;
+      } else if (tab === "audit") {
+        let auditListHTML = "";
+        usersData.forEach(u => {
+          if (u.role === "admin" || u.role === "support" || u.role === "regulator") return;
+          
+          const isFrozen = u.status === "Gelé (Régulateur)";
+          const btnClass = isFrozen ? "bg-slate-800 text-slate-400" : "bg-fuchsia-900/50 hover:bg-fuchsia-800 text-fuchsia-200 border border-fuchsia-700";
+          const btnText = isFrozen ? "Dégeler" : "Geler Fonds";
+          
+          auditListHTML += `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+              <div>
+                <p class="font-bold ${isFrozen ? 'text-slate-500 line-through' : 'text-white'} text-[11px]">${u.name}</p>
+                <p class="text-[9px] text-slate-400">${(u.balance || 0).toFixed(2)}$ / ${(u.balanceCDF || 0).toLocaleString()}FC</p>
+                ${isFrozen ? '<span class="text-[8px] font-bold text-rose-500 uppercase">Fonds saisis</span>' : ''}
+              </div>
+              <button onclick="gelerFondsRegulateur('${phoneId}', '${u.id}')" class="px-2 py-1 text-[9px] font-bold rounded transition ${btnClass}">
+                ${btnText}
+              </button>
+            </div>
+          `;
+        });
+
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-file-shield text-fuchsia-500"></i> Audit de Conformité
+          </h3>
+          <p class="text-[10px] text-slate-400 mb-3">Pouvoir d'injonction directe sur les comptes pour suspicion de fraude.</p>
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto">
+            ${auditListHTML}
+          </div>
+        `;
+      } else if (tab === "approvals") {
+        const pendingAgents = usersData.filter(u => u.role === "agent" && u.status === "En attente d'approbation");
+        let listHTML = pendingAgents.map(a => `
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 mb-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-white">${a.name}</span>
+              <span class="text-fuchsia-400 font-bold">AGENT</span>
+              <span class="text-[9px] text-slate-500">Créé par: ${usersData.find(sa => sa.id === a.managedBy)?.name || 'N/A'}</span>
+            </div>
+            <p class="text-[10px] text-slate-400">Doc: ${a.kycDoc || 'N/A'}</p>
+            <div class="flex gap-2">
+              <button onclick="approuverCompte('${phoneId}', '${a.id}')" class="flex-1 py-1 bg-emerald-600 text-[10px] font-bold text-white rounded">Approuver</button>
+              <button onclick="prepareRejection('${phoneId}', '${a.id}', 'agent')" class="flex-1 py-1 bg-rose-900 text-[10px] font-bold text-white rounded">Rejeter</button>
+            </div>
+          </div>
+        `).join('');
+        
+        content = `
+          <h3 class="text-sm font-bold text-white mb-3">Validation des Agents</h3>
+          ${listHTML || '<p class="text-xs text-slate-500 text-center py-8">Aucun agent en attente.</p>'}
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-2 text-xs text-slate-500">Retour</button>
+        `;
+      } else if (tab === "reject-agent") {
+        const targetInfo = tempTargetUserForRejection[phoneId];
+        const targetAgent = usersData.find(u => u.id === targetInfo?.userId);
+        content = `
+          <h3 class="text-sm font-bold text-white mb-2">Rejeter l'Agent : ${targetAgent?.name}</h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <textarea id="${phoneId}-rejection-reason" placeholder="Motif du rejet..." class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white h-24"></textarea>
+            <button onclick="rejectAgentByRegulator('${phoneId}', '${user.id}', '${targetAgent?.id}')" class="w-full py-2 bg-rose-600 font-bold text-xs text-white rounded-xl">Confirmer le Rejet</button>
+            <button onclick="changeTab('${phoneId}', 'approvals')" class="w-full py-1 text-xs text-slate-500">Annuler</button>
+          </div>
+        `;
+      }
+      return content;
+    }
+
+    function renderRegulatorFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-3 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px]">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-fuchsia-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-chart-pie text-base"></i>
+            <span>Stats</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'history')" class="flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-fuchsia-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-list-ul text-base"></i>
+            <span>Historique</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'approvals')" class="flex flex-col items-center gap-1 ${activeTab === 'approvals' ? 'text-fuchsia-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-user-check text-base"></i>
+            <span>Approbations</span>
+          </button>
+        </div>
+      `;
+    }
+
+
+    function gelerFondsRegulateur(phoneId, userId) {
+      const target = usersData.find(u => u.id === userId);
+      if (target.status === "Gelé (Régulateur)") {
+        target.status = "Actif";
+        showToast(`[Régulateur] Les fonds de ${target.name} ont été dégelés.`, "info");
+      } else {
+        target.status = "Gelé (Régulateur)";
+        showToast(`[Régulateur] INJONCTION : Fonds de ${target.name} saisis/gelés !`, "error");
+      }
+      renderAllPhones();
+    }
+
+    function validerMintRegulateur(phoneId, regulatorId) {
+      const amount = parseFloat(document.getElementById(`${phoneId}-mint-amount`).value);
+      const currency = document.getElementById(`${phoneId}-mint-currency`).value;
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+      const regulator = usersData.find(u => u.id === regulatorId);
+      
+      const pin = prompt("Veuillez saisir votre code PIN de régulateur pour confirmer l'injection :");
+      if (pin !== (regulator.code || "0000")) {
+        showToast("Code PIN incorrect. Opération annulée.", "error");
+        return;
+      }
+
+      if (currency === "USD") {
+        regulator.balance = (regulator.balance || 0) + amount;
+      } else {
+        regulator.balanceCDF = (regulator.balanceCDF || 0) + amount;
+      }
+      
+      transactions.push({
+        id: "MINT-" + Math.floor(1000 + Math.random() * 9000),
+        from: "BCC",
+        to: regulatorId,
+        amount: amount,
+        currency: currency,
+        type: "frapper_monnaie",
+        date: "Aujourd'hui"
+      });
+      
+      showToast(`Émission de ${amount.toLocaleString()} ${currency} effectuée !`, "success");
+      changeTab(phoneId, 'home');
+      renderAllPhones();
+    }
+
+    function validerFloatRegulateur(phoneId, regulatorId) {
+      const destId = document.getElementById(`${phoneId}-float-dest`).value;
+      const amount = parseFloat(document.getElementById(`${phoneId}-float-amount`).value);
+      const currency = document.getElementById(`${phoneId}-float-currency`).value;
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+      const regulator = usersData.find(u => u.id === regulatorId);
+      const dest = usersData.find(u => u.id === destId);
+
+      const pin = prompt("Veuillez saisir votre code PIN pour confirmer l'envoi de float :");
+      if (pin !== (regulator.code || "0000")) {
+        showToast("Code PIN incorrect. Opération annulée.", "error");
+        return;
+      }
+
+      const currentTreasury = (currency === "USD") ? regulator.balance : regulator.balanceCDF;
+      
+      if (currentTreasury < amount) {
+        showToast("Fonds insuffisants dans le Trésor.", "error");
+        return;
+      }
+      if (currency === "USD") {
+        regulator.balance -= amount;
+        dest.balance += amount;
+      } else {
+        regulator.balanceCDF -= amount;
+        dest.balanceCDF = (dest.balanceCDF || 0) + amount;
+      }
+      
+      transactions.push({
+        id: "FLT-" + Math.floor(1000 + Math.random() * 9000),
+        from: regulatorId,
+        to: destId,
+        amount: amount,
+        currency: currency,
+        type: "injection_float",
+        date: "Aujourd'hui"
+      });
+      
+      showToast(`Float de ${amount.toLocaleString()} ${currency} injecté vers ${dest.name}.`, "success");
+      changeTab(phoneId, 'home');
+      renderAllPhones();
+    }
+
+    async function validerCreateRegulateur(phoneId) {
+      const name = document.getElementById(`${phoneId}-create-name`).value.trim();
+      const role = document.getElementById(`${phoneId}-create-role`).value;
+      const phone = document.getElementById(`${phoneId}-create-phone`).value.trim();
+      const doc = document.getElementById(`${phoneId}-create-doc`).value.trim();
+      const photo = document.getElementById(`${phoneId}-create-photo-url`).value.trim();
+      
+      if (!name || !phone || !doc || !photo) {
+        showToast("Veuillez remplir tous les champs (Nom, Tél, Document, Photo).", "error");
+        return;
+      }
+      
+      const mCode = role === "merchant" ? Math.floor(100 + Math.random() * 899).toString() : null;
+      const newUser = {
+        name: name,
+        role: role,
+        balance_usd: 0,
+        balance_cdf: 0,
+        phone: phone,
+        status: "Actif",
+        pin_code: role === "agent" || role === "super_agent" ? "1111" : "1234",
+        limit: 1500, // Plafond par défaut
+        kyc_doc: doc,
+        photo_url: photo,
+        merchant_code: mCode
+      };
+
+      const { error } = await supabaseClient.from('users').insert([newUser]);
+      if (!error) {
+        showToast(`Acteur ${name} créé et enregistré dans Supabase.`, "success");
+        const updated = await fetchUsersFromSupabase();
+        if (updated) usersData = updated;
+        changeTab(phoneId, 'home');
+      } else {
+        showToast("Erreur lors de l'enregistrement.", "error");
+      }
+    }
+
+    // ==========================================
+    // 7. MODULE SUPER AGENT
+    // ==========================================
+    function renderSuperAgentScreen(phoneId, user, tab) {
+      let content = "";
+      if (tab === "home") {
+        content = `
+          <!-- Dashboard Super Agent -->
+          <div class="bg-gradient-to-br from-teal-600 to-emerald-800 rounded-2xl p-4 shadow-xl border border-teal-500/30 relative overflow-hidden">
+            
+            <p class="text-[10px] text-teal-100 uppercase tracking-wider font-semibold">Liquidités Globales (Master)</p>
+            <h2 class="text-2xl font-black text-white mt-1">${user.balance.toFixed(2)} $</h2>
+            <p class="text-xs font-bold text-teal-100 mt-1">${(user.balanceCDF || 0).toLocaleString()} FC</p>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-white/10 text-[10px] text-teal-100">
+              <span>Super-Commissions : ${user.commission.toFixed(2)} $</span>
+              <span>Code : ${user.code}</span>
+            </div>
+          </div>
+
+          <div class="space-y-2 mt-4">
+            <h4 class="text-xs font-bold text-slate-400">Gestion du Réseau Détaillant</h4>
+            
+            <button onclick="changeTab('${phoneId}', 'distribute')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-boxes-packing text-teal-400 text-base"></i>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-white">Allouer de la liquidité (Float)</p>
+                <p class="text-[9px] text-slate-400">Transférer du numérique aux agents</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+          </button>
+          
+          <button onclick="changeTab('${phoneId}', 'create-agent')" class="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl transition flex items-center justify-between">
+             <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-user-plus text-teal-400 text-base"></i>
+                <div class="text-left">
+                   <p class="text-xs font-bold text-white">Créer un Agent</p>
+                   <p class="text-[9px] text-slate-400">Enrôler un agent dans votre réseau</p>
+                </div>
+             </div>
+             <i class="fa-solid fa-chevron-right text-slate-600 text-xs"></i>
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <h4 class="text-xs font-bold text-slate-400 mb-2">Mon Réseau d'Agents</h4>
+            <div class="space-y-1">
+              ${usersData.filter(u => u.managedBy === user.id).map(u => `
+                <div class="p-2 bg-slate-950/60 rounded-lg text-[10px] border border-slate-800 flex justify-between items-center">
+                  <span>${u.name}</span>
+                  <div class="text-right">
+                    <span class="text-teal-400 font-bold block">${u.balance.toFixed(2)} $</span>
+                    <span class="text-[8px] text-slate-400">${(u.balanceCDF || 0).toLocaleString()} FC</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (tab === "approvals") {
+        // Le Super Agent approuve les clients créés par SES agents
+        const myAgentsIds = usersData.filter(u => u.managedBy === user.id).map(u => u.id);
+        const pendingClients = usersData.filter(u => u.role === "client" && u.status === "En attente d'approbation" && myAgentsIds.includes(u.managedBy));
+        
+        let listHTML = pendingClients.map(c => `
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 mb-2">
+            <p class="text-xs font-bold text-white">${c.name} (CLIENT)</p>
+            <div class="text-[9px] text-slate-400">
+              <p>ID: ${c.kycDoc || 'Non fourni'}</p>
+              <p>Par Agent: ${usersData.find(a => a.id === c.managedBy).name}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="approuverCompte('${phoneId}', '${c.id}')" class="flex-1 py-1 bg-emerald-600 text-[10px] font-bold text-white rounded">Approuver</button>
+              <button onclick="prepareRejection('${phoneId}', '${c.id}', 'client')" class="flex-1 py-1 bg-rose-900 text-[10px] font-bold text-white rounded">Rejeter</button>
+            </div>
+          </div>
+        `).join('');
+
+        content = `
+          <h3 class="text-sm font-bold text-white mb-3">Approbations Clients</h3>
+          ${listHTML || '<p class="text-xs text-slate-500 text-center py-8">Aucun dossier en attente.</p>'}
+          <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-2 text-xs text-slate-500">Retour</button>
+        `;
+      } else if (tab === "reject-client") {
+        const targetInfo = tempTargetUserForRejection[phoneId];
+        const targetClient = usersData.find(u => u.id === targetInfo?.userId);
+        content = `
+          <h3 class="text-sm font-bold text-white mb-2">Rejeter le Client : ${targetClient?.name}</h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <textarea id="${phoneId}-rejection-reason" placeholder="Motif du rejet..." class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white h-24"></textarea>
+            <button onclick="rejectClientBySuperAgent('${phoneId}', '${user.id}', '${targetClient?.id}')" class="w-full py-2 bg-rose-600 font-bold text-xs text-white rounded-xl">Rejeter</button>
+            <button onclick="changeTab('${phoneId}', 'approvals')" class="w-full py-1 text-xs text-slate-500">Annuler</button>
+          </div>
+        `;
+      } else if (tab === "history") {
+        content = renderCommonHistoryTab(phoneId, user);
+      } else if (tab === "create-agent") {
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-user-plus text-teal-500"></i> Nouvel Agent Réseau
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <input type="text" id="${phoneId}-ag-name" placeholder="Nom de l'agent" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+            <input type="text" id="${phoneId}-ag-phone" placeholder="Téléphone" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+             <div class="grid grid-cols-2 gap-2">
+               <input type="text" id="${phoneId}-ag-doc" placeholder="N° Document" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+               <div class="flex gap-1 items-center">
+                 <div id="${phoneId}-ag-photo-preview-container" class="w-12 h-12 bg-slate-800 rounded flex items-center justify-center overflow-hidden border border-slate-700">
+                   <img id="${phoneId}-ag-photo-preview" src="" alt="Preview" class="hidden w-full h-full object-cover">
+                   <i id="${phoneId}-ag-photo-placeholder" class="fa-solid fa-image text-slate-500 text-lg"></i>
+                 </div>
+                 <input type="hidden" id="${phoneId}-ag-photo-url"> <!-- Hidden input to store the URL -->
+                 <button onclick="simulerCaptureImage('${phoneId}', 'ag-photo')" class="p-1.5 bg-slate-800 rounded text-white" title="Caméra">
+                   <i class="fa-solid fa-camera text-[10px]"></i>
+                 </button>
+                 <button onclick="simulerUploadImage('${phoneId}', 'ag-photo')" class="p-1.5 bg-slate-800 rounded text-white" title="Upload">
+                   <i class="fa-solid fa-upload text-[10px]"></i>
+                 </button>
+               </div>
+             </div>
+             <div class="p-2 bg-slate-900 border border-dashed border-slate-700 rounded-lg text-[9px] text-slate-400">
+                L'agent sera "En attente" jusqu'à validation par le Régulateur.
+             </div>
+             <button onclick="creerAgentParSuperAgent('${phoneId}', '${user.id}')" class="w-full py-2 bg-teal-600 hover:bg-teal-500 text-xs font-bold text-white rounded-xl transition">
+               Confirmer la création
+             </button>
+             <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 text-center block">
+               Annuler
+             </button>
+          </div>
+        `;
+      } else if (tab === "distribute") {
+        const agents = usersData.filter(u => u.role === "agent");
+        let optionsHTML = agents.map(a => `<option value="${a.id}">${a.name} (Solde: ${a.balance.toFixed(2)} $ / ${(a.balanceCDF || 0).toLocaleString()} FC)</option>`).join("");
+        content = `
+          <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-boxes-packing text-teal-500"></i> Distribution de Float
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Sélectionner l'Agent</label>
+              <select id="${phoneId}-float-agent" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                ${optionsHTML}
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-400 uppercase font-bold">Devise</label>
+                <select id="${phoneId}-float-currency" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+                  <option value="USD">Dollars ($)</option>
+                  <option value="CDF">Francs (FC)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 uppercase font-bold">Montant</label>
+                <input type="number" id="${phoneId}-float-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              </div>
+            </div>
+            <button onclick="allouerFloat('${phoneId}', '${user.id}')" class="w-full py-2 bg-teal-600 hover:bg-teal-500 text-xs font-bold text-white rounded-xl transition shadow-lg">
+              Envoyer la liquidité numérique
+            </button>
+            <button onclick="changeTab('${phoneId}', 'home')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white text-center block">
+              Retour
+            </button>
+          </div>
+        `;
+      }
+      return content;
+    }
+
+    function renderSuperAgentFooter(phoneId, activeTab) {
+      return `
+        <div class="grid grid-cols-4 bg-slate-950/80 border-t border-slate-800 text-center py-2 text-[10px] w-full">
+          <button onclick="changeTab('${phoneId}', 'home')" class="flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-teal-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-briefcase text-base"></i>
+            <span>Mon Coffre</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'distribute')" class="flex flex-col items-center gap-1 ${activeTab === 'distribute' ? 'text-teal-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-network-wired text-base"></i>
+            <span>Réseau Agents</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'approvals')" class="flex flex-col items-center gap-1 ${activeTab === 'approvals' ? 'text-teal-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-user-check text-base"></i>
+            <span>Approbations</span>
+          </button>
+          <button onclick="changeTab('${phoneId}', 'history')" class="flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-teal-400' : 'text-slate-500'}">
+            <i class="fa-solid fa-clock-rotate-left text-base"></i>
+            <span>Historique</span>
+          </button>
+        </div>
+      `;
+    }
+
+    async function allouerFloat(phoneId, superAgentId) {
+      const targetAgentId = document.getElementById(`${phoneId}-float-agent`).value;
+      const amount = parseFloat(document.getElementById(`${phoneId}-float-amount`).value);
+      const currency = document.getElementById(`${phoneId}-float-currency`).value;
+      
+      const superAgent = usersData.find(u => u.id === superAgentId);
+      const targetAgent = usersData.find(u => u.id === targetAgentId);
+
+      const pin = prompt("Veuillez saisir votre code PIN Master pour confirmer l'allocation :");
+      if (pin !== (superAgent.code || "9999")) {
+        showToast("Code PIN incorrect. Opération annulée.", "error");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+      const currentTreasury = (currency === "USD") ? superAgent.balance : superAgent.balanceCDF;
+      if (currentTreasury < amount) {
+        showToast("Vos liquidités master sont insuffisantes.", "error");
+        return;
+      }
+
+      if (currency === "USD") {
+        await supabaseClient.from('users').update({ balance_usd: superAgent.balance - amount }).eq('id', superAgentId);
+        await supabaseClient.from('users').update({ balance_usd: targetAgent.balance + amount }).eq('id', targetAgentId);
+      } else {
+        await supabaseClient.from('users').update({ balance_cdf: superAgent.balanceCDF - amount }).eq('id', superAgentId);
+        await supabaseClient.from('users').update({ balance_cdf: (targetAgent.balanceCDF || 0) + amount }).eq('id', targetAgentId);
+      }
+
+      // Commission bonus pour le super agent sur chaque allocation (0.5%)
+      const bonus = amount * 0.005;
+      superAgent.commission += bonus;
+
+      showToast(`Allocation de ${amount.toLocaleString()} ${currency} envoyée à ${targetAgent.name}. Bonus : +${bonus.toFixed(2)}$`, "success");
+      
+      await supabaseClient.from('transactions').insert([{ 
+        from_user_id: superAgentId, 
+        to_user_id: targetAgentId, 
+        amount: amount, 
+        type: "allocation_float" 
+      }]);
+
+      changeTab(phoneId, "home");
+      renderAllPhones();
+    }
+    
+    function rejectClientBySuperAgent(phoneId, superAgentId, clientId) {
+      const rejectionReason = document.getElementById(`${phoneId}-rejection-reason`).value.trim();
+      if (!rejectionReason) {
+        showToast("Veuillez fournir un motif de rejet.", "error");
+        return;
+      }
+
+      const client = usersData.find(u => u.id === clientId);
+      if (client) {
+        client.status = "Rejeté";
+        client.rejectionReason = rejectionReason;
+        client.rejectedBy = superAgentId;
+
+        const creatingAgent = usersData.find(u => u.id === client.managedBy);
+        showToast(`Client ${client.name} rejeté par Super Agent. Motif: ${rejectionReason}. L'agent ${creatingAgent?.name || 'inconnu'} a été notifié.`, "error");
+      } else {
+        showToast("Client introuvable pour le rejet.", "error");
+      }
+      delete tempTargetUserForRejection[phoneId];
+      changeTab(phoneId, "approvals");
+      renderAllPhones();
+    }
+
+    function rejectAgentByRegulator(phoneId, regulatorId, agentId) {
+      const rejectionReason = document.getElementById(`${phoneId}-rejection-reason`).value.trim();
+      if (!rejectionReason) {
+        showToast("Veuillez fournir un motif de rejet.", "error");
+        return;
+      }
+      const agent = usersData.find(u => u.id === agentId);
+      if (agent) {
+        agent.status = "Rejeté";
+        agent.rejectionReason = rejectionReason;
+        agent.rejectedBy = regulatorId;
+        const creatingSuperAgent = usersData.find(u => u.id === agent.managedBy);
+        showToast(`Agent ${agent.name} rejeté par Régulateur. Motif: ${rejectionReason}. Le Super Agent ${creatingSuperAgent?.name || 'inconnu'} a été notifié.`, "error");
+      }
+      delete tempTargetUserForRejection[phoneId];
+      changeTab(phoneId, "approvals");
+      renderAllPhones();
+    }
+
+    function approuverCompte(phoneId, targetId) {
+      const target = usersData.find(u => u.id === targetId);
+      target.status = "Actif";
+      showToast(`Compte de ${target.name} approuvé et activé !`, "success");
+      renderAllPhones();
+    }
+    
+    function renderCommonHistoryTab(phoneId, user) {
+      const userTx = transactions.filter(t => t.from === user.id || t.to === user.id);
+      let txListHTML = "";
+      
+      userTx.slice().reverse().forEach(tx => {
+        const isOutgoing = tx.from === user.id;
+        const otherUser = usersData.find(u => u.id === (isOutgoing ? tx.to : tx.from));
+        txListHTML += `
+          <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[10px] flex justify-between items-center">
+            <div>
+              <p class="text-white font-bold">${tx.type}</p>
+              <p class="text-slate-500">${otherUser ? otherUser.name : 'Réseau'} • ${tx.date}</p>
+            </div>
+            <span class="font-bold ${isOutgoing ? 'text-rose-400' : 'text-emerald-400'}">
+              ${isOutgoing ? '-' : '+'}${tx.amount.toFixed(2)}$
+            </span>
+          </div>
+        `;
+      });
+
+      return `
+        <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-2">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Historique d'Activité
+        </h3>
+        <button onclick="exportHistoryPDF('${user.id}')" class="w-full mb-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition hover:bg-slate-700">
+          <i class="fa-solid fa-file-pdf text-rose-500"></i> Télécharger Relevé PDF
+        </button>
+        <div class="space-y-1.5 max-h-[380px] overflow-y-auto">
+          ${txListHTML || '<p class="text-center py-6 text-slate-500 text-xs">Aucune transaction trouvée.</p>'}
+        </div>
+      `;
+    }
+
+    function exportHistoryPDF(userId) {
+      const user = usersData.find(u => u.id === userId);
+      if (user.role === 'client') {
+        showToast("L'exportation PDF est réservée aux comptes professionnels et administratifs.", "error");
+        return;
+      }
+      const userTx = transactions.filter(t => t.from === userId || t.to === userId);
+      
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18); doc.text("Relevé de Transactions", 20, 20);
+      doc.setFontSize(12); doc.text(`Titulaire : ${user.name} (${user.role})`, 20, 30);
+      doc.text(`Solde Actuel : ${user.balance.toFixed(2)}$ / ${user.balanceCDF.toLocaleString()} FC`, 20, 40);
+      
+      let y = 60;
+      userTx.reverse().forEach(tx => { doc.text(`${tx.date} - ${tx.type} : ${tx.amount.toFixed(2)}$ (ID: ${tx.id})`, 20, y); y += 10; });
+      doc.save(`Historique_${user.name}.pdf`);
+      showToast("Génération du PDF réussie !", "success");
+    }
+
+    // ==========================================
+    // UTILS : CHANGEMENT D'ONGLET LOCAL
+    // ==========================================
+    function changeTab(phoneId, newTab) {
+      phoneNavState[phoneId] = newTab;
+      renderPhone(phoneId);
+    }
+
+    function togglePinVisibility(phoneId, pin) {
+      const el = document.getElementById(`${phoneId}-display-pin`);
+      const icon = document.getElementById(`${phoneId}-pin-icon`);
+      if (el.classList.contains('text-slate-600')) {
+        el.innerText = pin;
+        el.classList.remove('text-slate-600', 'italic');
+        icon.className = "fa-solid fa-eye-slash";
+      } else {
+        el.innerText = "Protégé par le système";
+        el.classList.add('text-slate-600', 'italic');
+        icon.className = "fa-solid fa-eye";
+      }
+    }
+
+    // Simulations pour KYC (Camera/Upload)
+    function simulerCaptureImage(phoneId, inputIdSuffix) {
+      showToast("Accès à la caméra... Souriez !", "info");
+      setTimeout(() => {
+        const imageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=" + Math.random();
+        const previewImg = document.getElementById(`${phoneId}-${inputIdSuffix}-preview`);
+        const hiddenInput = document.getElementById(`${phoneId}-${inputIdSuffix}-url`);
+        const placeholder = document.getElementById(`${phoneId}-${inputIdSuffix}-placeholder`);
+
+        if (previewImg && hiddenInput) {
+          previewImg.src = imageUrl;
+          previewImg.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+          hiddenInput.value = imageUrl;
+          showToast("Capture photo réussie !", "success");
+        }
+      }, 1500);
+    }
+
+    function simulerUploadImage(phoneId, inputIdSuffix) {
+      showToast("Ouverture du gestionnaire de fichiers...", "info");
+      setTimeout(() => {
+        const imageUrl = "https://api.dicebear.com/7.x/identicon/svg?seed=" + Math.random();
+        const previewImg = document.getElementById(`${phoneId}-${inputIdSuffix}-preview`);
+        const hiddenInput = document.getElementById(`${phoneId}-${inputIdSuffix}-url`);
+        const placeholder = document.getElementById(`${phoneId}-${inputIdSuffix}-placeholder`);
+
+        if (previewImg && hiddenInput) {
+          previewImg.src = imageUrl;
+          previewImg.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+          hiddenInput.value = imageUrl;
+          showToast("Fichier sélectionné avec succès !", "success");
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

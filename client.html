@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Bancaire - Client</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Custom Scrollbar pour un look premium */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a; /* slate-900 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155; /* slate-700 */
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569; /* slate-600 */
+    }
+    /* Simulation de l'écran du téléphone */
+    .phone-screen {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex justify-center">
+
+  <!-- Zone de Notifications (Toast) -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <!-- APP CLIENT (Responsive: Full sur mobile, centré max-w sur desktop) -->
+  <div class="phone-screen bg-slate-900 text-slate-200 overflow-hidden relative flex flex-col w-full max-w-md shadow-2xl border-x border-slate-800" id="phone-1">
+    <!-- Chargé dynamiquement par JS -->
+  </div>
+
+  <script>
+    // --- VARIABLES D'ÉTAT ---
+    let currentUserData = null;
+    let transactions = [];
+    let usersData = []; // Added to store all users for agent lookup
+    let supportTickets = [];
+    
+    let facturesEnAttente = [
+      { code: "123456", amount: 45.50, merchantId: "U004" }
+    ];
+
+    // --- CONFIGURATION FINANCIÈRE ---
+    let RATE_BUY = 2450;
+    let RATE_SELL = 2550;
+    let RATE_MARKET = 2500;
+    let EXCHANGE_RATE = 2500;
+    
+    // Supabase Client Initialization
+    const SUPABASE_URL = 'https://fcbsmfcbzyyeksqfajdu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjYnNtZmNienl5ZWtzcWZhamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQyNDQsImV4cCI6MjA5NjUwMDI0NH0.NoPwKmQ8sbH1o-mt-O2yQgm7P1Bv0BRoeiCa8kJ1C0E';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // État de navigation
+    const phoneId = "phone-1";
+    let currentUserId = null;
+    let currentTab = "home";
+    let isLoggedIn = false;
+
+    // --- INITIALISATION AU CHARGEMENT ---
+    window.onload = async function() {
+      const storedUserId = sessionStorage.getItem('currentUserId');
+      
+      if (storedUserId) {
+        currentUserId = storedUserId;
+        isLoggedIn = true;
+        await fetchAllUserData();
+        renderPhone();
+        showToast("Bienvenue sur votre application bancaire.", "success");
+      } else {
+        window.location.href = 'login.html';
+      }
+    };
+
+    // Grille tarifaire par paliers (frais calculés dynamiquement)
+    function calculateTransactionFee(amount, isTransfer) {
+      let baseFee = 0;
+      if (amount <= 5) baseFee = 0.10;
+      else if (amount <= 20) baseFee = 0.25;
+      else if (amount <= 50) baseFee = 0.50;
+      else if (amount <= 100) baseFee = 1.00;
+      else baseFee = amount * 0.015; // 1.5% pour les gros montants
+
+      return isTransfer ? baseFee * 1.5 : baseFee; // Transfert plus cher que retrait
+    }
+
+    // Added to fetch all users for agent lookup in digital withdrawal
+    async function fetchAllUsers() {
+      const { data } = await supabaseClient.from('users').select('*');
+      usersData = (data || []).map(u => ({
+        ...u,
+        balance: u.balance_usd || 0,
+        limit: u.limit || 0,
+        balanceCDF: u.balance_cdf || 0,
+        code: u.pin_code
+      }));
+    }
+    async function fetchAllUserData() {
+      // Charger le profil
+      const { data: profile } = await supabaseClient.from('users').select('*').eq('id', currentUserId).single();
+      if (profile) {
+        currentUserData = {
+          ...profile,
+          balance: profile.balance_usd || 0,
+          balanceCDF: profile.balance_cdf || 0,
+          savingsUSD: profile.savings_usd || 0,
+          savingsCDF: profile.savings_cdf || 0,
+          limit: profile.limit || 0, // Mapping explicite du plafond
+          code: profile.pin_code
+        };
+      }
+      if (currentUserData) { // Only fetch all users if current user data is loaded
+        await fetchAllUsers(); // Fetch all users for agent lookup
+      }
+
+      // Charger les transactions
+      const { data: txs } = await supabaseClient.from('transactions')
+        .select('*')
+        .or(`from_user_id.eq.${currentUserId},to_user_id.eq.${currentUserId}`)
+        .order('created_at', { ascending: false });
+      
+      transactions = (txs || []).map(tx => ({
+        ...tx,
+        from: tx.from_user_id,
+        to: tx.to_user_id,
+        date: new Date(tx.created_at).toLocaleDateString()
+      }));
+    }
+
+    // --- GESTION DES NOTIFICATIONS (TOAST) ---
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-sm font-semibold transition-all duration-300 transform -translate-y-2 opacity-0`;
+      
+      if (type === "success") {
+        toast.className += " bg-emerald-950 border-emerald-800 text-emerald-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+      } else if (type === "error") {
+        toast.className += " bg-rose-950 border-rose-800 text-rose-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else if (type === "warning") {
+        toast.className += " bg-amber-950 border-amber-800 text-amber-300";
+        toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${message}</span>`;
+      } else {
+        toast.className += " bg-indigo-950 border-indigo-800 text-indigo-300";
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${message}</span>`;
+      }
+
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.classList.remove("-translate-y-2", "opacity-0"), 50);
+      setTimeout(() => {
+        toast.classList.add("-translate-y-2", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // --- RENDU DU TÉLÉPHONE CLIENT ---
+    function renderPhone() {
+      const container = document.getElementById(phoneId);
+
+      if (!isLoggedIn && currentTab !== "register") {
+        container.innerHTML = renderLoginScreen();
+        return;
+      }
+
+      const user = currentUserData || {};
+
+      // Header de l'app
+      let headerHTML = `
+        <div class="px-4 py-3 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(255,215,0,0.3)]">
+              <span class="text-black font-black text-[9px] tracking-tighter">BL</span>
+            </div>
+            <span class="font-extrabold text-[10px] tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
+          </div>
+        </div>
+        <div class="p-4 bg-slate-950/40 flex items-center justify-between border-b border-slate-800">
+          <div class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded-lg transition" onclick="changeTab('profile')">
+            <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center justify-center text-sm font-bold">
+              ${user.name.substring(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-white">${user.name}</h4>
+              <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Compte Personnel</p>
+            </div>
+          </div>
+          <span class="text-[10px] px-2 py-1 rounded-full font-bold ${user.status === 'Actif' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+            ${user.status}
+          </span>
+        </div>
+      `;
+
+      let contentHTML = "";
+      if (user.status === "Suspendu" && currentTab !== "support") {
+        contentHTML = renderSuspendedScreen(user);
+      } else {
+        // Ajout d'une sécurité si les données ne sont pas encore là
+        if (currentTab === "profile" && currentUserData) {
+          contentHTML = renderProfileScreen(user);
+        } else {
+          contentHTML = renderClientScreen(user, currentTab);
+        }
+      }
+
+      container.innerHTML = `
+        ${headerHTML}
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
+          ${contentHTML}
+        </div>
+        ${renderClientFooter(currentTab)}
+      `;
+    }
+
+    // --- ÉCRAN DE CONNEXION ---
+    function renderLoginScreen() {
+      return `
+        <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+          <div class="w-16 h-16 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-3xl mb-6 border border-sky-500/20">
+            <i class="fa-solid fa-vault"></i>
+          </div>
+          <h2 class="text-2xl font-black text-white mb-2">Ma Banque Digitale</h2>
+          <p class="text-slate-400 text-sm mb-8">Gérez vos finances en toute sécurité.</p>
+          
+          <div class="w-full space-y-4">
+            <input type="text" id="login-phone" placeholder="Numéro de téléphone" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-white focus:border-sky-500 outline-none transition">
+            <input type="password" id="login-pin" placeholder="Code PIN" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-white focus:border-sky-500 outline-none transition">
+            <button onclick="handleLogin()" class="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-2xl transition shadow-lg shadow-sky-600/20">
+              Se connecter
+            </button>
+          </div>
+          
+          <div class="mt-8 pt-8 border-t border-slate-800 w-full">
+            <p class="text-xs text-slate-500 mb-4">Nouveau sur la plateforme ?</p>
+            <button onclick="changeTab('register')" class="text-sky-400 font-bold hover:text-sky-300 transition">
+              Créer un compte maintenant
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- ÉCRAN D'INSCRIPTION ---
+    function renderRegisterScreen() {
+      return `
+        <div class="p-6">
+          <button onclick="changeTab('home')" class="mb-6 text-slate-400 hover:text-white transition flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+          </button>
+          <h2 class="text-2xl font-black text-white mb-2">Inscription</h2>
+          <p class="text-slate-400 text-sm mb-6">Rejoignez notre réseau bancaire.</p>
+          
+          <div class="bg-slate-950 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <div>
+              <label class="text-[10px] text-slate-500 uppercase font-bold ml-1">Nom complet</label>
+              <input type="text" placeholder="Prénom Nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-sky-500 outline-none">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500 uppercase font-bold ml-1">Téléphone</label>
+              <input type="text" placeholder="243..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-sky-500 outline-none">
+            </div>
+            <button onclick="showToast('Demande envoyée ! Un agent vous contactera pour le KYC.', 'info')" class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl transition mt-2">
+              Envoyer ma demande
+            </button>
+          </div>
+
+          <div class="mt-8 p-5 bg-indigo-950/20 border border-indigo-500/20 rounded-3xl space-y-4">
+            <h4 class="text-xs font-bold text-indigo-300 uppercase">Assistance Inscription</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Vous pouvez également demander une inscription assistée ou signaler un problème à <strong>Banikilabs</strong> :
+            </p>
+            <div class="space-y-3">
+              <a href="mailto:banikilabs@gmail.com" class="flex items-center gap-3 text-xs text-white hover:text-sky-400 transition">
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400">
+                  <i class="fa-solid fa-envelope"></i>
+                </div>
+                banikilabs@gmail.com
+              </a>
+              <a href="tel:+243978415824" class="flex items-center gap-3 text-xs text-white hover:text-sky-400 transition">
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400">
+                  <i class="fa-solid fa-phone"></i>
+                </div>
+                +243 978 415 824
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleLogin() {
+      const phone = document.getElementById('login-phone').value;
+      const pin = document.getElementById('login-pin').value;
+      
+      // This login screen is now handled by login.html
+      // If we reach here, it means the user is not logged in via sessionStorage.
+      // The main login.html handles the actual authentication.
+      // This function should ideally not be called or should redirect.
+      showToast("Veuillez vous connecter via la page principale.", "warning");
+      window.location.href = 'login.html';
+    }
+
+    // --- NAVIGATION ---
+    function changeTab(newTab) {
+      currentTab = newTab;
+      if (newTab === 'register') {
+        document.getElementById(phoneId).innerHTML = renderRegisterScreen();
+        return;
+      }
+      renderPhone();
+    }
+
+    // --- ÉCRANS DU CLIENT ---
+    function renderClientScreen(user, tab) {
+      if (tab === "home") {
+        const userTransactions = transactions.filter(t => t.from === user.id || t.to === user.id);
+        let txListHTML = `<div class="flex justify-between items-center mb-2 mt-4">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase">Dernières opérations</h4>
+                          </div>`;
+        
+        if (userTransactions.length === 0) {
+          txListHTML += `<p class="text-xs text-slate-500 text-center py-4">Aucune transaction.</p>`;
+        } else {
+          userTransactions.slice(-5).reverse().forEach(tx => {
+            const isOutgoing = tx.from === user.id;
+            const otherUser = usersData.find(u => u.id === (isOutgoing ? tx.to : tx.from));
+            const icon = isOutgoing ? "fa-arrow-up-right-from-square text-rose-400" : "fa-arrow-down-left-from-circle text-emerald-400";
+            txListHTML += `
+              <div class="flex items-center justify-between p-3 mb-2 rounded-xl bg-slate-950 border border-slate-800 text-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center">
+                    <i class="fa-solid ${icon}"></i>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-white truncate max-w-[150px]">${otherUser ? otherUser.name : 'Inconnu'}</p>
+                    <p class="text-[10px] text-slate-500 capitalize">${tx.type}</p>
+                  </div>
+                </div>
+                <span class="font-bold ${isOutgoing ? 'text-rose-400' : 'text-emerald-400'}">${isOutgoing ? '-' : '+'}${tx.amount.toFixed(2)} $</span>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <!-- Solde Card -->
+          <div class="bg-gradient-to-br from-sky-600 to-indigo-700 rounded-3xl p-5 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            <p class="text-xs text-sky-100 uppercase tracking-wider font-semibold">Solde Disponible</p>
+            <div class="flex items-end gap-2 mt-1">
+              <h2 class="text-3xl font-black text-white">${user.balance.toFixed(2)} $</h2>
+              <p class="text-xs text-sky-200 mb-1.5">USD</p>
+            </div>
+            <div class="flex items-end gap-2 border-t border-white/20 pt-2 mt-2">
+              <h3 class="text-xl font-bold text-white">${(user.balanceCDF || 0).toLocaleString('fr-FR')} FC</h3>
+              <p class="text-[10px] text-sky-200 mb-1">CDF</p>
+            </div>
+            <div class="flex justify-between items-center mt-3 text-[10px] text-sky-100/80">
+              <span>N° Compte: ${user.phone}</span>
+              <span class="bg-white/20 px-2 py-1 rounded-lg">Plafond: ${user.limit} $</span>
+            </div>
+          </div>
+
+          <!-- Actions Rapides -->
+          <div class="grid grid-cols-4 gap-3 mt-6">
+              <button onclick="changeTab('envoi')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-sky-400 border border-slate-800 group-hover:bg-sky-500/10 transition">
+                  <i class="fa-solid fa-paper-plane text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Envoi</span>
+              </button>
+              <button onclick="changeTab('retrait')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-emerald-500 border border-slate-800 group-hover:bg-emerald-500/10 transition">
+                  <i class="fa-solid fa-money-bill-transfer text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Retrait</span>
+              </button>
+              <button onclick="changeTab('marchand')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-amber-400 border border-slate-800 group-hover:bg-amber-500/10 transition">
+                  <i class="fa-solid fa-store text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Payer</span>
+              </button>
+              <button onclick="changeTab('facture')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-fuchsia-400 border border-slate-800 group-hover:bg-fuchsia-500/10 transition">
+                  <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Factures</span>
+              </button>
+              <button onclick="changeTab('exchange')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-rose-400 border border-slate-800 group-hover:bg-rose-500/10 transition">
+                  <i class="fa-solid fa-right-left text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Change</span>
+              </button>
+              <button onclick="changeTab('savings')" class="flex flex-col items-center gap-1.5 group">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-emerald-500 border border-slate-800 group-hover:bg-emerald-500/10 transition">
+                  <i class="fa-solid fa-piggy-bank text-lg"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-300">Épargne</span>
+              </button>
+          </div>
+
+          <!-- Liste des transactions -->
+          ${txListHTML}
+        `;
+      } 
+      
+      else if (tab === "retrait") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i> Retrait d'espèces
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Numéro de téléphone de l'agent</label>
+              <input type="text" id="agent-phone" placeholder="Ex: 2430000006" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+              <p class="text-[10px] text-slate-500 mt-1">Saisissez le numéro de l'agent qui vous remettra le cash.</p>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Montant à retirer ($)</label>
+              <input type="number" id="withdraw-amount" oninput="updateWithdrawFeeDisplay()" placeholder="0.00" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Votre code PIN</label>
+              <input type="password" id="client-pin" placeholder="••••" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <div id="withdraw-fee-info" class="p-3 bg-slate-900 border border-dashed border-slate-700 rounded-xl text-xs text-slate-400 text-center">
+              Saisissez un montant pour voir les frais de retrait.
+            </div>
+            <button onclick="executeDigitalWithdrawal()" class="w-full py-3 mt-1 bg-emerald-600 hover:bg-emerald-500 text-sm font-bold text-white rounded-xl transition shadow-lg shadow-emerald-600/20">
+              Confirmer le retrait
+            </button>
+            <button onclick="changeTab('home')" class="w-full py-2 text-sm font-semibold text-slate-400 hover:text-white transition">
+              Annuler
+            </button>
+          </div>
+        `;
+      }
+
+      else if (tab === "envoi") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-paper-plane text-sky-500"></i> Envoi d'argent
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Numéro du destinataire</label>
+              <input type="text" id="transfer-num" placeholder="Ex: 2430000002" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500 transition">
+              <p class="text-[10px] text-slate-500 mt-1">Astuce : Tapez 2430000002 (Sophie Martin)</p>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Montant ($)</label>
+              <input type="number" id="transfer-amount" oninput="updateTransferFeeDisplay()" placeholder="0.00" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500 transition">
+            </div>
+            <div id="transfer-fee-info"></div>
+            <button onclick="executerVirementClient()" class="w-full py-3 mt-2 bg-sky-600 hover:bg-sky-500 text-sm font-bold text-white rounded-xl transition shadow-lg shadow-sky-600/20">
+              Confirmer l'envoi
+            </button>
+            <button onclick="changeTab('home')" class="w-full py-2 text-sm font-semibold text-slate-400 hover:text-white transition">
+              Annuler
+            </button>
+          </div>
+        `;
+      } 
+
+      else if (tab === "marchand") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-store text-amber-500"></i> Payer un Marchand
+          </h3>
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Code Marchand</label>
+              <input type="text" id="pay-mcode" placeholder="Ex: 771 (Bio-Zen)" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:border-amber-500 outline-none transition">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Montant de l'achat ($)</label>
+              <input type="number" id="pay-mamount" placeholder="0.00" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:border-amber-500 outline-none transition">
+            </div>
+            <button onclick="payerMarchandClient()" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-sm font-bold text-white rounded-xl transition shadow-lg shadow-amber-600/20">
+              Valider le paiement
+            </button>
+            
+            <div class="relative flex items-center py-2">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink-0 mx-4 text-slate-500 text-xs">OU</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
+
+            <button onclick="simulerScanQRCode()" class="w-full py-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-sm font-bold text-white rounded-xl transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-qrcode"></i> Scanner un QR Code
+            </button>
+          </div>
+        `;
+      }
+      
+      else if (tab === "facture") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-file-invoice-dollar text-fuchsia-500"></i> Mes Factures
+          </h3>
+          <div class="space-y-3">
+            <button onclick="preparerPaiementFacture('123456', 45.50)" class="w-full p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-2xl transition flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="text-left">
+                  <span class="text-sm font-bold text-white block">Électricité (SNEL)</span>
+                  <span class="text-xs text-slate-400">Code: 123456 • À payer</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-sm font-bold text-rose-400 block">45.50 $</span>
+                <span class="text-[10px] text-slate-500 group-hover:text-white transition">Payer <i class="fa-solid fa-chevron-right ml-1"></i></span>
+              </div>
+            </button>
+
+            <button class="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between opacity-50 cursor-not-allowed">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                  <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="text-left">
+                  <span class="text-sm font-bold text-white block">Eau (REGIDESO)</span>
+                  <span class="text-xs text-slate-400">À jour</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-check text-emerald-500"></i>
+            </button>
+          </div>
+          
+          <!-- Zone cachée de paiement de facture rapide -->
+          <div id="facture-pay-zone" class="hidden mt-4 bg-slate-950 p-4 rounded-2xl border border-fuchsia-500/30">
+            <p class="text-xs text-slate-300 mb-2">Confirmer le paiement de la facture <span id="facture-id-disp" class="font-bold text-white"></span></p>
+            <input type="hidden" id="pay-fcode">
+            <button onclick="payerFactureClient()" class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-sm font-bold text-white rounded-xl transition">
+              Payer maintenant
+            </button>
+          </div>
+        `;
+      }
+
+      else if (tab === "exchange") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-money-bill-transfer text-rose-500"></i> Bureau de Change
+          </h3>
+          
+          <div class="flex justify-between text-xs text-slate-400 mb-3 px-2">
+             <span>Achat: <span class="font-bold text-white">${RATE_BUY} FC</span></span>
+             <span>Vente: <span class="font-bold text-white">${RATE_SELL} FC</span></span>
+          </div>
+
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Opération</label>
+              <select id="ex-direction" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+                <option value="usd_to_cdf">Convertir USD ($) en FC</option>
+                <option value="cdf_to_usd">Convertir FC en USD ($)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 uppercase font-bold">Montant à convertir</label>
+              <input type="number" id="ex-amount" placeholder="0.00" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none">
+            </div>
+            <button onclick="executerChangeClient()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-sm font-bold text-white rounded-xl transition shadow-lg">
+              Convertir instantanément
+            </button>
+          </div>
+        `;
+      }
+
+      else if (tab === "savings") {
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-piggy-bank text-emerald-500"></i> Mon Coffre-fort
+          </h3>
+          
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-3xl p-5 shadow-xl mb-6">
+            <p class="text-xs text-emerald-100 uppercase font-bold">Épargne Bloquée (Intérêts 2%/mois)</p>
+            <div class="mt-3 space-y-1 border-b border-emerald-500/30 pb-3 mb-3">
+              <h2 class="text-3xl font-black text-white">${(user.savingsUSD || 0).toFixed(2)} $</h2>
+              <h3 class="text-lg font-bold text-emerald-100">${(user.savingsCDF || 0).toLocaleString()} FC</h3>
+            </div>
+            <p class="text-[10px] text-emerald-100 italic">L'argent du coffre n'est pas utilisable pour les paiements ou les transferts directs.</p>
+          </div>
+
+          <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
+            <div class="flex gap-3">
+              <div class="flex-1">
+                <label class="text-[10px] text-slate-400 uppercase font-bold">Devise</label>
+                <select id="sv-currency" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none">
+                  <option value="USD">Dollars ($)</option>
+                  <option value="CDF">Francs (FC)</option>
+                </select>
+              </div>
+              <div class="flex-2">
+                <label class="text-[10px] text-slate-400 uppercase font-bold">Montant</label>
+                <input type="number" id="sv-amount" placeholder="0.00" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-2">
+              <button onclick="gererEpargne('deposit')" class="py-3 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white rounded-xl transition">
+                <i class="fa-solid fa-arrow-down mr-1"></i> Épargner
+              </button>
+              <button onclick="gererEpargne('withdraw')" class="py-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-white rounded-xl transition">
+                <i class="fa-solid fa-arrow-up mr-1"></i> Retirer
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      
+      else if (tab === "support") {
+        let ticketsListHTML = "";
+        if (supportTickets.length === 0) {
+          ticketsListHTML = `<p class="text-sm text-slate-500 text-center py-4">Aucun ticket ouvert.</p>`;
+        } else {
+          supportTickets.forEach(t => {
+            const statusColor = t.status === "Ouvert" ? "text-amber-400" : "text-emerald-400";
+            ticketsListHTML += `
+              <div class="p-3 mb-2 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-white">Ticket #${t.id}</span>
+                  <span class="font-bold ${statusColor} uppercase bg-white/5 px-2 py-1 rounded">${t.status}</span>
+                </div>
+                <p class="text-slate-300 mt-1">${t.issue}</p>
+                <div class="flex justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-800/40 mt-2">
+                  <span>Urgence: ${t.severity}</span>
+                  <span>${t.timestamp}</span>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        return `
+          <h3 class="text-base font-bold text-white flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-headset text-indigo-500"></i> Service Client
+          </h3>
+
+          <div class="bg-slate-950 p-4 rounded-3xl border border-slate-800 space-y-3 mb-6">
+            <p class="text-xs font-bold text-indigo-400 mb-2">Signaler un problème technique</p>
+            <div>
+              <label class="text-[10px] text-slate-400 uppercase font-bold">Nature du problème</label>
+              <select id="issue-type" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white outline-none">
+                <option value="Échec de paiement ou virement">Échec de paiement / virement</option>
+                <option value="Plafond insuffisant">Demande d'augmentation de plafond</option>
+                <option value="Erreur d'affichage du solde">Erreur d'affichage du solde</option>
+              </select>
+            </div>
+            <button onclick="soumettreTicketClient()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-sm font-bold text-white rounded-xl transition shadow-lg mt-2">
+              Envoyer au support
+            </button>
+          </div>
+
+          <h4 class="text-sm font-bold text-slate-300 mb-3">Mes requêtes en cours</h4>
+          <div class="space-y-2">
+            ${ticketsListHTML}
+          </div>
+        `;
+      }
+    }
+
+    // --- ÉCRANS SECONDAIRES ---
+    function renderProfileScreen(user) {
+      return `
+        <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-circle text-sky-400"></i> Mon Profil
+        </h3>
+        <div class="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-5">
+          <div class="space-y-2">
+            <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">Informations du Compte</p>
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                <p class="text-sm text-white font-semibold">${user.name}</p>
+                <p class="text-xs text-slate-400 mt-1">ID : ${user.id}</p>
+                <p class="text-xs text-slate-400">Tél : ${user.phone}</p>
+            </div>
+            
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-800/80">
+              <div>
+                <p class="text-xs text-slate-500 uppercase font-bold">Code PIN Actuel</p>
+                <p id="display-pin" class="text-lg text-sky-400 font-mono font-bold mt-1">••••</p>
+              </div>
+              <button onclick="togglePinVisibility('${user.code}')" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition flex items-center justify-center">
+                <i class="fa-solid fa-eye" id="pin-icon"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-slate-800/80">
+            <label class="text-xs text-slate-400 uppercase font-bold">Nouveau Code PIN</label>
+            <input type="password" id="new-pin" placeholder="Ex: 5678" class="w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500">
+            <button onclick="updateUserPin()" class="w-full mt-3 py-3 bg-sky-600 hover:bg-sky-500 text-sm font-bold text-white rounded-xl transition shadow-lg">Mettre à jour le PIN</button>
+          </div>
+          <button onclick="logout()" class="w-full py-3 mt-4 bg-slate-800 hover:bg-slate-700 text-sm font-bold text-white rounded-xl transition">
+            <i class="fa-solid fa-right-from-bracket mr-2"></i> Déconnexion
+          </button>
+        </div>
+      `;
+    }
+
+    function renderSuspendedScreen(user) {
+      return `
+        <div class="flex flex-col items-center justify-center text-center py-16 space-y-4 h-full">
+          <div class="w-20 h-20 rounded-full bg-rose-500/10 border-2 border-rose-500/30 flex items-center justify-center text-rose-500 animate-pulse">
+            <i class="fa-solid fa-lock text-3xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white">Compte Restreint</h3>
+            <p class="text-sm text-slate-400 mt-2 max-w-[250px] mx-auto leading-relaxed">
+              Pour des raisons de sécurité, votre compte a été temporairement suspendu.
+            </p>
+          </div>
+          <button onclick="changeTab('support')" class="w-full max-w-[250px] py-3 mt-4 bg-rose-600 hover:bg-rose-500 text-sm font-bold text-white rounded-xl transition shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-headset"></i> Contacter le Support
+          </button>
+        </div>
+      `;
+    }
+
+    // --- BARRE DE NAVIGATION INFÉRIEURE ---
+    function renderClientFooter(activeTab) {
+      return `
+        <div class="absolute bottom-0 left-0 w-full bg-slate-950/90 backdrop-blur-md border-t border-slate-800 pb-safe pt-2">
+            <div class="flex justify-around items-center px-2 pb-2">
+                <button onclick="changeTab('home')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'home' ? 'text-sky-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <i class="fa-solid fa-house text-xl mb-1"></i>
+                    <span class="text-[10px] font-semibold">Accueil</span>
+                </button>
+                <button onclick="changeTab('envoi')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'envoi' ? 'text-sky-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <div class="bg-slate-900 p-2 rounded-full border border-slate-800 -mt-4 mb-0.5 shadow-lg ${activeTab === 'envoi' ? 'bg-sky-900/40 border-sky-500/50' : ''}">
+                        <i class="fa-solid fa-paper-plane text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold">Envoi</span>
+                </button>
+                <button onclick="changeTab('support')" class="flex flex-col items-center gap-1 w-16 ${activeTab === 'support' ? 'text-sky-400' : 'text-slate-500 hover:text-slate-300'} transition">
+                    <i class="fa-solid fa-headset text-xl mb-1"></i>
+                    <span class="text-[10px] font-semibold">Support</span>
+                </button>
+            </div>
+        </div>
+      `;
+    }
+
+    // --- ACTIONS LOGIQUES DU CLIENT ---
+    
+    async function executerVirementClient() {
+      const destNum = document.getElementById(`transfer-num`).value.trim();
+      const amount = parseFloat(document.getElementById(`transfer-amount`).value);
+      const sender = currentUserData;
+
+      // Chercher le destinataire dans Supabase
+      const { data: dest, error: destError } = await supabaseClient.from('users').select('*').eq('phone', destNum).single();
+
+      if (destError || !dest) {
+        showToast("Numéro de destinataire introuvable dans le réseau.", "error");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Veuillez saisir un montant valide.", "error");
+        return;
+      }
+      if (sender.balance < amount) {
+        showToast("Solde insuffisant.", "error");
+        return;
+      }
+      if (amount > sender.limit) {
+        showToast("Le montant dépasse votre plafond autorisé.", "error");
+        return;
+      }
+
+      // Calcul des frais dynamiques (Principe M-Pesa)
+      const systemFee = calculateTransactionFee(amount, true);
+      
+      // Mise à jour des soldes dans Supabase
+      const newSenderBalance = sender.balance - (amount + systemFee);
+      const newDestBalance = dest.balance + amount;
+
+      const { error: updateError } = await supabaseClient.from('users').update({ balance_usd: newSenderBalance }).eq('id', sender.id);
+      const { error: updateDestError } = await supabaseClient.from('users').update({ balance_usd: newDestBalance }).eq('id', dest.id);
+
+      if (!updateError && !updateDestError) {
+        // Enregistrer la transaction
+        await supabaseClient.from('transactions').insert([
+          { from: sender.id, to: dest.id, amount: amount, type: "virement" }
+        ]);
+
+        showToast(`Virement de ${amount.toFixed(2)}$ envoyé à ${dest.name}. Frais: ${systemFee}$`, "success");
+        await fetchAllUserData(); // Rafraîchir les données locales
+        changeTab('home');
+      } else {
+        showToast("Erreur lors de la transaction.", "error");
+      }
+    }
+
+    async function payerMarchandClient() {
+      const mCode = document.getElementById(`pay-mcode`).value.trim();
+      const amount = parseFloat(document.getElementById(`pay-mamount`).value);
+      const sender = currentUserData;
+      const { data: merchant } = await supabaseClient.from('users').select('*').eq('merchantCode', mCode).single();
+
+      if (!merchant) {
+        showToast("Code Marchand incorrect.", "error");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+      if (sender.balance < amount) {
+        showToast("Solde insuffisant.", "error");
+        return;
+      }
+
+      const { error } = await supabaseClient.from('users').update({ balance: sender.balance - amount }).eq('id', sender.id);
+      await supabaseClient.from('users').update({ balance: merchant.balance + amount }).eq('id', merchant.id);
+      
+      if (!error) {
+        await supabaseClient.from('transactions').insert([{ from: sender.id, to: merchant.id, amount: amount, type: "achat" }]);
+        showToast(`Paiement de ${amount}$ réussi.`, "success");
+        await fetchAllUserData();
+        changeTab('home');
+      }
+    }
+
+    function preparerPaiementFacture(code, amount) {
+        document.getElementById('facture-pay-zone').classList.remove('hidden');
+        document.getElementById('facture-id-disp').innerText = code + ` (${amount} $)`;
+        document.getElementById('pay-fcode').value = code;
+        // Scroll en bas
+        setTimeout(() => {
+            const el = document.getElementById('phone-1').querySelector('.overflow-y-auto');
+            if(el) el.scrollTop = el.scrollHeight;
+        }, 100);
+    }
+
+    function payerFactureClient() {
+      const billCode = document.getElementById(`pay-fcode`).value;
+      const facture = facturesEnAttente.find(f => f.code === billCode);
+      const sender = usersData.find(u => u.id === currentUserId);
+      
+      if(!facture) { showToast("Erreur lors de la récupération de la facture.", "error"); return; }
+      if(sender.balance < facture.amount) { showToast("Solde insuffisant pour payer cette facture.", "error"); return; }
+      
+      const merchant = usersData.find(u => u.id === facture.merchantId);
+      sender.balance -= facture.amount;
+      if(merchant) merchant.balance += facture.amount;
+      
+      transactions.push({
+        id: "BILL-" + billCode,
+        from: sender.id,
+        to: merchant ? merchant.id : "System",
+        amount: facture.amount,
+        type: "Paiement Facture",
+        date: "À l'instant"
+      });
+      
+      // Retirer la facture de la liste d'attente
+      facturesEnAttente = facturesEnAttente.filter(f => f.code !== billCode);
+      
+      showToast(`Facture réglée avec succès : ${facture.amount}$`, "success");
+      changeTab('home');
+    }
+
+    function executerChangeClient() {
+      const direction = document.getElementById(`ex-direction`).value;
+      const amount = parseFloat(document.getElementById(`ex-amount`).value);
+      const user = usersData.find(u => u.id === currentUserId);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Veuillez entrer un montant valide.", "error");
+        return;
+      }
+
+      if (direction === "usd_to_cdf") {
+        if (user.balance < amount) {
+          showToast("Solde en Dollars insuffisant.", "error");
+          return;
+        }
+        let converted = amount * RATE_BUY;
+        user.balance -= amount;
+        user.balanceCDF = (user.balanceCDF || 0) + converted;
+        showToast(`Change réussi : -${amount}$ → +${converted.toLocaleString()} FC`, "success");
+      } else {
+        if ((user.balanceCDF || 0) < amount) {
+          showToast("Solde en Francs Congolais insuffisant.", "error");
+          return;
+        }
+        let converted = amount / RATE_SELL;
+        user.balanceCDF -= amount;
+        user.balance = (user.balance || 0) + converted;
+        showToast(`Change réussi : -${amount.toLocaleString()} FC → +${converted.toFixed(2)}$`, "success");
+      }
+
+      transactions.push({
+        id: "EX-" + Date.now(),
+        from: user.id,
+        to: user.id,
+        amount: amount,
+        type: "Change de devises",
+        date: "À l'instant"
+      });
+      
+      changeTab('home');
+    }
+
+    function updateWithdrawFeeDisplay() {
+      const amount = parseFloat(document.getElementById('withdraw-amount').value);
+      const display = document.getElementById('withdraw-fee-info');
+      if (isNaN(amount) || amount <= 0) {
+        display.innerText = "Saisissez un montant pour voir les frais de retrait.";
+        return;
+      }
+      const fee = calculateTransactionFee(amount, false);
+      display.innerHTML = `<span class="text-emerald-400 font-bold">Frais de retrait : ${fee.toFixed(2)} $</span><br><span class="text-[10px]">Total à déduire : ${(amount + fee).toFixed(2)} $</span>`;
+    }
+
+    function updateTransferFeeDisplay() {
+      const amount = parseFloat(document.getElementById('transfer-amount').value);
+      const display = document.getElementById('transfer-fee-info');
+      if (!display) return;
+      if (isNaN(amount) || amount <= 0) {
+        display.innerHTML = "";
+        return;
+      }
+      const fee = calculateTransactionFee(amount, true);
+      display.innerHTML = `<div class="p-3 bg-slate-900 border border-dashed border-slate-700 rounded-xl text-xs text-slate-400 text-center"><span class="text-sky-400 font-bold">Frais d'envoi : ${fee.toFixed(2)} $</span><br><span class="text-[10px]">Total à déduire : ${(amount + fee).toFixed(2)} $</span></div>`;
+    }
+
+    function gererEpargne(type) {
+      const currency = document.getElementById(`sv-currency`).value;
+      const amount = parseFloat(document.getElementById(`sv-amount`).value);
+      const user = usersData.find(u => u.id === currentUserId);
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Montant invalide.", "error");
+        return;
+      }
+
+      if (type === 'deposit') {
+        const balanceField = currency === "USD" ? "balance" : "balanceCDF";
+        const savingsField = currency === "USD" ? "savingsUSD" : "savingsCDF";
+
+        if ((user[balanceField] || 0) < amount) {
+          showToast("Solde courant insuffisant pour épargner cette somme.", "error");
+          return;
+        }
+        user[balanceField] -= amount;
+        user[savingsField] = (user[savingsField] || 0) + amount;
+        showToast(`Dépôt dans le coffre-fort réussi (+${amount} ${currency}).`, "success");
+      } else {
+        const balanceField = currency === "USD" ? "balance" : "balanceCDF";
+        const savingsField = currency === "USD" ? "savingsUSD" : "savingsCDF";
+
+        if ((user[savingsField] || 0) < amount) {
+          showToast("Fonds insuffisants dans le coffre-fort.", "error");
+          return;
+        }
+        user[savingsField] -= amount;
+        user[balanceField] = (user[balanceField] || 0) + amount;
+        showToast(`Retrait du coffre-fort réussi (+${amount} ${currency} vers compte courant).`, "success");
+      }
+      renderPhone();
+    }
+
+    function soumettreTicketClient() {
+      const issue = document.getElementById(`issue-type`).value;
+      const user = usersData.find(u => u.id === currentUserId);
+      const newTicketId = "T-" + (101 + supportTickets.length);
+
+      supportTickets.unshift({
+        id: newTicketId,
+        userId: user.id,
+        userName: user.name,
+        issue: issue,
+        severity: "medium",
+        status: "Ouvert",
+        timestamp: "À l'instant"
+      });
+
+      showToast(`Votre ticket #${newTicketId} a été envoyé au support.`, "success");
+      renderPhone();
+    }
+
+    async function executeDigitalWithdrawal() {
+      const agentPhone = document.getElementById('agent-phone').value.trim();
+      const amount = parseFloat(document.getElementById('withdraw-amount').value);
+      const clientPin = document.getElementById('client-pin').value.trim();
+      const client = currentUserData;
+
+      if (!agentPhone || !amount || !clientPin) {
+        showToast("Veuillez remplir tous les champs.", "error");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Veuillez saisir un montant valide.", "error");
+        return;
+      }
+
+      if (client.code !== clientPin) {
+        showToast("Code PIN incorrect.", "error");
+        return;
+      }
+
+      const agent = usersData.find(u => u.phone === agentPhone && u.role === 'agent');
+
+      if (!agent) {
+        showToast("Agent introuvable avec ce numéro de téléphone.", "error");
+        return;
+      }
+
+      if (client.status === "Suspendu" || client.status === "Gelé (Régulateur)") {
+        showToast("Action refusée : Votre compte est restreint.", "error");
+        return;
+      }
+
+      if (amount > client.limit) {
+        showToast("Le montant dépasse votre plafond autorisé.", "error");
+        return;
+      }
+
+      const withdrawalFee = calculateTransactionFee(amount, false);
+      const totalAmountToDeduct = amount + withdrawalFee;
+
+      if (client.balance < totalAmountToDeduct) {
+        showToast("Solde insuffisant pour ce retrait (incluant les frais).", "error");
+        return;
+      }
+
+      // Update client balance
+      const newClientBalance = client.balance - totalAmountToDeduct;
+      const { error: clientUpdateError } = await supabaseClient.from('users').update({ balance_usd: newClientBalance }).eq('id', client.id);
+
+      if (clientUpdateError) {
+        showToast("Erreur lors de la mise à jour du solde client.", "error");
+        return;
+      }
+
+      // Update agent balance
+      const newAgentBalance = agent.balance + amount; // Agent receives the amount, fee goes to system
+      const { error: agentUpdateError } = await supabaseClient.from('users').update({ balance_usd: newAgentBalance }).eq('id', agent.id);
+
+      if (agentUpdateError) {
+        showToast("Erreur lors de la mise à jour du solde de l'agent.", "error");
+        // Potentially revert client balance here if agent update fails
+        return;
+      }
+
+      // Record transaction
+      await supabaseClient.from('transactions').insert([
+        { from_user_id: client.id, to_user_id: agent.id, amount: amount, type: "retrait_digital", fee: withdrawalFee }
+      ]);
+
+      showToast(`Retrait de ${amount.toFixed(2)}$ effectué avec succès via l'agent ${agent.name}. Frais: ${withdrawalFee.toFixed(2)}$`, "success");
+      
+      await fetchAllUserData(); // Refresh local data
+      changeTab('home');
+    }
+
+    function simulerScanQRCode() {
+      showToast("Caméra ouverte. En attente de scan...", "info");
+      
+      // Simulation d'un scan réussi après 1.5s
+      setTimeout(() => {
+          const codeMarchandTest = "771"; // Le code de Boutique Bio-Zen
+          const amountTest = 15;
+          document.getElementById(`pay-mcode`).value = codeMarchandTest;
+          document.getElementById(`pay-mamount`).value = amountTest;
+          showToast(`Code scanné avec succès ! Boutique Bio-Zen détectée.`, "success");
+      }, 1500);
+    }
+
+    // --- UTILITAIRES PROFILE ---
+    function togglePinVisibility(pin) {
+      const el = document.getElementById(`display-pin`);
+      const icon = document.getElementById(`pin-icon`);
+      if (el.innerText === "••••") {
+        el.innerText = pin;
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        el.innerText = "••••";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
+
+    async function updateUserPin() {
+      const newPin = document.getElementById(`new-pin`).value;
+      if (newPin.length < 4) { showToast("Le code PIN doit comporter au moins 4 caractères.", "error"); return; }
+      const user = usersData.find(u => u.id === currentUserId);
+      await supabaseClient.from('users').update({ pin_code: newPin }).eq('id', currentUserId);
+      user.code = newPin;
+      showToast("Votre code PIN a été modifié avec succès.", "success");
+      changeTab("profile");
+    }
+
+    function logout() {
+      sessionStorage.removeItem('currentUserId');
+      sessionStorage.removeItem('currentUserRole');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
