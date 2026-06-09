@@ -17,21 +17,18 @@
     .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
   </style>
 </head>
-<body>
-    <div class="login-container">
-        <a href="index.html" class="back-link">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-            Retour
-        </a>
-
-        <div class="login-card">
-            <div class="logo-section">
-                <div class="logo-circle">
-                    <span>BL</span>
-                </div>
-                <h1>Connexion <span style="color: var(--gold);">Admin</span></h1>
-                <p>Accédez à votre espace de gestion</p>
-            </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center font-sans p-4 transition-colors duration-500" id="login-body">
+  <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl ring-1 ring-white/10">
+    <div class="text-center mb-8">
+      <div class="flex flex-col items-center gap-3 mb-6">
+        <div class="w-16 h-16 bg-sky-600 flex items-center justify-center rounded-full shadow-[0_0_25px_rgba(2,132,199,0.4)]">
+          <i class="fa-solid fa-mobile-screen-button text-white text-2xl"></i>
+        </div>
+        <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-sky-500">Mobile</span></span>
+      </div>
+      <h1 class="text-sm font-bold text-slate-500 uppercase tracking-widest">Portail Utilisateur</h1>
+      <p class="text-sm text-slate-400 mt-2">Accédez à votre compte via votre numéro</p>
+    </div>
 
     <form id="login-form" class="space-y-6">
       <div>
