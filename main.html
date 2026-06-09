@@ -2260,14 +2260,46 @@
       }
     }
 
+    async function modifierPlafondCompte(userId, nouveauPlafondSaisi) {
+      const nouveauPlafondNum = parseFloat(nouveauPlafondSaisi);
+
+      if (isNaN(nouveauPlafondNum)) {
+        showToast("Veuillez entrer un montant valide", "error");
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('users')
+          .update({ limit_amount: nouveauPlafondNum })
+          .eq('id', userId);
+
+        if (error) {
+          console.error("Erreur Supabase lors de la mise à jour :", error);
+          showToast("Erreur lors de l'enregistrement : " + error.message, "error");
+          return false;
+        }
+
+        showToast("Le plafond du compte a été mis à jour avec succès !", "success");
+
+        if (typeof fetchUsersData === 'function') {
+          fetchUsersData();
+        }
+
+        return true;
+      } catch (err) {
+        console.error("Erreur inattendue :", err);
+        showToast("Erreur inattendue lors de la mise à jour du plafond.", "error");
+        return false;
+      }
+    }
+
     async function diminuerPlafond(phoneId, userId) {
       const target = usersData.find(u => u.id === userId);
       if (target) {
         const newLimit = Math.max(0, (target.limit || 0) - 1000);
-        const { error } = await supabaseClient.from('users').update({ limit: newLimit }).eq('id', userId);
-        if (error) {
-          showToast("Erreur lors de l'enregistrement du plafond dans Supabase.", "error");
-        } else {
+        const success = await modifierPlafondCompte(userId, newLimit);
+        if (success) {
           target.limit = newLimit;
           showToast(`Plafond de ${target.name} diminué à ${newLimit} $`, "warning");
           renderAllPhones();
@@ -2279,10 +2311,8 @@
       const target = usersData.find(u => u.id === userId);
       if (target) {
         const newLimit = (target.limit || 0) + 1000;
-        const { error } = await supabaseClient.from('users').update({ limit: newLimit }).eq('id', userId);
-        if (error) {
-          showToast("Erreur lors de l'enregistrement du plafond dans Supabase.", "error");
-        } else {
+        const success = await modifierPlafondCompte(userId, newLimit);
+        if (success) {
           target.limit = newLimit;
           showToast(`Nouveau plafond pour ${target.name} : ${target.limit} $`, "success");
           renderAllPhones();
