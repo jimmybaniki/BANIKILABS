@@ -216,6 +216,21 @@
                     </button>
                 </div>
 
+                <!-- Badge Suggestions Card -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+                        <span class="bg-slate-100 text-tzblue p-1.5 rounded-lg text-xs"><i class="fa-solid fa-award"></i></span>
+                        Shop Badges & Suggestions (Beji za Duka)
+                    </h3>
+                    <div id="badge-suggestions-container" class="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar pr-1">
+                        <!-- Badges and suggestions will be rendered here -->
+                        <p class="text-xs text-slate-400 text-center py-4">Loading badge info... / Inapakia taarifa za beji.</p>
+                    </div>
+                    <button onclick="switchAdminTab('settings-tab')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-gear"></i> Manage Shop Identity
+                    </button>
+                </div>
+
                 <!-- Low Stock Alerts Card -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2 uppercase tracking-wide">
@@ -245,6 +260,9 @@
                     </button>
                     <button onclick="switchAdminTab('stock-history-tab')" id="btn-stock-history-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-900 hover:bg-white/50 border border-transparent whitespace-nowrap">
                         <i class="fa-solid fa-warehouse"></i> Stock History (Akiba)
+                    </button>
+                    <button onclick="switchAdminTab('services-tab')" id="btn-services-tab" class="admin-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-900 hover:bg-white/50 border border-transparent whitespace-nowrap">
+                        <i class="fa-solid fa-handshake"></i> Services (Huduma)
                     </button>
                 </div>
                 <!-- TAB 4: STOCK HISTORY -->
@@ -424,7 +442,7 @@
                 </div>
 
                 <!-- TAB 2: PRODUCTS MANAGER -->
-                <div id="products-tab" class="admin-tab-content hidden space-y-6">
+                <div id="products-tab" class="admin-tab-content block space-y-6">
                     
                     <!-- Add Product Panel -->
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
@@ -438,6 +456,13 @@
                         
                         <form id="add-product-form" onsubmit="handleAddNewProduct(event)" class="space-y-4">
                             <input type="hidden" id="edit-prod-id">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Type</label>
+                                <select id="prod-type" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-tzgreen transition">
+                                    <option value="product">Product (Bidhaa)</option>
+                                    <option value="service">Service (Huduma)</option>
+                                </select>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 mb-1">SKU</label>
@@ -501,6 +526,20 @@
                     </div>
                 </div>
 
+                <!-- TAB 5: SERVICES MANAGER -->
+                <div id="services-tab" class="admin-tab-content hidden space-y-6">
+                    <!-- Service Catalog List for Edit / Delete -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Services Catalog (<span id="count-services-list">0</span>)</h3>
+                        <div id="admin-services-container" class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
+                            <!-- Admin services dynamic generation goes here -->
+                            <p class="text-xs text-slate-400 text-center py-4">No services added yet. / Hakuna huduma zilizoongezwa bado.</p>
+                        </div>
+                        <button onclick="switchAdminTab('products-tab'); resetProductForm(); document.getElementById('prod-type').value = 'service';" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-plus-circle"></i> Add New Service
+                        </button>
+                    </div>
+                </div>
                 <!-- TAB 3: LIVE ORDERS TRACKER -->
                 <div id="orders-tab" class="admin-tab-content hidden space-y-4">
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
@@ -721,7 +760,11 @@
                 currency: 'TZS',
                 banner: 'Karibu! Get 10% off with code: TZA10 ✨',
                 phone: '+255 712 345 678',
-                address: 'Sam Nujoma Rd, Dar es Salaam'
+                address: 'Sam Nujoma Rd, Dar es Salaam',
+                productLimit: 50,
+                maxPrice: 5000,
+                assignedCategories: [], // New field for badges
+                exchangeRate: 2800 // Default exchange rate
             },
             products: [],
             initialProducts: [ // Keep initial products for reset
@@ -809,7 +852,11 @@
                     name: config.name,
                     slogan: config.slogan,
                     currency: config.currency || 'TZS',
-                    banner: config.banner || ''
+                    banner: config.banner || '',
+                    productLimit: config.product_limit || 50,
+                    maxPrice: config.max_price || 5000,
+                    assignedCategories: config.assigned_categories || [], // Fetch assigned categories
+                    exchangeRate: config.exchange_rate || 2800
                 };
                 appState.activeShopId = config.shop_id; // Set activeShopId from fetched config
                 document.getElementById('config-store-name').value = config.name;
@@ -824,7 +871,7 @@
             // 2. Fetch Products
             const { data: dbProducts } = await sb.from('boutique_products').select('*').eq('owner_id', user.id);
             if (dbProducts) {
-                appState.products = dbProducts.map(p => ({
+                appState.products = dbProducts.map(p => ({ // Fetch type from DB
                     id: p.id, sku: p.sku, name: p.name, category: p.category, 
                     price: p.price, stock: p.stock, desc: p.description, img: p.img_url
                 }));
@@ -899,12 +946,37 @@
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Saving...`;
 
+            // --- SYSTÈME DE VALIDATION (LIMITES ADMIN) ---
+            // 1. Vérification de la limite de produits (uniquement pour les nouveaux ajouts)
+            const currentProductsCount = appState.products.filter(p => p.type === 'product').length;
+            const productLimit = appState.storeConfig.productLimit || 50;
+
+            const itemType = document.getElementById('prod-type').value;
+            if (!id && itemType === 'product' && currentProductsCount >= productLimit) {
+                alert(`Limite de produits atteinte ! Votre boutique est limitée à ${productLimit} articles. / Umefikia kikomo cha bidhaa!`);
+                btn.disabled = false; btn.innerHTML = originalText;
+                return;
+            }
+            // No specific limit for services yet, but could be added similarly
+
+            // 2. Vérification du prix maximum autorisé (Comparaison en USD si TZS actif)
+            const priceInput = parseFloat(document.getElementById('prod-price').value);
+            let priceInUSD = priceInput;
+            if (appState.storeConfig.currency === 'TZS') {
+                priceInUSD = priceInput / (appState.storeConfig.exchangeRate || 2800);
+            }
+            if (priceInUSD > (appState.storeConfig.maxPrice || 5000)) {
+                alert(`Erreur d'autorisation : Le prix dépasse le maximum autorisé ($${appState.storeConfig.maxPrice}). / Bei imezidi kiwango kilichoruhusiwa.`);
+                btn.disabled = false; btn.innerHTML = originalText;
+                return;
+            }
             const id = document.getElementById('edit-prod-id').value;
             const sku = document.getElementById('prod-code').value || 'TZ-' + Math.floor(Math.random()*1000);
             const name = document.getElementById('prod-name').value;
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
+            const type = document.getElementById('prod-type').value; // Get the type
             const desc = document.getElementById('prod-desc').value;
             
             let img = selectedProductImageBase64 || document.getElementById('prod-img-url').value;
@@ -917,6 +989,7 @@
                 const productData = {
                     sku,
                     name,
+                    type, // Save the type
                     category,
                     price,
                     stock,
@@ -928,6 +1001,7 @@
 
                 let res;
                 if (id) {
+                    const oldStock = appState.products.find(p => p.id === id)?.stock || 0; // Get old stock for history
                     res = await sb.from('boutique_products').update(productData).eq('id', id);
                     // Add to stock history for updates
                     if (stock !== oldStock) {
@@ -943,7 +1017,7 @@
                 alert("Bidhaa imehifadhiwa! / Product saved!");
                 resetProductForm();
                 // Add to stock history for new product
-                if (!id) {
+                if (!id && type === 'product') { // Only track stock history for products
                     appState.stockHistory.unshift({ type: 'addition', productId: res.data[0].id, productName: name, quantity: stock, oldStock: 0, newStock: stock, timestamp: new Date().toLocaleString() });
                 }
 
@@ -963,6 +1037,7 @@
             document.getElementById('prod-code').value = p.sku;
             document.getElementById('prod-name').value = p.name;
             document.getElementById('prod-category').value = p.category;
+            document.getElementById('prod-type').value = p.type || 'product'; // Set the type
             document.getElementById('prod-price').value = p.price;
             document.getElementById('prod-stock').value = p.stock;
             document.getElementById('prod-desc').value = p.desc;
@@ -984,12 +1059,11 @@
                 const { error } = await sb.from('boutique_products').delete().eq('id', id);
                 if (error) return alert("Delete failed: " + error.message);
             }
-            
-            // Add to stock history for deletion
-            if (productToDelete) {
+
+            if (productToDelete && productToDelete.type === 'product') { // Only track stock history for products
                 appState.stockHistory.unshift({ type: 'deletion', productId: productToDelete.id, productName: productToDelete.name, quantity: productToDelete.stock, oldStock: productToDelete.stock, newStock: 0, timestamp: new Date().toLocaleString() });
-                renderStockHistory('stock-history-container'); // Update overview card
-                renderStockHistory('stock-history-container-tab'); // Update new tab
+                renderStockHistory('stock-history-container');
+                renderStockHistory('stock-history-container-tab');
             }
             
             appState.products = appState.products.filter(p => p.id !== id);
@@ -1008,13 +1082,45 @@
             document.getElementById('btn-cancel-edit').classList.add('hidden');
         }
 
+        function renderAdminServices() {
+            const container = document.getElementById('admin-services-container');
+            const services = appState.products.filter(p => p.type === 'service');
+            document.getElementById('count-services-list').innerText = services.length;
+            container.innerHTML = '';
+
+            if (services.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No services added yet. / Hakuna huduma zilizoongezwa bado.</p>`;
+                return;
+            }
+            
+            services.forEach(s => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
+                        <img src="${s.img}" class="h-12 w-12 rounded-lg object-cover bg-slate-100" />
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-slate-900 truncate">${s.name}</h4>
+                            <div class="flex gap-2 text-[10px] text-slate-500 font-medium">
+                                <span>${s.sku}</span> • 
+                                <span class="text-tzblue font-bold">${formatCurrency(s.price)}</span> • 
+                                <span>Category: ${s.category}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editProduct('${s.id}')" class="p-2 text-slate-400 hover:text-indigo-600 bg-white border border-slate-200 rounded-lg transition"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteProduct('${s.id}')" class="p-2 text-slate-400 hover:text-rose-600 bg-white border border-slate-200 rounded-lg transition"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function renderAdminProducts() {
             const container = document.getElementById('admin-products-container');
             document.getElementById('count-items-list').innerText = appState.products.length;
             container.innerHTML = '';
             
             appState.products.forEach(p => {
-                container.innerHTML += `
+                if (p.type === 'product') { // Only render products here
                     <div class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
                         <img src="${p.img}" class="h-12 w-12 rounded-lg object-cover bg-slate-100" />
                         <div class="flex-1 min-w-0">
@@ -1031,6 +1137,7 @@
                         </div>
                     </div>
                 `;
+                }
             });
         }
 
@@ -1061,31 +1168,51 @@
             
             container.innerHTML = '';
             
-            const filteredProducts = appState.products.filter(p => p.name.toLowerCase().includes(searchTerm));
+            const filteredItems = appState.products.filter(p => p.name.toLowerCase().includes(searchTerm));
             
-            if(filteredProducts.length === 0) {
+            if(filteredItems.length === 0) {
                 container.innerHTML = `<div class="col-span-2 text-center py-6 text-xs text-slate-400">Hakuna bidhaa (No products found).</div>`;
                 return;
             }
 
-            filteredProducts.forEach(p => {
-                container.innerHTML += `
-                    <div onclick="openProductDetail('${p.id}')" class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition flex flex-col active:scale-95">
-                        <div class="h-28 w-full bg-slate-100 relative">
-                            <img src="${p.img}" class="h-full w-full object-cover" />
-                            ${p.stock <= 5 ? `<span class="absolute top-1.5 right-1.5 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded">Low Stock</span>` : ''}
+            filteredItems.forEach(item => {
+                if (item.type === 'product') {
+                    container.innerHTML += `
+                        <div onclick="openProductDetail('${item.id}')" class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition flex flex-col active:scale-95">
+                            <div class="h-28 w-full bg-slate-100 relative">
+                                <img src="${item.img}" class="h-full w-full object-cover" />
+                                ${item.stock <= 5 ? `<span class="absolute top-1.5 right-1.5 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded">Low Stock</span>` : ''}
+                            </div>
+                            <div class="p-2 flex flex-col flex-1">
+                                <h4 class="text-[11px] font-bold text-slate-800 leading-tight mb-1 line-clamp-2 flex-1">${item.name}</h4>
+                                <div class="flex items-center justify-between mt-1">
+                                    <span class="text-xs font-black text-slate-900">${formatCurrency(item.price)}</span>
+                                    <button class="h-6 w-6 rounded-full dynamic-bg text-white flex items-center justify-center text-[10px] shadow">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-2 flex flex-col flex-1">
-                            <h4 class="text-[11px] font-bold text-slate-800 leading-tight mb-1 line-clamp-2 flex-1">${p.name}</h4>
-                            <div class="flex items-center justify-between mt-1">
-                                <span class="text-xs font-black text-slate-900">${formatCurrency(p.price)}</span>
-                                <button class="h-6 w-6 rounded-full dynamic-bg text-white flex items-center justify-center text-[10px] shadow">
-                                    <i class="fa-solid fa-plus"></i>
+                    `;
+                } else if (item.type === 'service') {
+                    container.innerHTML += `
+                        <div onclick="openProductDetail('${item.id}')" class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition flex flex-col active:scale-95 col-span-2">
+                            <div class="p-3 flex items-center gap-3">
+                                <div class="h-12 w-12 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-handshake text-tzblue text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-bold text-slate-800 leading-tight">${item.name}</h4>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1">${item.desc}</p>
+                                </div>
+                                <span class="text-xs font-black text-slate-900">${formatCurrency(item.price)}</span>
+                                <button class="h-8 w-8 rounded-full dynamic-bg text-white flex items-center justify-center text-xs shadow">
+                                    <i class="fa-solid fa-info"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             });
         }
 
@@ -1102,8 +1229,8 @@
 
         let currentDetailProductId = null;
         function openProductDetail(id) {
-            const p = appState.products.find(p => p.id === id);
-            if(!p) return;
+            const p = appState.products.find(item => item.id === id);
+            if (!p) return;
             currentDetailProductId = id;
             
             document.getElementById('detail-img').src = p.img;
@@ -1112,22 +1239,31 @@
             document.getElementById('detail-price').innerText = formatCurrency(p.price);
             document.getElementById('detail-desc').innerText = p.desc;
             
-            const addBtn = document.getElementById('detail-add-btn');
-            const stockBadge = document.getElementById('detail-stock');
-            
-            if(p.stock > 0) {
-                stockBadge.className = "text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-md";
-                stockBadge.innerText = `In Stock (${p.stock})`;
+            const addBtn = document.getElementById('detail-add-btn'); // This is the button
+            const stockBadge = document.getElementById('detail-stock'); // This is the span element
+
+            if (p.type === 'product') {
+                stockBadge.classList.remove('hidden');
+                if (p.stock > 0) {
+                    stockBadge.className = "text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-md";
+                    stockBadge.innerText = `In Stock (${p.stock})`;
+                    addBtn.disabled = false;
+                    addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    addBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Add to Cart (Weka Kikapuni)`;
+                    addBtn.onclick = () => addToCart(p);
+                } else {
+                    stockBadge.className = "text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-1 rounded-md";
+                    stockBadge.innerText = "Out of Stock (Imeisha)";
+                    addBtn.disabled = true;
+                    addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    addBtn.innerHTML = "Out of Stock";
+                }
+            } else {
+                stockBadge.classList.add('hidden'); // Services don't have stock
                 addBtn.disabled = false;
                 addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                addBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Add to Cart (Weka Kikapuni)`;
-                addBtn.onclick = () => addToCart(p);
-            } else {
-                stockBadge.className = "text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-1 rounded-md";
-                stockBadge.innerText = "Out of Stock (Imeisha)";
-                addBtn.disabled = true;
-                addBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                addBtn.innerHTML = "Out of Stock";
+                addBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Request Service (Omba Huduma)`;
+                addBtn.onclick = () => alert(`Requesting service: ${p.name}`); // Placeholder for service request
             }
             
             navigatePhoneTo('detail');
@@ -1136,6 +1272,10 @@
         function addToCart(product) {
             const existing = appState.cart.find(item => item.id === product.id);
             if(existing) {
+                if (product.type === 'service') { // Services are not quantity-based in cart
+                    alert('Services cannot be added multiple times to cart. Please request once.');
+                    return;
+                }
                 if(existing.qty < product.stock) {
                     existing.qty += 1;
                 } else {
@@ -1143,6 +1283,10 @@
                 }
             } else {
                 appState.cart.push({ ...product, qty: 1 });
+            } 
+            if (product.type === 'service') { // Services are not quantity-based in cart
+                alert('Services are requested, not added to cart with quantity.');
+                return;
             }
             updateCartBadge();
             renderCart();
@@ -1184,6 +1328,10 @@
             let total = 0;
             appState.cart.forEach(item => {
                 total += item.price * item.qty;
+                if (item.type === 'service') { // Services are not quantity-based in cart
+                    // Render service as a request, not a quantity item
+                    return;
+                }
                 container.innerHTML += `
                     <div class="flex items-center gap-3 bg-white p-2 rounded-xl shadow-sm border border-slate-100">
                         <img src="${item.img}" class="h-12 w-12 rounded-lg object-cover bg-slate-50" />
@@ -1217,24 +1365,25 @@
                 status: 'New'
             };
 
-            // Deduct stock
-            appState.cart.forEach(cartItem => {
-                const prod = appState.products.find(p => p.id === cartItem.id);
-                if(prod) prod.stock -= cartItem.qty;
+            // Deduct stock and add to stock history only for products
+            appState.cart.filter(item => item.type === 'product').forEach(cartItem => {
+                const product = appState.products.find(p => p.id === cartItem.id);
+                if (product) {
+                    const oldStock = product.stock;
+                    product.stock -= cartItem.qty;
+                    appState.stockHistory.unshift({
+                        type: 'deduction',
+                        productId: cartItem.id,
+                        productName: cartItem.name,
+                        quantity: cartItem.qty,
+                        oldStock: oldStock,
+                        newStock: product.stock,
+                        timestamp: new Date().toLocaleString()
+                    });
+                }
             });
-
-            // Add to stock history for each item deducted
-            appState.cart.forEach(cartItem => {
-                const prod = appState.products.find(p => p.id === cartItem.id);
-                appState.stockHistory.unshift({
-                    type: 'deduction',
-                    productId: cartItem.id,
-                    productName: cartItem.name,
-                    quantity: cartItem.qty,
-                    oldStock: prod.stock + cartItem.qty,
-                    newStock: prod.stock,
-                    timestamp: new Date().toLocaleString()
-                });
+            appState.cart.filter(item => item.type === 'service').forEach(cartItem => {
+                // Handle service requests separately, e.g., send to a 'service_requests' table
             });
 
             // Add order to admin
@@ -1405,6 +1554,7 @@
             renderAdminProducts();
             renderPhoneProducts();
             updateDashboardStats();
+            renderAdminServices(); // Render services as well
             renderOrders();
         }
 

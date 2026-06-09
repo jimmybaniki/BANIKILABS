@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baniki Labs - Immobilier Fractionné à Kinshasa</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            black: '#121212',
+                            card: '#1E1E1E',
+                            yellow: '#FFD700',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #121212; color: #ffffff; }
+        /* Hide scrollbar for a cleaner mobile look but allow scrolling */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Sidebar Desktop -->
+    <aside class="fixed left-0 top-0 hidden h-full w-64 flex-col border-r border-gray-800 bg-black p-6 md:flex z-40">
+        <div class="mb-10 flex items-center gap-3 cursor-pointer group" onclick="switchTab('dashboard')">
+            <div class="w-11 h-11 bg-yellow-400 flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110">
+                <span class="text-black font-black text-lg">BL</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight uppercase text-white">
+                    Baniki <span class="text-yellow-400">Labs</span>
+                </span>
+                <span class="text-[8px] text-gray-400 font-bold tracking-widest uppercase">Réseau Immobilier RDC</span>
+            </div>
+        </div>
+
+        <nav class="flex flex-col gap-2">
+            <button id="nav-dashboard" onclick="switchTab('dashboard')" class="nav-item flex items-center gap-3 rounded-xl px-4 py-3 transition bg-yellow-400 text-black">
+                <i class="ph ph-squares-four text-xl"></i> <span class="font-medium">Tableau de bord</span>
+            </button>
+            <button id="nav-explore" onclick="switchTab('explore')" class="nav-item flex items-center gap-3 rounded-xl px-4 py-3 transition text-gray-400 hover:bg-zinc-900 hover:text-white">
+                <i class="ph ph-magnifying-glass text-xl"></i> <span class="font-medium">Explorer</span>
+            </button>
+            <button id="nav-invest" onclick="switchTab('invest')" class="nav-item flex items-center gap-3 rounded-xl px-4 py-3 transition text-gray-400 hover:bg-zinc-900 hover:text-white">
+                <i class="ph ph-trend-up text-xl"></i> <span class="font-medium">Mes Investissements</span>
+            </button>
+            <button id="nav-owners" onclick="switchTab('owners')" class="nav-item flex items-center gap-3 rounded-xl px-4 py-3 transition text-gray-400 hover:bg-zinc-900 hover:text-white">
+                <i class="ph ph-users text-xl"></i> <span class="font-medium">Propriétaires</span>
+            </button>
+            <button id="nav-wallet" onclick="switchTab('wallet')" class="nav-item flex items-center gap-3 rounded-xl px-4 py-3 transition text-gray-400 hover:bg-zinc-900 hover:text-white">
+                <i class="ph ph-wallet text-xl"></i> <span class="font-medium">Portefeuille</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
+        <header class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 id="header-title" class="text-2xl font-bold md:text-3xl">Bonjour, Jean-Marc 👋</h1>
+                <p class="text-gray-400 text-sm md:text-base">Immobilier fractionné à Kinshasa</p>
+            </div>
+            <div class="flex h-10 w-10 overflow-hidden rounded-full bg-yellow-400 ring-2 ring-yellow-400/20">
+                <img src="https://ui-avatars.com/api/?name=Jean+Marc&background=FFD700&color=000" alt="Profile" />
+            </div>
+        </header>
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="view-section">
+            <section class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-2xl bg-zinc-900 p-5 border border-transparent hover:border-yellow-400/20 transition">
+                    <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-black"><i class="ph ph-currency-dollar text-yellow-400 text-xl"></i></div>
+                    <p class="text-xs text-gray-500">Valeur Totale</p>
+                    <div class="mt-1 flex items-baseline justify-between">
+                        <h4 class="text-2xl font-bold">$12,450</h4><span class="text-xs font-medium text-green-400">+12%</span>
+                    </div>
+                </div>
+                <div class="rounded-2xl bg-zinc-900 p-5 border border-transparent hover:border-yellow-400/20 transition">
+                    <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-black"><i class="ph ph-trend-up text-yellow-400 text-xl"></i></div>
+                    <p class="text-xs text-gray-500">Revenus Mensuels</p>
+                    <div class="mt-1 flex items-baseline justify-between">
+                        <h4 class="text-2xl font-bold">$840</h4><span class="text-xs font-medium text-green-400">+5.4%</span>
+                    </div>
+                </div>
+                <div class="rounded-2xl bg-zinc-900 p-5 border border-transparent hover:border-yellow-400/20 transition">
+                    <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-black"><i class="ph ph-house text-yellow-400 text-xl"></i></div>
+                    <p class="text-xs text-gray-500">Propriétés</p>
+                    <div class="mt-1 flex items-baseline justify-between">
+                        <h4 class="text-2xl font-bold">04</h4><span class="text-xs font-medium text-gray-400">0</span>
+                    </div>
+                </div>
+                <div class="rounded-2xl bg-zinc-900 p-5 border border-transparent hover:border-yellow-400/20 transition">
+                    <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-black"><i class="ph ph-chart-pie-slice text-yellow-400 text-xl"></i></div>
+                    <p class="text-xs text-gray-500">Parts Détenues</p>
+                    <div class="mt-1 flex items-baseline justify-between">
+                        <h4 class="text-2xl font-bold">128</h4><span class="text-xs font-medium text-green-400">+24</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="lg:col-span-2">
+                    <div class="mb-6 flex items-center justify-between">
+                        <h2 class="text-xl font-bold">Opportunités à la une</h2>
+                        <button onclick="switchTab('explore')" class="text-sm font-medium text-yellow-400 hover:underline">Voir tout</button>
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Property Item -->
+                        <div class="group flex flex-col gap-4 overflow-hidden rounded-2xl bg-zinc-900 p-3 transition hover:bg-zinc-800 sm:flex-row border border-gray-800/50">
+                            <div class="h-40 w-full overflow-hidden rounded-xl sm:h-24 sm:w-36">
+                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" alt="Villa" />
+                            </div>
+                            <div class="flex flex-1 flex-col justify-between py-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-md font-bold">Villa Moderne Ngaliema</h3>
+                                        <p class="flex items-center gap-1 text-xs text-gray-400"><i class="ph ph-map-pin"></i> Binza Pigeon</p>
+                                    </div>
+                                    <span class="text-xs font-bold text-yellow-400">8.5% Rend.</span>
+                                </div>
+                                <div class="mt-2 flex items-center justify-between">
+                                    <p class="text-md font-bold">$250,000</p>
+                                    <div class="h-1 w-24 rounded-full bg-gray-700"><div class="h-full rounded-full bg-yellow-400" style="width: 75%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Property Item -->
+                        <div class="group flex flex-col gap-4 overflow-hidden rounded-2xl bg-zinc-900 p-3 transition hover:bg-zinc-800 sm:flex-row border border-gray-800/50">
+                            <div class="h-40 w-full overflow-hidden rounded-xl sm:h-24 sm:w-36">
+                                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" alt="Appartement" />
+                            </div>
+                            <div class="flex flex-1 flex-col justify-between py-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-md font-bold">Appartement Gombe</h3>
+                                        <p class="flex items-center gap-1 text-xs text-gray-400"><i class="ph ph-map-pin"></i> Boulevard 30 Juin</p>
+                                    </div>
+                                    <span class="text-xs font-bold text-yellow-400">12.2% Rend.</span>
+                                </div>
+                                <div class="mt-2 flex items-center justify-between">
+                                    <p class="text-md font-bold">$420,000</p>
+                                    <div class="h-1 w-24 rounded-full bg-gray-700"><div class="h-full rounded-full bg-yellow-400" style="width: 40%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold">Actions Rapides</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="switchTab('explore')" class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-zinc-900 p-4 transition hover:bg-yellow-400 hover:text-black group">
+                            <i class="ph ph-plus-circle text-2xl group-hover:scale-110 transition"></i><span class="text-xs font-bold">Investir</span>
+                        </button>
+                        <button onclick="switchTab('wallet')" class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-zinc-900 p-4 transition hover:bg-yellow-400 hover:text-black group">
+                            <i class="ph ph-arrow-up-right text-2xl group-hover:scale-110 transition"></i><span class="text-xs font-bold">Retrait</span>
+                        </button>
+                    </div>
+                    <div class="rounded-2xl bg-zinc-900 p-6">
+                        <h3 class="mb-4 font-bold text-yellow-400">Dernière activité</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between border-l-2 border-yellow-400/30 pl-3">
+                                <div><p class="text-sm font-medium">Dividendes Gombe</p><p class="text-xs text-gray-500">Hier</p></div>
+                                <p class="text-sm font-bold text-green-400">+$124.50</p>
+                            </div>
+                            <div class="flex items-center justify-between border-l-2 border-yellow-400/30 pl-3">
+                                <div><p class="text-sm font-medium">Achat parts Limete</p><p class="text-xs text-gray-500">12 Mai</p></div>
+                                <p class="text-sm font-bold text-white">-$500.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: EXPLORE -->
+        <div id="view-explore" class="view-section hidden space-y-6">
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <h2 class="text-2xl font-bold">Explorer les Propriétés</h2>
+                <div class="flex gap-2">
+                    <div class="relative w-full md:w-auto">
+                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="text" placeholder="Quartier, type..." class="w-full rounded-xl bg-zinc-900 py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-400" />
+                    </div>
+                    <button class="flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm hover:bg-zinc-800">
+                        <i class="ph ph-faders"></i> Filtres
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Card 1 -->
+                <div class="overflow-hidden rounded-2xl bg-zinc-900 transition hover:scale-[1.02]">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="h-48 w-full object-cover" alt="Villa Ngaliema" />
+                    <div class="p-5">
+                        <div class="mb-2 flex items-center justify-between"><h3 class="font-bold">Villa Moderne Ngaliema</h3><span class="text-sm font-bold text-yellow-400">8.5%</span></div>
+                        <p class="mb-4 flex items-center gap-1 text-xs text-gray-400"><i class="ph ph-map-pin"></i> Binza Pigeon</p>
+                        <div class="mb-4 h-1.5 w-full rounded-full bg-gray-800"><div class="h-full rounded-full bg-yellow-400" style="width: 75%;"></div></div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-lg font-bold">$250,000</p>
+                            <button onclick="alert('Simulation d\'investissement lancée !')" class="rounded-lg bg-yellow-400 px-4 py-2 text-xs font-bold text-black uppercase">Investir</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="overflow-hidden rounded-2xl bg-zinc-900 transition hover:scale-[1.02]">
+                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" class="h-48 w-full object-cover" alt="Appartement Gombe" />
+                    <div class="p-5">
+                        <div class="mb-2 flex items-center justify-between"><h3 class="font-bold">Appartement Gombe</h3><span class="text-sm font-bold text-yellow-400">12.2%</span></div>
+                        <p class="mb-4 flex items-center gap-1 text-xs text-gray-400"><i class="ph ph-map-pin"></i> Boulevard 30 Juin</p>
+                        <div class="mb-4 h-1.5 w-full rounded-full bg-gray-800"><div class="h-full rounded-full bg-yellow-400" style="width: 40%;"></div></div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-lg font-bold">$420,000</p>
+                            <button class="rounded-lg bg-yellow-400 px-4 py-2 text-xs font-bold text-black uppercase">Investir</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="overflow-hidden rounded-2xl bg-zinc-900 transition hover:scale-[1.02]">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" class="h-48 w-full object-cover" alt="Riverside" />
+                    <div class="p-5">
+                        <div class="mb-2 flex items-center justify-between"><h3 class="font-bold">Résidence Riverside</h3><span class="text-sm font-bold text-yellow-400">7.8%</span></div>
+                        <p class="mb-4 flex items-center gap-1 text-xs text-gray-400"><i class="ph ph-map-pin"></i> Limete</p>
+                        <div class="mb-4 h-1.5 w-full rounded-full bg-gray-800"><div class="h-full rounded-full bg-yellow-400" style="width: 95%;"></div></div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-lg font-bold">$180,000</p>
+                            <button class="rounded-lg bg-yellow-400 px-4 py-2 text-xs font-bold text-black uppercase">Investir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: INVESTMENTS -->
+        <div id="view-invest" class="view-section hidden space-y-6">
+            <h2 class="text-2xl font-bold">Mon Portfolio Immobilier</h2>
+            <div class="rounded-2xl bg-zinc-900 p-6 overflow-x-auto">
+                <table class="w-full text-left min-w-[500px]">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-xs uppercase text-gray-500">
+                            <th class="pb-4 font-medium">Propriété</th>
+                            <th class="pb-4 font-medium">Parts</th>
+                            <th class="pb-4 font-medium">Valeur Actuelle</th>
+                            <th class="pb-4 font-medium">Plus-value</th>
+                            <th class="pb-4 font-medium"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <tr class="group hover:bg-white/5 transition">
+                            <td class="py-4 text-sm font-medium">Villa Ngaliema</td>
+                            <td class="py-4 text-sm">45 parts</td>
+                            <td class="py-4 text-sm font-bold">$5,200</td>
+                            <td class="py-4 text-sm text-green-400">+14.2%</td>
+                            <td class="py-4 text-right"><i class="ph ph-caret-right text-gray-600"></i></td>
+                        </tr>
+                        <tr class="group hover:bg-white/5 transition">
+                            <td class="py-4 text-sm font-medium">Appartement Gombe</td>
+                            <td class="py-4 text-sm">12 parts</td>
+                            <td class="py-4 text-sm font-bold">$3,150</td>
+                            <td class="py-4 text-sm text-green-400">+8.5%</td>
+                            <td class="py-4 text-right"><i class="ph ph-caret-right text-gray-600"></i></td>
+                        </tr>
+                        <tr class="group hover:bg-white/5 transition">
+                            <td class="py-4 text-sm font-medium">Résidence Riverside</td>
+                            <td class="py-4 text-sm">71 parts</td>
+                            <td class="py-4 text-sm font-bold">$4,100</td>
+                            <td class="py-4 text-sm text-green-400">+2.1%</td>
+                            <td class="py-4 text-right"><i class="ph ph-caret-right text-gray-600"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIEW: OWNERS -->
+        <div id="view-owners" class="view-section hidden max-w-4xl mx-auto space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-black mb-4">Devenez Propriétaire avec Bkin</h2>
+                <p class="text-gray-400">Vivez dans votre maison de rêve à Kinshasa pendant que vous rachetez vos parts progressivement.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-yellow-400 p-8 rounded-3xl text-black">
+                    <h3 class="text-2xl font-bold mb-4">Votre Situation</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold uppercase opacity-60 block mb-2">Apport initial souhaité</label>
+                            <input type="range" class="w-full accent-black mb-2" min="5" max="50" value="10" oninput="document.getElementById('apport-val').innerText = this.value + '%'" />
+                            <div class="flex justify-between font-bold text-lg"><span id="apport-val">10%</span><span>Est: $25,000</span></div>
+                        </div>
+                        <button class="w-full bg-black text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-900 transition">
+                            Lancer une demande <i class="ph ph-arrow-right text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-zinc-900 p-8 rounded-3xl">
+                    <h3 class="text-2xl font-bold mb-4">Comment ça marche ?</h3>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex gap-3">
+                            <div class="h-6 w-6 shrink-0 bg-yellow-400 text-black flex items-center justify-center rounded-full font-bold">1</div>
+                            <span>Choisissez une maison à Kinshasa sur notre plateforme ou apportez la vôtre.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <div class="h-6 w-6 shrink-0 bg-yellow-400 text-black flex items-center justify-center rounded-full font-bold">2</div>
+                            <span>Les investisseurs Bkin complètent l'achat du bien avec vous.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <div class="h-6 w-6 shrink-0 bg-yellow-400 text-black flex items-center justify-center rounded-full font-bold">3</div>
+                            <span>Emménagez et payez un loyer réduit, tout en rachetant les parts à votre rythme.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: WALLET -->
+        <div id="view-wallet" class="view-section hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 p-8 rounded-3xl text-black relative overflow-hidden shadow-lg shadow-yellow-500/20">
+                    <div class="relative z-10">
+                        <p class="text-sm font-bold uppercase opacity-70">Solde Cash Disponible</p>
+                        <h2 class="text-4xl md:text-5xl font-black mt-2">$2,450.00</h2>
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <button class="bg-black text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-900 transition">
+                                <i class="ph ph-plus-circle text-xl"></i> Dépôt
+                            </button>
+                            <button class="bg-white/20 backdrop-blur-md text-black px-6 py-3 rounded-xl font-bold hover:bg-white/30 transition">
+                                Retrait
+                            </button>
+                        </div>
+                    </div>
+                    <i class="ph ph-credit-card absolute -right-8 -bottom-8 w-48 h-48 opacity-10 -rotate-12 text-9xl"></i>
+                </div>
+                
+                <div class="bg-zinc-900 rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold">Méthodes de Paiement</h3>
+                        <button class="text-yellow-400 text-sm font-bold">+ Ajouter</button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 rounded-xl border border-yellow-400 bg-yellow-400/5">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 bg-black rounded-lg flex items-center justify-center font-bold text-[10px]">M-Pesa</div>
+                                <div><p class="text-sm font-bold">M-Pesa</p><p class="text-xs text-gray-500">+243 81...</p></div>
+                            </div>
+                            <div class="h-2 w-2 rounded-full bg-yellow-400"></div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl border border-gray-800">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 bg-black rounded-lg flex items-center justify-center font-bold text-[10px] text-red-500">Airtel</div>
+                                <div><p class="text-sm font-bold">Airtel Money</p><p class="text-xs text-gray-500">+243 97...</p></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl border border-gray-800">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 bg-black rounded-lg flex items-center justify-center font-bold text-xl"><i class="ph ph-credit-card"></i></div>
+                                <div><p class="text-sm font-bold">Visa</p><p class="text-xs text-gray-500">**** 4242</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-zinc-900 rounded-3xl p-6">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="ph ph-clock-counter-clockwise"></i> Transactions</h3>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center bg-green-400/10 text-green-400">
+                                <i class="ph ph-arrow-down-left"></i>
+                            </div>
+                            <div><p class="text-sm font-bold">Depôt</p><p class="text-xs text-gray-500">Ce matin • Confirmé</p></div>
+                        </div>
+                        <p class="text-sm font-bold text-green-400">+$500</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center bg-green-400/10 text-green-400">
+                                <i class="ph ph-arrow-down-left"></i>
+                            </div>
+                            <div><p class="text-sm font-bold">Loyer perçu</p><p class="text-xs text-gray-500">Hier • Confirmé</p></div>
+                        </div>
+                        <p class="text-sm font-bold text-green-400">+$42</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center bg-red-400/10 text-red-400">
+                                <i class="ph ph-arrow-up-right"></i>
+                            </div>
+                            <div><p class="text-sm font-bold">Investissement</p><p class="text-xs text-gray-500">2 Mai • Confirmé</p></div>
+                        </div>
+                        <p class="text-sm font-bold text-white">-$1,200</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center bg-red-400/10 text-red-400">
+                                <i class="ph ph-arrow-up-right"></i>
+                            </div>
+                            <div><p class="text-sm font-bold">Retrait</p><p class="text-xs text-gray-500">28 Avril • En cours</p></div>
+                        </div>
+                        <p class="text-sm font-bold text-white">-$200</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 flex w-full justify-around border-t border-gray-800 bg-black/90 p-4 backdrop-blur-md md:hidden z-50 pb-safe">
+        <button id="mobile-nav-dashboard" onclick="switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-yellow-400 transition">
+            <i class="ph ph-squares-four text-2xl"></i>
+            <span class="text-[10px] font-medium">Accueil</span>
+        </button>
+        <button id="mobile-nav-explore" onclick="switchTab('explore')" class="mobile-nav-item flex flex-col items-center gap-1 text-gray-500 transition">
+            <i class="ph ph-magnifying-glass text-2xl"></i>
+            <span class="text-[10px] font-medium">Explorer</span>
+        </button>
+        <button id="mobile-nav-invest" onclick="switchTab('invest')" class="mobile-nav-item flex flex-col items-center gap-1 text-gray-500 transition">
+            <i class="ph ph-trend-up text-2xl"></i>
+            <span class="text-[10px] font-medium">Actifs</span>
+        </button>
+        <button id="mobile-nav-owners" onclick="switchTab('owners')" class="mobile-nav-item flex flex-col items-center gap-1 text-gray-500 transition">
+            <i class="ph ph-users text-2xl"></i>
+            <span class="text-[10px] font-medium">Emprunt</span>
+        </button>
+        <button id="mobile-nav-wallet" onclick="switchTab('wallet')" class="mobile-nav-item flex flex-col items-center gap-1 text-gray-500 transition">
+            <i class="ph ph-wallet text-2xl"></i>
+            <span class="text-[10px] font-medium">Wallet</span>
+        </button>
+    </nav>
+
+    <!-- Javascript for Tab Switching -->
+    <script>
+        const titles = {
+            'dashboard': 'Bonjour, Jean-Marc 👋',
+            'explore': 'Opportunités',
+            'invest': 'Mes Actifs',
+            'owners': 'Devenir Propriétaire',
+            'wallet': 'Mon Argent'
+        };
+
+        function switchTab(tabId) {
+            // 1. Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // 2. Show target view
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+
+            // 3. Update Header Title
+            document.getElementById('header-title').innerText = titles[tabId];
+
+            // 4. Update Desktop Nav styling
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-yellow-400', 'text-black');
+                el.classList.add('text-gray-400', 'hover:bg-zinc-900', 'hover:text-white');
+            });
+            const activeDesktopNav = document.getElementById('nav-' + tabId);
+            activeDesktopNav.classList.remove('text-gray-400', 'hover:bg-zinc-900', 'hover:text-white');
+            activeDesktopNav.classList.add('bg-yellow-400', 'text-black');
+
+            // 5. Update Mobile Nav styling
+            document.querySelectorAll('.mobile-nav-item').forEach(el => {
+                el.classList.remove('text-yellow-400');
+                el.classList.add('text-gray-500');
+            });
+            const activeMobileNav = document.getElementById('mobile-nav-' + tabId);
+            activeMobileNav.classList.remove('text-gray-500');
+            activeMobileNav.classList.add('text-yellow-400');
+
+            // 6. Scroll smoothly to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

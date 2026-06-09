@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mlimani City - Super Admin Portal</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,10 +32,7 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0f172a; }
-        
-        /* Sidebar styling - sizing handled by Tailwind classes now */
-        .sidebar { background: #0f172a; border-right: 4px solid #1EB53A; }
-        
+        .sidebar { background: #0f172a; width: 280px; transition: all 0.3s; border-right: 4px solid #1EB53A; }
         .nav-link { 
             display: flex; align-items: center; gap: 1rem; padding: 0.875rem 1.25rem; 
             color: #94a3b8; border-radius: 0.75rem; transition: 0.2s; margin-bottom: 0.25rem;
@@ -51,7 +48,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
 
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
         .status-active { background: #dcfce7; color: #166534; }
         .status-pending { background: #fef9c3; color: #854d0e; }
         .status-suspended { background: #fee2e2; color: #991b1b; }
@@ -59,17 +56,9 @@
 </head>
 <body class="flex h-screen overflow-hidden text-sm">
     
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity" onclick="closeSidebar()"></div>
-
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar flex flex-col p-6 text-white shrink-0 fixed inset-y-0 left-0 w-72 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-2xl md:shadow-none">
-        
-        <button onclick="closeSidebar()" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white">
-            <i class="fas fa-times text-xl"></i>
-        </button>
-
-        <div class="mb-10 px-2 flex flex-col gap-1 mt-4 md:mt-0">
+    <aside class="sidebar flex flex-col p-6 text-white shrink-0 relative z-20">
+        <div class="mb-10 px-2 flex flex-col gap-1">
             <div class="flex items-center gap-3">
                 <div class="bg-gradient-to-br from-tzgreen to-emerald-700 text-white p-2.5 rounded-xl shadow-lg shadow-tzgreen/20">
                     <i class="fa-solid fa-shield-halved text-xl"></i>
@@ -81,7 +70,7 @@
             <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold mt-2 ml-1">Super Admin Portal / Msimamizi Mkuu</p>
         </div>
 
-        <nav class="flex-1 overflow-y-auto pr-2 space-y-1 custom-scrollbar">
+        <nav class="flex-1 overflow-y-auto pr-2 space-y-1">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 ml-2 mt-4">Main / Kuu</p>
             <a href="#" onclick="showSection('overview')" class="nav-link active" id="nav-overview"><i class="fas fa-chart-pie w-5 text-center"></i> Dashboard</a>
             
@@ -106,113 +95,121 @@
     </aside>
 
     <!-- Main Area -->
-    <main class="flex-1 flex flex-col overflow-hidden relative bg-slate-50 w-full">
+    <main class="flex-1 flex flex-col overflow-hidden relative bg-slate-50">
         <!-- Top Toolbar -->
-        <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 py-4 flex justify-between items-center sticky top-0 z-10">
-            <div class="flex items-center gap-3 md:gap-4">
-                <!-- Hamburger Menu Button -->
-                <button onclick="openSidebar()" class="md:hidden text-slate-500 hover:text-tzgreen focus:outline-none p-1">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <h2 class="font-black text-lg md:text-xl text-slate-800 tracking-tight truncate max-w-[180px] sm:max-w-xs md:max-w-none" id="section-title">Dashboard Overview</h2>
+        <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <h2 class="font-black text-xl text-slate-800 tracking-tight" id="section-title">Dashboard Overview</h2>
             </div>
-            <div class="flex items-center gap-3 md:gap-5">
-                <div class="relative group cursor-pointer">
+            <div class="flex items-center gap-5">
+                <div class="relative group cursor-pointer" onclick="toggleNotifications()">
                     <i class="fas fa-bell text-slate-400 text-lg group-hover:text-tzgreen transition"></i>
-                    <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[8px] font-black flex items-center justify-center border-2 border-white">3</span>
+                    <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[8px] font-black flex items-center justify-center border-2 border-white">0</span>
                 </div>
-                <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+
+                <!-- Notifications Dropdown -->
+                <div id="notification-panel" class="hidden absolute top-16 right-32 w-80 glass-card p-0 shadow-xl z-50 overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 p-4 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-black uppercase text-xs tracking-widest text-slate-800">Badge Alerts</h3>
+                        <button onclick="clearNotifications()" class="text-[10px] font-bold text-slate-400 hover:text-rose-600 uppercase">Clear</button>
+                    </div>
+                    <div id="notification-list" class="max-h-80 overflow-y-auto p-2 space-y-2">
+                        <p class="text-center text-xs text-slate-400 py-4 italic">No new badge alerts.</p>
+                    </div>
+                </div>
+
+                <div class="h-8 w-px bg-slate-200"></div>
                 <div class="flex items-center gap-3">
-                    <div class="flex-col text-right hidden sm:flex">
-                        <span id="admin-name" class="font-bold text-slate-800 text-sm leading-tight truncate max-w-[100px]">Admin</span>
+                    <div class="flex flex-col text-right">
+                        <span id="admin-name" class="font-bold text-slate-800 text-sm leading-tight">Admin</span>
                         <span class="text-[9px] text-tzgreen font-black uppercase tracking-widest">Super User</span>
                     </div>
-                    <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-white shadow-md border-2 border-tzgreen shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-white shadow-md border-2 border-tzgreen">
                         <i class="fas fa-user-shield text-xs"></i>
                     </div>
                 </div>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 md:space-y-8 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
             
             <!-- OVERVIEW SECTION -->
-            <div id="section-overview" class="space-y-6 md:space-y-8">
+            <div id="section-overview" class="space-y-8">
                 <!-- KPI Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
-                    <div class="glass-card p-5 md:p-6 relative overflow-hidden group">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 relative overflow-hidden group">
                         <div class="absolute -right-6 -top-6 w-24 h-24 bg-tzgreen/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative z-10">
                             <div class="flex justify-between items-start mb-4">
                                 <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Platform Revenue</p>
-                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"><i class="fas fa-money-bill-wave"></i></div>
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fas fa-money-bill-wave"></i></div>
                             </div>
-                            <h3 id="global-revenue" class="text-2xl md:text-3xl font-black text-slate-800">0 TZS</h3>
+                            <h3 id="global-revenue" class="text-3xl font-black text-slate-800">0 TZS</h3>
                             <p class="text-xs text-emerald-600 mt-2 font-semibold flex items-center gap-1"><i class="fas fa-arrow-trend-up"></i> +12.5% this month</p>
                         </div>
                     </div>
                     
-                    <div class="glass-card p-5 md:p-6 relative overflow-hidden group">
+                    <div class="glass-card p-6 relative overflow-hidden group">
                         <div class="absolute -right-6 -top-6 w-24 h-24 bg-tzblue/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative z-10">
                             <div class="flex justify-between items-start mb-4">
                                 <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Active Commercial Agents</p>
-                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i class="fas fa-user-tie"></i></div>
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-user-tie"></i></div>
                             </div>
-                            <h3 id="global-agents" class="text-2xl md:text-3xl font-black text-slate-800">0</h3>
-                            <p class="text-xs text-slate-400 mt-2 truncate">Managing the network</p>
+                            <h3 id="global-agents" class="text-3xl font-black text-slate-800">0</h3>
+                            <p class="text-xs text-slate-400 mt-2">Managing the network / Wanaosimamia</p>
                         </div>
                     </div>
 
-                    <div class="glass-card p-5 md:p-6 relative overflow-hidden group">
+                    <div class="glass-card p-6 relative overflow-hidden group">
                         <div class="absolute -right-6 -top-6 w-24 h-24 bg-tzyellow/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative z-10">
                             <div class="flex justify-between items-start mb-4">
                                 <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Deployed Shops</p>
-                                <div class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-600 flex items-center justify-center shrink-0"><i class="fas fa-store"></i></div>
+                                <div class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-600 flex items-center justify-center"><i class="fas fa-store"></i></div>
                             </div>
-                            <h3 id="global-shops" class="text-2xl md:text-3xl font-black text-slate-800">0</h3>
-                            <p class="text-xs text-slate-400 mt-2 truncate">Across all agents</p>
+                            <h3 id="global-shops" class="text-3xl font-black text-slate-800">0</h3>
+                            <p class="text-xs text-slate-400 mt-2">Across all agents / Maduka yote</p>
                         </div>
                     </div>
 
-                    <div class="glass-card p-5 md:p-6 relative overflow-hidden group">
+                    <div class="glass-card p-6 relative overflow-hidden group">
                         <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative z-10">
                             <div class="flex justify-between items-start mb-4">
                                 <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Registered Clients</p>
-                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0"><i class="fas fa-users"></i></div>
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-users"></i></div>
                             </div>
-                            <h3 id="global-clients" class="text-2xl md:text-3xl font-black text-slate-800">0</h3>
-                            <p class="text-xs text-slate-400 mt-2 truncate">Platform consumers</p>
+                            <h3 id="global-clients" class="text-3xl font-black text-slate-800">0</h3>
+                            <p class="text-xs text-slate-400 mt-2">Platform consumers / Wateja</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Global Activity Table -->
                 <div class="glass-card overflow-hidden">
-                    <div class="p-4 md:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
                         <div>
                             <h3 class="font-black text-base text-slate-800">Recent Global Transactions</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Latest sales across all shops on Mlimani City.</p>
                         </div>
-                        <div class="flex gap-2 w-full sm:w-auto">
-                            <button onclick="exportOrdersPDF()" class="flex-1 sm:flex-none justify-center bg-rose-600 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-rose-700 transition shadow-sm flex items-center gap-2">
-                                <i class="fas fa-file-pdf"></i> PDF
+                        <div class="flex gap-2">
+                            <button onclick="exportOrdersPDF()" class="bg-rose-600 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-rose-700 transition shadow-sm flex items-center gap-2">
+                                <i class="fas fa-file-pdf"></i> Export PDF
                             </button>
-                            <button class="flex-1 sm:flex-none justify-center text-xs font-bold text-tzblue hover:bg-blue-50 px-4 py-2 rounded-lg transition">View All</button>
+                            <button class="text-xs font-bold text-tzblue hover:text-blue-700">View All</button>
                         </div>
                     </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left border-collapse min-w-[600px]">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
                             <thead class="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest">
                                 <tr>
-                                    <th class="px-4 md:px-6 py-4">Transaction ID</th>
-                                    <th class="px-4 md:px-6 py-4">Shop</th>
-                                    <th class="px-4 md:px-6 py-4">Customer</th>
-                                    <th class="px-4 md:px-6 py-4">Amount</th>
-                                    <th class="px-4 md:px-6 py-4">Agent Ref</th>
-                                    <th class="px-4 md:px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Transaction ID</th>
+                                    <th class="px-6 py-4">Shop</th>
+                                    <th class="px-6 py-4">Customer</th>
+                                    <th class="px-6 py-4">Amount</th>
+                                    <th class="px-6 py-4">Agent Ref</th>
+                                    <th class="px-6 py-4">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="global-activity-body" class="divide-y divide-slate-100 bg-white">
@@ -225,34 +222,34 @@
 
             <!-- AGENTS SECTION -->
             <div id="section-agents" class="hidden space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex justify-between items-center">
                     <div>
                         <h3 class="font-black text-lg text-slate-800">Commercial Agents</h3>
                         <p class="text-xs text-slate-500">Manage your sales force, view performance and create new agents.</p>
                     </div>
-                    <button onclick="openAgentModal()" class="w-full sm:w-auto justify-center bg-tzblack hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-lg shadow-slate-900/20 flex items-center gap-2">
+                    <button onclick="openAgentModal()" class="bg-tzblack hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-lg shadow-slate-900/20 flex items-center gap-2">
                         <i class="fas fa-plus"></i> New Agent
                     </button>
                 </div>
 
                 <div class="glass-card overflow-hidden">
                     <div class="p-4 border-b border-slate-100 bg-slate-50 flex gap-4">
-                        <div class="relative w-full max-w-md">
+                        <div class="relative flex-1 max-w-md">
                             <i class="fas fa-search absolute left-4 top-3 text-slate-400"></i>
                             <input type="text" placeholder="Search agents..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none bg-white">
                         </div>
                     </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left min-w-[800px]">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
                             <thead class="bg-white text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
                                 <tr>
-                                    <th class="px-4 md:px-6 py-4">Agent Details</th>
-                                    <th class="px-4 md:px-6 py-4">Promo Code</th>
-                                    <th class="px-4 md:px-6 py-4">Shops</th>
-                                    <th class="px-4 md:px-6 py-4">Revenue</th>
-                                    <th class="px-4 md:px-6 py-4">Commission</th>
-                                    <th class="px-4 md:px-6 py-4">Status</th>
-                                    <th class="px-4 md:px-6 py-4 text-right">Actions</th>
+                                    <th class="px-6 py-4">Agent Details</th>
+                                    <th class="px-6 py-4">Promo Code</th>
+                                    <th class="px-6 py-4">Shops Managed</th>
+                                    <th class="px-6 py-4">Total Revenue Generated</th>
+                                    <th class="px-6 py-4">Commission Status</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="agents-table-body" class="divide-y divide-slate-50 bg-white">
@@ -271,30 +268,31 @@
                 </div>
 
                 <div class="glass-card overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4">
-                        <select class="px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none bg-white font-semibold text-slate-700 w-full sm:w-auto">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50 flex gap-4">
+                        <select class="px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none bg-white font-semibold text-slate-700">
                             <option value="">All Categories</option>
                             <option value="fashion">Fashion</option>
                             <option value="electronics">Electronics</option>
                             <option value="food">Food & Beverage</option>
                         </select>
-                        <div class="relative flex-1 w-full">
+                        <div class="relative flex-1">
                             <i class="fas fa-search absolute left-4 top-3 text-slate-400"></i>
                             <input type="text" placeholder="Search by shop name or ID..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-tzgreen outline-none bg-white">
                         </div>
                     </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left min-w-[900px]">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
                             <thead class="bg-white text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
                                 <tr>
-                                    <th class="px-4 md:px-6 py-4">Shop Info</th>
-                                    <th class="px-4 md:px-6 py-4">Owner / Manager</th>
-                                    <th class="px-4 md:px-6 py-4">Agent Code</th>
-                                    <th class="px-4 md:px-6 py-4">Prod. Limit</th>
-                                    <th class="px-4 md:px-6 py-4">Order Caps (D/M)</th>
-                                    <th class="px-4 md:px-6 py-4">Max Price</th>
-                                    <th class="px-4 md:px-6 py-4">Status</th>
-                                    <th class="px-4 md:px-6 py-4 text-right">Control</th>
+                                    <th class="px-6 py-4">Shop Info</th>
+                                    <th class="px-6 py-4">Owner / Manager</th>
+                                    <th class="px-6 py-4">Created By (Agent)</th>
+                                    <th class="px-6 py-4">Product Limit</th>
+                                    <th class="px-6 py-4">Order Caps (D/M)</th>
+                                    <th class="px-6 py-4">Max Price</th>
+                                    <th class="px-6 py-4">Assigned Categories</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Control</th>
                                 </tr>
                             </thead>
                             <tbody id="shops-table-body" class="divide-y divide-slate-50 bg-white">
@@ -313,14 +311,14 @@
                 </div>
 
                 <div class="glass-card overflow-hidden">
-                    <div class="overflow-x-auto p-2 w-full">
-                        <table class="w-full text-left min-w-[500px]">
+                    <div class="overflow-x-auto p-2">
+                        <table class="w-full text-left">
                             <thead class="bg-transparent text-slate-500 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
                                 <tr>
-                                    <th class="px-4 md:px-6 py-4">Client ID / Email</th>
-                                    <th class="px-4 md:px-6 py-4">Registration Date</th>
-                                    <th class="px-4 md:px-6 py-4">Total Orders</th>
-                                    <th class="px-4 md:px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Client ID / Email</th>
+                                    <th class="px-6 py-4">Registration Date</th>
+                                    <th class="px-6 py-4">Total Orders</th>
+                                    <th class="px-6 py-4">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="clients-table-body" class="divide-y divide-slate-50 bg-white">
@@ -338,52 +336,52 @@
                     <p class="text-xs text-slate-500">Issues reported by Agents regarding their shops.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    <div class="xl:col-span-2 space-y-4" id="tickets-container">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4" id="tickets-container">
                         <!-- Mock Tickets -->
-                        <div class="glass-card p-4 md:p-6 flex flex-col sm:flex-row gap-4 sm:gap-5 items-start border-l-4 border-l-rose-500">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center shrink-0 text-lg sm:text-xl"><i class="fas fa-exclamation-triangle"></i></div>
-                            <div class="flex-1 w-full">
-                                <div class="flex flex-col sm:flex-row justify-between items-start mb-2 sm:mb-1 gap-1">
-                                    <h4 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Payment Gateway Issue</h4>
-                                    <span class="text-[10px] font-bold text-slate-400 whitespace-nowrap">2 hours ago</span>
+                        <div class="glass-card p-6 flex gap-5 items-start border-l-4 border-l-rose-500">
+                            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center shrink-0 text-xl"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-slate-800 text-base">Payment Gateway Issue</h4>
+                                    <span class="text-[10px] font-bold text-slate-400">2 hours ago</span>
                                 </div>
-                                <p class="text-xs text-slate-600 mb-4 leading-relaxed">Reported by Agent: <span class="font-bold">jimmy@mlimanicity.com</span> for Shop: <span class="font-bold">Mlimani Fashion Hub</span>. The mobile money integration seems to be failing on checkout.</p>
-                                <div class="flex flex-wrap gap-2 w-full">
-                                    <button class="flex-1 sm:flex-none px-4 py-2 bg-tzgreen text-white text-[10px] font-black uppercase rounded hover:bg-green-600 transition text-center">Mark Resolved</button>
-                                    <button class="flex-1 sm:flex-none px-4 py-2 bg-slate-100 text-slate-600 text-[10px] font-black uppercase rounded hover:bg-slate-200 transition text-center">Contact Agent</button>
+                                <p class="text-xs text-slate-600 mb-3">Reported by Agent: <span class="font-bold">jimmy@mlimanicity.com</span> for Shop: <span class="font-bold">Mlimani Fashion Hub</span>. The mobile money integration seems to be failing on checkout.</p>
+                                <div class="flex gap-2">
+                                    <button class="px-4 py-1.5 bg-tzgreen text-white text-[10px] font-black uppercase rounded hover:bg-green-600 transition">Mark Resolved</button>
+                                    <button class="px-4 py-1.5 bg-slate-100 text-slate-600 text-[10px] font-black uppercase rounded hover:bg-slate-200 transition">Contact Agent</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="glass-card p-4 md:p-6 flex flex-col sm:flex-row gap-4 sm:gap-5 items-start border-l-4 border-l-tzyellow">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center shrink-0 text-lg sm:text-xl"><i class="fas fa-image"></i></div>
-                            <div class="flex-1 w-full">
-                                <div class="flex flex-col sm:flex-row justify-between items-start mb-2 sm:mb-1 gap-1">
-                                    <h4 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Logo Upload Failing</h4>
-                                    <span class="text-[10px] font-bold text-slate-400 whitespace-nowrap">1 day ago</span>
+                        <div class="glass-card p-6 flex gap-5 items-start border-l-4 border-l-tzyellow">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center shrink-0 text-xl"><i class="fas fa-image"></i></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-slate-800 text-base">Logo Upload Failing</h4>
+                                    <span class="text-[10px] font-bold text-slate-400">1 day ago</span>
                                 </div>
-                                <p class="text-xs text-slate-600 mb-4 leading-relaxed">Reported by Agent: <span class="font-bold">sarah@mlimanicity.com</span> for Shop: <span class="font-bold">Tech Gadgets TZ</span>. Manager unable to change store logo.</p>
-                                <div class="flex flex-wrap gap-2 w-full">
-                                    <button class="flex-1 sm:flex-none px-4 py-2 bg-tzgreen text-white text-[10px] font-black uppercase rounded hover:bg-green-600 transition text-center">Mark Resolved</button>
+                                <p class="text-xs text-slate-600 mb-3">Reported by Agent: <span class="font-bold">sarah@mlimanicity.com</span> for Shop: <span class="font-bold">Tech Gadgets TZ</span>. Manager unable to change store logo.</p>
+                                <div class="flex gap-2">
+                                    <button class="px-4 py-1.5 bg-tzgreen text-white text-[10px] font-black uppercase rounded hover:bg-green-600 transition">Mark Resolved</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="glass-card p-5 md:p-6 h-fit bg-slate-900 text-white">
+                    <div class="glass-card p-6 h-fit bg-slate-900 text-white">
                         <h4 class="font-black uppercase tracking-widest text-xs mb-4 text-slate-400">System Status</h4>
-                        <div class="space-y-5">
+                        <div class="space-y-4">
                             <div>
-                                <div class="flex justify-between text-xs mb-1.5"><span class="font-bold">Database Server</span> <span class="text-tzgreen font-black">99.9% Uptime</span></div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold">Database Server</span> <span class="text-tzgreen font-black">99.9% Uptime</span></div>
                                 <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-tzgreen h-1.5 rounded-full w-full"></div></div>
                             </div>
                             <div>
-                                <div class="flex justify-between text-xs mb-1.5"><span class="font-bold">Storage (Images)</span> <span class="text-tzyellow font-black">75% Used</span></div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold">Storage (Images)</span> <span class="text-tzyellow font-black">75% Used</span></div>
                                 <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-tzyellow h-1.5 rounded-full w-[75%]"></div></div>
                             </div>
                             <div>
-                                <div class="flex justify-between text-xs mb-1.5"><span class="font-bold">Auth Services</span> <span class="text-tzgreen font-black">Operational</span></div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold">Auth Services</span> <span class="text-tzgreen font-black">Operational</span></div>
                                 <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-tzgreen h-1.5 rounded-full w-full"></div></div>
                             </div>
                         </div>
@@ -398,10 +396,10 @@
                     <p class="text-xs text-slate-500">Configure global parameters for the Mlimani City network.</p>
                 </div>
                 
-                <div class="glass-card p-5 md:p-8 space-y-6 md:space-y-8">
+                <div class="glass-card p-8 space-y-6">
                     <div>
                         <h4 class="font-black text-sm uppercase border-b border-slate-100 pb-2 mb-4">Financial Settings</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                        <div class="grid grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black uppercase text-slate-500 mb-2 tracking-widest">Base Agent Commission (%)</label>
                                 <input type="number" value="5" class="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-tzgreen font-bold">
@@ -414,40 +412,40 @@
                     </div>
                     
                     <div>
-                        <h4 class="font-black text-sm uppercase border-b border-slate-100 pb-2 mb-4">Platform Operational Limits</h4>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+                        <h4 class="font-black text-sm uppercase border-b border-slate-100 pb-2 mb-4">Platform Operational Limits (Contrôles du Système)</h4>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                             <div>
-                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest truncate">Max Prod/Serv</label>
+                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest">Max Products/Services</label>
                                 <input type="number" id="global-limit-products" value="50" class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-tzgreen outline-none font-bold text-xs">
                             </div>
                             <div>
-                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest truncate">Max Price (USD)</label>
+                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest">Max Price Allowed (USD)</label>
                                 <input type="number" id="global-limit-price" value="5000" class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-tzgreen outline-none font-bold text-xs">
                             </div>
                             <div>
-                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest truncate">Max Orders / Day</label>
+                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest">Max Orders / Day</label>
                                 <input type="number" id="global-limit-orders-day" value="20" class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-tzgreen outline-none font-bold text-xs">
                             </div>
                             <div>
-                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest truncate">Max Orders / Mo</label>
+                                <label class="block text-[9px] font-black uppercase text-slate-500 mb-1.5 tracking-widest">Max Orders / Month</label>
                                 <input type="number" id="global-limit-orders-month" value="500" class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 focus:ring-2 focus:ring-tzgreen outline-none font-bold text-xs">
                             </div>
                         </div>
                         
                         <h4 class="font-black text-sm uppercase border-b border-slate-100 pb-2 mb-4">Security</h4>
                         <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
-                            <div class="pr-4">
+                            <div>
                                 <p class="font-bold text-sm text-slate-800">Require 2FA for Agents</p>
-                                <p class="text-xs text-slate-500 mt-0.5">Force commercial agents to use two-factor authentication.</p>
+                                <p class="text-xs text-slate-500">Force commercial agents to use two-factor authentication.</p>
                             </div>
-                            <div class="w-12 h-6 bg-tzgreen rounded-full relative cursor-pointer shadow-inner shrink-0">
+                            <div class="w-12 h-6 bg-tzgreen rounded-full relative cursor-pointer shadow-inner">
                                 <div class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full shadow-sm"></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="pt-4">
-                        <button onclick="showToast('Settings saved successfully!', 'success')" class="bg-tzblue hover:bg-blue-600 text-white px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-lg w-full">Save Changes</button>
+                        <button class="bg-tzblue hover:bg-blue-600 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-lg w-full">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -456,9 +454,9 @@
     </main>
 
     <!-- Modal: Create Agent -->
-    <div id="modal-agent" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 sm:p-8 relative shadow-2xl transform transition-all my-auto">
-            <button type="button" onclick="closeAgentModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition"><i class="fas fa-times"></i></button>
+    <div id="modal-agent" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative shadow-2xl transform transition-all">
+            <button onclick="closeAgentModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition"><i class="fas fa-times"></i></button>
             
             <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-4">
                 <i class="fas fa-user-plus"></i>
@@ -480,7 +478,7 @@
                     <input type="text" id="new-agent-promo" placeholder="e.g. AGENT-DAR-01" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-tzblue" />
                 </div>
                 
-                <button type="submit" id="btn-submit-agent" class="w-full bg-tzblack hover:bg-slate-800 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition mt-4">
+                <button type="submit" id="btn-submit-agent" class="w-full bg-tzblack hover:bg-slate-800 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition mt-2">
                     Deploy Agent Account
                 </button>
             </form>
@@ -488,18 +486,18 @@
     </div>
 
     <!-- Secure Admin Access (Auth Overlay) -->
-    <div id="access-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/90 backdrop-blur-xl p-4 transition-all overflow-y-auto">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-700 my-auto">
-            <div class="bg-[#0f172a] p-6 sm:p-8 text-center relative overflow-hidden">
+    <div id="access-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/90 backdrop-blur-xl p-4 transition-all">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-700">
+            <div class="bg-[#0f172a] p-8 text-center relative overflow-hidden">
                 <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-tzgreen/20 rounded-full blur-2xl"></div>
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-tzblue/20 rounded-full blur-2xl"></div>
                 
-                <i class="fas fa-fingerprint text-4xl sm:text-5xl text-white mb-4 relative z-10"></i>
-                <h3 class="text-xl sm:text-2xl font-black uppercase text-white tracking-wide relative z-10">Admin Access</h3>
-                <p class="text-[9px] sm:text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1 relative z-10">Restricted Area / Eneo Lililozuiwa</p>
+                <i class="fas fa-fingerprint text-5xl text-white mb-4 relative z-10"></i>
+                <h3 class="text-2xl font-black uppercase text-white tracking-wide relative z-10">Admin Access</h3>
+                <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1 relative z-10">Restricted Area / Eneo Lililozuiwa</p>
             </div>
             
-            <div class="p-6 sm:p-8 space-y-6 bg-slate-50">
+            <div class="p-8 space-y-6 bg-slate-50">
                 <form id="auth-form" onsubmit="handleAdminLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-black uppercase text-slate-500 mb-1.5 tracking-widest">Admin Email</label>
@@ -523,9 +521,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-[300] flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
         // --- SUPABASE CONFIGURATION ---
@@ -554,68 +549,6 @@
             await verifyAdminAccess();
         };
 
-        // Custom Toast Notification Function (Replaces alert)
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            let bgClass = 'bg-slate-800';
-            let icon = 'fa-info-circle';
-
-            if (type === 'error') { bgClass = 'bg-rose-600'; icon = 'fa-exclamation-circle'; }
-            else if (type === 'success') { bgClass = 'bg-tzgreen'; icon = 'fa-check-circle'; }
-            else if (type === 'warning') { bgClass = 'bg-tzyellow text-slate-800'; icon = 'fa-exclamation-triangle'; }
-
-            toast.className = `${bgClass} text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0 text-sm font-semibold max-w-sm pointer-events-auto`;
-            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
-
-            container.appendChild(toast);
-
-            requestAnimationFrame(() => {
-                toast.classList.remove('translate-y-10', 'opacity-0');
-            });
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // Mobile Sidebar Controls
-        function openSidebar() {
-            document.getElementById('sidebar').classList.remove('-translate-x-full');
-            document.getElementById('sidebar-overlay').classList.remove('hidden');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-            document.getElementById('sidebar-overlay').classList.add('hidden');
-        }
-
-        function showSection(id) {
-            const sections = ['overview', 'agents', 'shops', 'clients', 'support', 'settings'];
-            sections.forEach(s => {
-                document.getElementById('section-' + s).classList.add('hidden');
-                if(document.getElementById('nav-' + s)) document.getElementById('nav-' + s).classList.remove('active');
-            });
-            document.getElementById('section-' + id).classList.remove('hidden');
-            if(document.getElementById('nav-' + id)) document.getElementById('nav-' + id).classList.add('active');
-            
-            const titles = {
-                'overview': 'Dashboard Overview',
-                'agents': 'Commercial Agents',
-                'shops': 'Global Shops',
-                'clients': 'Registered Clients',
-                'support': 'Support Tickets',
-                'settings': 'Platform Settings'
-            };
-            document.getElementById('section-title').innerText = titles[id];
-
-            // Auto-close sidebar on mobile after selection
-            if (window.innerWidth < 768) {
-                closeSidebar();
-            }
-        }
-
         function initCloud() {
             try {
                 sb = supabase.createClient(CLOUD_URL, CLOUD_KEY);
@@ -623,11 +556,12 @@
                 
                 sb.auth.onAuthStateChange((event, session) => {
                     if (session) {
+                        // Very basic admin check. In production, check a 'roles' table.
                         if (session.user.email.includes('admin') || session.user.email === 'banikilabs@gmail.com') {
                             currentUser = session.user;
                             finalizeLogin(currentUser.email);
                         } else {
-                            showToast("Access Denied: You do not have Super Admin privileges.", "error");
+                            alert("Access Denied: You do not have Super Admin privileges. / Ufikiaji Umekataliwa.");
                             sb.auth.signOut();
                         }
                     } else {
@@ -652,6 +586,7 @@
             }
         }
 
+        // --- AUTHENTICATION ---
         async function verifyAdminAccess() {
             if(!sb) return;
             const { data: { user } } = await sb.auth.getUser();
@@ -664,7 +599,7 @@
 
         async function handleAdminLogin(e) {
             e.preventDefault();
-            if (!sb) return showToast("Cloud system is unavailable.", "error");
+            if (!sb) return alert("Cloud system is unavailable.");
             
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
@@ -676,9 +611,8 @@
             try {
                 const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                showToast("Authentication successful", "success");
             } catch (err) {
-                showToast("Auth Error: " + err.message, "error");
+                alert("Auth Error: " + err.message);
                 btn.innerHTML = `Authenticate System`;
                 btn.disabled = false;
             }
@@ -698,22 +632,31 @@
             }
         }
 
+        // --- STREAMING_CHUNK:Data Fetching & Rendering logic ---
         async function loadGlobalData() {
             if (!sb) return;
+
             try {
+                // Fetch All Shops globally
                 const { data: shopsData, error: shopsErr } = await sb.from('boutique_config').select('*').order('created_at', { ascending: false });
                 if (!shopsErr && shopsData) allShops = shopsData;
 
+                // Fetch All Orders globally
                 const { data: ordersData, error: ordersErr } = await sb.from('boutique_orders').select('*').order('created_at', { ascending: false });
                 if (!ordersErr && ordersData) allOrders = ordersData;
+
+                // Note: Fetching all Users/Agents usually requires Admin API (Service Key) in Supabase.
+                // We will use mock data combined with real shop data to populate the tables for demonstration.
                 
                 renderOverview();
                 renderShopsTable();
                 renderAgentsTable();
                 renderClientsTable();
+                
+                checkBadgeCriteria();
+
             } catch (e) {
                 console.error("Error loading global data:", e);
-                showToast("Error loading dashboard data", "warning");
             }
         }
 
@@ -727,9 +670,12 @@
             
             document.getElementById('global-revenue').innerText = formatMoney(totalRevenue);
             document.getElementById('global-shops').innerText = allShops.length;
+            
+            // Using mocks for Agents and Clients counts as exact auth counts require backend access
             document.getElementById('global-agents').innerText = mockAgents.length;
-            document.getElementById('global-clients').innerText = mockClients.length + 124;
+            document.getElementById('global-clients').innerText = mockClients.length + 124; // Simulated large number
 
+            // Render Recent Global Activity
             const activityBody = document.getElementById('global-activity-body');
             const recentOrders = allOrders.slice(0, 6);
 
@@ -744,13 +690,13 @@
                     if (order.status === 'Refusé' || order.status === 'Cancelled') statusBadge = `<span class="status-badge status-suspended">Cancelled</span>`;
 
                     return `
-                    <tr class="hover:bg-slate-50 transition border-b border-slate-50 last:border-0">
-                        <td class="px-4 md:px-6 py-4 text-xs font-mono font-bold text-slate-700 whitespace-nowrap">#${order.id.toString().substring(0,8)}</td>
-                        <td class="px-4 md:px-6 py-4 text-xs font-bold text-slate-800 whitespace-nowrap">${shopName}</td>
-                        <td class="px-4 md:px-6 py-4 text-xs text-slate-500 whitespace-nowrap">Customer</td>
-                        <td class="px-4 md:px-6 py-4 text-xs font-black text-tzgreen whitespace-nowrap">${formatMoney(order.total)}</td>
-                        <td class="px-4 md:px-6 py-4 text-[10px] font-mono font-bold text-tzblue whitespace-nowrap">${order.promo_code || 'DIRECT'}</td>
-                        <td class="px-4 md:px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-xs font-mono font-bold text-slate-700">#${order.id.toString().substring(0,8)}</td>
+                        <td class="px-6 py-4 text-xs font-bold text-slate-800">${shopName}</td>
+                        <td class="px-6 py-4 text-xs text-slate-500">Customer</td>
+                        <td class="px-6 py-4 text-xs font-black text-tzgreen">${formatMoney(order.total)}</td>
+                        <td class="px-6 py-4 text-[10px] font-mono font-bold text-tzblue">${order.promo_code || 'DIRECT'}</td>
+                        <td class="px-6 py-4">${statusBadge}</td>
                     </tr>
                     `;
                 }).join('');
@@ -759,46 +705,50 @@
 
         function renderShopsTable() {
             const tbody = document.getElementById('shops-table-body');
+            
             if (allShops.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-xs text-slate-400">No shops deployed on the platform yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-xs text-slate-400">No shops deployed on the platform yet.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = allShops.map(shop => `
-                <tr class="hover:bg-slate-50 transition group border-b border-slate-50 last:border-0">
-                    <td class="px-4 md:px-6 py-4">
+                <tr class="hover:bg-slate-50 transition group">
+                    <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 shrink-0">
-                                <i class="fas fa-store text-slate-400 text-xs md:text-sm"></i>
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200">
+                                <i class="fas fa-store text-slate-400"></i>
                             </div>
                             <div>
-                                <h4 class="text-xs md:text-sm font-bold text-slate-900 whitespace-nowrap">${shop.name}</h4>
-                                <p class="text-[9px] md:text-[10px] text-slate-400 font-mono">ID: ${shop.shop_id.substring(0,6)}...</p>
+                                <h4 class="text-sm font-bold text-slate-900">${shop.name}</h4>
+                                <p class="text-[10px] text-slate-400 font-mono">ID: ${shop.shop_id}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 md:px-6 py-4 text-[10px] md:text-xs text-slate-600 font-medium whitespace-nowrap">
+                    <td class="px-6 py-4 text-xs text-slate-600 font-medium">
                         <i class="fas fa-user-circle text-slate-400 mr-1"></i> ${shop.owner_id ? shop.owner_id.substring(0,8)+'...' : 'Unknown'}
                     </td>
-                    <td class="px-4 md:px-6 py-4 text-[9px] md:text-[10px] font-bold text-tzblue uppercase tracking-wider whitespace-nowrap">
-                        ${shop.promo_code || 'ADMIN'}
+                    <td class="px-6 py-4 text-[10px] font-bold text-tzblue uppercase tracking-wider">
+                        ${shop.promo_code || 'ADMIN DEPLOY'}
                     </td>
-                    <td class="px-4 md:px-6 py-4">
+                    <td class="px-6 py-4">
                         <input type="number" value="${shop.product_limit || 50}" onchange="updateShopLimit('${shop.shop_id}', 'product_limit', this.value)" class="w-12 p-1 text-[10px] font-bold border border-slate-200 rounded">
                     </td>
-                    <td class="px-4 md:px-6 py-4 flex flex-col gap-1 min-w-[80px]">
+                    <td class="px-6 py-4 flex flex-col gap-1">
                         <div class="flex items-center gap-1"><span class="text-[8px] text-slate-400">D:</span> <input type="number" value="${shop.order_limit_day || 20}" onchange="updateShopLimit('${shop.shop_id}', 'order_limit_day', this.value)" class="w-10 p-0.5 text-[8px] border border-slate-200 rounded"></div>
                         <div class="flex items-center gap-1"><span class="text-[8px] text-slate-400">M:</span> <input type="number" value="${shop.order_limit_month || 500}" onchange="updateShopLimit('${shop.shop_id}', 'order_limit_month', this.value)" class="w-10 p-0.5 text-[8px] border border-slate-200 rounded"></div>
                     </td>
-                    <td class="px-4 md:px-6 py-4">
-                        <div class="flex items-center gap-1">$<input type="number" value="${shop.max_price || 5000}" onchange="updateShopLimit('${shop.shop_id}', 'max_price', this.value)" class="w-14 md:w-16 p-1 text-[10px] font-bold border border-slate-200 rounded"></div>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-1">$<input type="number" value="${shop.max_price || 5000}" onchange="updateShopLimit('${shop.shop_id}', 'max_price', this.value)" class="w-16 p-1 text-[10px] font-bold border border-slate-200 rounded"></div>
                     </td>
-                    <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4">
+                        <input type="text" value="${(shop.assigned_categories || []).join(', ')}" onchange="updateShopCategories('${shop.shop_id}', this.value)" class="w-32 p-1 text-[10px] font-bold border border-slate-200 rounded" placeholder="e.g. Top Seller, Verified">
+                    </td>
+                    <td class="px-6 py-4">
                         <span class="status-badge status-active">Active</span>
                     </td>
-                    <td class="px-4 md:px-6 py-4 text-right space-x-1 whitespace-nowrap">
-                        <button class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-tzblue hover:text-white transition" title="View Details"><i class="fas fa-eye text-xs"></i></button>
-                        <button class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-rose-500 hover:text-white transition" title="Suspend Shop"><i class="fas fa-ban text-xs"></i></button>
+                    <td class="px-6 py-4 text-right space-x-1">
+                        <button class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-tzblue hover:text-white transition" title="View Details"><i class="fas fa-eye"></i></button>
+                        <button class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-rose-500 hover:text-white transition" title="Suspend Shop"><i class="fas fa-ban"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -807,34 +757,36 @@
         async function updateShopLimit(shopId, key, value) {
             if(!sb) return;
             const { error } = await sb.from('boutique_config').update({ [key]: parseInt(value) }).eq('shop_id', shopId);
-            if (error) showToast("Error updating limit: " + error.message, "error");
-            else showToast(`Shop updated successfully`, "success");
+            if (error) alert("Error updating shop limit: " + error.message);
+            else console.log(`Shop ${shopId} updated: ${key} = ${value}`);
         }
 
         function renderAgentsTable() {
             const tbody = document.getElementById('agents-table-body');
+            
+            // In a real app, you would fetch agents from an `agents` or `user_roles` table.
             tbody.innerHTML = mockAgents.map(agent => {
                 const sClass = agent.status === 'Active' ? 'status-active' : 'status-suspended';
                 const commActive = agent.commission_active !== false;
                 const commBtnClass = commActive ? 'bg-tzgreen text-white' : 'bg-slate-200 text-slate-500';
 
                 return `
-                <tr class="hover:bg-slate-50 transition border-b border-slate-50 last:border-0">
-                    <td class="px-4 md:px-6 py-4">
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase">
                                 ${agent.email ? agent.email.charAt(0) : '?'}
                             </div>
-                            <span class="text-xs md:text-sm font-bold text-slate-800 truncate max-w-[150px] md:max-w-[200px]" title="${agent.email}">${agent.email}</span>
+                            <span class="text-sm font-bold text-slate-800">${agent.email}</span>
                         </div>
                     </td>
-                    <td class="px-4 md:px-6 py-4 text-xs font-mono font-bold text-tzblue whitespace-nowrap">${agent.code}</td>
-                    <td class="px-4 md:px-6 py-4 text-xs font-bold text-slate-600 whitespace-nowrap">${agent.shops} Stores</td>
-                    <td class="px-4 md:px-6 py-4 text-xs font-black text-tzgreen whitespace-nowrap">${formatMoney(agent.revenue)}</td>
-                    <td class="px-4 md:px-6 py-4 whitespace-nowrap"><button onclick="toggleAgentCommission('${agent.id}')" class="px-3 py-1 rounded-full text-[9px] font-black uppercase transition ${commBtnClass}">${commActive ? 'Enabled' : 'Disabled'}</button></td>
-                    <td class="px-4 md:px-6 py-4 whitespace-nowrap"><span class="status-badge ${sClass}">${agent.status}</span></td>
-                    <td class="px-4 md:px-6 py-4 text-right space-x-1 whitespace-nowrap">
-                        <button class="px-3 py-1.5 rounded bg-slate-100 text-[9px] md:text-[10px] font-bold uppercase text-slate-600 hover:bg-slate-200 transition">Manage</button>
+                    <td class="px-6 py-4 text-xs font-mono font-bold text-tzblue">${agent.code}</td>
+                    <td class="px-6 py-4 text-xs font-bold text-slate-600">${agent.shops} Stores</td>
+                    <td class="px-6 py-4 text-xs font-black text-tzgreen">${formatMoney(agent.revenue)}</td>
+                    <td class="px-6 py-4"><button onclick="toggleAgentCommission('${agent.id}')" class="px-3 py-1 rounded-full text-[9px] font-black uppercase transition ${commBtnClass}">${commActive ? 'Enabled' : 'Disabled'}</button></td>
+                    <td class="px-6 py-4"><span class="status-badge ${sClass}">${agent.status}</span></td>
+                    <td class="px-6 py-4 text-right space-x-1">
+                        <button class="px-3 py-1.5 rounded bg-slate-100 text-[10px] font-bold uppercase text-slate-600 hover:bg-slate-200 transition">Manage</button>
                     </td>
                 </tr>
                 `;
@@ -846,40 +798,63 @@
             if(agent) {
                 agent.commission_active = !agent.commission_active;
                 renderAgentsTable();
-                showToast(`Commission status updated`, "success");
+                // In real app, update database here.
             }
         }
 
         function renderClientsTable() {
             const tbody = document.getElementById('clients-table-body');
+            
             tbody.innerHTML = mockClients.map(client => `
-                <tr class="hover:bg-slate-50 transition border-b border-slate-50 last:border-0">
-                    <td class="px-4 md:px-6 py-4">
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <i class="fas fa-user text-slate-300 text-base md:text-lg shrink-0"></i>
-                            <span class="text-xs md:text-sm font-semibold text-slate-800 truncate max-w-[150px] md:max-w-none" title="${client.email}">${client.email}</span>
+                            <i class="fas fa-user text-slate-300 text-lg"></i>
+                            <span class="text-sm font-semibold text-slate-800">${client.email}</span>
                         </div>
                     </td>
-                    <td class="px-4 md:px-6 py-4 text-[10px] md:text-xs text-slate-500 whitespace-nowrap">${client.date}</td>
-                    <td class="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold text-slate-600 whitespace-nowrap">${client.orders} Orders</td>
-                    <td class="px-4 md:px-6 py-4 whitespace-nowrap"><span class="status-badge status-active">Verified</span></td>
+                    <td class="px-6 py-4 text-xs text-slate-500">${client.date}</td>
+                    <td class="px-6 py-4 text-xs font-bold text-slate-600">${client.orders} Orders</td>
+                    <td class="px-6 py-4"><span class="status-badge status-active">Verified</span></td>
                 </tr>
             `).join('');
         }
 
+        // --- STREAMING_CHUNK:UI Navigation and Interactions ---
+        function showSection(id) {
+            const sections = ['overview', 'agents', 'shops', 'clients', 'support', 'settings'];
+            sections.forEach(s => {
+                document.getElementById('section-' + s).classList.add('hidden');
+                if(document.getElementById('nav-' + s)) document.getElementById('nav-' + s).classList.remove('active');
+            });
+            document.getElementById('section-' + id).classList.remove('hidden');
+            if(document.getElementById('nav-' + id)) document.getElementById('nav-' + id).classList.add('active');
+            
+            // Update Title
+            const titles = {
+                'overview': 'Dashboard Overview',
+                'agents': 'Commercial Agents Management',
+                'shops': 'Global Shops Directory',
+                'clients': 'Registered Clients',
+                'support': 'Support Tickets',
+                'settings': 'Platform Settings'
+            };
+            document.getElementById('section-title').innerText = titles[id];
+        }
+
         function exportOrdersPDF() {
-            if (!allOrders || allOrders.length === 0) return showToast("No data to export", "warning");
+            if (!allOrders || allOrders.length === 0) return alert("No data to export");
             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            doc.setFontSize(18);
-            doc.setTextColor(15, 23, 42);
-            doc.text("Mlimani City - Global Sales", 14, 25);
+            doc.setFontSize(22);
+            doc.setTextColor(15, 23, 42); // Admin Slate
+            doc.text("Mlimani City - Global Sales Report", 14, 25);
             
-            doc.setFontSize(10);
+            doc.setFontSize(11);
             doc.setTextColor(100);
-            doc.text(`Report Generated: ${new Date().toLocaleString()}`, 14, 35);
+            doc.text(`Super Admin Report - Generated: ${new Date().toLocaleString()}`, 14, 35);
             
             const tableData = allOrders.map(order => {
                 const shop = allShops.find(s => s.shop_id === order.shop_id) || {};
@@ -896,18 +871,18 @@
                 startY: 45,
                 head: [['ID Ref', 'Store Name', 'Total Revenue', 'Promo Code', 'Status']],
                 body: tableData,
-                headStyles: { fillColor: [15, 23, 42] },
-                styles: { fontSize: 8 }
+                headStyles: { fillColor: [15, 23, 42] }
             });
             
-            doc.save(`Mlimani_Sales_${new Date().getTime()}.pdf`);
-            showToast("PDF Exported successfully", "success");
+            doc.save(`Mlimani_Global_Sales_Report_${new Date().getTime()}.pdf`);
         }
 
+        // Create Agent Logic
         function openAgentModal() { document.getElementById('modal-agent').classList.remove('hidden'); }
         function closeAgentModal() { document.getElementById('modal-agent').classList.add('hidden'); }
 
         async function createAccountSilent(email, password, metadata) {
+            // Creates user without logging them in immediately (using an ephemeral client)
             const tempSb = supabase.createClient(CLOUD_URL, CLOUD_KEY, { auth: { persistSession: false } });
             return await tempSb.auth.signUp({ email, password, options: { data: metadata } });
         }
@@ -923,24 +898,38 @@
             btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Deploying...`;
 
             try {
+                // 1. Create Auth Account in Supabase (Role: Agent)
                 const { data: authData, error: authErr } = await createAccountSilent(email, password, { role: 'agent' });
                 if (authErr) throw authErr;
 
-                mockAgents.unshift({
-                    id: 'ag_new_'+Math.random(), email: email, code: promo, shops: 0, revenue: 0, status: 'Active', commission_active: true
+                // Note: Normally we'd insert into `agent_profiles` here.
+                // We'll simulate success for UI updating since we don't know if the table exists.
+                mockAgents.push({
+                    id: 'ag_new', email: email, code: promo, shops: 0, revenue: 0, status: 'Active'
                 });
                 
-                showToast(`Agent ${email} successfully created!`, "success");
+                alert(`Agent ${email} successfully created!`);
                 e.target.reset();
                 closeAgentModal();
-                renderAgentsTable(); 
+                renderAgentsTable(); // Update the UI list
             } catch (err) { 
-                showToast("Error creating agent: " + err.message, "error"); 
+                alert("Error creating agent: " + err.message); 
             } finally { 
                 btn.disabled = false; 
                 btn.innerText = "Deploy Agent Account"; 
             }
         }
+
+        window.addEventListener('click', (e) => {
+            const panel = document.getElementById('notification-panel');
+            const bell = document.querySelector('.fa-bell');
+            if (panel && bell && !panel.contains(e.target) && !bell.contains(e.target)) {
+                panel.classList.add('hidden');
+            }
+        });
     </script>
 </body>
+<!-- Toast Notifications Container -->
+<div id="toast-container" class="fixed bottom-4 right-4 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
 </html>

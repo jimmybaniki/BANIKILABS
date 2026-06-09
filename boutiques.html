@@ -222,6 +222,9 @@
                     <button onclick="switchClientTab('history-tab')" id="btn-history-tab" class="client-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 border border-transparent relative whitespace-nowrap">
                         <i class="fa-solid fa-clock-rotate-left"></i> Purchase History / Historia
                     </button>
+                    <button onclick="switchClientTab('favorites-tab')" id="btn-favorites-tab" class="client-tab-btn shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 border border-transparent relative whitespace-nowrap">
+                        <i class="fa-solid fa-heart text-rose-500"></i> Favorites / Pendwa
+                    </button>
                 </div>
 
                 <!-- SHOPS EXPLORER TAB -->
@@ -251,6 +254,19 @@
                         </h3>
                         <div id="client-history-container" class="space-y-4">
                             <p class="text-slate-400 text-xs text-center py-10">Login to see your purchases / Ingia ili kuona manunuzi yako.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAVORITES TAB -->
+                <div id="favorites-tab" class="client-tab-content hidden space-y-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span class="bg-rose-50 text-rose-500 p-1.5 rounded-lg text-xs"><i class="fa-solid fa-heart"></i></span>
+                            My Favorite Shops / Maduka Nayopenda
+                        </h3>
+                        <div id="favorites-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <p class="text-slate-400 text-xs text-center py-10 col-span-2 italic">You haven't favorited any shops yet. / Hujachagua duka lolote.</p>
                         </div>
                     </div>
                 </div>
@@ -373,6 +389,10 @@
                                         <h2 id="phone-hero-title" class="text-lg font-extrabold tracking-tight leading-tight">Mlimani City</h2>
                                         <p id="phone-hero-desc" class="text-[10.5px] text-slate-300 max-w-[85%]">Explore partner shops / Gundua maduka</p>
                                         <p id="phone-hero-address" class="text-[9px] text-slate-400 max-w-[85%] mt-1 hidden"><i class="fa-solid fa-location-dot mr-1"></i></p>
+                                        
+                                        <!-- Badges for the current shop -->
+                                        <div id="phone-hero-badges" class="flex flex-wrap gap-1.5 mt-2 hidden">
+                                        </div>
 
                                         <!-- Social links on phone simulator home -->
                                         <div id="phone-social-links" class="flex gap-2.5 mt-2 pt-2 border-t border-white/10 hidden">
@@ -391,10 +411,10 @@
                                         </div>
                                         
                                         <div class="flex gap-2 overflow-x-auto pb-1 phone-scrollbar text-xs whitespace-nowrap">
-                                            <button onclick="filterCategory('tous')" class="cat-pill bg-tzgreen text-white px-3 py-1 rounded-full font-medium shadow-sm transition">All / Zote</button>
-                                            <button onclick="filterCategory('fashion')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition">Fashion</button>
-                                            <button onclick="filterCategory('tech')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition">Tech</button>
-                                            <button onclick="filterCategory('home')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition">Home</button>
+                                            <button onclick="filterItems('all')" class="cat-pill bg-tzgreen text-white px-3 py-1 rounded-full font-medium shadow-sm transition">All / Zote</button>
+                                            <button onclick="filterItems('product')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition">Products / Bidhaa</button>
+                                            <button onclick="filterItems('service')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition">Services / Huduma</button>
+                                            <!-- Add more specific category filters here if needed -->
                                         </div>
                                     </div>
 
@@ -591,6 +611,7 @@
         let allShops = [];
         let activeShopId = null;
         let activeCategoryFilter = 'tous';
+        let favoriteShopIds = JSON.parse(localStorage.getItem('fav_shops') || '[]');
         let appliedDiscount = 0; // 0.05 for 5%
 
         // Data arrays
@@ -623,7 +644,8 @@
             social: { facebook: "", instagram: "", tiktok: "" },
             orderLimitDay: 20,
             orderLimitMonth: 500,
-            productLimit: 50
+            productLimit: 50,
+            assignedCategories: [] // New field for badges
         };
 
         // Live Clock logic
@@ -793,7 +815,9 @@
                             social: configData.social_links || storeConfig.social,
                             orderLimitDay: configData.order_limit_day || 20,
                             orderLimitMonth: configData.order_limit_month || 500,
-                            productLimit: configData.product_limit || 50
+                            productLimit: configData.product_limit || 50,
+                            assignedCategories: configData.assigned_categories || [], // Fetch assigned categories
+                            exchangeRate: configData.exchange_rate || 2600 // Fetch exchange rate
                         };
                     }
 
@@ -891,7 +915,7 @@
             const shopsToRender = arguments.length > 0 ? arguments[0] : allShops;
 
             container.innerHTML = shopsToRender.map(s => `
-                <div onclick="enterShop('${s.shop_id}')" class="bg-white p-4 rounded-2xl border ${activeShopId === s.shop_id ? 'border-tzgreen shadow-md ring-2 ring-green-100' : 'border-slate-100 shadow-sm'} hover:border-tzgreen transition cursor-pointer flex items-center gap-4">
+                <div onclick="enterShop('${s.shop_id}')" class="bg-white p-4 rounded-2xl border ${activeShopId === s.shop_id ? 'border-tzgreen shadow-md ring-2 ring-green-100' : 'border-slate-100 shadow-sm'} hover:border-tzgreen transition cursor-pointer flex items-center gap-4 relative group">
                     <div class="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200">
                         ${s.logo_url ? `<img src="${s.logo_url}" class="h-full w-full object-cover">` : `<i class="fa-solid fa-store text-slate-300"></i>`}
                     </div>
@@ -899,6 +923,18 @@
                         <h4 class="text-sm font-bold text-slate-900 truncate">${s.name}</h4>
                         <p class="text-[10px] text-slate-400 truncate">${s.slogan || 'Boutique'}</p>
                     </div>
+                    <div class="absolute top-2 right-2 flex gap-1">
+                        ${(s.assigned_categories || []).map(cat => {
+                            let badgeClass = 'bg-slate-100 text-slate-600';
+                            if (cat === 'Top Seller') badgeClass = 'bg-tzyellow text-tzblack';
+                            if (cat === 'New Arrival') badgeClass = 'bg-tzblue text-white';
+                            if (cat === 'Verified') badgeClass = 'bg-tzgreen text-white';
+                            return `<span class="px-2 py-0.5 rounded-full text-[8px] font-bold uppercase ${badgeClass}">${cat}</span>`;
+                        }).join('')}
+                    </div>
+                    <button onclick="toggleFavorite('${s.shop_id}', event)" class="p-2 text-slate-300 hover:text-rose-500 transition-colors z-10" title="Favorite">
+                        <i class="${favoriteShopIds.includes(s.shop_id) ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
+                    </button>
                 </div>
             `).join('');
         }
@@ -932,6 +968,44 @@
                     </div>
                 </div>
             `}).join('');
+        }
+
+        function toggleFavorite(shopId, event) {
+            if(event) event.stopPropagation();
+            const index = favoriteShopIds.indexOf(shopId);
+            if (index > -1) {
+                favoriteShopIds.splice(index, 1);
+            } else {
+                favoriteShopIds.push(shopId);
+            }
+            localStorage.setItem('fav_shops', JSON.stringify(favoriteShopIds));
+            renderShopsExplorer();
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-container');
+            const favShops = allShops.filter(s => favoriteShopIds.includes(s.shop_id));
+            
+            if (favShops.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-xs text-center py-10 col-span-2 italic">You haven't favorited any shops yet. / Hujachagua duka lolote.</p>`;
+                return;
+            }
+
+            container.innerHTML = favShops.map(s => `
+                <div onclick="enterShop('${s.shop_id}')" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:border-tzgreen transition cursor-pointer flex items-center gap-4 relative">
+                    <div class="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+                        ${s.logo_url ? `<img src="${s.logo_url}" class="h-full w-full object-cover">` : `<i class="fa-solid fa-store text-slate-300"></i>`}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-bold text-slate-900 truncate">${s.name}</h4>
+                        <p class="text-[10px] text-slate-400 truncate">${s.slogan || 'Boutique'}</p>
+                    </div>
+                    <button onclick="toggleFavorite('${s.shop_id}', event)" class="p-2 text-rose-500 transition-colors z-10">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
+                </div>
+            `).join('');
         }
 
         function applyStoreConfig() {
@@ -998,6 +1072,20 @@
                 }
                 socialBlock.classList.toggle('hidden', !hasSocial);
             }
+            
+            // Display badges on phone hero section
+            const phoneBadgesContainer = document.getElementById('phone-hero-badges');
+            if (phoneBadgesContainer) {
+                phoneBadgesContainer.innerHTML = (storeConfig.assignedCategories || []).map(cat => {
+                    let badgeClass = 'bg-white/20 text-white';
+                    if (cat === 'Top Seller') badgeClass = 'bg-tzyellow text-tzblack';
+                    if (cat === 'New Arrival') badgeClass = 'bg-tzblue text-white';
+                    if (cat === 'Verified') badgeClass = 'bg-tzgreen text-white';
+                    return `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${badgeClass}">${cat}</span>`;
+                }).join('');
+                phoneBadgesContainer.classList.toggle('hidden', (storeConfig.assignedCategories || []).length === 0);
+            }
+
 
             const elementsToStyle = document.querySelectorAll('#phone-simulator .bg-indigo-600, #phone-simulator .bg-indigo-900, #phone-simulator .text-indigo-600, #phone-simulator .border-indigo-600, #phone-simulator .text-indigo-400');
             elementsToStyle.forEach(el => {
@@ -1026,6 +1114,9 @@
                 activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm', 'border-slate-200');
                 activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'border-transparent');
             }
+
+            if(tabId === 'favorites-tab') renderFavorites();
+            if(tabId === 'shops-tab') renderShopsExplorer();
         }
 
         // --- FULLSCREEN TOGGLE ---
@@ -1116,10 +1207,10 @@
             }
         }
 
-        function filterCategory(cat) {
-            activeCategoryFilter = cat;
+        let currentItemTypeFilter = 'all'; // 'all', 'product', 'service'
+        function filterItems(itemType) {
+            currentItemTypeFilter = itemType;
             document.querySelectorAll('.cat-pill').forEach(pill => {
-                pill.className = "cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-medium transition";
                 pill.style.backgroundColor = '';
                 pill.style.color = '';
             });
@@ -1131,10 +1222,10 @@
         }
 
         function handlePhoneSearch() {
-            renderPhoneProducts(document.getElementById('phone-search-input').value.toLowerCase());
+            renderPhoneProducts(document.getElementById('phone-search-input').value.toLowerCase(), currentItemTypeFilter);
         }
 
-        function renderPhoneProducts(searchQuery = '') {
+        function renderPhoneProducts(searchQuery = '', itemTypeFilter = 'all') {
             const container = document.getElementById('phone-products-list');
             
             if (!activeShopId) {
@@ -1148,8 +1239,9 @@
 
             let filtered = products;
             
-            if (activeCategoryFilter !== 'tous' && activeCategoryFilter !== 'all') {
-                filtered = filtered.filter(p => p.category.toLowerCase().includes(activeCategoryFilter.toLowerCase()));
+            // Filter by item type (product or service)
+            if (itemTypeFilter !== 'all') {
+                filtered = filtered.filter(p => p.type === itemTypeFilter);
             }
             if (searchQuery) {
                 filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery));
@@ -1167,45 +1259,69 @@
             const isGrid = storeConfig.layout === 'grid';
             container.className = isGrid ? "grid grid-cols-2 gap-2.5" : "flex flex-col gap-3";
 
-            container.innerHTML = filtered.map(product => {
-                const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+            filtered.forEach(item => {
+                const discount = item.oldPrice ? Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100) : 0;
                 
-                if (isGrid) {
-                    return `
-                        <div onclick="openProductDetail('${product.id}')" class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col justify-between group active:scale-95 transition-transform duration-200 cursor-pointer relative">
-                            ${discount > 0 ? `<span class="absolute top-1.5 left-1.5 bg-rose-600 text-white font-extrabold text-[8px] px-1.5 py-0.5 rounded-md z-10">-${discount}%</span>` : ''}
-                            <div class="h-28 w-full bg-slate-50 overflow-hidden relative">
-                                <img src="${product.imgUrl}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" alt="">
-                            </div>
-                            <div class="p-2 flex-1 flex flex-col justify-between gap-1">
-                                <div>
-                                    <span class="text-[8px] text-tzgreen font-bold uppercase block category-txt">${product.category}</span>
-                                    <h4 class="text-[10.5px] font-bold text-slate-800 line-clamp-1 leading-snug">${product.name}</h4>
+                if (item.type === 'product') {
+                    if (isGrid) {
+                        container.innerHTML += `
+                            <div onclick="openProductDetail('${item.id}')" class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col justify-between group active:scale-95 transition-transform duration-200 cursor-pointer relative">
+                                ${discount > 0 ? `<span class="absolute top-1.5 left-1.5 bg-rose-600 text-white font-extrabold text-[8px] px-1.5 py-0.5 rounded-md z-10">-${discount}%</span>` : ''}
+                                <div class="h-28 w-full bg-slate-50 overflow-hidden relative">
+                                    <img src="${item.imgUrl}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" alt="">
                                 </div>
-                                <div class="flex items-baseline justify-between pt-0.5">
-                                    <span class="text-xs font-bold text-slate-900">${formatVal(product.price)}</span>
+                                <div class="p-2 flex-1 flex flex-col justify-between gap-1">
+                                    <div>
+                                        <span class="text-[8px] text-tzgreen font-bold uppercase block category-txt">${item.category}</span>
+                                        <h4 class="text-[10.5px] font-bold text-slate-800 line-clamp-1 leading-snug">${item.name}</h4>
+                                    </div>
+                                    <div class="flex items-baseline justify-between pt-0.5">
+                                        <span class="text-xs font-bold text-slate-900">${formatVal(item.price)}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>`;
-                } else {
-                    return `
-                        <div onclick="openProductDetail('${product.id}')" class="bg-white rounded-2xl border border-slate-100 p-2.5 shadow-sm flex gap-3 group active:scale-95 transition-transform duration-200 cursor-pointer relative">
-                            ${discount > 0 ? `<span class="absolute top-1.5 left-1.5 bg-rose-600 text-white font-extrabold text-[8px] px-1.5 py-0.5 rounded-md z-10">-${discount}%</span>` : ''}
-                            <div class="h-16 w-16 rounded-xl bg-slate-50 overflow-hidden shrink-0">
-                                <img src="${product.imgUrl}" class="h-full w-full object-cover" alt="">
+                        `;
+                    } else { // List view for products
+                        container.innerHTML += `
+                            <div onclick="openProductDetail('${item.id}')" class="bg-white rounded-2xl border border-slate-100 p-2.5 shadow-sm flex gap-3 group active:scale-95 transition-transform duration-200 cursor-pointer relative">
+                                ${discount > 0 ? `<span class="absolute top-1.5 left-1.5 bg-rose-600 text-white font-extrabold text-[8px] px-1.5 py-0.5 rounded-md z-10">-${discount}%</span>` : ''}
+                                <div class="h-16 w-16 rounded-xl bg-slate-50 overflow-hidden shrink-0">
+                                    <img src="${item.imgUrl}" class="h-full w-full object-cover" alt="">
+                                </div>
+                                <div class="flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[8px] text-tzgreen font-bold uppercase block category-txt">${item.category}</span>
+                                        <h4 class="text-[11px] font-bold text-slate-800 line-clamp-1">${item.name}</h4>
+                                    </div>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-xs font-bold text-slate-900">${formatVal(item.price)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else if (item.type === 'service') {
+                    container.innerHTML += `
+                        <div onclick="openProductDetail('${item.id}')" class="bg-white rounded-2xl border border-slate-100 p-2.5 shadow-sm flex gap-3 group active:scale-95 transition-transform duration-200 cursor-pointer relative col-span-2">
+                            <div class="h-16 w-16 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-handshake text-tzblue text-xl"></i>
                             </div>
                             <div class="flex-1 flex flex-col justify-between">
                                 <div>
-                                    <span class="text-[8px] text-tzgreen font-bold uppercase block category-txt">${product.category}</span>
-                                    <h4 class="text-[11px] font-bold text-slate-800 line-clamp-1">${product.name}</h4>
+                                    <span class="text-[8px] text-tzblue font-bold uppercase block category-txt">${item.category}</span>
+                                    <h4 class="text-[11px] font-bold text-slate-800 line-clamp-1">${item.name}</h4>
                                 </div>
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-xs font-bold text-slate-900">${formatVal(product.price)}</span>
+                                    <span class="text-xs font-bold text-slate-900">${formatVal(item.price)}</span>
                                 </div>
                             </div>
-                        </div>`;
+                            <button class="h-8 w-8 rounded-full bg-tzblue text-white flex items-center justify-center text-xs shadow">
+                                <i class="fa-solid fa-info"></i>
+                            </button>
+                        </div>
+                    `;
                 }
-            }).join('');
+            });
 
             document.querySelectorAll('.category-txt').forEach(t => t.style.color = storeConfig.themeColor || '#1EB53A');
         }
@@ -1230,20 +1346,32 @@
 
             document.getElementById('detail-desc').innerText = product.description || "No description. / Hakuna maelezo.";
             
-            const stockBadge = document.getElementById('detail-stock');
-            if (product.stock > 0) {
-                stockBadge.className = "text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md";
-                stockBadge.innerText = `In Stock / Ipo (${product.stock})`;
-                document.getElementById('detail-add-btn').disabled = false;
-                document.getElementById('detail-add-btn').style.opacity = '1';
-                document.getElementById('detail-add-btn').onclick = () => addProductToCart(product);
-            } else {
-                stockBadge.className = "text-[10px] font-semibold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-md";
-                stockBadge.innerText = "Out of Stock / Imeisha";
-                document.getElementById('detail-add-btn').disabled = true;
-                document.getElementById('detail-add-btn').style.opacity = '0.5';
-            }
+            const stockBadge = document.getElementById('detail-stock'); // This is the span element
+            const addBtn = document.getElementById('detail-add-btn'); // This is the button
 
+            if (product.type === 'product') {
+                stockBadge.classList.remove('hidden');
+                if (product.stock > 0) {
+                    stockBadge.className = "text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md";
+                    stockBadge.innerText = `In Stock / Ipo (${product.stock})`;
+                    addBtn.disabled = false;
+                    addBtn.style.opacity = '1';
+                    addBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Add to Cart / Weka Kikapuni`;
+                    addBtn.onclick = () => addProductToCart(product);
+                } else {
+                    stockBadge.className = "text-[10px] font-semibold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-md";
+                    stockBadge.innerText = "Out of Stock / Imeisha";
+                    addBtn.disabled = true;
+                    addBtn.style.opacity = '0.5';
+                    addBtn.innerHTML = "Out of Stock / Imeisha";
+                }
+            } else {
+                stockBadge.classList.add('hidden'); // Services don't have stock
+                addBtn.disabled = false;
+                addBtn.style.opacity = '1';
+                addBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Request Service / Omba Huduma`;
+                addBtn.onclick = () => alert(`Requesting service: ${product.name}`); // Placeholder for service request
+            }
             navigatePhoneTo('detail');
         }
 

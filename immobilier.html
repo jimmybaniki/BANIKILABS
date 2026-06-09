@@ -317,7 +317,7 @@
                 <i class="fa-solid fa-house-circle-check"></i>
                 <span>Catalogue des Offres</span>
             </button>
-            <button onclick="switchFeedTab('demands')" id="tabFeedDemands" class="px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all">
+            <button onclick="switchFeedTab('demands')" id="tabFeedDemands" class="hidden px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all">
                 <i class="fa-solid fa-hand-holding-heart"></i>
                 <span id="demandsCounterTitle">Demandes de Biens (0)</span>
             </button>
@@ -402,6 +402,22 @@
                             <span>Demander un devis</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- CROWDTOLIVE LIKE SERVICE: FRACTIONAL OWNERSHIP (PROPRIÉTÉ PARTAGÉE) -->
+                <div class="bg-gradient-to-br from-slate-900 to-brand-900 rounded-3xl p-6 text-white border border-slate-800 relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
+                    <div class="relative z-10">
+                        <span class="px-2.5 py-1 bg-brand-500 text-white text-[10px] rounded-lg font-bold tracking-wider uppercase">Baniki Investment</span>
+                        <h3 class="text-xl font-bold mt-3 mb-2 font-outfit">Propriété Partagée (Equity Sharing)</h3>
+                        <p class="text-xs text-slate-300 mb-4 font-light leading-relaxed">
+                            Accédez à la propriété sans hypothèque. Achetez une part de votre maison et augmentez votre capital progressivement grâce au financement participatif.
+                        </p>
+                        <a href="propriete-partagee.html" class="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-brand-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-transform active:scale-95">
+                            <span>En savoir plus</span>
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -787,6 +803,20 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Besoin pour</label>
+                                <select id="reqOfferType" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="louer">Louer</option>
+                                    <option value="vendre">Acheter</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Chambres (min)</label>
+                                <input type="number" id="reqRooms" value="1" min="1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block font-bold uppercase text-slate-400 tracking-wider mb-1">Budget maximum ($)</label>
                             <input type="number" id="reqPrice" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -936,7 +966,11 @@
                     <i class="fa-solid fa-user-plus"></i>
                     <span>Créer un Compte / Connexion</span>
                 </button>`;
-                
+            
+            // Cacher l'onglet demandes à la déconnexion
+            document.getElementById('tabFeedDemands').classList.add('hidden');
+            switchFeedTab('listings');
+
             showToast("Déconnexion réussie.");
         }
 
@@ -979,6 +1013,16 @@
             } else {
                 btnPublishList.classList.remove('hidden');
                 btnPublishReq.classList.remove('hidden');
+            }
+
+            // Visibilité de l'onglet Demandes : Uniquement pour les professionnels
+            const tabDemands = document.getElementById('tabFeedDemands');
+            if (userProfile.role === 'Chercheur') {
+                tabDemands.classList.add('hidden');
+                // Forcer le retour sur le catalogue si on était sur les demandes
+                switchFeedTab('listings');
+            } else {
+                tabDemands.classList.remove('hidden');
             }
 
             // UPDATE AVATAR
@@ -1105,6 +1149,8 @@
                             <div class="flex gap-4 pt-1 text-[11px] text-slate-400 font-bold">
                                 <span><i class="fa-solid fa-map-pin text-brand-500"></i> ${d.city}</span>
                                 <span><i class="fa-solid fa-building text-brand-500"></i> ${d.property_type}</span>
+                                ${d.offer_type ? `<span><i class="fa-solid fa-file-signature text-brand-500"></i> ${d.offer_type === 'louer' ? 'Location' : 'Achat'}</span>` : ''}
+                                ${d.rooms ? `<span><i class="fa-solid fa-bed text-brand-500"></i> ${d.rooms} ch.</span>` : ''}
                             </div>
                         </div>
                         <div class="flex flex-col items-end gap-3 min-w-[140px] border-t md:border-t-0 border-slate-100 dark:border-slate-800 pt-4 md:pt-0">
@@ -1211,7 +1257,9 @@
                 city: document.getElementById('reqCity').value,
                 property_type: document.getElementById('reqType').value,
                 budget_max: parseInt(document.getElementById('reqPrice').value),
-                description: document.getElementById('reqDesc').value
+                description: document.getElementById('reqDesc').value,
+                offer_type: document.getElementById('reqOfferType').value,
+                rooms: parseInt(document.getElementById('reqRooms').value)
             };
 
             document.getElementById('btnSubmitRequest').innerText = "Publication...";
@@ -1232,6 +1280,13 @@
             if (!userProfile) return openAuthModal();
             const { error } = await supabaseClient.from('prefabricated_inquiries').insert([{ user_id: userProfile.id }]);
             if (!error) showToast("Demande de devis enregistrée ! Un conseiller va vous contacter.");
+        }
+
+        async function triggerCrowdEquityInquiry() {
+            if (!userProfile) return openAuthModal();
+            const { error } = await supabaseClient.from('crowd_equity_inquiries').insert([{ user_id: userProfile.id }]);
+            if (!error) showToast("Intérêt pour la Propriété Partagée enregistré ! Un conseiller vous contactera.");
+            else showToast("Demande transmise ! Notre équipe reviendra vers vous avec les détails du programme.");
         }
 
         // --- FILTERS & UTILS ---
@@ -1306,12 +1361,23 @@
         }
 
         function switchFeedTab(tab) {
+            const btnListings = document.getElementById('tabFeedListings');
+            const btnDemands = document.getElementById('tabFeedDemands');
+            const activeClass = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border-2 border-brand-500 bg-brand-500 text-white shadow-lg shadow-brand-500/15 flex items-center gap-2 transition-all";
+            const inactiveClass = "px-6 py-3 font-outfit text-sm md:text-base font-bold tracking-wide rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center gap-2 transition-all";
+
             if (tab === 'listings') {
                 document.getElementById('listingsFeedSection').classList.remove('hidden');
                 document.getElementById('demandsFeedSection').classList.add('hidden');
+                
+                if(btnListings) btnListings.className = activeClass;
+                if(btnDemands) btnDemands.className = inactiveClass;
             } else {
                 document.getElementById('demandsFeedSection').classList.remove('hidden');
                 document.getElementById('listingsFeedSection').classList.add('hidden');
+
+                if(btnDemands) btnDemands.className = activeClass;
+                if(btnListings) btnListings.className = inactiveClass;
             }
         }
 
