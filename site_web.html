@@ -1,14 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANIKI LABS | Création Web Premium</title>
+    <title>BanikiLabs Store | Plateformes Numériques en RDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                            950: '#0f172a',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
         :root {
             --gold: #FFD700;
             --gold-soft: rgba(255, 215, 0, 0.15);
@@ -16,477 +46,724 @@
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            scroll-behavior: smooth;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fadeIn {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .glass-card:hover {
-            border-color: var(--gold);
-            background: rgba(255, 215, 0, 0.05);
-            transform: translateY(-5px);
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .price-tag {
-            background: var(--gold);
-            color: black;
-            padding: 4px 12px;
-            border-radius: 99px;
-            font-weight: 800;
-            font-size: 0.875rem;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="overflow-x-hidden">
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
-                <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
-                    <span class="text-black font-black text-xl tracking-tighter">BL</span>
-                </div>
-                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </div>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-            <div class="flex items-center gap-6">
-                <div class="hidden lg:flex items-center gap-8 mr-4">
-                    <div class="relative">
-                        <button id="langBtn" class="flex items-center text-gray-400 hover:text-[var(--gold)] font-bold text-[10px] uppercase tracking-widest transition duration-150">
-                            <span id="currentLangDisplay">FR</span> 
-                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
-                        </button>
-                        <div id="langMenu" class="absolute right-0 mt-2 w-32 rounded-xl shadow-2xl bg-neutral-900 border border-white/10 z-20 hidden overflow-hidden">
-                            <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="fr">FRANÇAIS</a>
-                            <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="en">ENGLISH</a>
-                            <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="sw">KISWAHILI</a>
-                        </div>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
                     </div>
-                    <a href="index.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Retour</a>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <a href="demande.html" class="px-5 py-2 text-black bg-[var(--gold)] rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">Devis</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Accueil</a>
+                    <a href="#solutions" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Nos Plateformes</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Pourquoi Nous ?</a>
+                </div>
+                <div class="hidden md:flex">
+                    <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                        <span>Contacter les ventes</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-brand-600 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto pt-40 pb-24 px-6">
-        <header class="text-center mb-24 animate-fadeIn">
-            <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-6">
-                L'ART DU<br><span class="text-[var(--gold)]">DÉVELOPPEMENT WEB.</span>
-            </h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-                Votre présence en ligne commence ici. Nous concevons des solutions web puissantes, optimisées pour la performance et le mobile au cœur de Kinshasa.
-            </p>
-        </header>
+    <!-- Hero Section -->
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
 
-        <section id="portfolio" class="mb-32">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Site Vitrine -->
-                <div class="glass-card rounded-[2.5rem] overflow-hidden group">
-                    <img src="vitrine.jpeg" alt="Exemple de site vitrine" class="w-full h-48 object-cover">
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]">Le Classique</span>
-                            <span class="price-tag">$250</span>
-                        </div>
-                        <h3 class="text-2xl font-black tracking-tight mb-3">Site Vitrine / Institutionnel</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Présentez votre entreprise et vos services. Parfait pour les PME à Kinshasa.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Design Responsive</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Formulaire Sécurisé</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Optimisation SEO</li>
-                        </ul>
-                        <button onclick="openProjectModal('Site Vitrine', 250)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
-                            Démarrer ce projet
-                        </button>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        Disponibles pour la RDC & l'Afrique
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        Digitalisez votre institution avec <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+                        Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#solutions" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] text-center">
+                            Découvrir le catalogue
+                        </a>
+                        <a href="#contact" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            Demander une démo
+                        </a>
                     </div>
                 </div>
 
-                <!-- E-commerce -->
-                <div class="glass-card rounded-[2.5rem] overflow-hidden border-[var(--gold)] shadow-[0_0_30px_rgba(255,215,0,0.1)]">
-                    <img src="ecomerce.jpeg" alt="Exemple de boutique en ligne" class="w-full h-48 object-cover shadow-lg">
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]">La Vente</span>
-                            <span class="price-tag">$600</span>
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="h-4 w-32 bg-slate-700/50 rounded-full"></div>
+                            </div>
+                            <div class="flex h-[calc(100%-3rem)]">
+                                <div class="w-1/4 border-r border-slate-700/50 p-4 space-y-4 bg-slate-900/30 hidden sm:block">
+                                    <div class="h-2 w-full bg-slate-700/50 rounded-full mb-6"></div>
+                                    <div class="h-8 w-full bg-brand-600/20 border border-brand-500/30 rounded-lg"></div>
+                                    <div class="h-8 w-full bg-slate-800/50 rounded-lg"></div>
+                                    <div class="h-8 w-full bg-slate-800/50 rounded-lg"></div>
+                                </div>
+                                <div class="flex-1 p-6 space-y-6">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="h-20 bg-gradient-to-br from-brand-900/40 to-slate-800/40 rounded-xl border border-slate-700/50 p-3 flex flex-col justify-between">
+                                            <div class="w-6 h-6 rounded-full bg-brand-500/20 flex items-center justify-center"><div class="w-3 h-3 bg-brand-400 rounded-sm"></div></div>
+                                            <div class="h-2 w-16 bg-slate-600 rounded-full mt-auto"></div>
+                                            <div class="h-4 w-24 bg-slate-300 rounded-full mt-2"></div>
+                                        </div>
+                                        <div class="h-20 bg-gradient-to-br from-accent-900/40 to-slate-800/40 rounded-xl border border-slate-700/50 p-3 flex flex-col justify-between">
+                                            <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center"><div class="w-3 h-3 bg-accent-400 rounded-full"></div></div>
+                                            <div class="h-2 w-16 bg-slate-600 rounded-full mt-auto"></div>
+                                            <div class="h-4 w-24 bg-slate-300 rounded-full mt-2"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 w-full h-32 bg-slate-800/30 rounded-xl border border-slate-700/50 p-4 relative overflow-hidden">
+                                        <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                            <path d="M0 40 L 10 30 L 30 35 L 50 15 L 70 20 L 90 5 L 100 10" fill="none" stroke="#38bdf8" stroke-width="2" class="opacity-70"></path>
+                                            <path d="M0 40 L 10 30 L 30 35 L 50 15 L 70 20 L 90 5 L 100 10 L 100 40 Z" fill="url(#grad)" class="opacity-20"></path>
+                                            <defs>
+                                                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="#38bdf8"/>
+                                                    <stop offset="100%" stop-color="transparent"/>
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute -right-6 top-1/4 glass-dark p-3 rounded-xl shadow-lg border border-brand-500/30 flex items-center gap-3 animate-pulse-slow">
+                                <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-400"></i>
+                                </div>
+                                <div>
+                                    <div class="h-2 w-16 bg-slate-400 rounded-full mb-1"></div>
+                                    <div class="h-2 w-10 bg-slate-600 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="absolute -left-6 bottom-1/4 glass-dark p-3 rounded-xl shadow-lg border border-accent-500/30 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center">
+                                    <i data-lucide="shield" class="w-4 h-4 text-brand-400"></i>
+                                </div>
+                                <div>
+                                    <div class="h-2 w-12 bg-slate-400 rounded-full mb-1"></div>
+                                    <div class="h-2 w-16 bg-slate-600 rounded-full"></div>
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="text-2xl font-black tracking-tight mb-3">Boutique en Ligne / E-commerce</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Vendez vos produits 24/7. Intégration de paiement et gestion de stock.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Système de Panier</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Gestion de Stock</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Mobile Money / Visa</li>
-                        </ul>
-                        <button onclick="openProjectModal('E-commerce', 600)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
-                            Démarrer ce projet
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Blog -->
-                <div class="glass-card rounded-[2.5rem] overflow-hidden group">
-                    <img src="blog.jpeg" alt="Exemple de blog ou plateforme média" class="w-full h-48 object-cover">
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]">Le Média</span>
-                            <span class="price-tag">$300</span>
-                        </div>
-                        <h3 class="text-2xl font-black tracking-tight mb-3">Blog / Plateforme Média</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Partagez vos idées avec une audience engagée. CMS facile à utiliser.</p>
-                        <ul class="text-xs font-bold text-gray-500 space-y-2 uppercase tracking-wider mb-8">
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Système CMS Complet</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Commentaires & Tags</li>
-                            <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Vitesse Optimale</li>
-                        </ul>
-                        <button onclick="openProjectModal('Blog / Média', 300)" class="w-full py-4 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">
-                            Démarrer ce projet
-                        </button>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="demande-personnalisee" class="glass-card p-12 md:p-20 rounded-[4rem] text-center border-white/5">
-            <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-6">UN PROJET<br><span class="text-[var(--gold)]">SUR MESURE ?</span></h2>
-            <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">Détaillez vos besoins ci-dessous. Notre équipe technique vous répondra dans les plus brefs délais.</p>
+    <!-- Trusted By / Categories -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6">Solutions développées pour de multiples secteurs</p>
+            <div class="flex flex-wrap justify-center gap-6 md:gap-10 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="graduation-cap" class="w-5 h-5"></i> Universités</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="scale" class="w-5 h-5"></i> Avocats</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="hotel" class="w-5 h-5"></i> Hôtels</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="truck" class="w-5 h-5"></i> Logistique</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="stethoscope" class="w-5 h-5"></i> Santé</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="building" class="w-5 h-5"></i> Immobilier</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="shopping-bag" class="w-5 h-5"></i> E-commerce</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="utensils" class="w-5 h-5"></i> Restaurants</div>
+            </div>
+        </div>
+    </section>
 
-            <div class="max-w-2xl mx-auto">
-                <form id="whatsappForm" onsubmit="sendToWhatsApp(event)">
-                    <textarea id="projectDescription" rows="5" placeholder="Décrivez votre projet ici..."
-                              class="w-full p-6 mb-8 rounded-[2rem] bg-black/40 border border-white/10 text-white focus:border-[var(--gold)] outline-none transition-all resize-none"
-                              required></textarea>
-                    <button type="submit" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-                        Soumettre par WhatsApp
-                        <i class="fab fa-whatsapp text-lg"></i>
+    <!-- Products / Platforms Grid -->
+    <section id="solutions" class="py-24 bg-slate-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4">Catalogue de nos Plateformes</h2>
+                <p class="text-lg text-slate-600">Investissez dans une technologie fiable. Des applications complètes, prêtes à être déployées et personnalisées avec votre image de marque en RDC.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Product Card 1: Universités -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" alt="Université" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Edu</h3>
+                            <span class="text-blue-100 text-sm font-medium">Pour Universités & Écoles</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Gestion complète de la scolarité, inscriptions en ligne, paiements des frais (Mobile Money/Banque), notes, et portail étudiant.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Portail Étudiant / Professeur</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Gestion des relevés de notes</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> E-learning intégré</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$1,500</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2: Santé (New) -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&q=80" alt="Santé Hôpital" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyan-900 via-cyan-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="stethoscope" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Care</h3>
+                            <span class="text-cyan-100 text-sm font-medium">Pour Hôpitaux & Cliniques</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Digitalisez le parcours de soins. Dossier patient électronique, prise de rendez-vous en ligne, gestion de pharmacie et laboratoire.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Dossier Patient Informatisé (DPI)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Ordonnances & Résultats labo</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Facturation et mutuelles</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$1,800</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3: Logistique & Livraison (New) -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1616423640778-28d1b50228df?auto=format&fit=crop&w=600&q=80" alt="Livraison Logistique" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-yellow-900 via-yellow-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="truck" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Express</h3>
+                            <span class="text-yellow-100 text-sm font-medium">Pour Services de Livraison</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Gérez votre flotte de livreurs, suivez les colis en temps réel par GPS, et connectez votre service aux e-commerçants via notre API.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Application dédiée pour coursiers</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Tracking GPS en temps réel</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Gestion des zones tarifaires</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$1,300</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4: Marché / E-commerce -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1556742049-cd85a55ebf39?auto=format&fit=crop&w=600&q=80" alt="E-commerce" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-orange-900 via-orange-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="store" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Market</h3>
+                            <span class="text-orange-100 text-sm font-medium">Boutiques et Multi-vendeurs</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Gestion des stocks & vendeurs</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Intégration M-Pesa, Airtel Money</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Module de livraison intégré</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$2,000</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5: Hôtels (New) -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80" alt="Hôtel" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="hotel" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Stay</h3>
+                            <span class="text-emerald-100 text-sm font-medium">Pour Hôtels & Maisons d'hôtes</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Système PMS complet : Réservations en ligne, gestion de l'accueil (front-desk), entretien des chambres (housekeeping) et facturation.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Moteur de réservation web</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Planning d'occupation dynamique</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Lien direct restaurant / bar</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$1,100</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6: Avocats -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80" alt="Avocats Justice" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="scale" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Law</h3>
+                            <span class="text-slate-300 text-sm font-medium">Pour Cabinets d'Avocats</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Suivi des audiences & dossiers</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Coffre-fort numérique sécurisé</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Facturation & Honoraires</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$1,200</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 7: Restaurants -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80" alt="Restaurant" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-rose-900 via-rose-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="utensils" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Resto</h3>
+                            <span class="text-rose-100 text-sm font-medium">Restaurants & Bars</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Menu numérique QR code, prise de commande sur tablette, gestion de la cuisine et système de caisse (POS).</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Menu interactif & Commandes</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Écran pour la cuisine (KDS)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Système de Caisse POS</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$600</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 8: Voyages -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1436491865332-7a61ceeb6153?auto=format&fit=crop&w=600&q=80" alt="Agences de Voyage" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-teal-900 via-teal-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="plane" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Travel</h3>
+                            <span class="text-teal-100 text-sm font-medium">Agences de Voyage</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Plateforme de réservation de billets d'avion, gestion de visas, hôtels et forfaits touristiques pour vos clients.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Moteur de recherche vols/hôtels</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Gestion des demandes de visa</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> CRM Client inclus</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$900</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 9: Immobilier (New) -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80" alt="Immobilier Agence" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900 via-indigo-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="building" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Baniki Immo</h3>
+                            <span class="text-indigo-100 text-sm font-medium">Pour Agences Immobilières</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Portail de présentation de vos biens, gestion locative complète, suivi des loyers et édition de contrats.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Vitrine de biens (Achat/Location)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Paiement de loyer intégré</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Tableau de bord Propriétaire</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$800</p>
+                            </div>
+                            <button class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="avantages" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6">L'Expertise BanikiLabs pour vos projets</h2>
+                    <p class="text-slate-600 mb-8 text-lg">Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="smartphone" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Paiements Locaux Intégrés</h4>
+                                <p class="text-slate-600 text-sm mt-1">Vos plateformes sont livrées avec l'intégration des solutions Mobile Money (M-Pesa, Airtel, Orange) et cartes bancaires.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
+                                <i data-lucide="server" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Hébergement Sécurisé</h4>
+                                <p class="text-slate-600 text-sm mt-1">Nous assurons l'hébergement cloud haute disponibilité pour que votre business ne s'arrête jamais.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="headset" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Support Technique 24/7</h4>
+                                <p class="text-slate-600 text-sm mt-1">Une équipe technique basée en RDC, prête à intervenir et à former votre personnel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract visual representation -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
+                            function initPlatform() {
+                                const db = connect('baniki_cluster');
+                                return db.deploy({
+                                    client: 'DRC_Enterprise',
+                                    modules: ['payments', 'auth', 'core'],
+                                    secure: true
+                                });
+                            }
+                            initPlatform().then(app => app.start());
+                            // Logs...
+                            // System ready.
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Baniki Core Engine</div>
+                                            <div class="text-slate-400 text-xs">Statut : En ligne</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30">
+                                        Performance 100%
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-3/4"></div>
+                                    </div>
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-accent-500 w-5/6"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-slate-700 rounded-full z-0 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-800 rounded-full z-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Prêt à digitaliser votre entreprise ?</h2>
+                    <p class="text-slate-600">Contactez l'équipe BanikiLabs pour une consultation gratuite et obtenez votre plateforme personnalisée en quelques jours.</p>
+                </div>
+                
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Nom de l'institution / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Ex: Université de Kinshasa">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Plateforme souhaitée</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50">
+                                <option>Baniki Edu (Universités - $1,500)</option>
+                                <option>Baniki Care (Hôpitaux/Santé - $1,800)</option>
+                                <option>Baniki Market (E-commerce - $2,000)</option>
+                                <option>Baniki Express (Livraison/Logistique - $1,300)</option>
+                                <option>Baniki Stay (Hôtels - $1,100)</option>
+                                <option>Baniki Law (Avocats - $1,200)</option>
+                                <option>Baniki Academy (Formation - $1,000)</option>
+                                <option>Baniki Travel (Voyages - $900)</option>
+                                <option>Baniki Immo (Immobilier - $800)</option>
+                                <option>Baniki Resto (Restaurants - $600)</option>
+                                <option>Autre projet sur mesure</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Email professionnel</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@entreprise.cd">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Commentaires sur votre projet</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez vos besoins spécifiques..."></textarea>
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center gap-2">
+                        Envoyer le devis <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </form>
             </div>
-        </section>
-    </main>
-
-    <!-- Modal de Projet -->
-    <div id="projectModal" class="fixed inset-0 z-[150] hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-card max-w-xl w-full p-8 md:p-12 rounded-[3.5rem] relative">
-            <button onclick="closeProjectModal()" class="absolute top-8 right-8 text-gray-500 hover:text-[var(--gold)] transition-colors">
-                <i class="fas fa-times text-2xl"></i>
-            </button>
-            <h2 class="text-3xl font-black tracking-tighter mb-2" id="modalTitle">DÉTAILS DU PROJET</h2>
-            <p class="text-[var(--gold)] font-bold mb-8 uppercase tracking-widest text-xs" id="modalPriceLabel"></p>
-            
-            <form onsubmit="submitProjectOrder(event)" class="space-y-6">
-                <input type="hidden" id="selectedPlan">
-                <input type="hidden" id="selectedPrice">
-                
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Description de vos besoins</label>
-                    <textarea id="modalDescription" rows="4" placeholder="Ex: Je souhaite un design minimaliste avec un système de paiement..." 
-                              class="w-full p-6 rounded-[2rem] bg-black/40 border border-white/10 text-white focus:border-[var(--gold)] outline-none transition-all resize-none" required></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4">Fonctionnalités souhaitées</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="feature" value="Design Responsive" class="w-4 h-4 accent-[var(--gold)]">
-                            <span class="group-hover:text-white transition-colors">Design Responsive</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="feature" value="Paiement Mobile Money" class="w-4 h-4 accent-[var(--gold)]">
-                            <span class="group-hover:text-white transition-colors">Paiement Mobile</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="feature" value="Optimisation SEO" class="w-4 h-4 accent-[var(--gold)]">
-                            <span class="group-hover:text-white transition-colors">Optimisation SEO</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" name="feature" value="Gestion de Stock" class="w-4 h-4 accent-[var(--gold)]">
-                            <span class="group-hover:text-white transition-colors">Gestion de Stock</span>
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full py-5 bg-[var(--gold)] text-black font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,215,0,0.2)]">
-                    Confirmer sur WhatsApp <i class="fab fa-whatsapp ml-2"></i>
-                </button>
-            </form>
         </div>
-    </div>
+    </section>
 
-    <!-- Footer -->
-    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+    <!-- Footer Section Harmonisée -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
             <div class="space-y-8">
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
                         <span class="text-black font-black text-xl tracking-tighter">BL</span>
                     </div>
-                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <div class="space-y-4 text-gray-400 text-xs font-bold uppercase tracking-widest leading-loose">
-                    <p><i class="fas fa-map-marker-alt text-[var(--gold)] mr-2"></i> Bandalungwa, Kinshasa, RDC</p>
-                    <p><i class="fas fa-phone text-[var(--gold)] mr-2"></i> +243 978 415 814</p>
+                <div class="space-y-4">
+                    <p class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span>banikilabs@gmail.com</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="space-y-8 text-center lg:text-left">
-                <h4 class="text-[var(--gold)] font-black text-sm uppercase tracking-widest">Informations</h4>
-                <div class="flex flex-col gap-2 text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">
-                    <span>N° Impôt : A2645236E</span>
-                    <span>RCCM : CD/KNG/RCCM/26-A-00220</span>
+
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
                 </div>
             </div>
-            <div class="space-y-8 text-center lg:text-right">
-                <h4 class="text-[var(--gold)] font-black text-sm uppercase tracking-widest">Vision</h4>
-                <p class="text-gray-500 text-sm italic">"L'excellence digitale comme seul standard."</p>
+
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
+                <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
+                </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto text-center text-[10px] text-gray-600 font-black uppercase tracking-[0.3em]">
+
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
             &copy; 2025. TOUS DROITS RÉSERVÉS.
         </div>
     </footer>
 
+    <!-- Logic and Initialize Icons -->
     <script>
-        // Définition des traductions
-        const translations = {
-            fr: {
-                title: "BANIKI LABS - Création de Site Web Sur Mesure",
-                nav_back_services: "Retour aux Services",
-                nav_request_quote: "Demande de Devis",
-                header_title: "Création de Site Web Sur Mesure",
-                header_subtitle: "Votre présence en ligne commence ici. Nous concevons et développons des solutions web puissantes, optimisées pour la performance et le mobile.",
-                portfolio_title: "Notre Portfolio par Type de Site",
-                type1_category: "Le Classique",
-                type1_title: "Site Vitrine / Institutionnel",
-                type1_desc: "Présentez votre entreprise, vos services et vos contacts. Parfait pour les PME et les organisations à Kinshasa.",
-                type1_feat1: "Design Responsive (Mobile-Friendly)",
-                type1_feat2: "Formulaire de Contact Sécurisé",
-                type1_feat3: "Optimisation SEO de base",
-                type2_category: "La Vente",
-                type2_title: "Boutique en Ligne / E-commerce",
-                type2_desc: "Vendez vos produits et services en ligne 24/7. Intégration de paiement et gestion de stock.",
-                type2_feat1: "Système de Panier et Checkout",
-                type2_feat2: "Gestion des Stocks et Commandes",
-                type2_feat3: "Passerelles de Paiement Locales/Globales",
-                type3_category: "Le Média",
-                type3_title: "Blog / Site de Publication Média",
-                type3_desc: "Partagez vos idées, actualités et connaissances avec une audience large et engagée.",
-                type3_feat1: "Système de Gestion de Contenu (CMS)",
-                type3_feat2: "Fonctionnalités de Commentaires",
-                type3_feat3: "Vitesse de Chargement Optimale",
-                cta_title: "Décrivez votre Projet Web Personnalisé",
-                cta_subtitle: "Utilisez le champ ci-dessous pour nous donner un maximum de détails sur le site web que vous souhaitez créer.",
-                textarea_placeholder: "Je souhaite créer un site e-commerce pour vendre des vêtements. J'aimerais qu'il ait un catalogue de produits, un système de paiement par Mobile Money, et qu'il soit livré en 3 semaines. Mon budget est de X...",
-                btn_submit: "Soumettre la Demande (WhatsApp)",
-                cta_footer: "Nous vous répondrons dans les plus brefs délais au +243 978 415 814.",
-                whatsapp_intro: "Bonjour BANIKI LABS, j'ai une demande de devis pour un site web personnalisé. Voici la description de mon projet :",
-            },
-            en: {
-                title: "BANIKI LABS - Custom Website Creation",
-                nav_back_services: "Back to Services",
-                nav_request_quote: "Request a Quote",
-                header_title: "Custom Website Creation",
-                header_subtitle: "Your online presence starts here. We design and develop powerful web solutions, optimized for performance and mobile.",
-                portfolio_title: "Our Portfolio by Site Type",
-                type1_category: "The Classic",
-                type1_title: "Showcase / Institutional Website",
-                type1_desc: "Present your business, services, and contacts. Perfect for SMEs and organizations in Kinshasa.",
-                type1_feat1: "Responsive Design (Mobile-Friendly)",
-                type1_feat2: "Secure Contact Form",
-                type1_feat3: "Basic SEO Optimization",
-                type2_category: "Sales",
-                type2_title: "Online Store / E-commerce",
-                type2_desc: "Sell your products and services online 24/7. Payment integration and inventory management.",
-                type2_feat1: "Cart and Checkout System",
-                type2_feat2: "Stock and Order Management",
-                type2_feat3: "Local/Global Payment Gateways",
-                type3_category: "Media",
-                type3_title: "Blog / Media Publication Site",
-                type3_desc: "Share your ideas, news, and knowledge with a wide and engaged audience.",
-                type3_feat1: "Content Management System (CMS)",
-                type3_feat2: "Commenting Features",
-                type3_feat3: "Optimal Loading Speed",
-                cta_title: "Describe your Custom Web Project",
-                cta_subtitle: "Use the field below to give us maximum details about the website you want to create.",
-                textarea_placeholder: "I want to create an e-commerce site to sell clothes. I would like it to have a product catalog, a Mobile Money payment system, and be delivered in 3 weeks. My budget is X...",
-                btn_submit: "Submit Request (WhatsApp)",
-                cta_footer: "We will respond as soon as possible to +243 978 415 814.",
-                whatsapp_intro: "Hello BANIKI LABS, I have a quote request for a custom website. Here is the description of my project:",
-            },
-            sw: {
-                title: "BANIKI LABS - Ujenzi wa Tovuti Maalum",
-                nav_back_services: "Rudi kwa Huduma",
-                nav_request_quote: "Omba Nukuu",
-                header_title: "Ujenzi wa Tovuti Maalum",
-                header_subtitle: "Uwepo wako mtandaoni unaanzia hapa. Tunabuni na kuendeleza suluhisho za wavuti zenye nguvu, zilizoboreshwa kwa utendaji na simu za mkononi.",
-                portfolio_title: "Portfolio Yetu kwa Aina ya Tovuti",
-                type1_category: "Ya Kawaida",
-                type1_title: "Tovuti ya Maonyesho / Kitaasisi",
-                type1_desc: "Onesha biashara yako, huduma na anwani zako. Inafaa kwa biashara ndogo na za kati (PME) na mashirika huko Kinshasa.",
-                type1_feat1: "Ubunifu unaoitikia (Rafiki kwa Simu)",
-                type1_feat2: "Fomu Salama ya Mawasiliano",
-                type1_feat3: "Uboreshaji wa Msingi wa SEO",
-                type2_category: "Mauzo",
-                type2_title: "Duka la Mtandaoni / E-commerce",
-                type2_desc: "Uza bidhaa na huduma zako mtandaoni 24/7. Kuunganisha malipo na usimamizi wa hesabu.",
-                type2_feat1: "Mfumo wa Kikapu na Malipo",
-                type2_feat2: "Usimamizi wa Hisa na Maagizo",
-                type2_feat3: "Njia za Malipo za Ndani/Kimataifa",
-                type3_category: "Vyombo vya Habari",
-                type3_title: "Blogu / Tovuti ya Kuchapisha Habari",
-                type3_desc: "Shiriki mawazo yako, habari na maarifa na hadhira kubwa na inayohusika.",
-                type3_feat1: "Mfumo wa Kusimamia Maudhui (CMS)",
-                type3_feat2: "Vipengele vya Maoni",
-                type3_feat3: "Kasi Bora ya Kupakia",
-                cta_title: "Eleza Mradi Wako Maalum wa Tovuti",
-                cta_subtitle: "Tumia nafasi iliyo hapa chini kutupa maelezo kamili kuhusu tovuti unayotaka kuunda.",
-                textarea_placeholder: "Ninataka kuunda tovuti ya e-commerce ya kuuza nguo. Ningependa iwe na orodha ya bidhaa, mfumo wa malipo kwa Mobile Money, na ikamilishwe ndani ya wiki 3. Bajeti yangu ni X...",
-                btn_submit: "Tuma Ombi (WhatsApp)",
-                cta_footer: "Tutajibu haraka iwezekanavyo kwa +243 978 415 814.",
-                whatsapp_intro: "Habari BANIKI LABS, nina ombi la nukuu ya tovuti maalum. Huu hapa maelezo ya mradi wangu:",
-            }
-        };
+        function sendWhatsAppDevis() {
+            const institution = document.getElementById('institutionName').value;
+            const platform = document.getElementById('platformSelected').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
 
-        // Variable globale pour la langue courante (par défaut: Français)
-        let currentLang = 'fr';
-
-        // Fonction pour mettre à jour le contenu de la page
-        function updateContent(lang) {
-            currentLang = lang;
-            const t = translations[lang];
-
-            // 1. Mise à jour des textes simples (data-key)
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (t[key]) {
-                    element.textContent = t[key];
-                }
-            });
-
-            // 2. Mise à jour des placeholders (data-key-placeholder)
-            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
-                const key = element.getAttribute('data-key-placeholder');
-                if (t[key]) {
-                    element.setAttribute('placeholder', t[key]);
-                }
-            });
-
-            // 3. Mise à jour du titre de la page
-            document.title = t.title || translations.fr.title;
-
-            // 4. Mise à jour de l'affichage de la langue
-            document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
-
-            // Optionnel: Mettre à jour l'attribut lang de la balise HTML
-            document.documentElement.lang = lang;
-        }
-
-        // Fonction pour envoyer la demande sur WhatsApp
-        function sendToWhatsApp(event) {
-            event.preventDefault();
-
-            const description = document.getElementById('projectDescription').value.trim();
-            const phoneNumber = '243978415814'; 
-
-            if (description === "") {
-                alert("Veuillez décrire votre projet avant de soumettre.");
+            if(!institution || !email || !phone) {
+                alert("Veuillez remplir les champs obligatoires (Institution, Email, Téléphone).");
                 return;
             }
 
-            // Récupère l'introduction du message dans la langue courante
-            const whatsappIntro = translations[currentLang].whatsapp_intro || translations.fr.whatsapp_intro;
-            
-            // Construit le message complet et l'encode
-            const fullMessage = `${whatsappIntro}\n\n${description}`;
-            const encodedMessage = encodeURIComponent(fullMessage);
-
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            window.open(whatsappURL, '_blank');
+            const message = `Bonjour BANIKI LABS, je souhaite obtenir un devis :\n\n- Institution: ${institution}\n- Plateforme: ${platform}\n- Email: ${email}\n- Téléphone: ${phone}\n- Commentaires: ${comments}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/243978415814?text=${encodedMessage}`, '_blank');
         }
 
-        // Initialisation des événements et du contenu au chargement de la page
-        document.addEventListener('DOMContentLoaded', () => {
-            const langBtn = document.getElementById('langBtn');
-            const langMenu = document.getElementById('langMenu');
+        lucide.createIcons();
 
-            // Événement pour le sélecteur de Langue
-            langBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                langMenu.classList.toggle('hidden');
-            });
-
-            // Événement pour la sélection d'une langue
-            document.querySelectorAll('.lang-option').forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const newLang = e.target.closest('.lang-option').getAttribute('data-lang');
-                    updateContent(newLang);
-                    langMenu.classList.add('hidden'); // Fermer le menu après la sélection
-                });
-            });
-
-            // Cacher le menu quand on clique à l'extérieur
-            document.addEventListener('click', (e) => {
-                if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-                    langMenu.classList.add('hidden');
-                }
-            });
-            
-            // Initialisation de la traduction (par défaut en Français)
-            updateContent(currentLang);
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
         });
-
-        // --- Logique du Modal de Projet ---
-        function openProjectModal(plan, price) {
-            document.getElementById('modalTitle').textContent = plan.toUpperCase();
-            document.getElementById('modalPriceLabel').textContent = "FORFAIT : $" + price;
-            document.getElementById('selectedPlan').value = plan;
-            document.getElementById('selectedPrice').value = price;
-            document.getElementById('projectModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeProjectModal() {
-            document.getElementById('projectModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function submitProjectOrder(event) {
-            event.preventDefault();
-            const plan = document.getElementById('selectedPlan').value;
-            const price = document.getElementById('selectedPrice').value;
-            const desc = document.getElementById('modalDescription').value;
-            const checkboxes = document.querySelectorAll('input[name="feature"]:checked');
-            let features = Array.from(checkboxes).map(cb => cb.value).join(', ');
-            
-            const phoneNumber = '243978415814';
-            let message = `*COMMANDE WEB - BANIKI LABS*\n\n`;
-            message += `*Type:* ${plan}\n`;
-            message += `*Budget Forfaitaire:* $${price}\n\n`;
-            message += `*Description du projet:* ${desc}\n\n`;
-            if(features) message += `*Options cochées:* ${features}\n`;
-            
-            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            closeProjectModal();
-        }
     </script>
 </body>
-
 </html>
