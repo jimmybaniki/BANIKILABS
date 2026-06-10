@@ -1,14 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cours de Langues | BANIKI LABS</title>
+    <title>BanikiLabs Language | Cours de Langues & Formations Linguistiques RDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        
         :root {
             --gold: #FFD700;
             --gold-soft: rgba(255, 215, 0, 0.15);
@@ -16,178 +46,583 @@
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
-        body.light-mode {
-            --bg-dark: #f8fafc;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            transition: background-color 0.4s ease;
-        }
-
-        .text-bwise-logo {
-            color: #000000;
-        }
-        .bg-bwise-yellow {
-            background-color: #FFD700;
-        }
-
-        .hero-gradient {
-            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)), 
-                        url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center; gap: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            z-index: 100;
-            text-decoration: none;
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .glass-card:hover {
-            border-color: var(--gold);
-            background: rgba(255, 215, 0, 0.05);
-            transform: translateY(-5px);
-        }
-        .lang-badge {
-            background: var(--gold);
-            color: black;
-            padding: 4px 12px;
-            border-radius: 99px;
-            font-weight: 800;
-            font-size: 0.75rem;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-[#080808]">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Bouton WhatsApp Flottant -->
-    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20souhaite%20m'inscrire%20à%20un%20cours." class="whatsapp-float">
-        <i class="fab fa-whatsapp text-2xl"></i>
-        <span>S'inscrire maintenant</span>
-    </a>
-
-    <!-- Navbar Harmonisée -->
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-[#FFD700] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
-                    <span class="text-black font-black text-lg">BL</span>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[#FFD700]">Labs</span></span>
-            </a>
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FFD700] transition-colors">Retour</a>
-                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[#FFD700] border border-[#FFD700]/20 px-3 py-2 rounded-xl hover:bg-[#FFD700] hover:text-black transition-all">Login</a>
-                <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-                    <svg id="moonIcon" class="w-5 h-5 text-[#FFD700]" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                    <svg id="sunIcon" class="w-5 h-5 text-[#FFD700] hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
-                </button>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Cours" data-en="Our Courses" data-sw="Kozi Zetu">Nos Cours</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Demander un devis" data-en="Request a quote" data-sw="Omba nukuu">Demander un devis</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Cours" data-en="Our Courses" data-sw="Kozi Zetu">Nos Cours</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="index.html#about" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="À Propos" data-en="About" data-sw="Kuhusu">À Propos</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
-    <div class="pt-20"></div> <!-- Spacer pour la nav fixe -->
 
     <!-- Hero Section -->
-    <section class="hero-gradient text-white py-32 px-6 text-center border-b border-white/5">
-        <div class="max-w-4xl mx-auto">
-            <span class="text-[var(--gold)] text-xs font-black uppercase tracking-[0.4em] mb-4 block">Baniki Academy</span>
-            <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-8">BRISER LES<br><span class="text-[var(--gold)]">BARRIÈRES.</span></h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12">Programmes linguistiques immersifs conçus pour le business, la diplomatie et l'intégration culturelle en RDC.</p>
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6" data-fr="Maîtrisez de Nouvelles Langues" data-en="Master New Languages" data-sw="Bobea Lugha Mpya">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span data-fr="Maîtrisez de Nouvelles Langues" data-en="Master New Languages" data-sw="Bobea Lugha Mpya">Maîtrisez de Nouvelles Langues</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span data-fr="Apprenez avec les Experts de" data-en="Learn with Experts from" data-sw="Jifunze na Wataalamu kutoka">Apprenez avec les Experts de</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Des cours de langues interactifs et personnalisés pour tous les niveaux. Anglais, Français, Swahili et plus encore, en RDC." data-en="Interactive and personalized language courses for all levels. English, French, Swahili and more, in DRC." data-sw="Kozi za lugha zinazoingiliana na zilizobinafsishwa kwa viwango vyote. Kiingereza, Kifaransa, Kiswahili na zaidi, nchini DRC.">
+                        Des cours de langues interactifs et personnalisés pour tous les niveaux. Anglais, Français, Swahili et plus encore, en RDC.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#services" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] text-center" data-fr="Voir nos Cours" data-en="View our Courses" data-sw="Tazama Kozi Zetu">
+                            Voir nos Cours
+                        </a>
+                        <a href="https://wa.me/243978415814?text=Bonjour%20BanikiLabs,%20je%20souhaite%20m'inscrire%20à%20un%20cours%20de%20langue." target="_blank" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2" data-fr="S'inscrire Maintenant" data-en="Enroll Now" data-sw="Jisajili Sasa">
+                            <i data-lucide="book-open" class="w-5 h-5"></i>
+                            S'inscrire Maintenant
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Simulation Visual -->
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <!-- Header -->
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">baniki-language-app.bin</div>
+                            </div>
+                            <!-- Simulation Workspace -->
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <!-- Source Panel -->
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-brand-400 font-bold">Leçon Actuelle (Français)</span>
+                                            <span class="text-xs text-slate-500">Grammaire</span>
+                                        </div>
+                                        <p class="text-sm text-slate-200">« Le subjonctif est utilisé pour exprimer un doute, un souhait ou une émotion. »</p>
+                                    </div>
+                                    
+                                    <!-- Arrow icon spacer -->
+                                    <div class="flex justify-center">
+                                        <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center border border-brand-500/30">
+                                            <i data-lucide="arrow-down" class="w-4 h-4 text-brand-400"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- Target Panel -->
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Votre Réponse (Anglais)</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Correct</span>
+                                        </div>
+                                        <p class="text-sm text-white">"The subjunctive is used to express doubt, a wish, or an emotion."</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs text-slate-400">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                                        <span>Progression Personnalisée</span>
+                                    </div>
+                                    <span>Accès 24/7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <main class="max-w-7xl mx-auto px-6 py-24 space-y-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- ANGLAIS -->
-            <div class="glass-card p-10 rounded-[3rem] flex flex-col group">
-                <div class="flex justify-between items-start mb-8">
-                    <span class="text-5xl">🇬🇧</span>
-                    <span class="lang-badge">CAMBRIDGE</span>
-                </div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">Anglais Tech & Biz</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">Maîtrisez le jargon du développement, du marketing et de la négociation internationale.</p>
-                <ul class="text-[10px] font-bold text-gray-500 space-y-2 uppercase tracking-widest mb-10">
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Préparation TOEFL/IELTS</li>
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Business Pitching</li>
-                </ul>
-                <a href="https://wa.me/243978415814?text=Je+souhaite+m'inscrire+en+Anglais" class="w-full py-4 bg-[var(--gold)] text-black text-center font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">S'inscrire</a>
-            </div>
-
-            <!-- SWAHILI -->
-            <div class="glass-card p-10 rounded-[3rem] border-[var(--gold)]/30 flex flex-col relative overflow-hidden">
-                <div class="absolute top-4 right-8 bg-[var(--gold)] text-black text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Incontournable</div>
-                <div class="flex justify-between items-start mb-8">
-                    <span class="text-5xl">🌍</span>
-                    <span class="lang-badge">AFRIQUE</span>
-                </div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">Swahili Express</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">Idéal pour les humanitaires et entrepreneurs souhaitant s'implanter dans l'Est de la RDC.</p>
-                <ul class="text-[10px] font-bold text-gray-500 space-y-2 uppercase tracking-widest mb-10">
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Conversation courante</li>
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Immersion culturelle</li>
-                </ul>
-                <a href="https://wa.me/243978415814?text=Je+souhaite+m'inscrire+en+Swahili" class="w-full py-4 bg-white/5 border border-white/10 text-white text-center font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-[var(--gold)] hover:text-black transition-all">S'inscrire</a>
-            </div>
-
-            <!-- FRANCAIS -->
-            <div class="glass-card p-10 rounded-[3rem] flex flex-col group">
-                <div class="flex justify-between items-start mb-8">
-                    <span class="text-5xl">🇫🇷</span>
-                    <span class="lang-badge">DELF/DALF</span>
-                </div>
-                <h3 class="text-2xl font-black uppercase mb-4 tracking-tighter">Français de Haut Niveau</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">Perfectionnez votre rédaction administrative et votre éloquence diplomatique.</p>
-                <ul class="text-[10px] font-bold text-gray-500 space-y-2 uppercase tracking-widest mb-10">
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Rédaction Pro</li>
-                    <li><i class="fas fa-check text-[var(--gold)] mr-2"></i> Art Oratoire</li>
-                </ul>
-                <a href="https://wa.me/243978415814?text=Je+souhaite+m'inscrire+en+Français" class="w-full py-4 bg-[var(--gold)] text-black text-center font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform">S'inscrire</a>
+    <!-- Secteurs Cibles -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" data-fr="Des langues pour tous les objectifs" data-en="Languages for all goals" data-sw="Lugha kwa malengo yote">Des langues pour tous les objectifs</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="briefcase" class="w-6 h-6 text-brand-600"></i> <span data-fr="Affaires" data-en="Business" data-sw="Biashara">Affaires</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="graduation-cap" class="w-6 h-6 text-brand-600"></i> <span data-fr="Études" data-en="Studies" data-sw="Masomo">Études</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="plane" class="w-6 h-6 text-brand-600"></i> <span data-fr="Voyages" data-en="Travel" data-sw="Usafiri">Voyages</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="users" class="w-6 h-6 text-brand-600"></i> <span data-fr="Culture" data-en="Culture" data-sw="Utamaduni">Culture</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="message-square" class="w-6 h-6 text-brand-600"></i> <span data-fr="Conversation" data-en="Conversation" data-sw="Mazungumzo">Conversation</span></div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-black relative overflow-hidden">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+    <!-- Services / Catalogue Section -->
+    <section id="services" class="py-24 bg-slate-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Nos Cours de Langues" data-en="Our Language Courses" data-sw="Kozi Zetu za Lugha">Nos Cours de Langues</h2>
+                <p class="text-lg text-slate-600" data-fr="Des programmes flexibles et des professeurs natifs pour une immersion totale et des progrès rapides." data-en="Flexible programs and native teachers for total immersion and rapid progress." data-sw="Programu rahisi na walimu asilia kwa kuzama kabisa na maendeleo ya haraka.">Des programmes flexibles et des professeurs natifs pour une immersion totale et des progrès rapides.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service 1: Anglais Intensif -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1546410531-bb4696168854?auto=format&fit=crop&w=600&q=80" alt="Cours d'Anglais" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="flag" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Anglais Intensif" data-en="Intensive English" data-sw="Kiingereza cha Kina">Anglais Intensif</h3>
+                            <span class="text-sky-100 text-sm font-medium" data-fr="Tous Niveaux, Certifications" data-en="All Levels, Certifications" data-sw="Viwango Vyote, Vyeti">Tous Niveaux, Certifications</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Cours accélérés pour maîtriser l'anglais rapidement, avec préparation aux examens TOEFL/IELTS." data-en="Accelerated courses to master English quickly, with TOEFL/IELTS exam preparation." data-sw="Kozi za haraka za kujifunza Kiingereza haraka, na maandalizi ya mitihani ya TOEFL/IELTS.">Cours accélérés pour maîtriser l'anglais rapidement, avec préparation aux examens TOEFL/IELTS.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Professeurs natifs" data-en="Native teachers" data-sw="Walimu asilia">Professeurs natifs</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Petits groupes" data-en="Small groups" data-sw="Vikundi vidogo">Petits groupes</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Matériel pédagogique inclus" data-en="Learning materials included" data-sw="Vifaa vya kujifunzia vimejumuishwa">Matériel pédagogique inclus</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Module" data-en="Module Price" data-sw="Bei ya Moduli">Prix du Module</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$250</p>
+                            </div>
+                            <button onclick="addToCart('Anglais Intensif', 250)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 2: Français des Affaires -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Cours de Français" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Français des Affaires" data-en="Business French" data-sw="Kifaransa cha Biashara">Français des Affaires</h3>
+                            <span class="text-blue-100 text-sm font-medium" data-fr="Communication Pro, Négociation" data-en="Pro Communication, Negotiation" data-sw="Mawasiliano ya Kitaalamu, Majadiliano">Communication Pro, Négociation</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Développez vos compétences en français pour le monde professionnel : rédaction, présentation, négociation." data-en="Develop your French skills for the professional world: writing, presentation, negotiation." data-sw="Boresha ujuzi wako wa Kifaransa kwa ulimwengu wa kitaalamu: uandishi, uwasilishaji, majadiliano.">Développez vos compétences en français pour le monde professionnel : rédaction, présentation, négociation.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Vocabulaire spécialisé" data-en="Specialized vocabulary" data-sw="Msamiati maalum">Vocabulaire spécialisé</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Simulations de réunions" data-en="Meeting simulations" data-sw="Mikutano ya kuigiza">Simulations de réunions</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Rédaction de rapports" data-en="Report writing" data-sw="Uandishi wa ripoti">Rédaction de rapports</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Module" data-en="Module Price" data-sw="Bei ya Moduli">Prix du Module</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$300</p>
+                            </div>
+                            <button onclick="addToCart('Français des Affaires', 300)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 3: Swahili Conversationnel -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1596207850239-2a912e523c91?auto=format&fit=crop&w=600&q=80" alt="Cours de Swahili" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-yellow-900 via-yellow-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="message-square" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Swahili Conversationnel" data-en="Conversational Swahili" data-sw="Kiswahili cha Mazungumzo">Swahili Conversationnel</h3>
+                            <span class="text-yellow-100 text-sm font-medium" data-fr="Voyages, Culture Locale" data-en="Travel, Local Culture" data-sw="Usafiri, Utamaduni wa Ndani">Voyages, Culture Locale</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Apprenez le Swahili pour vos voyages et interactions quotidiennes en RDC et Afrique de l'Est." data-en="Learn Swahili for your travels and daily interactions in DRC and East Africa." data-sw="Jifunze Kiswahili kwa safari zako na mwingiliano wa kila siku nchini DRC na Afrika Mashariki.">Apprenez le Swahili pour vos voyages et interactions quotidiennes en RDC et Afrique de l'Est.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Immersion culturelle" data-en="Cultural immersion" data-sw="Kuzama kiutamaduni">Immersion culturelle</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Dialogues pratiques" data-en="Practical dialogues" data-sw="Mazungumzo ya vitendo">Dialogues pratiques</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Professeurs locaux" data-en="Local teachers" data-sw="Walimu wa ndani">Professeurs locaux</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Module" data-en="Module Price" data-sw="Bei ya Moduli">Prix du Module</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$200</p>
+                            </div>
+                            <button onclick="addToCart('Swahili Conversationnel', 200)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 4: Cours Particuliers -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1523240795601-0282210a31ee?auto=format&fit=crop&w=600&q=80" alt="Cours Particuliers" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-orange-900 via-orange-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Cours Particuliers" data-en="Private Lessons" data-sw="Masomo ya Kibinafsi">Cours Particuliers</h3>
+                            <span class="text-orange-100 text-sm font-medium" data-fr="Progression Personnalisée" data-en="Personalized Progress" data-sw="Maendeleo ya Kibinafsi">Progression Personnalisée</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Bénéficiez d'un programme sur mesure avec un professeur dédié pour des progrès ciblés." data-en="Benefit from a tailor-made program with a dedicated teacher for targeted progress." data-sw="Pata programu iliyoundwa maalum na mwalimu maalum kwa maendeleo yaliyolengwa.">Bénéficiez d'un programme sur mesure avec un professeur dédié pour des progrès ciblés.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Horaires flexibles" data-en="Flexible schedule" data-sw="Ratiba rahisi">Horaires flexibles</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Contenu adapté" data-en="Adapted content" data-sw="Maudhui yaliyobadilishwa">Contenu adapté</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Suivi individuel" data-en="Individual follow-up" data-sw="Ufuatiliaji wa kibinafsi">Suivi individuel</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par Heure" data-en="Price per Hour" data-sw="Bei kwa Saa">Prix par Heure</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$35</p>
+                            </div>
+                            <button onclick="addToCart('Cours Particuliers (1h)', 35)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 5: Préparation TOEFL/IELTS -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1521056774094-ce15e19f84e3?auto=format&fit=crop&w=600&q=80" alt="Préparation Examens" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="award" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Préparation Examens" data-en="Exam Preparation" data-sw="Maandalizi ya Mitihani">Préparation Examens</h3>
+                            <span class="text-emerald-100 text-sm font-medium" data-fr="TOEFL, IELTS, DELF/DALF" data-en="TOEFL, IELTS, DELF/DALF" data-sw="TOEFL, IELTS, DELF/DALF">TOEFL, IELTS, DELF/DALF</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Préparez-vous efficacement aux examens de langue internationaux avec nos experts certifiés." data-en="Prepare effectively for international language exams with our certified experts." data-sw="Jitayarishe kwa ufanisi kwa mitihani ya lugha ya kimataifa na wataalamu wetu walioidhinishwa.">Préparez-vous efficacement aux examens de langue internationaux avec nos experts certifiés.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Stratégies d'examen" data-en="Exam strategies" data-sw="Mikakati ya mitihani">Stratégies d'examen</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Tests blancs réguliers" data-en="Regular mock tests" data-sw="Mitihani ya majaribio ya mara kwa mara">Tests blancs réguliers</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Correction personnalisée" data-en="Personalized correction" data-sw="Marekebisho ya kibinafsi">Correction personnalisée</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Forfait" data-en="Package Price" data-sw="Bei ya Kifurushi">Prix du Forfait</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$400</p>
+                            </div>
+                            <button onclick="addToCart('Préparation Examens (Forfait)', 400)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 6: Cours pour Enfants -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1546410531-bb4696168854?auto=format&fit=crop&w=600&q=80" alt="Cours pour Enfants" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-950 via-indigo-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="baby" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Cours pour Enfants" data-en="Kids Courses" data-sw="Kozi za Watoto">Cours pour Enfants</h3>
+                            <span class="text-indigo-100 text-sm font-medium" data-fr="Ludique & Pédagogique" data-en="Fun & Educational" data-sw="Burudani & Kielimu">Ludique & Pédagogique</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Des cours adaptés aux enfants pour un apprentissage précoce et amusant des langues." data-en="Courses adapted for children for early and fun language learning." data-sw="Kozi zilizobadilishwa kwa watoto kwa ajili ya kujifunza lugha mapema na kwa furaha.">Des cours adaptés aux enfants pour un apprentissage précoce et amusant des langues.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Méthodes interactives" data-en="Interactive methods" data-sw="Njia za kuingiliana">Méthodes interactives</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Jeux éducatifs" data-en="Educational games" data-sw="Michezo ya kielimu">Jeux éducatifs</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Développement de la confiance" data-en="Confidence building" data-sw="Kujenga ujasiri">Développement de la confiance</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Module" data-en="Module Price" data-sw="Bei ya Moduli">Prix du Module</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$180</p>
+                            </div>
+                            <button onclick="addToCart('Cours pour Enfants', 180)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="avantages" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="Pourquoi Choisir BanikiLabs pour vos Cours de Langues ?" data-en="Why Choose BanikiLabs for your Language Courses?" data-sw="Kwa Nini Uchague BanikiLabs kwa Kozi Zako za Lugha?">Pourquoi Choisir BanikiLabs pour vos Cours de Langues ?</h2>
+                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous offrons une approche pédagogique innovante, des professeurs qualifiés et un environnement stimulant pour un apprentissage efficace et durable." data-en="We offer an innovative pedagogical approach, qualified teachers and a stimulating environment for effective and sustainable learning." data-sw="Tunatoa mbinu bunifu ya ufundishaji, walimu waliohitimu na mazingira ya kusisimua kwa ajili ya kujifunza kwa ufanisi na endelevu.">Nous offrons une approche pédagogique innovante, des professeurs qualifiés et un environnement stimulant pour un apprentissage efficace et durable.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Professeurs Certifiés" data-en="Certified Teachers" data-sw="Walimu Walioidhinishwa">Professeurs Certifiés</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Nos enseignants sont des locuteurs natifs et des experts en pédagogie des langues." data-en="Our teachers are native speakers and experts in language pedagogy." data-sw="Walimu wetu ni wazungumzaji asilia na wataalamu wa ufundishaji wa lugha.">Nos enseignants sont des locuteurs natifs et des experts en pédagogie des langues.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
+                                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Plateforme Interactive" data-en="Interactive Platform" data-sw="Jukwaa la Kuingiliana">Plateforme Interactive</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Accédez à des ressources exclusives, des exercices et un suivi de progression en ligne." data-en="Access exclusive resources, exercises and online progress tracking." data-sw="Pata rasilimali za kipekee, mazoezi na ufuatiliaji wa maendeleo mtandaoni.">Accédez à des ressources exclusives, des exercices et un suivi de progression en ligne.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Horaires Flexibles" data-en="Flexible Schedules" data-sw="Ratiba Rahisi">Horaires Flexibles</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Des cours adaptés à votre emploi du temps, en présentiel ou à distance." data-en="Courses adapted to your schedule, in person or remotely." data-sw="Kozi zilizobadilishwa kulingana na ratiba yako, ana kwa ana au kwa mbali.">Des cours adaptés à votre emploi du temps, en présentiel ou à distance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract visual representation -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
+                            function learnLanguage(student, course) {
+                                return platform.assignTeacher(student, course)
+                                .then(teacher => teacher.startLessons(student, course.level))
+                                .then(progress => student.trackProgress(progress))
+                                .catch(err => console.error("Learning error:", err));
+                            }
+                            learnLanguage().then(res => console.log("Success!"));
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Baniki Language Engine</div>
+                                            <div class="text-slate-400 text-xs" data-fr="Statut : Opérationnel" data-en="Status : Operational" data-sw="Hali : Inafanya kazi">Statut : Opérationnel</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-bold uppercase tracking-widest">
+                                        Efficacité 100%
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-full"></div>
+                                    </div>
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-accent-500 w-[95%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-slate-700 rounded-full z-0 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-800 rounded-full z-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact form -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4" data-fr="Prêt à Parler une Nouvelle Langue ?" data-en="Ready to Speak a New Language?" data-sw="Uko Tayari Kuzungumza Lugha Mpya?">Prêt à Parler une Nouvelle Langue ?</h2>
+                    <p class="text-slate-600" data-fr="Contactez l'équipe BanikiLabs pour une consultation gratuite et un plan d'apprentissage personnalisé." data-en="Contact the BanikiLabs team for a free consultation and a personalized learning plan." data-sw="Wasiliana na timu ya BanikiLabs kwa mashauriano ya bure na mpango wa kujifunza uliobinafsishwa.">Contactez l'équipe BanikiLabs pour une consultation gratuite et un plan d'apprentissage personnalisé.</p>
+                </div>
+                
+                <form class="space-y-6">
+                    <!-- Zone Panier dans le formulaire -->
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider" data-fr="Votre Sélection" data-en="Your Selection" data-sw="Uteuzi Wako">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span data-fr="Total Estimé" data-en="Estimated Total" data-sw="Jumla Iliyokadiriwa">Total Estimé</span>
+                            <span id="quote-cart-total">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Nom de l'institution / Entreprise" data-en="Institution / Company Name" data-sw="Jina la Taasisi / Kampuni">Nom de l'institution / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Ex: Université de Kinshasa" data-fr-placeholder="Ex: Université de Kinshasa" data-en-placeholder="Ex: University of Kinshasa" data-sw-placeholder="Mfano: Chuo Kikuu cha Kinshasa">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Cours souhaité" data-en="Desired Course" data-sw="Kozi Inayotakiwa">Cours souhaité</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50">
+                                <option data-fr="Anglais Intensif" data-en="Intensive English" data-sw="Kiingereza cha Kina">Anglais Intensif</option>
+                                <option data-fr="Français des Affaires" data-en="Business French" data-sw="Kifaransa cha Biashara">Français des Affaires</option>
+                                <option data-fr="Swahili Conversationnel" data-en="Conversational Swahili" data-sw="Kiswahili cha Mazungumzo">Swahili Conversationnel</option>
+                                <option data-fr="Cours Particuliers" data-en="Private Lessons" data-sw="Masomo ya Kibinafsi">Cours Particuliers</option>
+                                <option data-fr="Préparation Examens" data-en="Exam Preparation" data-sw="Maandalizi ya Mitihani">Préparation Examens</option>
+                                <option data-fr="Cours pour Enfants" data-en="Kids Courses" data-sw="Kozi za Watoto">Cours pour Enfants</option>
+                                <option data-fr="Autre besoin linguistique" data-en="Other language need" data-sw="Mahitaji mengine ya lugha">Autre besoin linguistique</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Email professionnel" data-en="Professional Email" data-sw="Barua pepe ya kitaalamu">Email professionnel</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@entreprise.com" data-fr-placeholder="contact@entreprise.com" data-en-placeholder="contact@company.com" data-sw-placeholder="contact@kampuni.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Téléphone (WhatsApp)" data-en="Phone (WhatsApp)" data-sw="Simu (WhatsApp)">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ..." data-fr-placeholder="+243 ..." data-en-placeholder="+243 ..." data-sw-placeholder="+243 ...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Commentaires sur votre projet" data-en="Project Comments" data-sw="Maoni kuhusu mradi wako">Commentaires sur votre projet</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez vos besoins spécifiques (niveau actuel, objectifs, disponibilités...)" data-fr-placeholder="Décrivez vos besoins spécifiques (niveau actuel, objectifs, disponibilités...)" data-en-placeholder="Describe your specific needs (current level, goals, availability...)" data-sw-placeholder="Eleza mahitaji yako maalum (kiwango cha sasa, malengo, upatikanaji...)."></textarea>
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center gap-2">
+                        <span data-fr="Envoyer le devis" data-en="Send the quote" data-sw="Tuma nukuu">Envoyer le devis</span> <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section Harmonisée -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
             <div class="space-y-8">
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
                         <span class="text-black font-black text-xl tracking-tighter">BL</span>
                     </div>
-                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <div class="space-y-4 text-gray-400">
+                <div class="space-y-4">
                     <p class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-[var(--gold)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span data-fr="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo" data-en="No. 18, Salongo Avenue, Bandalungwa, Kinshasa, DR Congo" data-sw="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo">N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
                     </p>
                     <p class="flex items-center gap-3">
-                        <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
                         <span>+243 978 415 814</span>
                     </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span data-fr="banikilabs@gmail.com" data-en="banikilabs@gmail.com" data-sw="banikilabs@gmail.com">banikilabs@gmail.com</span>
+                    </p>
                     <div class="pt-4 border-t border-white/5 space-y-2">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-fr="Informations Légales" data-en="Legal Information" data-sw="Habari za kisheria">Informations Légales</p>
                         <div class="flex flex-col gap-1 text-xs">
                             <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
                             <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
@@ -198,38 +633,210 @@
             </div>
 
             <div class="space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Suivez l'innovation" data-en="Follow Innovation" data-sw="Fuata Ubunifu">Suivez l'innovation</h4>
                 <div class="flex flex-wrap gap-4">
                     <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
                     </a>
                     <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
                     </a>
                 </div>
             </div>
 
             <div class="space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
-                <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Vision" data-en="Vision" data-sw="Maono">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-fr="&quot;Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.&quot;" data-en="&quot;Building the future, one project at a time, from the heart of Kinshasa.&quot;" data-sw="&quot;Kujenga mustakabali, mradi mmoja baada ya mwingine, kutoka moyoni mwa Kinshasa.&quot;">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
                 <div class="pt-4 border-t border-white/5">
-                    <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
+                    <span class="text-xs text-gray-400" data-fr="Heures d'opération : 24/7 Innovation" data-en="Hours of operation: 24/7 Innovation" data-sw="Saa za kazi : Ubunifu 24/7">Heures d'opération : 24/7 Innovation</span>
                 </div>
             </div>
         </div>
 
         <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
-            &copy; 2025. TOUS DROITS RÉSERVÉS.
+            &copy; 2025. <span data-fr="TOUS DROITS RÉSERVÉS." data-en="ALL RIGHTS RESERVED." data-sw="HAKI ZOTE ZIMEHIFADHIWA.">TOUS DROITS RÉSERVÉS.</span>
         </div>
     </footer>
 
+    <!-- Logic and Initialize Icons -->
     <script>
-        document.getElementById('themeToggle').onclick = () => {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('sunIcon').classList.toggle('hidden', !isLight);
-            document.getElementById('moonIcon').classList.toggle('hidden', isLight);
-        };
+        let cart = [];
+        let currentLang = 'fr';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-fr], [data-en], [data-sw]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text !== null) {
+                    el.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            node.textContent = text;
+                        }
+                    });
+                    if (el.children.length === 0) el.innerText = text;
+                }
+            });
+            
+            document.querySelectorAll('[data-fr-placeholder], [data-en-placeholder], [data-sw-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
+            });
+
+            const btnFr = document.getElementById('btn-fr');
+            const btnEn = document.getElementById('btn-en');
+            const btnSw = document.getElementById('btn-sw');
+
+            if (lang === 'fr') {
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'en') {
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'sw') {
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            }
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartCounter();
+            renderQuoteCart();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCartItemQuantity(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + delta;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+            }
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function renderQuoteCart() {
+            const container = document.getElementById('quote-cart-items');
+            const totalSpan = document.getElementById('quote-cart-total');
+            const cartContainer = document.getElementById('quote-cart-container');
+            if (cart.length > 0) {
+                cartContainer.classList.remove('hidden');
+                let total = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const qty = item.quantity || 1;
+                    const itemTotal = item.price * qty;
+                    total += itemTotal;
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-800">${item.name}</p>
+                                <p class="text-sm text-slate-500">$${item.price.toFixed(2)} x ${qty}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateCartItemQuantity(${index}, -1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">-</button>
+                                <span class="font-bold text-slate-900">${qty}</span>
+                                <button onclick="updateCartItemQuantity(${index}, 1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">+</button>
+                                <button onclick="removeCartItem(${index})" class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center text-sm ml-2">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-slate-900 ml-4">$${itemTotal.toFixed(2)}</span>
+                        </div>`;
+                }).join('');
+                totalSpan.innerText = `$${total.toFixed(2)}`;
+                lucide.createIcons();
+            } else {
+                cartContainer.classList.add('hidden');
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            if (totalQty > 0) {
+                counter.innerText = totalQty;
+                counter.classList.remove('hidden');
+            } else {
+                counter.classList.add('hidden');
+            }
+        }
+ 
+        function sendWhatsAppDevis() {
+            const institution = document.getElementById('institutionName').value;
+            const platform = document.getElementById('platformSelected').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
+
+            if(!institution || !email || !phone) {
+                const alertMsg = currentLang === 'fr' ? "Veuillez remplir les champs obligatoires (Institution, Email, Téléphone)." : (currentLang === 'en' ? "Please fill in the required fields (Institution, Email, Phone)." : "Habari BANIKI LABS, ningependa kupata nukuu:");
+                alert(alertMsg);
+                return;
+            }
+
+            let cartInfo = "";
+            if (cart.length > 0) {
+                cartInfo = (currentLang === 'fr' ? "\n\nPanier sélectionné :\n" : (currentLang === 'en' ? "\n\nSelected Cart:\n" : "\n\nKikapu kilichochaguliwa:\n")) + 
+                           cart.map(item => `- ${item.name} (${item.quantity}x $${item.price.toFixed(2)})`).join("\n");
+            }
+
+            const intro = currentLang === 'fr' ? "Bonjour BANIKI LABS, je souhaite obtenir un devis :" : (currentLang === 'en' ? "Hello BANIKI LABS, I would like to get a quote:" : "Habari BANIKI LABS, ningependa kupata nukuu:");
+            const msgInstitution = currentLang === 'fr' ? "- Institution" : (currentLang === 'en' ? "- Institution" : "- Taasisi");
+            const msgPlatform = currentLang === 'fr' ? "- Cours" : (currentLang === 'en' ? "- Course" : "- Kozi");
+            const msgEmail = currentLang === 'fr' ? "- Email" : (currentLang === 'en' ? "- Email" : "- Barua pepe");
+            const msgPhone = currentLang === 'fr' ? "- Téléphone" : (currentLang === 'en' ? "- Phone" : "- Simu");
+            const msgComments = currentLang === 'fr' ? "- Commentaires" : (currentLang === 'en' ? "- Comments" : "- Maoni");
+
+            const message = `${intro}\n\n${msgInstitution}: ${institution}\n${msgPlatform}: ${platform}\n${msgEmail}: ${email}\n${msgPhone}: ${phone}\n${msgComments}: ${comments}${cartInfo}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/243978415814?text=${encodedMessage}`, '_blank');
+        }
+
+        lucide.createIcons();
+
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+
+        // Initial call to set language and render cart on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage(currentLang);
+            renderQuoteCart();
+        });
     </script>
+
 </body>
 </html>

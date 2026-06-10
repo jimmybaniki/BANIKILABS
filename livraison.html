@@ -1,313 +1,846 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service de Livraison Rapide | BANIKI LABS</title>
+    <title>BanikiLabs Livraison | Services de Logistique & Coursier RDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
         :root {
             --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
             --bg-dark: #080808;
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .hero-gradient {
-            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
-                        url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=2072');
-            background-size: cover;
-            background-position: center;
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .card-service {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .card-service:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(255, 215, 0, 0.2);
-        }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            z-index: 100;
-            text-decoration: none;
-        }
-
-        .whatsapp-float:hover {
-            transform: translateY(-5px);
-            background-color: #128c7e;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body>
-    <!-- Bouton WhatsApp Flottant -->
-    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20cherche%20un%20service%20de%20livraison." class="whatsapp-float">
-        <i class="fab fa-whatsapp text-2xl"></i>
-        <span>Commander une livraison</span>
-    </a>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
-                    <span class="text-black font-black text-lg">BL</span>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </a>
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] transition-colors">Retour</a>
-                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[var(--gold)] border border-[var(--gold)]/20 px-3 py-2 rounded-xl hover:bg-[var(--gold)] hover:text-black transition-all">Login</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Demander un devis" data-en="Request a quote" data-sw="Omba nukuu">Demander un devis</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="index.html#about" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="À Propos" data-en="About" data-sw="Kuhusu">À Propos</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="pt-20"></div>
-
     <!-- Hero Section -->
-    <section class="hero-gradient text-white py-20 md:py-32 px-6 text-center border-b-4 border-[var(--gold)]">
-        <div class="max-w-4xl mx-auto">
-            <div class="inline-block bg-[var(--gold)] text-black text-xs font-bold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
-                Livraison Express
-            </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Livraison Rapide & Sûre</h1>
-            <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
-                Service de livraison express à travers Kinshasa avec suivi GPS en temps réel et garantie de sécurité.
-            </p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#services" class="bg-[var(--gold)] hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
-                    Nos Services
-                </a>
-                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20faire%20une%20livraison" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
-                    Commander Maintenant
-                </a>
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center z-0 opacity-30"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6" data-fr="Livraison Rapide & Logistique Optimisée" data-en="Fast Delivery & Optimized Logistics" data-sw="Uwasilishaji wa Haraka na Usafirishaji Bora">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span data-fr="Livraison Rapide & Logistique Optimisée" data-en="Fast Delivery & Optimized Logistics" data-sw="Uwasilishaji wa Haraka na Usafirishaji Bora">Livraison Rapide & Logistique Optimisée</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span data-fr="Votre partenaire de confiance pour des livraisons efficaces en" data-en="Your trusted partner for efficient deliveries in" data-sw="Mshirika wako wa kuaminika kwa utoaji bora nchini">Votre partenaire de confiance pour des livraisons efficaces en</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">RDC</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Gérez votre flotte, suivez vos colis en temps réel et connectez votre business aux e-commerçants. Des solutions logistiques sur mesure pour tous vos besoins." data-en="Manage your fleet, track your packages in real time and connect your business to e-merchants. Tailor-made logistics solutions for all your needs." data-sw="Simamia meli yako, fuatilia vifurushi vyako kwa wakati halisi na unganisha biashara yako na wafanyabiashara wa mtandaoni. Suluhisho za usafirishaji zilizobinafsishwa kwa mahitaji yako yote.">
+                        Gérez votre flotte, suivez vos colis en temps réel et connectez votre business aux e-commerçants. Des solutions logistiques sur mesure pour tous vos besoins.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#services" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] text-center" data-fr="Découvrir nos Services" data-en="Discover our Services" data-sw="Gundua Huduma Zetu">
+                            Découvrir nos Services
+                        </a>
+                        <a href="https://wa.me/243978415814?text=Bonjour%20BanikiLabs,%20je%20souhaite%20obtenir%20un%20devis%20pour%20vos%20services%20de%20livraison." target="_blank" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2" data-fr="Demander un Devis" data-en="Request a Quote" data-sw="Omba Nukuu">
+                            <i data-lucide="truck" class="w-5 h-5"></i>
+                            Demander un Devis
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Simulation Visual (CSS Translate UI) -->
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <!-- Header -->
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">baniki-delivery-tracker.bin</div>
+                            </div>
+                            <!-- Simulation Workspace -->
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <!-- Source Panel -->
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-brand-400 font-bold">Colis (Kinshasa)</span>
+                                            <span class="text-xs text-slate-500">Commande #BL-789</span>
+                                        </div>
+                                        <p class="text-sm text-slate-200">« Livraison urgente de documents juridiques à Gombe. »</p>
+                                    </div>
+                                    
+                                    <!-- Arrow icon spacer -->
+                                    <div class="flex justify-center">
+                                        <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center border border-brand-500/30">
+                                            <i data-lucide="arrow-down" class="w-4 h-4 text-brand-400"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- Target Panel -->
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Statut (Temps Réel)</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> En route</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i data-lucide="map-pin" class="w-4 h-4 text-white"></i>
+                                            <p class="text-sm text-white">Coursier à 5 min de la destination.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs text-slate-400">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                                        <span>Suivi GPS</span>
+                                    </div>
+                                    <span>Sécurité 100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-20 px-6 bg-[var(--bg-dark)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Nos Services de Livraison</h2>
+    <!-- Secteurs Cibles -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" data-fr="Des solutions logistiques pour chaque besoin" data-en="Logistics solutions for every need" data-sw="Suluhisho za usafirishaji kwa kila hitaji">Des solutions logistiques pour chaque besoin</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="shopping-bag" class="w-6 h-6 text-brand-600"></i> <span data-fr="E-commerce" data-en="E-commerce" data-sw="Biashara ya Mtandaoni">E-commerce</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="utensils" class="w-6 h-6 text-brand-600"></i> <span data-fr="Restaurants" data-en="Restaurants" data-sw="Migahawa">Restaurants</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="briefcase" class="w-6 h-6 text-brand-600"></i> <span data-fr="Entreprises" data-en="Businesses" data-sw="Biashara">Entreprises</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="user" class="w-6 h-6 text-brand-600"></i> <span data-fr="Particuliers" data-en="Individuals" data-sw="Watu Binafsi">Particuliers</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="pill" class="w-6 h-6 text-brand-600"></i> <span data-fr="Pharmacies" data-en="Pharmacies" data-sw="Maduka ya Dawa">Pharmacies</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Catalogue Section -->
+    <section id="services" class="py-24 bg-slate-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Nos Services de Livraison" data-en="Our Delivery Services" data-sw="Huduma Zetu za Uwasilishaji">Nos Services de Livraison</h2>
+                <p class="text-lg text-slate-600" data-fr="Des solutions flexibles et fiables pour acheminer vos colis et marchandises à destination, en toute sécurité." data-en="Flexible and reliable solutions to deliver your packages and goods safely to their destination." data-sw="Suluhisho rahisi na za kuaminika za kupeleka vifurushi na bidhaa zako salama hadi mahali unapotaka.">Des solutions flexibles et fiables pour acheminer vos colis et marchandises à destination, en toute sécurité.</p>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-bolt"></i>
+                
+                <!-- Service 1: Livraison Express Urbaine -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=600&q=80" alt="Livraison Express" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="bike" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Livraison Express Urbaine" data-en="Urban Express Delivery" data-sw="Uwasilishaji wa Haraka Mjini">Livraison Express Urbaine</h3>
+                            <span class="text-sky-100 text-sm font-medium" data-fr="Colis, Documents, Repas" data-en="Packages, Documents, Meals" data-sw="Vifurushi, Nyaraka, Milo">Colis, Documents, Repas</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Livraison Express</h3>
-                    <p class="text-gray-400 mb-6">Livraison en 30 minutes maximum dans Kinshasa.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Zone urbaine</li>
-                        <li>• Suivi GPS temps réel</li>
-                        <li>• Confirmation de livraison</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 5$</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Acheminez vos colis et documents urgents en ville en moins d'une heure. Idéal pour les particuliers et petites entreprises." data-en="Deliver your urgent packages and documents in the city in less than an hour. Ideal for individuals and small businesses." data-sw="Peleka vifurushi na nyaraka zako za dharura mjini chini ya saa moja. Inafaa kwa watu binafsi na biashara ndogo.">Acheminez vos colis et documents urgents en ville en moins d'une heure. Idéal pour les particuliers et petites entreprises.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Suivi GPS en temps réel" data-en="Real-time GPS tracking" data-sw="Ufuatiliaji wa GPS kwa wakati halisi">Suivi GPS en temps réel</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Coursier dédié" data-en="Dedicated courier" data-sw="Msafirishaji maalum">Coursier dédié</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Livraison < 1h" data-en="Delivery < 1h" data-sw="Uwasilishaji < 1h">Livraison < 1h</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par livraison" data-en="Price per delivery" data-sw="Bei kwa uwasilishaji">Prix par livraison</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$5</p>
+                            </div>
+                            <button onclick="addToCart('Livraison Express Urbaine', 5)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-clock"></i>
+                <!-- Service 2: Logistique E-commerce -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1556742049-cd85a55ebf39?auto=format&fit=crop&w=600&q=80" alt="Logistique E-commerce" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="package" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Logistique E-commerce" data-en="E-commerce Logistics" data-sw="Usafirishaji wa Biashara ya Mtandaoni">Logistique E-commerce</h3>
+                            <span class="text-blue-100 text-sm font-medium" data-fr="Pour Boutiques en ligne" data-en="For Online Stores" data-sw="Kwa Maduka ya Mtandaoni">Pour Boutiques en ligne</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Livraison Programmée</h3>
-                    <p class="text-gray-400 mb-6">Planifiez vos livraisons à l'heure qui vous convient.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Horaires flexibles</li>
-                        <li>• Livraison garantie</li>
-                        <li>• Service premium</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 8$</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Solutions complètes pour les e-commerçants : de l'intégration API à la gestion des retours clients." data-en="Complete solutions for e-merchants: from API integration to customer return management." data-sw="Suluhisho kamili kwa wafanyabiashara wa mtandaoni: kuanzia ujumuishaji wa API hadi usimamizi wa marejesho ya wateja.">Solutions complètes pour les e-commerçants : de l'intégration API à la gestion des retours clients.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Intégration API" data-en="API Integration" data-sw="Ujumuishaji wa API">Intégration API</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Gestion des retours" data-en="Returns Management" data-sw="Usimamizi wa Marejesho">Gestion des retours</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Stockage temporaire" data-en="Temporary Storage" data-sw="Uhifadhi wa Muda">Stockage temporaire</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix mensuel" data-en="Monthly Price" data-sw="Bei ya Kila Mwezi">Prix mensuel</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$50</p>
+                            </div>
+                            <button onclick="addToCart('Logistique E-commerce', 50)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-shield-alt"></i>
+                <!-- Service 3: Transport de Marchandises -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80" alt="Transport de Marchandises" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-yellow-900 via-yellow-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="truck" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Transport de Marchandises" data-en="Goods Transport" data-sw="Usafirishaji wa Bidhaa">Transport de Marchandises</h3>
+                            <span class="text-yellow-100 text-sm font-medium" data-fr="Pour Gros Volumes, Matériaux" data-en="For Large Volumes, Materials" data-sw="Kwa Kiasi Kikubwa, Vifaa">Pour Gros Volumes, Matériaux</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Colis Sécurisés</h3>
-                    <p class="text-gray-400 mb-6">Transport sécurisé pour vos objets de valeur.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Emballage spécial</li>
-                        <li>• Assurance incluse</li>
-                        <li>• Traçabilité complète</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 15$</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Transport sécurisé de vos marchandises et matériaux de construction, avec véhicules adaptés et assurance incluse." data-en="Secure transport of your goods and construction materials, with adapted vehicles and insurance included." data-sw="Usafirishaji salama wa bidhaa na vifaa vyako vya ujenzi, na magari yaliyobadilishwa na bima imejumuishwa.">Transport sécurisé de vos marchandises et matériaux de construction, avec véhicules adaptés et assurance incluse.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Véhicules adaptés" data-en="Adapted vehicles" data-sw="Magari yaliyobadilishwa">Véhicules adaptés</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Assurance incluse" data-en="Insurance included" data-sw="Bima imejumuishwa">Assurance incluse</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Suivi en temps réel" data-en="Real-time tracking" data-sw="Ufuatiliaji wa wakati halisi">Suivi en temps réel</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par trajet" data-en="Price per trip" data-sw="Bei kwa safari">Prix par trajet</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$30</p>
+                            </div>
+                            <button onclick="addToCart('Transport de Marchandises', 30)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-utensils"></i>
+                <!-- Service 4: Livraison de Repas -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=600&q=80" alt="Livraison de Repas" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-orange-900 via-orange-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="utensils" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Livraison de Repas" data-en="Meal Delivery" data-sw="Uwasilishaji wa Milo">Livraison de Repas</h3>
+                            <span class="text-orange-100 text-sm font-medium" data-fr="Pour Restaurants, Particuliers" data-en="For Restaurants, Individuals" data-sw="Kwa Migahawa, Watu Binafsi">Pour Restaurants, Particuliers</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Livraison de Nourriture</h3>
-                    <p class="text-gray-400 mb-6">Service spécialisé pour restaurants et plats chauds.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Maintien de température</li>
-                        <li>• Emballage isotherme</li>
-                        <li>• Livraison rapide</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 3$</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Service de livraison rapide et efficace pour les restaurants et les commandes de repas à domicile." data-en="Fast and efficient delivery service for restaurants and home meal orders." data-sw="Huduma ya utoaji wa haraka na ufanisi kwa migahawa na maagizo ya chakula nyumbani.">Service de livraison rapide et efficace pour les restaurants et les commandes de repas à domicile.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Optimisation d'itinéraire" data-en="Route optimization" data-sw="Uboreshaji wa njia">Optimisation d'itinéraire</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Facturation simplifiée" data-en="Simplified billing" data-sw="Malipo rahisi">Facturation simplifiée</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Support 24/7" data-en="24/7 Support" data-sw="Msaada 24/7">Support 24/7</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par livraison" data-en="Price per delivery" data-sw="Bei kwa uwasilishaji">Prix par livraison</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$3</p>
+                            </div>
+                            <button onclick="addToCart('Livraison de Repas', 3)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-truck"></i>
+                <!-- Service 5: Gestion de Flotte -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80" alt="Gestion de Flotte" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="settings" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Gestion de Flotte" data-en="Fleet Management" data-sw="Usimamizi wa Meli">Gestion de Flotte</h3>
+                            <span class="text-emerald-100 text-sm font-medium" data-fr="Pour Entreprises, Logisticiens" data-en="For Businesses, Logisticians" data-sw="Kwa Biashara, Wataalamu wa Usafirishaji">Pour Entreprises, Logisticiens</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Transport de Marchandises</h3>
-                    <p class="text-gray-400 mb-6">Livraison de gros volumes et marchandises.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Véhicules adaptés</li>
-                        <li>• Chargement/déchargement</li>
-                        <li>• Stockage temporaire</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">Tarifs sur mesure</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Optimisez la gestion de vos véhicules : suivi, maintenance préventive, optimisation des itinéraires et rapports détaillés." data-en="Optimize your vehicle management: tracking, preventive maintenance, route optimization and detailed reports." data-sw="Boresha usimamizi wa magari yako: ufuatiliaji, matengenezo ya kuzuia, uboreshaji wa njia na ripoti za kina.">Optimisez la gestion de vos véhicules : suivi, maintenance préventive, optimisation des itinéraires et rapports détaillés.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Suivi en temps réel" data-en="Real-time tracking" data-sw="Ufuatiliaji wa wakati halisi">Suivi en temps réel</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Maintenance préventive" data-en="Preventive maintenance" data-sw="Matengenezo ya kuzuia">Maintenance préventive</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Rapports détaillés" data-en="Detailed reports" data-sw="Ripoti za kina">Rapports détaillés</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix mensuel" data-en="Monthly Price" data-sw="Bei ya Kila Mwezi">Prix mensuel</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$100</p>
+                            </div>
+                            <button onclick="addToCart('Gestion de Flotte', 100)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-map-marked-alt"></i>
+                <!-- Service 6: Coursier Dédicacé -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=600&q=80" alt="Coursier Dédicacé" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-950 via-indigo-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="user-check" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Coursier Dédicacé" data-en="Dedicated Courier" data-sw="Msafirishaji Maalum">Coursier Dédicacé</h3>
+                            <span class="text-indigo-100 text-sm font-medium" data-fr="Pour Besoins Exclusifs" data-en="For Exclusive Needs" data-sw="Kwa Mahitaji Maalum">Pour Besoins Exclusifs</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Livraison Régionale</h3>
-                    <p class="text-gray-400 mb-6">Service de livraison vers les provinces du Congo.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Couverture nationale</li>
-                        <li>• Partenaires locaux</li>
-                        <li>• Suivi international</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 25$</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Un coursier à votre entière disposition pour une période donnée. Flexibilité et sécurité maximales pour vos envois sensibles." data-en="A courier entirely at your disposal for a given period. Maximum flexibility and security for your sensitive shipments." data-sw="Msafirishaji anayekuhudumia kikamilifu kwa kipindi fulani. Urahisi na usalama wa hali ya juu kwa usafirishaji wako nyeti.">Un coursier à votre entière disposition pour une période donnée. Flexibilité et sécurité maximales pour vos envois sensibles.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Disponibilité exclusive" data-en="Exclusive availability" data-sw="Upatikanaji wa kipekee">Disponibilité exclusive</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Flexibilité horaire" data-en="Flexible hours" data-sw="Saa rahisi">Flexibilité horaire</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Sécurité maximale" data-en="Maximum security" data-sw="Usalama wa hali ya juu">Sécurité maximale</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par jour" data-en="Price per day" data-sw="Bei kwa siku">Prix par jour</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$80</p>
+                            </div>
+                            <button onclick="addToCart('Coursier Dédicacé', 80)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="avantages" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="Pourquoi Choisir BanikiLabs pour vos Livraisons ?" data-en="Why Choose BanikiLabs for your Deliveries?" data-sw="Kwa Nini Uchague BanikiLabs kwa Uwasilishaji Wako?">Pourquoi Choisir BanikiLabs pour vos Livraisons ?</h2>
+                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous combinons technologie de pointe, une équipe fiable et une connaissance approfondie du terrain pour garantir des livraisons rapides et sécurisées." data-en="We combine cutting-edge technology, a reliable team and in-depth local knowledge to ensure fast and secure deliveries." data-sw="Tunachanganya teknolojia ya kisasa, timu ya kuaminika na ujuzi wa kina wa eneo ili kuhakikisha utoaji wa haraka na salama.">Nous combinons technologie de pointe, une équipe fiable et une connaissance approfondie du terrain pour garantir des livraisons rapides et sécurisées.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="map-pin" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Suivi en Temps Réel" data-en="Real-time Tracking" data-sw="Ufuatiliaji wa Wakati Halisi">Suivi en Temps Réel</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Visualisez le parcours de vos colis sur une carte, de l'enlèvement à la livraison finale." data-en="Visualize the journey of your packages on a map, from pickup to final delivery." data-sw="Tazama safari ya vifurushi vyako kwenye ramani, kuanzia kuchukuliwa hadi kuwasilishwa mwisho.">Visualisez le parcours de vos colis sur une carte, de l'enlèvement à la livraison finale.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
+                                <i data-lucide="globe" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Réseau Étendu" data-en="Extended Network" data-sw="Mtandao Mpana">Réseau Étendu</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Couverture complète de Kinshasa et des principales villes de la RDC pour une portée maximale." data-en="Full coverage of Kinshasa and major cities in DRC for maximum reach." data-sw="Chanjo kamili ya Kinshasa na miji mikuu nchini DRC kwa ufikiaji wa juu.">Couverture complète de Kinshasa et des principales villes de la RDC pour une portée maximale.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Sécurité & Fiabilité" data-en="Security & Reliability" data-sw="Usalama na Uaminifu">Sécurité & Fiabilité</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Vos colis sont assurés et notre personnel est rigoureusement sélectionné et formé pour chaque mission." data-en="Your packages are insured and our staff is rigorously selected and trained for each mission." data-sw="Vifurushi vyako vimehakikishwa na wafanyakazi wetu wamechaguliwa kwa uangalifu na kufunzwa kwa kila kazi.">Vos colis sont assurés et notre personnel est rigoureusement sélectionné et formé pour chaque mission.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract visual representation -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
+                            function processDelivery(packageId, destination) {
+                                return tracker.assignCourier(packageId)
+                                .then(courier => courier.pickup(packageId))
+                                .then(courier => navigator.optimizeRoute(courier, destination))
+                                .then(courier => courier.deliver(packageId, destination))
+                                .catch(err => console.error("Delivery error:", err));
+                            }
+                            processDelivery().then(res => console.log("Success!"));
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="truck" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Baniki Logistics Engine</div>
+                                            <div class="text-slate-400 text-xs" data-fr="Statut : Opérationnel" data-en="Status : Operational" data-sw="Hali : Inafanya kazi">Statut : Opérationnel</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-bold uppercase tracking-widest">
+                                        Efficacité 100%
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-full"></div>
+                                    </div>
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-accent-500 w-[95%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-slate-700 rounded-full z-0 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-800 rounded-full z-0"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Avantages Section -->
-    <section class="py-20 px-6 bg-[var(--bg-card)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Pourquoi Nous Choisir ?</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-route"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Suivi GPS</h3>
-                    <p class="text-gray-400">Suivez votre livraison en temps réel depuis votre smartphone.</p>
+    <!-- CTA / Contact form -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4" data-fr="Prêt à Optimiser Votre Logistique ?" data-en="Ready to Optimize Your Logistics?" data-sw="Uko Tayari Kuboresha Usafirishaji Wako?">Prêt à Optimiser Votre Logistique ?</h2>
+                    <p class="text-slate-600" data-fr="Contactez l'équipe BanikiLabs pour un devis personnalisé et des solutions de livraison adaptées à vos besoins." data-en="Contact the BanikiLabs team for a personalized quote and delivery solutions tailored to your needs." data-sw="Wasiliana na timu ya BanikiLabs kwa nukuu maalum na suluhisho za utoaji zilizobinafsishwa kulingana na mahitaji yako.">Contactez l'équipe BanikiLabs pour un devis personnalisé et des solutions de livraison adaptées à vos besoins.</p>
                 </div>
-
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-shield-alt"></i>
+                
+                <form class="space-y-6">
+                    <!-- Zone Panier dans le formulaire -->
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider" data-fr="Votre Sélection" data-en="Your Selection" data-sw="Uteuzi Wako">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span data-fr="Total Estimé" data-en="Estimated Total" data-sw="Jumla Iliyokadiriwa">Total Estimé</span>
+                            <span id="quote-cart-total">$0</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Sécurité Garantie</h3>
-                    <p class="text-gray-400">Tous nos livreurs sont vérifiés et assurés pour votre tranquillité.</p>
-                </div>
 
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-clock"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Nom de l'institution / Entreprise" data-en="Institution / Company Name" data-sw="Jina la Taasisi / Kampuni">Nom de l'institution / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Ex: Restaurant Le Gourmet" data-fr-placeholder="Ex: Restaurant Le Gourmet" data-en-placeholder="Ex: The Gourmet Restaurant" data-sw-placeholder="Mfano: Mgahawa wa Le Gourmet">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Service souhaité" data-en="Desired Service" data-sw="Huduma Inayotakiwa">Service souhaité</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50">
+                                <option data-fr="Livraison Express Urbaine" data-en="Urban Express Delivery" data-sw="Uwasilishaji wa Haraka Mjini">Livraison Express Urbaine</option>
+                                <option data-fr="Logistique E-commerce" data-en="E-commerce Logistics" data-sw="Usafirishaji wa Biashara ya Mtandaoni">Logistique E-commerce</option>
+                                <option data-fr="Transport de Marchandises" data-en="Goods Transport" data-sw="Usafirishaji wa Bidhaa">Transport de Marchandises</option>
+                                <option data-fr="Livraison de Repas" data-en="Meal Delivery" data-sw="Uwasilishaji wa Milo">Livraison de Repas</option>
+                                <option data-fr="Gestion de Flotte" data-en="Fleet Management" data-sw="Usimamizi wa Meli">Gestion de Flotte</option>
+                                <option data-fr="Coursier Dédicacé" data-en="Dedicated Courier" data-sw="Msafirishaji Maalum">Coursier Dédicacé</option>
+                                <option data-fr="Autre besoin logistique" data-en="Other logistics need" data-sw="Mahitaji mengine ya usafirishaji">Autre besoin logistique</option>
+                            </select>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Ponctualité</h3>
-                    <p class="text-gray-400">Respect des délais avec système de compensation en cas de retard.</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-headset"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Email professionnel" data-en="Professional Email" data-sw="Barua pepe ya kitaalamu">Email professionnel</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@entreprise.com" data-fr-placeholder="contact@entreprise.com" data-en-placeholder="contact@company.com" data-sw-placeholder="contact@kampuni.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Téléphone (WhatsApp)" data-en="Phone (WhatsApp)" data-sw="Simu (WhatsApp)">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ..." data-fr-placeholder="+243 ..." data-en-placeholder="+243 ..." data-sw-placeholder="+243 ...">
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Support 24/7</h3>
-                    <p class="text-gray-400">Équipe disponible en permanence pour vos demandes urgentes.</p>
-                </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Commentaires sur votre projet" data-en="Project Comments" data-sw="Maoni kuhusu mradi wako">Commentaires sur votre projet</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez vos besoins spécifiques (volume, fréquence, zones de livraison...)" data-fr-placeholder="Décrivez vos besoins spécifiques (volume, fréquence, zones de livraison...)" data-en-placeholder="Describe your specific needs (volume, frequency, delivery areas...)" data-sw-placeholder="Eleza mahitaji yako maalum (kiasi, marudio, maeneo ya utoaji)..."></textarea>
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center gap-2">
+                        <span data-fr="Envoyer le devis" data-en="Send the quote" data-sw="Tuma nukuu">Envoyer le devis</span> <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </section>
 
-    <!-- Zones de Couverture -->
-    <section class="py-20 px-6 bg-[var(--bg-dark)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Zones de Livraison</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-[var(--bg-card)] p-6 rounded-2xl border border-[var(--gold)]/20">
-                    <h3 class="text-xl font-bold mb-4 text-[var(--gold)]">Zone Urbaine</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>• Gombe</li>
-                        <li>• Kintambo</li>
-                        <li>• Limete</li>
-                        <li>• Ngaliema</li>
-                        <li>• Plateau</li>
-                    </ul>
-                    <div class="mt-4 text-[var(--gold)] font-bold">Livraison: 30 min</div>
+    <!-- Footer Section Harmonisée -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
+            <div class="space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-
-                <div class="bg-[var(--bg-card)] p-6 rounded-2xl border border-[var(--gold)]/20">
-                    <h3 class="text-xl font-bold mb-4 text-[var(--gold)]">Périphérie</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>• Bandalungwa</li>
-                        <li>• Matete</li>
-                        <li>• Lemba</li>
-                        <li>• Kisenso</li>
-                        <li>• Ndjili</li>
-                    </ul>
-                    <div class="mt-4 text-[var(--gold)] font-bold">Livraison: 45 min</div>
+                <div class="space-y-4">
+                    <p class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span data-fr="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo" data-en="No. 18, Salongo Avenue, Bandalungwa, Kinshasa, DR Congo" data-sw="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo">N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span data-fr="banikilabs@gmail.com" data-en="banikilabs@gmail.com" data-sw="banikilabs@gmail.com">banikilabs@gmail.com</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-fr="Informations Légales" data-en="Legal Information" data-sw="Habari za kisheria">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="bg-[var(--bg-card)] p-6 rounded-2xl border border-[var(--gold)]/20">
-                    <h3 class="text-xl font-bold mb-4 text-[var(--gold)]">Régional</h3>
-                    <ul class="text-gray-300 space-y-2">
-                        <li>• Kongo Central</li>
-                        <li>• Kwilu</li>
-                        <li>• Kwango</li>
-                        <li>• Mai-Ndombe</li>
-                        <li>• Équateur</li>
-                    </ul>
-                    <div class="mt-4 text-[var(--gold)] font-bold">Livraison: 2-5 jours</div>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Suivez l'innovation" data-en="Follow Innovation" data-sw="Fuata Ubunifu">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Vision" data-en="Vision" data-sw="Maono">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-fr="&quot;Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.&quot;" data-en="&quot;Building the future, one project at a time, from the heart of Kinshasa.&quot;" data-sw="&quot;Kujenga mustakabali, mradi mmoja baada ya mwingine, kutoka moyoni mwa Kinshasa.&quot;">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400" data-fr="Heures d'opération : 24/7 Innovation" data-en="Hours of operation: 24/7 Innovation" data-sw="Saa za kazi : Ubunifu 24/7">Heures d'opération : 24/7 Innovation</span>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="py-20 px-6 bg-gradient-to-r from-[var(--bg-card)] to-[var(--bg-dark)]">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-5xl font-bold mb-8">Besoin d'une Livraison ?</h2>
-            <p class="text-xl text-gray-400 mb-10">Commandez votre livraison express dès maintenant avec suivi GPS.</p>
-            <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20commander%20une%20livraison%20avec%20BANIKI%20LABS" class="bg-[var(--gold)] text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
-                Commander Ma Livraison
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-[var(--bg-card)] py-12 px-6 border-t border-[var(--gold)]/20">
-        <div class="max-w-6xl mx-auto text-center">
-            <div class="flex items-center justify-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
-                    <span class="text-black font-black text-lg">BL</span>
-                </div>
-                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </div>
-            <p class="text-gray-400">© 2025 BANIKI LABS. Tous droits réservés.</p>
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
+            &copy; 2025. <span data-fr="TOUS DROITS RÉSERVÉS." data-en="ALL RIGHTS RESERVED." data-sw="HAKI ZOTE ZIMEHIFADHIWA.">TOUS DROITS RÉSERVÉS.</span>
         </div>
     </footer>
+
+    <!-- Logic and Initialize Icons -->
+    <script>
+        let cart = [];
+        let currentLang = 'fr';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-fr], [data-en], [data-sw]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text !== null) {
+                    el.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            node.textContent = text;
+                        }
+                    });
+                    if (el.children.length === 0) el.innerText = text;
+                }
+            });
+            
+            document.querySelectorAll('[data-fr-placeholder], [data-en-placeholder], [data-sw-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
+            });
+
+            const btnFr = document.getElementById('btn-fr');
+            const btnEn = document.getElementById('btn-en');
+            const btnSw = document.getElementById('btn-sw');
+
+            if (lang === 'fr') {
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'en') {
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'sw') {
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            }
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartCounter();
+            renderQuoteCart();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCartItemQuantity(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + delta;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+            }
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function renderQuoteCart() {
+            const container = document.getElementById('quote-cart-items');
+            const totalSpan = document.getElementById('quote-cart-total');
+            const cartContainer = document.getElementById('quote-cart-container');
+            if (cart.length > 0) {
+                cartContainer.classList.remove('hidden');
+                let total = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const qty = item.quantity || 1;
+                    const itemTotal = item.price * qty;
+                    total += itemTotal;
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-800">${item.name}</p>
+                                <p class="text-sm text-slate-500">$${item.price.toFixed(2)} x ${qty}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateCartItemQuantity(${index}, -1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">-</button>
+                                <span class="font-bold text-slate-900">${qty}</span>
+                                <button onclick="updateCartItemQuantity(${index}, 1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">+</button>
+                                <button onclick="removeCartItem(${index})" class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center text-sm ml-2">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-slate-900 ml-4">$${itemTotal.toFixed(2)}</span>
+                        </div>`;
+                }).join('');
+                totalSpan.innerText = `$${total.toFixed(2)}`;
+                lucide.createIcons();
+            } else {
+                cartContainer.classList.add('hidden');
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            if (totalQty > 0) {
+                counter.innerText = totalQty;
+                counter.classList.remove('hidden');
+            } else {
+                counter.classList.add('hidden');
+            }
+        }
+ 
+        function sendWhatsAppDevis() {
+            const institution = document.getElementById('institutionName').value;
+            const platform = document.getElementById('platformSelected').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
+
+            if(!institution || !email || !phone) {
+                const alertMsg = currentLang === 'fr' ? "Veuillez remplir les champs obligatoires (Institution, Email, Téléphone)." : (currentLang === 'en' ? "Please fill in the required fields (Institution, Email, Phone)." : "Habari BANIKI LABS, ningependa kupata nukuu:");
+                alert(alertMsg);
+                return;
+            }
+
+            let cartInfo = "";
+            if (cart.length > 0) {
+                cartInfo = (currentLang === 'fr' ? "\n\nPanier sélectionné :\n" : (currentLang === 'en' ? "\n\nSelected Cart:\n" : "\n\nKikapu kilichochaguliwa:\n")) + 
+                           cart.map(item => `- ${item.name} (${item.quantity}x $${item.price.toFixed(2)})`).join("\n");
+            }
+
+            const intro = currentLang === 'fr' ? "Bonjour BANIKI LABS, je souhaite obtenir un devis :" : (currentLang === 'en' ? "Hello BANIKI LABS, I would like to get a quote:" : "Habari BANIKI LABS, ningependa kupata nukuu:");
+            const msgInstitution = currentLang === 'fr' ? "- Institution" : (currentLang === 'en' ? "- Institution" : "- Taasisi");
+            const msgPlatform = currentLang === 'fr' ? "- Service" : (currentLang === 'en' ? "- Service" : "- Huduma");
+            const msgEmail = currentLang === 'fr' ? "- Email" : (currentLang === 'en' ? "- Email" : "- Barua pepe");
+            const msgPhone = currentLang === 'fr' ? "- Téléphone" : (currentLang === 'en' ? "- Phone" : "- Simu");
+            const msgComments = currentLang === 'fr' ? "- Commentaires" : (currentLang === 'en' ? "- Comments" : "- Maoni");
+
+            const message = `${intro}\n\n${msgInstitution}: ${institution}\n${msgPlatform}: ${platform}\n${msgEmail}: ${email}\n${msgPhone}: ${phone}\n${msgComments}: ${comments}${cartInfo}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/243978415814?text=${encodedMessage}`, '_blank');
+        }
+
+        lucide.createIcons();
+
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+
+        // Initial call to set language and render cart on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage(currentLang);
+            renderQuoteCart();
+        });
+    </script>
+
 </body>
 </html>
