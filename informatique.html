@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BanikiLabs Informatique | Cybercafé & Expertise IT RDC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Demander un devis" data-en="Request a quote" data-sw="Omba nukuu">Demander un devis</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6" data-fr="Espace Multi-services" data-en="Multi-service Space" data-sw="Nafasi ya Huduma Nyingi">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span data-fr="Espace Multi-services" data-en="Multi-service Space" data-sw="Nafasi ya Huduma Nyingi">Espace Multi-services</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span data-fr="Solutions Numériques & Accompagnement Informatique par" data-en="Digital Solutions & IT Support by" data-sw="Suluhisho za Kidijitali na Msaada wa IT na">Solutions Numériques & Accompagnement Informatique par</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Accès internet, secrétariat public, maintenance et formations. Chez Bwise, nous simplifions votre quotidien digital en RDC." data-en="Internet access, public secretariat, maintenance and training. At Bwise, we simplify your digital daily life in DRC." data-sw="Ufikiaji wa intaneti, sekretarieti ya umma, matengenezo na mafunzo. Katika Bwise, tunarahisisha maisha yako ya kidijitali nchini DRC.">
+                        Accès internet, secrétariat public, maintenance et formations. Chez <strong class="text-[var(--gold)]">Bwise</strong>, nous simplifions votre quotidien digital en RDC.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#services" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] text-center" data-fr="Voir nos prestations" data-en="View our services" data-sw="Tazama huduma zetu">
+                            Voir nos prestations
+                        </a>
+                        <a href="https://wa.me/243978415814?text=Bonjour%20BanikiLabs,%20je%20souhaite%20obtenir%20un%20devis%20pour%20vos%20services%20informatiques." target="_blank" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2" data-fr="Demander un Devis" data-en="Request a Quote" data-sw="Omba Nukuu">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            <span data-fr="Demander un Devis" data-en="Request a Quote" data-sw="Omba Nukuu">Demander un Devis</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Simulation Visual (IT Services) -->
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <!-- Header -->
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">bwise-terminal.bin</div>
+                            </div>
+                            <!-- Simulation Workspace -->
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <!-- Command Input -->
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-brand-400 font-bold text-sm">$</span>
+                                            <input type="text" value="ping google.com" class="flex-1 bg-transparent text-slate-200 text-sm focus:outline-none" readonly>
+                                        </div>
+                                        <p class="text-sm text-slate-400">Pinging google.com (142.250.186.142) with 32 bytes of data:</p>
+                                        <p class="text-sm text-emerald-400">Reply from 142.250.186.142: bytes=32 time=12ms TTL=117</p>
+                                    </div>
+                                    
+                                    <!-- Network Status -->
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Statut Réseau</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> <span data-fr="Stable" data-en="Stable" data-sw="Imara">Stable</span></span>
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i data-lucide="wifi" class="w-4 h-4 text-white"></i>
+                                            <p class="text-sm text-white">Connexion Fibre Optique : 100 Mbps</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs text-slate-400">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                                        <span data-fr="Support 24/7" data-en="24/7 Support" data-sw="Msaada 24/7">Support 24/7</span>
+                                    </div>
+                                    <span data-fr="Sécurité Optimale" data-en="Optimal Security" data-sw="Usalama Bora">Sécurité Optimale</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secteurs Cibles -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" data-fr="Des solutions informatiques pour tous" data-en="IT solutions for everyone" data-sw="Suluhisho za IT kwa wote">Des solutions informatiques pour tous</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="wifi" class="w-6 h-6 text-brand-600"></i> <span data-fr="Internet" data-en="Internet" data-sw="Intaneti">Internet</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="printer" class="w-6 h-6 text-brand-600"></i> <span data-fr="Impression" data-en="Printing" data-sw="Uchapishaji">Impression</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="wrench" class="w-6 h-6 text-brand-600"></i> <span data-fr="Maintenance" data-en="Maintenance" data-sw="Matengenezo">Maintenance</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="graduation-cap" class="w-6 h-6 text-brand-600"></i> <span data-fr="Formation" data-en="Training" data-sw="Mafunzo">Formation</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="file-text" class="w-6 h-6 text-brand-600"></i> <span data-fr="Secrétariat" data-en="Secretarial" data-sw="Ukatibu">Secrétariat</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Catalogue Section -->
+    <section id="services" class="py-24 bg-slate-50 text-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col items-center text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Un centre, tous les services" data-en="One center, all services" data-sw="Kituo kimoja, huduma zote">Un centre, tous les services</h2>
+                <p class="text-lg text-slate-600 max-w-3xl" data-fr="Profitez d'un équipement moderne et d'une équipe dédiée pour tous vos besoins administratifs et techniques." data-en="Enjoy modern equipment and a dedicated team for all your administrative and technical needs." data-sw="Furahia vifaa vya kisasa na timu iliyojitolea kwa mahitaji yako yote ya kiutawala na kiufundi.">Profitez d'un équipement moderne et d'une équipe dédiée pour tous vos besoins administratifs et techniques.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Internet -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" alt="Accès Internet" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                    <i data-lucide="wifi" class="w-8 h-8 text-white transition-transform"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Accès Internet Haut Débit" data-en="High-Speed Internet Access" data-sw="Ufikiaji wa Intaneti ya Kasi">Accès Internet Haut Débit</h3>
+                        <span class="text-sky-100 text-sm font-medium" data-fr="Wifi & Postes Fixes" data-en="Wifi & Fixed Stations" data-sw="Wifi na Vituo Visivyohamishika">Wifi & Postes Fixes</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Connexion par fibre optique stable pour vos recherches, soumissions en ligne et streaming sans interruption." data-en="Stable fiber optic connection for your research, online submissions and uninterrupted streaming." data-sw="Muunganisho thabiti wa fiber optic kwa utafiti wako, maombi ya mtandaoni na utiririshaji bila kukatizwa.">Connexion par fibre optique stable pour vos recherches, soumissions en ligne et streaming sans interruption.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Fibre Optique" data-en="Fiber Optic" data-sw="Fiber Optic">Fibre Optique</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Postes sécurisés" data-en="Secure workstations" data-sw="Vituo salama">Postes sécurisés</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Support technique" data-en="Technical support" data-sw="Msaada wa kiufundi">Support technique</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par Heure" data-en="Price per Hour" data-sw="Bei kwa Saa">Prix par Heure</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$1</p>
+                        </div>
+                        <button onclick="addToCart('Accès Internet (1h)', 1)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Print & Scan -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1599256950000-be293147171e?auto=format&fit=crop&w=600&q=80" alt="Impression et Scan" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                    <i data-lucide="printer" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Impression, Scanning & Photocopie" data-en="Printing, Scanning & Photocopying" data-sw="Uchapishaji, Kuchanganua na Kunakili">Impression, Scanning & Photocopie</h3>
+                        <span class="text-blue-100 text-sm font-medium" data-fr="N&B / Couleur" data-en="B&W / Color" data-sw="Nyeusi na Nyeupe / Rangi">N&B / Couleur</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Qualité laser supérieure pour vos documents. Scan haute définition vers email ou clé USB." data-en="Superior laser quality for your documents. High-definition scanning to email or USB drive." data-sw="Ubora wa juu wa laser kwa nyaraka zako. Kuchanganua kwa ubora wa juu kwa barua pepe au USB.">Qualité laser supérieure pour vos documents. Scan haute définition vers email ou clé USB.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Laser couleur" data-en="Color laser" data-sw="Laser ya rangi">Laser couleur</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Scan vers email/USB" data-en="Scan to email/USB" data-sw="Changanua kwa barua pepe/USB">Scan vers email/USB</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Reliure & Plastification" data-en="Binding & Lamination" data-sw="Kufunga na Kulainisha">Reliure & Plastification</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par 3 pages" data-en="Price per 3 pages" data-sw="Bei kwa kurasa 3">Prix par 3 pages</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$2</p>
+                        </div>
+                        <button onclick="addToCart('Impression (3 pages)', 2)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversion -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1581092336009-32822131f5a1?auto=format&fit=crop&w=600&q=80" alt="Conversion de formats" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-purple-950 via-purple-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                    <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+                </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Conversion de formats" data-en="Format Conversion" data-sw="Ubadilishaji wa Umbizo">Conversion de formats</h3>
+                        <span class="text-purple-100 text-sm font-medium" data-fr="Rapide & Sans perte" data-en="Fast & Lossless" data-sw="Haraka na Bila Hasara">Rapide & Sans perte</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Traitement de vos fichiers : PDF vers Word, extraction audio de vidéos (MP4/MP3), et optimisation de poids." data-en="File processing: PDF to Word, audio extraction from videos (MP4/MP3), and size optimization." data-sw="Usindikaji wa faili zako: PDF kwenda Word, uchimbaji wa sauti kutoka video (MP4/MP3), na uboreshaji wa ukubwa.">Traitement de vos fichiers : PDF vers Word, extraction audio de vidéos (MP4/MP3), et optimisation de poids.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="PDF vers Word/Excel" data-en="PDF to Word/Excel" data-sw="PDF kwenda Word/Excel">PDF vers Word/Excel</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Audio/Vidéo extraction" data-en="Audio/Video extraction" data-sw="Uchimbaji wa Sauti/Video">Audio/Vidéo extraction</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Optimisation taille fichier" data-en="File size optimization" data-sw="Uboreshaji wa ukubwa wa faili">Optimisation taille fichier</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par Fichier" data-en="Price per File" data-sw="Bei kwa Faili">Prix par Fichier</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$5</p>
+                        </div>
+                        <button onclick="addToCart('Conversion de formats', 5)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1593642532781-03e5cb2ab42f?auto=format&fit=crop&w=600&q=80" alt="Maintenance Informatique" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-red-950 via-red-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                    <i data-lucide="wrench" class="w-8 h-8 text-white"></i>
+                </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Maintenance Informatique" data-en="IT Maintenance" data-sw="Matengenezo ya IT">Maintenance Informatique</h3>
+                        <span class="text-red-100 text-sm font-medium" data-fr="Diagnostic & Réparation" data-en="Diagnosis & Repair" data-sw="Utambuzi na Ukarabati">Diagnostic & Réparation</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Diagnostic, réparation PC/Laptop, installation d'OS, nettoyage physique et suppression de virus." data-en="Diagnosis, PC/Laptop repair, OS installation, physical cleaning and virus removal." data-sw="Utambuzi, ukarabati wa PC/Laptop, usakinishaji wa OS, usafishaji wa kimwili na kuondoa virusi.">Diagnostic, réparation PC/Laptop, usakinishaji d'OS, nettoyage physique et suppression de virus.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Diagnostic complet" data-en="Full diagnostic" data-sw="Utambuzi kamili">Diagnostic complet</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Réparation PC/Laptop" data-en="PC/Laptop repair" data-sw="Ukarabati wa PC/Laptop">Réparation PC/Laptop</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Installation OS & Logiciels" data-en="OS & Software installation" data-sw="Ufungaji wa OS na Programu">Installation OS & Logiciels</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix Diagnostic" data-en="Diagnostic Price" data-sw="Bei ya Utambuzi">Prix Diagnostic</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$15</p>
+                        </div>
+                        <button onclick="addToCart('Maintenance Informatique (Diagnostic)', 15)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formations -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Cours d'Informatique" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-yellow-900 via-yellow-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                    <i data-lucide="graduation-cap" class="w-8 h-8 text-white"></i>
+                </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Cours d'Informatique" data-en="Computer Courses" data-sw="Kozi za Kompyuta">Cours d'Informatique</h3>
+                        <span class="text-yellow-100 text-sm font-medium" data-fr="Bureautique & Internet" data-en="Office & Internet" data-sw="Ofisi na Intaneti">Bureautique & Internet</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Apprentissage pas à pas pour tous les niveaux : Bureautique, Internet, et initiation au système." data-en="Step-by-step learning for all levels: Office automation, Internet, and system initiation." data-sw="Kujifunza hatua kwa hatua kwa viwango vyote: Ofisi, Intaneti, na utangulizi wa mfumo.">Apprentissage pas à pas pour tous les niveaux : Bureautique, Navigation et initiation système.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Pack Office (Word, Excel)" data-en="Office Pack (Word, Excel)" data-sw="Pack Office (Word, Excel)">Pack Office (Word, Excel)</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Navigation Internet" data-en="Internet Navigation" data-sw="Urambazaji wa Intaneti">Navigation Internet</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Certificat de fin de cycle" data-en="End-of-cycle certificate" data-sw="Cheti cha mwisho wa mzunguko">Certificat de fin de cycle</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix du Module" data-en="Module Price" data-sw="Bei ya Moduli">Prix du Module</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$50</p>
+                        </div>
+                        <button onclick="addToCart('Cours d\'Informatique (Module)', 50)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secrétariat Public -->
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" alt="Secrétariat Public" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-orange-900 via-orange-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                        <i data-lucide="mail" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <h3 class="text-2xl font-bold text-white mb-1" data-fr="Secrétariat Public" data-en="Public Secretariat" data-sw="Ukatibu wa Umma">Secrétariat Public</h3>
+                        <span class="text-orange-100 text-sm font-medium" data-fr="Saisie, Rédaction, CV" data-en="Typing, Writing, CV" data-sw="Kuandika, Kuandika, CV">Saisie, Rédaction, CV</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Rédaction de courriers, saisie de documents, mise en forme de CV et autres tâches administratives." data-en="Letter writing, document typing, CV formatting and other administrative tasks." data-sw="Kuandika barua, kuandika nyaraka, kupanga CV na kazi zingine za kiutawala.">Rédaction de courriers, saisie de documents, mise en forme de CV et autres tâches administratives.</p>
+                    <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Rédaction de courriers" data-en="Letter writing" data-sw="Kuandika barua">Rédaction de courriers</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Saisie rapide" data-en="Fast typing" data-sw="Kuandika haraka">Saisie rapide</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Mise en forme CV" data-en="CV formatting" data-sw="Kupanga CV">Mise en forme CV</span></li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix par Page" data-en="Price per Page" data-sw="Bei kwa Ukurasa">Prix par Page</p>
+                            <p class="text-3xl font-extrabold text-brand-950">$3</p>
+                        </div>
+                        <button onclick="addToCart('Secrétariat Public (1 page)', 3)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section (Adapté à l'informatique) -->
+    <section id="avantages" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="Pourquoi Choisir BanikiLabs pour vos besoins IT ?" data-en="Why Choose BanikiLabs for your IT needs?" data-sw="Kwa Nini Uchague BanikiLabs kwa mahitaji yako ya IT?">Pourquoi Choisir BanikiLabs pour vos besoins IT ?</h2>
+                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous offrons des solutions technologiques fiables, un équipement moderne et une équipe experte pour vous accompagner dans l'ère du numérique." data-en="We offer reliable technological solutions, modern equipment and an expert team to support you in the digital age." data-sw="Tunatoa ufumbuzi wa teknolojia ya uhakika, vifaa vya kisasa na timu ya wataalam kukuunga mkono katika zama za digital.">Nous offrons des solutions technologiques fiables, un équipement moderne et une équipe experte pour vous accompagner dans l'ère du numérique.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="cpu" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Équipement de Pointe" data-en="State-of-the-art Equipment" data-sw="Vifaa vya Kisasa">Équipement de Pointe</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Des ordinateurs performants et une connexion internet haut débit par fibre optique pour un confort optimal." data-en="High-performance computers and high-speed fiber optic internet connection for optimal comfort." data-sw="Kompyuta zenye uwezo mkubwa na uhusiano wa intaneti wa fiber optic kwa faraja nzuri.">Des ordinateurs performants et une connexion internet haut débit par fibre optique pour un confort optimal.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
+                                <i data-lucide="user-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Support Expert" data-en="Expert Support" data-sw="Msaada wa Wataalam">Support Expert</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Une équipe de techniciens qualifiés sur place pour résoudre tous vos problèmes matériels et logiciels." data-en="A team of qualified technicians on site to solve all your hardware and software problems." data-sw="Timu ya mafundi waliohitimu kwenye tovuti ili kutatua matatizo yako yote ya vifaa na programu.">Une équipe de techniciens qualifiés sur place pour résoudre tous vos problèmes matériels et logiciels.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="shield" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Confidentialité Garantie" data-en="Guaranteed Privacy" data-sw="Faragha Iliyohakikishwa">Confidentialité Garantie</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Vos données, documents personnels et travaux de secrétariat sont traités avec la plus stricte confidentialité." data-en="Your data, personal documents and secretarial work are treated with the strictest confidentiality." data-sw="Data zako, nyaraka za kibinafsi na kazi za sekretarieti zinashughulikiwa kwa usiri mkubwa.">Vos données, documents personnels et travaux de secrétariat sont traités avec la plus stricte confidentialité.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual element -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
+                            function initializeBwiseNode() {
+                                return networkSystem.connect('Fiber_Node_Kin')
+                                .then(node => node.secureSync())
+                                .then(status => console.log("System Optimal", status))
+                                .catch(err => alert("Diagnostic required", err));
+                            }
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="server" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Bwise IT Center</div>
+                                            <div class="text-slate-400 text-xs" data-fr="Statut : Connecté" data-en="Status : Connected" data-sw="Hali : Imeunganishwa">Statut : Connecté</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30">
+                                        Ping: 12ms
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-full"></div>
+                                    </div>
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-accent-500 w-[95%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-slate-700 rounded-full z-0 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-800 rounded-full z-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact form -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4" data-fr="Prêt à simplifier votre quotidien ?" data-en="Ready to simplify your daily life?" data-sw="Uko tayari kurahisisha maisha yako ya kila siku?">Prêt à simplifier votre quotidien ?</h2>
+                    <p class="text-slate-600" data-fr="Contactez l'équipe BanikiLabs pour un devis, une assistance ou une inscription à nos formations." data-en="Contact the BanikiLabs team for a quote, assistance or to register for our training courses." data-sw="Wasiliana na timu ya BanikiLabs kwa nukuu, msaada au kujiandikisha kwa kozi zetu za mafunzo.">Contactez l'équipe BanikiLabs pour un devis, une assistance ou une inscription à nos formations.</p>
+                </div>
+                
+                <form class="space-y-6" id="quoteForm">
+                    <!-- Zone Panier dans le formulaire -->
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider" data-fr="Votre Sélection" data-en="Your Selection" data-sw="Uteuzi Wako">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span data-fr="Total Estimé" data-en="Estimated Total" data-sw="Jumla Iliyokadiriwa">Total Estimé</span>
+                            <span id="quote-cart-total">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Nom complet / Entreprise" data-en="Full Name / Company" data-sw="Jina Kamili / Kampuni">Nom complet / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Votre nom" data-fr-placeholder="Votre nom" data-en-placeholder="Your name" data-sw-placeholder="Jina lako">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Service principal souhaité" data-en="Main Desired Service" data-sw="Huduma Kuu Inayotakiwa">Service principal souhaité</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50">
+                                <option data-fr="Abonnement Internet" data-en="Internet Subscription" data-sw="Usajili wa Intaneti">Abonnement Internet</option>
+                                <option data-fr="Travaux d'impression volumineux" data-en="Large print jobs" data-sw="Kazi kubwa za kuchapisha">Travaux d'impression volumineux</option>
+                                <option data-fr="Réparation / Maintenance PC" data-en="PC Repair / Maintenance" data-sw="Ukarabati wa PC / Matengenezo">Réparation / Maintenance PC</option>
+                                <option data-fr="Inscription Formation IT" data-en="IT Training Registration" data-sw="Usajili wa Mafunzo ya IT">Inscription Formation IT</option>
+                                <option data-fr="Autre besoin IT" data-en="Other IT need" data-sw="Mahitaji mengine ya IT">Autre besoin IT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Email" data-en="Email" data-sw="Barua pepe">Email</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@email.com" data-fr-placeholder="contact@email.com" data-en-placeholder="contact@email.com" data-sw-placeholder="contact@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Téléphone (WhatsApp)" data-en="Phone (WhatsApp)" data-sw="Simu (WhatsApp)">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ..." data-fr-placeholder="+243 ..." data-en-placeholder="+243 ..." data-sw-placeholder="+243 ...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Détails de votre demande" data-en="Details of your request" data-sw="Maelezo ya ombi lako">Détails de votre demande</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez vos besoins spécifiques ici..." data-fr-placeholder="Décrivez vos besoins spécifiques ici..." data-en-placeholder="Describe your specific needs here..." data-sw-placeholder="Eleza mahitaji yako maalum hapa..."></textarea>
+                    </div>
+                    <button type="button" onclick="submitForm()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        <span data-fr="Envoyer la Demande" data-en="Send Request" data-sw="Tuma Ombi">Envoyer la Demande</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-2 mb-4 md:mb-0">
+                <span class="font-extrabold text-lg text-white uppercase">Baniki <span class="text-[var(--gold)]">Labs</span> Informatique</span>
+            </div>
+            <p class="text-sm text-center md:text-left">© 2026 BanikiLabs. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialiser Lucide icons
+        lucide.createIcons();
+
+        // Système de Panier
+        let cart = [];
+        let total = 0;
+
+        function addToCart(serviceName, price) {
+            cart.push({ name: serviceName, price: price });
+            total += price;
+            updateCartUI();
+            
+            // Animation du compteur
+            const counter = document.getElementById('cart-counter');
+            counter.classList.remove('hidden');
+            counter.classList.add('animate-bounce');
+            setTimeout(() => counter.classList.remove('animate-bounce'), 1000);
+            
+            // Notification visuelle
+            const btn = event.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-500"></i>';
+            lucide.createIcons();
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                lucide.createIcons();
+            }, 1000);
+        }
+
+        function removeFromCart(index) {
+            total -= cart[index].price;
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const counter = document.getElementById('cart-counter');
+            const container = document.getElementById('quote-cart-container');
+            const itemsDiv = document.getElementById('quote-cart-items');
+            const totalEl = document.getElementById('quote-cart-total');
+
+            counter.innerText = cart.length;
+            if (cart.length === 0) {
+                counter.classList.add('hidden');
+                container.classList.add('hidden');
+            } else {
+                counter.classList.remove('hidden');
+                container.classList.remove('hidden');
+            }
+
+            itemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                itemsDiv.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <span class="text-sm font-medium text-slate-700">${item.name}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold text-brand-600">$${item.price}</span>
+                            <button type="button" onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            totalEl.innerText = `$${total}`;
+        }
+
+        // Menu Mobile
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                // Change to 'X' icon manually via SVG for simplicity without re-rendering lucide
+                icon.outerHTML = '<svg id="mobile-menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                menu.classList.add('hidden');
+                icon.outerHTML = '<svg id="mobile-menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        }
+
+        // Soumission Formulaire vers WhatsApp
+        function submitForm() {
+            const name = document.getElementById('institutionName').value;
+            const service = document.getElementById('platformSelected').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
+
+            if(!name || !phone) {
+                alert('Veuillez remplir au moins votre nom et votre numéro de téléphone.');
+                return;
+            }
+
+            let cartSummary = '';
+            if (cart.length > 0) {
+                cartSummary = '%0A%0A*Sélection dans le panier:*';
+                cart.forEach(item => {
+                    cartSummary += `%0A- ${item.name} ($${item.price})`;
+                });
+                cartSummary += `%0A*Total estimé: $${total}*`;
+            }
+
+            const text = `Bonjour BanikiLabs IT,%0A%0AJe suis ${name}.%0AJe souhaite des informations pour le service: ${service}.%0A%0AMon email: ${email}%0AMon tel: ${phone}%0A%0ADétails: ${comments}${cartSummary}`;
+            
+            window.open(`https://wa.me/243978415814?text=${text}`, '_blank');
+        }
+
+        // Système de Langue
+        function setLanguage(lang) {
+            // Update buttons UI
+            const btns = ['fr', 'en', 'sw'];
+            btns.forEach(b => {
+                const btnEl = document.getElementById(`btn-${b}`);
+                if(btnEl) {
+                    if (b === lang) {
+                        btnEl.className = 'px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm';
+                    } else {
+                        btnEl.className = 'px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600 bg-transparent shadow-none';
+                    }
+                }
+            });
+
+            // Update texts
+            const elements = document.querySelectorAll(`[data-${lang}]`);
+            elements.forEach(el => {
+                if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
+                    if (el.hasAttribute(`data-${lang}-placeholder`)) {
+                        el.setAttribute('placeholder', el.getAttribute(`data-${lang}-placeholder`));
+                    }
+                } else {
+                    el.innerHTML = el.getAttribute(`data-${lang}`);
+                }
+            });
+            
+            // Re-render icons if any were inside translated text (unlikely but safe)
+            lucide.createIcons();
+            
+            // Close mobile menu if open
+            const menu = document.getElementById('mobile-menu');
+            if(!menu.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
+        }
+    </script>
+</body>
+</html>
