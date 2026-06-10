@@ -1,309 +1,867 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Podcast & Production Audio | BANIKI LABS</title>
+    <title>BanikiLabs Podcast | Studio d'Enregistrement & Production Audio RDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
         :root {
             --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
             --bg-dark: #080808;
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .hero-gradient {
-            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
-                        url('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=2072');
-            background-size: cover;
-            background-position: center;
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .card-service {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .card-service:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(255, 215, 0, 0.2);
-        }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            z-index: 100;
-            text-decoration: none;
-        }
-
-        .whatsapp-float:hover {
-            transform: translateY(-5px);
-            background-color: #128c7e;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body>
-    <!-- Bouton WhatsApp Flottant -->
-    <a href="https://wa.me/243978415814?text=Bonjour%20BANIKI%20LABS,%20je%20cherche%20un%20studio%20pour%20mon%20podcast." class="whatsapp-float">
-        <i class="fab fa-whatsapp text-2xl"></i>
-        <span>Réserver le studio</span>
-    </a>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)] transition-transform group-hover:scale-110">
-                    <span class="text-black font-black text-lg">BL</span>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <span class="font-extrabold text-lg tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </a>
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] transition-colors">Retour</a>
-                <a href="login.html" class="text-[10px] font-black uppercase tracking-widest text-[var(--gold)] border border-[var(--gold)]/20 px-3 py-2 rounded-xl hover:bg-[var(--gold)] hover:text-black transition-all">Login</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Demander un devis" data-en="Request a quote" data-sw="Omba nukuu">Demander un devis</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#services" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Services" data-en="Our Services" data-sw="Huduma Zetu">Nos Services</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="index.html#about" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="À Propos" data-en="About" data-sw="Kuhusu">À Propos</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="pt-20"></div>
-
     <!-- Hero Section -->
-    <section class="hero-gradient text-white py-20 md:py-32 px-6 text-center border-b-4 border-[var(--gold)]">
-        <div class="max-w-4xl mx-auto">
-            <div class="inline-block bg-[var(--gold)] text-black text-xs font-bold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
-                Production Audio
-            </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Studio Podcast Professionnel</h1>
-            <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
-                Enregistrez vos émissions dans un studio acoustique professionnel avec équipement dernière génération.
-            </p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#services" class="bg-[var(--gold)] hover:bg-yellow-500 text-black px-8 py-4 rounded-md font-bold text-lg transition shadow-lg">
-                    Nos Services
-                </a>
-                <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20réserver%20le%20studio%20podcast" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-md font-bold text-lg transition">
-                    Réserver Maintenant
-                </a>
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6" data-fr="Studio Podcast Professionnel" data-en="Professional Podcast Studio" data-sw="Studio ya Podcast ya Kitaalamu">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span data-fr="Production Audio & Podcast" data-en="Audio & Podcast Production" data-sw="Uzalishaji wa Sauti na Podcast">Production Audio & Podcast</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span data-fr="Faites entendre votre voix avec" data-en="Make your voice heard with" data-sw="Fanya sauti yako isikike na">Faites entendre votre voix avec</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Production de podcasts, enregistrement studio, montage audio et diffusion premium en RDC." data-en="Podcast production, studio recording, audio editing and premium distribution in DRC." data-sw="Uzalishaji wa podcast, kurekodi studio, uhariri wa sauti na usambazaji wa premium nchini DRC.">
+                        Production de podcasts, enregistrement studio, montage audio et diffusion premium en RDC.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#services" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] text-center" data-fr="Voir nos Forfaits" data-en="View our Packages" data-sw="Tazama Vifurushi Vyetu">
+                            Voir nos Forfaits
+                        </a>
+                        <a href="https://wa.me/243978415814?text=Bonjour%20BanikiLabs,%20je%20souhaite%20lancer%20mon%20podcast." target="_blank" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2" data-fr="Démarrer un Podcast" data-en="Start a Podcast" data-sw="Anza Podcast">
+                            <i data-lucide="mic" class="w-5 h-5"></i>
+                            Démarrer un Podcast
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Simulation Visual (Podcast UI) -->
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <!-- Header -->
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">baniki-audio-workstation.bin</div>
+                            </div>
+                            <!-- Simulation Workspace -->
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <!-- Sound Waves -->
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4 flex flex-col items-center gap-2">
+                                        <div class="flex items-end gap-1 h-12 w-full justify-center">
+                                            <div class="bg-brand-500 w-1 h-4 animate-pulse"></div>
+                                            <div class="bg-brand-500 w-1 h-8 animate-pulse" style="animation-delay: 0.1s"></div>
+                                            <div class="bg-brand-500 w-1 h-12 animate-pulse" style="animation-delay: 0.2s"></div>
+                                            <div class="bg-brand-400 w-1 h-6 animate-pulse" style="animation-delay: 0.3s"></div>
+                                            <div class="bg-brand-500 w-1 h-10 animate-pulse" style="animation-delay: 0.1s"></div>
+                                            <div class="bg-brand-600 w-1 h-12 animate-pulse" style="animation-delay: 0.4s"></div>
+                                            <div class="bg-brand-500 w-1 h-4 animate-pulse"></div>
+                                        </div>
+                                        <span class="text-[10px] uppercase tracking-widest text-brand-400 font-bold">Recording... 00:12:45</span>
+                                    </div>
+                                    
+                                    <!-- Track Panel -->
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Épisode 01 - L'Innovation en RDC</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live</span>
+                                        </div>
+                                        <div class="flex gap-3 items-center">
+                                            <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center border border-white/10">
+                                                <i data-lucide="play" class="w-4 h-4 text-white"></i>
+                                            </div>
+                                            <div class="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
+                                                <div class="h-full bg-brand-500 w-[45%]"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs text-slate-400">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                                        <span>Qualité Broadcast</span>
+                                    </div>
+                                    <span>Acoustique Traitée</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-20 px-6 bg-[var(--bg-dark)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Nos Services Audio</h2>
+    <!-- Secteurs Cibles -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6" data-fr="Le podcast pour tous les projets" data-en="Podcasting for every project" data-sw="Podcast kwa kila mradi">Le podcast pour tous les projets</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="user" class="w-6 h-6 text-brand-600"></i> <span data-fr="Créateurs" data-en="Creators" data-sw="Waumbaji">Créateurs</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="briefcase" class="w-6 h-6 text-brand-600"></i> <span data-fr="Entreprises" data-en="Corporate" data-sw="Makampuni">Entreprises</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="graduation-cap" class="w-6 h-6 text-brand-600"></i> <span data-fr="Éducation" data-en="Education" data-sw="Elimu">Éducation</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="newspaper" class="w-6 h-6 text-brand-600"></i> <span data-fr="Média" data-en="Media" data-sw="Habari">Média</span></div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="heart" class="w-6 h-6 text-brand-600"></i> <span data-fr="ONG" data-en="NGOs" data-sw="Mashirika yasiyo ya kiserikali">ONG</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Catalogue Section -->
+    <section id="services" class="py-24 bg-slate-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Nos Services Podcast" data-en="Our Podcast Services" data-sw="Huduma Zetu za Podcast">Nos Services Podcast</h2>
+                <p class="text-lg text-slate-600" data-fr="Des forfaits complets pour transformer votre idée en une émission audio de qualité internationale." data-en="Complete packages to transform your idea into a world-class audio show." data-sw="Vifurushi kamili kugeuza wazo lako kuwa kipindi cha sauti cha daraja la kimataifa.">Des forfaits complets pour transformer votre idée en une émission audio de qualité internationale.</p>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-microphone"></i>
+                
+                <!-- Service 1: Enregistrement Studio -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=600&q=80" alt="Enregistrement Studio" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Enregistrement Studio" data-en="Studio Recording" data-sw="Kurekodi Studio">Enregistrement Studio</h3>
+                            <span class="text-sky-100 text-sm font-medium" data-fr="Son HD, Micros Pro" data-en="HD Sound, Pro Mics" data-sw="Sauti ya HD, Maikrofoni Pro">Son HD, Micros Pro</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Enregistrement Podcast</h3>
-                    <p class="text-gray-400 mb-6">Studio acoustique professionnel pour vos émissions audio.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Isolation phonique parfaite</li>
-                        <li>• Microphones professionnels</li>
-                        <li>• Mixage audio inclus</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 50$/heure</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Capturez un son cristallin dans nos studios isolés acoustiquement avec des micros haut de gamme." data-en="Capture crystal clear sound in our acoustically isolated studios with high-end microphones." data-sw="Nasa sauti safi kabisa katika studio zetu zilizotengwa na sauti kwa kutumia maikrofoni ya hali ya juu.">Capture un son cristallin dans nos studios isolés acoustiquement avec des micros haut de gamme.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Insonorisation complète" data-en="Soundproofing" data-sw="Kutengwa kwa sauti">Insonorisation complète</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Jusqu'à 4 micros" data-en="Up to 4 microphones" data-sw="Hadi maikrofoni 4">Jusqu'à 4 micros</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Ingénieur son dédié" data-en="Sound engineer" data-sw="Mhandisi wa sauti">Ingénieur son dédié</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Heure" data-en="Per Hour" data-sw="Kwa Saa">Par Heure</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$50</p>
+                            </div>
+                            <button onclick="addToCart('Enregistrement Studio (1h)', 50)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-music"></i>
+                <!-- Service 2: Montage & Sound Design -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=600&q=80" alt="Montage Audio" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="scissors" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Montage & Mixage" data-en="Editing & Mixing" data-sw="Uhariri na Kuchanganya">Montage & Mixage</h3>
+                            <span class="text-blue-100 text-sm font-medium" data-fr="Nettoyage & Habillage" data-en="Cleaning & Soundscape" data-sw="Usafishaji na Mapambo">Nettoyage & Habillage</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Production Musicale</h3>
-                    <p class="text-gray-400 mb-6">Studio d'enregistrement pour musiciens et producteurs.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Cabine d'enregistrement</li>
-                        <li>• Logiciels professionnels</li>
-                        <li>• Mastering audio</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 75$/heure</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Suppression des bruits, égalisation, ajout de jingles et habillage sonore professionnel." data-en="Noise removal, equalization, adding jingles and professional soundscape." data-sw="Kuondoa kelele, kusawazisha, kuongeza jingles na mapambo ya sauti ya kitaalamu.">Suppression des bruits, égalisation, ajout de jingles et habillage sonore professionnel.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Nettoyage des 'euh'" data-en="Removing 'umms'" data-sw="Kuondoa 'euh'">Nettoyage des "euh"</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Compression & EQ" data-en="Compression & EQ" data-sw="Compression na EQ">Compression & EQ</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Insertion musiques & pubs" data-en="Music & Ad insertion" data-sw="Kuingiza muziki na matangazo">Insertion musiques & pubs</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Épisode" data-en="Per Episode" data-sw="Kwa Sehemu">Par Épisode</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$30</p>
+                            </div>
+                            <button onclick="addToCart('Montage Podcast', 30)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-volume-up"></i>
+                <!-- Service 3: Podcast Vidéo (Vodcast) -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=600&q=80" alt="Podcast Vidéo" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-yellow-900 via-yellow-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="video" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Podcast Vidéo (Vodcast)" data-en="Video Podcast" data-sw="Video ya Podcast">Podcast Vidéo</h3>
+                            <span class="text-yellow-100 text-sm font-medium" data-fr="Multi-cam, YouTube" data-en="Multi-cam, YouTube" data-sw="Kamera nyingi, YouTube">Multi-cam, YouTube</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Post-production Audio</h3>
-                    <p class="text-gray-400 mb-6">Mixage, mastering et effets sonores professionnels.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Égalisation & compression</li>
-                        <li>• Suppression du bruit</li>
-                        <li>• Formats multiples</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 25$/piste</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Filmez votre podcast avec plusieurs caméras 4K et un éclairage cinéma pour YouTube et TikTok." data-en="Film your podcast with multiple 4K cameras and cinema lighting for YouTube and TikTok." data-sw="Filamu podcast yako na kamera nyingi za 4K na taa za sinema kwa YouTube na TikTok.">Filmez votre podcast avec plusieurs caméras 4K et un éclairage cinéma pour YouTube et TikTok.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Prises de vues 4K" data-en="4K Footage" data-sw="Picha za 4K">Prises de vues 4K</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Montage multicam" data-en="Multi-cam editing" data-sw="Uhariri wa kamera nyingi">Montage multicam</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Format Reels/TikTok inclus" data-en="Reels/TikTok format included" data-sw="Muundo wa Reels/TikTok umejumuishwa">Format Reels/TikTok inclus</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Épisode" data-en="Per Episode" data-sw="Kwa Sehemu">Par Épisode</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$100</p>
+                            </div>
+                            <button onclick="addToCart('Podcast Vidéo', 100)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-users"></i>
+                <!-- Service 4: Diffusion & Hébergement -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1593698054469-2bb6fdf4b512?auto=format&fit=crop&w=600&q=80" alt="Diffusion" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="rss" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Diffusion & Hébergement" data-en="Distribution & Hosting" data-sw="Usambazaji na Kuhifadhi">Diffusion & Hébergement</h3>
+                            <span class="text-emerald-100 text-sm font-medium" data-fr="Spotify, Apple, Google" data-en="Spotify, Apple, Google" data-sw="Spotify, Apple, Google">Spotify, Apple, Google</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Formation Audio</h3>
-                    <p class="text-gray-400 mb-6">Ateliers pour apprendre la production audio et podcasting.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Techniques d'enregistrement</li>
-                        <li>• Logiciels DAW</li>
-                        <li>• Matériel professionnel</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">150$/session</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Mise en ligne sur Spotify, Apple Podcasts, et Google Podcasts avec suivi des statistiques." data-en="Upload to Spotify, Apple Podcasts, and Google Podcasts with analytics tracking." data-sw="Pakia kwenye Spotify, Apple Podcasts, na Google Podcasts kwa kufuatilia takwimu.">Mise en ligne sur Spotify, Apple Podcasts, et Google Podcasts avec suivi des statistiques.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Flux RSS optimisé" data-en="Optimized RSS feed" data-sw="RSS feed iliyoboreshwa">Flux RSS optimisé</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Rapports d'écoute" data-en="Listening reports" data-sw="Ripoti za kusikiliza">Rapports d'écoute</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Support marketing" data-en="Marketing support" data-sw="Msaada wa masoko">Support marketing</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Mois" data-en="Per Month" data-sw="Kwa Mwezi">Par Mois</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$20</p>
+                            </div>
+                            <button onclick="addToCart('Hébergement Podcast', 20)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-headphones"></i>
+                <!-- Service 5: Live Streaming Podcast -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1543185377-b75671097e0b?auto=format&fit=crop&w=600&q=80" alt="Live Stream" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900 via-indigo-900/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="radio" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Live Streaming Podcast" data-en="Live Stream Podcast" data-sw="Podcast ya Moja kwa Moja">Live Streaming Podcast</h3>
+                            <span class="text-indigo-100 text-sm font-medium" data-fr="Direct FB, YT, Insta" data-en="FB, YT, IG Live" data-sw="Moja kwa moja FB, YT, IG">Direct FB, YT, Insta</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Voice Over & Narration</h3>
-                    <p class="text-gray-400 mb-6">Services de voix off professionnelle pour vos projets.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Voix masculines/féminines</li>
-                        <li>• Plusieurs langues</li>
-                        <li>• Styles adaptés</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 30$/minute</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Diffusez votre émission en direct sur les réseaux sociaux avec interaction en temps réel." data-en="Broadcast your show live on social media with real-time interaction." data-sw="Tangaza kipindi chako moja kwa moja kwenye mitandao ya kijamii ukiwa na mwingiliano wa wakati halisi.">Diffusez votre émission en direct sur les réseaux sociaux avec interaction en temps réel.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Régie vidéo live" data-en="Live video control" data-sw="Udhibiti wa video moja kwa moja">Régie vidéo live</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Gestion des commentaires" data-en="Comment management" data-sw="Usimamizi wa maoni">Gestion des commentaires</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Multi-diffusion" data-en="Simulcasting" data-sw="Matangazo mengi">Multi-diffusion</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Séance" data-en="Per Session" data-sw="Kwa Kikao">Par Séance</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$150</p>
+                            </div>
+                            <button onclick="addToCart('Live Podcast', 150)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-service bg-[var(--bg-card)] p-8 rounded-2xl border border-[var(--gold)]/20">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-broadcast-tower"></i>
+                <!-- Service 6: Coaching & Scénarisation -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&w=600&q=80" alt="Coaching" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-orange-950 via-orange-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="book-open" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Coaching & Scénario" data-en="Coaching & Script" data-sw="Mafunzo na Hati">Coaching & Scénario</h3>
+                            <span class="text-orange-100 text-sm font-medium" data-fr="Conseil & Préparation" data-en="Consulting & Prep" data-sw="Ushauri na Maandalizi">Conseil & Préparation</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Diffusion & Distribution</h3>
-                    <p class="text-gray-400 mb-6">Aide à la publication et distribution de vos podcasts.</p>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li>• Optimisation SEO</li>
-                        <li>• Plateformes de streaming</li>
-                        <li>• Analytics & statistiques</li>
-                    </ul>
-                    <div class="mt-6 text-[var(--gold)] font-bold">À partir de 50$/mois</div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Aide à la structuration de vos épisodes, recherche d'invités et préparation d'interviews." data-en="Help with episode structure, guest research and interview preparation." data-sw="Saidia katika kupanga sehemu zako, kutafuta wageni na kuandaa mahojiano.">Aide à la structuration de vos épisodes, recherche d'invités et préparation d'interviews.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Écriture de scripts" data-en="Script writing" data-sw="Uandishi wa hati">Écriture de scripts</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Techniques d'interview" data-en="Interview techniques" data-sw="Mbinu za mahojiano">Techniques d'interview</span></li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Choix du nom & visuel" data-en="Branding advice" data-sw="Ushauri wa chapa">Choix du nom & visuel</span></li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Par Heure" data-en="Per Hour" data-sw="Kwa Saa">Par Heure</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$40</p>
+                            </div>
+                            <button onclick="addToCart('Coaching Podcast', 40)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="avantages" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="Pourquoi Choisir BanikiLabs pour vos Podcasts ?" data-en="Why Choose BanikiLabs for your Podcasts?" data-sw="Kwa Nini Uchague BanikiLabs kwa Podcasts Zako?">Pourquoi Choisir BanikiLabs pour vos Podcasts ?</h2>
+                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous combinons créativité, expertise technique et équipement de pointe pour des podcasts qui captivent et font passer votre message." data-en="We combine creativity, technical expertise and state-of-the-art equipment for podcasts that captivate and deliver your message." data-sw="Tunachanganya ubunifu, utaalamu wa kiufundi na vifaa vya kisasa kwa podcasts zinazovutia na kufikisha ujumbe wako.">Nous combinons créativité, expertise technique et équipement de pointe pour des podcasts qui captivent et font passer votre message.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="headphones" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Équipement Broadcast" data-en="Broadcast Equipment" data-sw="Vifaa vya Matangazo">Équipement Broadcast</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Microphones haut de gamme, préamplis professionnels et monitoring précis pour un son parfait." data-en="High-end microphones, professional preamps and precise monitoring for perfect sound." data-sw="Maikrofoni za hali ya juu, preamps za kitaalamu na ufuatiliaji sahihi kwa sauti kamili.">Microphones haut de gamme, préamplis professionnels et monitoring précis pour un son parfait.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
+                                <i data-lucide="volume-2" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Post-Production Audio" data-en="Audio Post-Production" data-sw="Uzalishaji wa Sauti">Post-Production Audio</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Mixage, mastering et design sonore de haute qualité pour sublimer votre voix." data-en="High-quality mixing, mastering and sound design to enhance your voice." data-sw="Kuchanganya, mastering na usanifu wa sauti wa hali ya juu ili kuboresha sauti yako.">Mixage, mastering et design sonore de haute qualité pour sublimer votre voix.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="globe" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900" data-fr="Visibilité Globale" data-en="Global Visibility" data-sw="Mwonekano wa Ulimwengu">Visibilité Globale</h4>
+                                <p class="text-slate-600 text-sm mt-1" data-fr="Diffusion sur toutes les plateformes majeures pour toucher une audience mondiale." data-en="Distribution on all major platforms to reach a global audience." data-sw="Usambazaji kwenye majukwaa yote makuu ili kufikia hadhira ya ulimwengu.">Diffusion sur toutes les plateformes majeures pour toucher une audience mondiale.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract visual representation -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
+                            function createPodcast(show) {
+                                return audioEngine.record(show.guests)
+                                .then(raw => mixer.polish(raw, show.style))
+                                .then(master => distribution.pushToSpotify(master))
+                                .then(master => distribution.pushToApple(master))
+                                .catch(err => console.error("Audio error:", err));
+                            }
+                            createPodcast().then(res => console.log("On Air!"));
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="mic" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Baniki Audio Engine</div>
+                                            <div class="text-slate-400 text-xs" data-fr="Statut : Opérationnel" data-en="Status : Operational" data-sw="Hali : Inafanya kazi">Statut : Opérationnel</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-bold uppercase tracking-widest">
+                                        Qualité 100%
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-full"></div>
+                                    </div>
+                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-accent-500 w-[95%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-slate-700 rounded-full z-0 animate-pulse-slow"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-800 rounded-full z-0"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Équipement Section -->
-    <section class="py-20 px-6 bg-[var(--bg-card)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Notre Équipement</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-microphone-alt"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Microphones</h3>
-                    <p class="text-gray-400">Neumann, Rode, Audio-Technica - Microphones professionnels haute qualité.</p>
+    <!-- CTA / Contact form -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI0M0UiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4" data-fr="Prêt à lancer votre émission ?" data-en="Ready to launch your show?" data-sw="Uko tayari kuzindua kipindi chako?">Prêt à lancer votre émission ?</h2>
+                    <p class="text-slate-600" data-fr="Contactez l'équipe BanikiLabs pour un devis personnalisé et une production audio inoubliable." data-en="Contact the BanikiLabs team for a personalized quote and unforgettable audio production." data-sw="Wasiliana na timu ya BanikiLabs kwa nukuu maalum na uzalishaji wa sauti usioweza kusahaulika.">Contactez l'équipe BanikiLabs pour un devis personnalisé et une production audio inoubliable.</p>
                 </div>
-
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-sliders-h"></i>
+                
+                <form class="space-y-6">
+                    <!-- Zone Panier dans le formulaire -->
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider" data-fr="Votre Sélection" data-en="Your Selection" data-sw="Uteuzi Wako">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span data-fr="Total Estimé" data-en="Estimated Total" data-sw="Jumla Iliyokadiriwa">Total Estimé</span>
+                            <span id="quote-cart-total">$0</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Interfaces Audio</h3>
-                    <p class="text-gray-400">Focusrite, Universal Audio - Conversion analogique/numérique premium.</p>
-                </div>
 
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-headphones"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Nom de l'institution / Entreprise" data-en="Institution / Company Name" data-sw="Jina la Taasisi / Kampuni">Nom de l'institution / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Ex: Studio Podcast Pro" data-fr-placeholder="Ex: Studio Podcast Pro" data-en-placeholder="Ex: Pro Podcast Studio" data-sw-placeholder="Mfano: Studio ya Podcast ya Kitaalamu">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Service souhaité" data-en="Desired Service" data-sw="Huduma Inayotakiwa">Service souhaité</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50">
+                                <option data-fr="Enregistrement Studio" data-en="Studio Recording" data-sw="Kurekodi Studio">Enregistrement Studio</option>
+                                <option data-fr="Montage & Sound Design" data-en="Editing & Sound Design" data-sw="Uhariri na Usanifu wa Sauti">Montage & Sound Design</option>
+                                <option data-fr="Podcast Vidéo (Vodcast)" data-en="Video Podcast" data-sw="Video ya Podcast">Podcast Vidéo</option>
+                                <option data-fr="Diffusion & Hébergement" data-en="Distribution & Hosting" data-sw="Usambazaji na Kuhifadhi">Diffusion & Hébergement</option>
+                                <option data-fr="Live Streaming Podcast" data-en="Live Stream Podcast" data-sw="Podcast ya Moja kwa Moja">Live Streaming Podcast</option>
+                                <option data-fr="Coaching & Scénarisation" data-en="Coaching & Script" data-sw="Mafunzo na Hati">Coaching & Scénarisation</option>
+                                <option data-fr="Autre projet audio" data-en="Other audio project" data-sw="Mradi mwingine wa sauti">Autre projet audio</option>
+                            </select>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Casques</h3>
-                    <p class="text-gray-400">Sony, Beyerdynamic - Écoute de monitoring professionnelle.</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-desktop"></i>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Date et créneau souhaités" data-en="Desired date and time slot" data-sw="Tarehe na muda unaotakiwa">Date et créneau souhaités</label>
+                        <div class="relative">
+                            <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 z-10 pointer-events-none"></i>
+                            <input type="text" id="sessionDateTime" required class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Sélectionnez la date et l'heure" data-fr-placeholder="Sélectionnez la date et l'heure" data-en-placeholder="Select date and time" data-sw-placeholder="Chagua tarehe na saa">
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Logiciels</h3>
-                    <p class="text-gray-400">Pro Tools, Logic Pro, Adobe Audition - Suite complète de production.</p>
-                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Email professionnel" data-en="Professional Email" data-sw="Barua pepe ya kitaalamu">Email professionnel</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@entreprise.com" data-fr-placeholder="contact@entreprise.com" data-en-placeholder="contact@company.com" data-sw-placeholder="contact@kampuni.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Téléphone (WhatsApp)" data-en="Phone (WhatsApp)" data-sw="Simu (WhatsApp)">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ..." data-fr-placeholder="+243 ..." data-en-placeholder="+243 ..." data-sw-placeholder="+243 ...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Commentaires sur votre projet" data-en="Project Comments" data-sw="Maoni kuhusu mradi wako">Commentaires sur votre projet</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez votre concept (sujet, nombre d'invités, fréquence...)" data-fr-placeholder="Décrivez votre concept (sujet, nombre d'invités, fréquence...)" data-en-placeholder="Describe your concept (topic, number of guests, frequency...)" data-sw-placeholder="Eleza dhana yako (mada, idadi ya wageni, marudio...)."></textarea>
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center gap-2">
+                        <span data-fr="Envoyer le devis" data-en="Send the quote" data-sw="Tuma nukuu">Envoyer le devis</span> <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </section>
 
-    <!-- Avantages Section -->
-    <section class="py-20 px-6 bg-[var(--bg-dark)]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-16">Pourquoi Notre Studio ?</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-shield-alt"></i>
+    <!-- Footer Section Harmonisée -->
+    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
+            <div class="space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Acoustique Parfaite</h3>
-                    <p class="text-gray-400">Traitement acoustique professionnel pour une qualité audio exceptionnelle.</p>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-tools"></i>
+                <div class="space-y-4">
+                    <p class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span data-fr="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo" data-en="No. 18, Salongo Avenue, Bandalungwa, Kinshasa, DR Congo" data-sw="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo">N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span data-fr="banikilabs@gmail.com" data-en="banikilabs@gmail.com" data-sw="banikilabs@gmail.com">banikilabs@gmail.com</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-fr="Informations Légales" data-en="Legal Information" data-sw="Habari za kisheria">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-4">Équipement Complet</h3>
-                    <p class="text-gray-400">Tout le matériel nécessaire pour vos productions audio professionnelles.</p>
                 </div>
+            </div>
 
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Expertise</h3>
-                    <p class="text-gray-400">Ingénieurs du son expérimentés pour vous accompagner dans vos projets.</p>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Suivez l'innovation" data-en="Follow Innovation" data-sw="Fuata Ubunifu">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
                 </div>
+            </div>
 
-                <div class="text-center">
-                    <div class="text-[var(--gold)] text-4xl mb-4">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Flexibilité</h3>
-                    <p class="text-gray-400">Horaires adaptés à vos besoins, y compris en soirée et week-end.</p>
+            <div class="space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Vision" data-en="Vision" data-sw="Maono">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-fr="&quot;Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.&quot;" data-en="&quot;Building the future, one project at a time, from the heart of Kinshasa.&quot;" data-sw="&quot;Kujenga mustakabali, mradi mmoja baada ya mwingine, kutoka moyoni mwa Kinshasa.&quot;">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400" data-fr="Heures d'opération : 24/7 Innovation" data-en="Hours of operation: 24/7 Innovation" data-sw="Saa za kazi : Ubunifu 24/7">Heures d'opération : 24/7 Innovation</span>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="py-20 px-6 bg-gradient-to-r from-[var(--bg-card)] to-[var(--bg-dark)]">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-5xl font-bold mb-8">Prêt à Enregistrer ?</h2>
-            <p class="text-xl text-gray-400 mb-10">Réservez notre studio podcast professionnel pour votre prochain projet audio.</p>
-            <a href="https://wa.me/243978415814?text=Bonjour,%20je%20souhaite%20réserver%20le%20studio%20podcast%20de%20BANIKI%20LABS" class="bg-[var(--gold)] text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
-                Réserver Mon Créneau
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-[var(--bg-card)] py-12 px-6 border-t border-[var(--gold)]/20">
-        <div class="max-w-6xl mx-auto text-center">
-            <div class="flex items-center justify-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
-                    <span class="text-black font-black text-lg">BL</span>
-                </div>
-                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </div>
-            <p class="text-gray-400">© 2025 BANIKI LABS. Tous droits réservés.</p>
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
+            &copy; 2025. <span data-fr="TOUS DROITS RÉSERVÉS." data-en="ALL RIGHTS RESERVED." data-sw="HAKI ZOTE ZIMEHIFADHIWA.">TOUS DROITS RÉSERVÉS.</span>
         </div>
     </footer>
+
+    <!-- Logic and Initialize Icons -->
+    <script>
+        let cart = [];
+        let currentLang = 'fr';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-fr], [data-en], [data-sw]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text !== null) {
+                    el.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            node.textContent = text;
+                        }
+                    });
+                    if (el.children.length === 0) el.innerText = text;
+                }
+            });
+            
+            document.querySelectorAll('[data-fr-placeholder], [data-en-placeholder], [data-sw-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
+            });
+
+            const btnFr = document.getElementById('btn-fr');
+            const btnEn = document.getElementById('btn-en');
+            const btnSw = document.getElementById('btn-sw');
+
+            if (lang === 'fr') {
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'en') {
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'sw') {
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            }
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartCounter();
+            renderQuoteCart();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCartItemQuantity(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + delta;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+            }
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function renderQuoteCart() {
+            const container = document.getElementById('quote-cart-items');
+            const totalSpan = document.getElementById('quote-cart-total');
+            const cartContainer = document.getElementById('quote-cart-container');
+            if (cart.length > 0) {
+                cartContainer.classList.remove('hidden');
+                let total = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const qty = item.quantity || 1;
+                    const itemTotal = item.price * qty;
+                    total += itemTotal;
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-800">${item.name}</p>
+                                <p class="text-sm text-slate-500">$${item.price.toFixed(2)} x ${qty}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateCartItemQuantity(${index}, -1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">-</button>
+                                <span class="font-bold text-slate-900">${qty}</span>
+                                <button onclick="updateCartItemQuantity(${index}, 1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">+</button>
+                                <button onclick="removeCartItem(${index})" class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center text-sm ml-2">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-slate-900 ml-4">$${itemTotal.toFixed(2)}</span>
+                        </div>`;
+                }).join('');
+                totalSpan.innerText = `$${total.toFixed(2)}`;
+                lucide.createIcons();
+            } else {
+                cartContainer.classList.add('hidden');
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            if (totalQty > 0) {
+                counter.innerText = totalQty;
+                counter.classList.remove('hidden');
+            } else {
+                counter.classList.add('hidden');
+            }
+        }
+ 
+        function sendWhatsAppDevis() {
+            const institution = document.getElementById('institutionName').value;
+            const platform = document.getElementById('platformSelected').value;
+            const dateTime = document.getElementById('sessionDateTime').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
+
+            if(!institution || !email || !phone || !dateTime) {
+                const alertMsg = currentLang === 'fr' ? "Veuillez remplir les champs obligatoires (Institution, Email, Téléphone, Date)." : (currentLang === 'en' ? "Please fill in the required fields (Institution, Email, Phone, Date)." : "Tafadhali jaza sehemu zinazohitajika (Taasisi, Barua pepe, Simu, Tarehe).");
+                alert(alertMsg);
+                return;
+            }
+
+            let cartInfo = "";
+            if (cart.length > 0) {
+                cartInfo = (currentLang === 'fr' ? "\n\nPanier sélectionné :\n" : (currentLang === 'en' ? "\n\nSelected Cart:\n" : "\n\nKikapu kilichochaguliwa:\n")) + 
+                           cart.map(item => `- ${item.name} (${item.quantity}x $${item.price.toFixed(2)})`).join("\n");
+            }
+
+            const intro = currentLang === 'fr' ? "Bonjour BANIKI LABS, je souhaite obtenir un devis :" : (currentLang === 'en' ? "Hello BANIKI LABS, I would like to get a quote:" : "Habari BANIKI LABS, ningependa kupata nukuu:");
+            const msgInstitution = currentLang === 'fr' ? "- Institution" : (currentLang === 'en' ? "- Institution" : "- Taasisi");
+            const msgPlatform = currentLang === 'fr' ? "- Service" : (currentLang === 'en' ? "- Service" : "- Huduma");
+            const msgDateTime = currentLang === 'fr' ? "- RDV" : (currentLang === 'en' ? "- Appointment" : "- Miadi");
+            const msgEmail = currentLang === 'fr' ? "- Email" : (currentLang === 'en' ? "- Email" : "- Barua pepe");
+            const msgPhone = currentLang === 'fr' ? "- Téléphone" : (currentLang === 'en' ? "- Phone" : "- Simu");
+            const msgComments = currentLang === 'fr' ? "- Commentaires" : (currentLang === 'en' ? "- Comments" : "- Maoni");
+
+            const message = `${intro}\n\n${msgInstitution}: ${institution}\n${msgPlatform}: ${platform}\n${msgDateTime}: ${dateTime}\n${msgEmail}: ${email}\n${msgPhone}: ${phone}\n${msgComments}: ${comments}${cartInfo}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/243978415814?text=${encodedMessage}`, '_blank');
+        }
+
+        lucide.createIcons();
+
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+
+        // Initial call to set language and render cart on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage(currentLang);
+            renderQuoteCart();
+
+            // Initialisation de Flatpickr pour la réservation de séance
+            flatpickr("#sessionDateTime", {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                minDate: "today",
+                time_24hr: true
+            });
+        });
+    </script>
+
 </body>
 </html>
