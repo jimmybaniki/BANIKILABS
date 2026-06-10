@@ -81,28 +81,32 @@
                     <a href="#solutions" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
                     <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
                 </div>
-                <div class="hidden md:flex items-center gap-4">
-                    <!-- Cart Counter -->
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
                     <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView()">
                         <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
                         <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                     </div>
-                    <!-- Language Switcher -->
-                    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                        <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
-                        <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
-                        <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Contacter les ventes" data-en="Contact Sales" data-sw="Wasiliana na mauzo">Contacter les ventes</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
                     </div>
-                    <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
-                        <span data-fr="Contacter les ventes" data-en="Contact Sales" data-sw="Wasiliana na mauzo">Contacter les ventes</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
-                        <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
-                    </button>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
