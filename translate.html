@@ -1,14 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANIKI LABS | Traduction Professionnelle</title>
+    <title>Baniki Translate Premium | BanikiLabs RDC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
         :root {
             --gold: #FFD700;
             --gold-soft: rgba(255, 215, 0, 0.15);
@@ -16,241 +46,904 @@
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            scroll-behavior: smooth;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fadeIn {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .glass-card:hover {
-            border-color: var(--gold);
-            background: rgba(255, 215, 0, 0.05);
-            transform: translateY(-5px);
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="overflow-x-hidden">
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
-                <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
-                    <span class="text-black font-black text-xl tracking-tighter">BL</span>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <span class="font-extrabold text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#simulateur" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Simulateur" data-en="Simulator" data-sw="Simuleta">Simulateur</a>
+                    <a href="#solutions" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Services Premium" data-en="Premium Services" data-sw="Huduma za Premium">Services Premium</a>
+                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Cart Counter visible on all screens -->
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <!-- Language Switcher -->
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span data-fr="Devis sur mesure" data-en="Custom Quote" data-sw="Nukuu ya kipekee">Devis sur mesure</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="hidden lg:flex items-center gap-8 mr-4">
-                    <a href="index.html#about" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">À Propos</a>
-                    <a href="index.html#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Expertises</a>
-                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Infos & Contact</a>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#simulateur" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Simulateur" data-en="Simulator" data-sw="Simuleta">Simulateur</a>
+                    <a href="#solutions" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Services Premium" data-en="Premium Services" data-sw="Huduma za Premium">Services Premium</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="index.html#about" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="À Propos" data-en="About" data-sw="Kuhusu">À Propos</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative pt-40 pb-24 px-6 bg-[var(--bg-dark)] overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="animate-fadeIn">
-                    <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-6">
-                        L'EXCELLENCE<br><span class="text-[var(--gold)]">LINGUISTIQUE.</span>
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6" data-fr="Services Certifiés pour la RDC & l'International" data-en="Certified Services for DRC & International" data-sw="Huduma zilizothibitishwa za DRC na Kimataifa">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span data-fr="Services Certifiés pour la RDC & l'International" data-en="Certified Services for DRC & International" data-sw="Huduma zilizothibitishwa za DRC na Kimataifa">Services Certifiés pour la RDC & l'International</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span data-fr="Traductions professionnelles par" data-en="Professional translations by" data-sw="Tafsiri za kitaalamu na">Traductions professionnelles par</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
                     </h1>
-                    <p class="text-gray-400 text-lg leading-relaxed max-w-xl">
-                        Service de traduction professionnelle au cœur de Kinshasa. Connectez-vous avec des experts qualifiés pour vos documents officiels et interprétations en plusieurs langues.
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Des traductions assermentées et techniques pour cabinets d'avocats, universités, compagnies aériennes, hôtels et institutions financières en RDC." data-en="Certified and technical translations for law firms, universities, airlines, hotels and financial institutions in DRC." data-sw="Tafsiri zilizoidhinishwa na za kiufundi kwa makampuni ya sheria, vyuo vikuu, mashirika ya ndege, hoteli na taasisi za kifedha nchini DRC.">
+                        Des traductions assermentées et techniques pour cabinets d'avocats, universités, compagnies aériennes, hôtels et institutions financières en RDC.
                     </p>
-                    <div class="mt-10 flex flex-wrap gap-4">
-                        <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-                            Commander maintenant
-                            <i class="fas fa-arrow-right"></i>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#simulateur" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] text-center" data-fr="Calculer un prix" data-en="Calculate price" data-sw="Hesabu bei">
+                            Calculer un prix
+                        </a>
+                        <a href="#solutions" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2" data-fr="Voir les packs premium" data-en="See premium packs" data-sw="Tazama vifurushi vya premium">
+                            Voir les packs premium
                         </a>
                     </div>
                 </div>
-                <div class="relative animate-fadeIn" style="animation-delay: 0.2s">
-                    <div class="aspect-video rounded-[3rem] overflow-hidden border border-[var(--gold)]/20 shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1024" alt="Traduction professionnelle" class="w-full h-full object-cover">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Languages Section -->
-    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">LANGUES DISPONIBLES</h2>
-                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
-                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">Plus de 10 langues clés gérées par nos spécialistes locaux.</p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="glass-card p-8 rounded-3xl text-center">
-                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
-                    <h3 class="font-black uppercase tracking-widest">Français</h3>
-                </div>
-                <div class="glass-card p-8 rounded-3xl text-center">
-                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
-                    <h3 class="font-black uppercase tracking-widest">Anglais</h3>
-                </div>
-                <div class="glass-card p-8 rounded-3xl text-center">
-                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
-                    <h3 class="font-black uppercase tracking-widest">Lingala</h3>
-                </div>
-                <div class="glass-card p-8 rounded-3xl text-center">
-                    <div class="text-4xl mb-4 text-[var(--gold)]"><i class="fas fa-flag"></i></div>
-                    <h3 class="font-black uppercase tracking-widest">Swahili</h3>
-                </div>
-            </div>
-        </div>
-    </section>
+                <!-- Simulation Visual (CSS Translate UI) -->
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <!-- Header -->
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">baniki-translate-v2.bin</div>
+                            </div>
+                            <!-- Simulation Workspace -->
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <!-- Source Panel -->
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-brand-400 font-bold">Texte Source (Français)</span>
+                                            <span class="text-xs text-slate-500">RDC Affaires Étrangères</span>
+                                        </div>
+                                        <p class="text-sm text-slate-200">« Les documents juridiques et académiques doivent être soumis avec une traduction certifiée conforme. »</p>
+                                    </div>
+                                    
+                                    <!-- Arrow icon spacer -->
+                                    <div class="flex justify-center">
+                                        <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center border border-brand-500/30">
+                                            <i data-lucide="arrow-down" class="w-4 h-4 text-brand-400"></i>
+                                        </div>
+                                    </div>
 
-    <!-- Services Section -->
-    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">NOS EXPERTISES</h2>
-                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="glass-card p-10 rounded-[3rem] space-y-6">
-                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-file-contract"></i></div>
-                    <h3 class="text-2xl font-black tracking-tight uppercase">Traduction de documents</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Traduction professionnelle de vos documents officiels, contrats, rapports et plus encore.</p>
-                </div>
-                <div class="glass-card p-10 rounded-[3rem] space-y-6">
-                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-headset"></i></div>
-                    <h3 class="text-2xl font-black tracking-tight uppercase">Interprétation</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Services d'interprétation simultanée pour vos réunions, conférences et événements.</p>
-                </div>
-                <div class="glass-card p-10 rounded-[3rem] space-y-6">
-                    <div class="text-4xl text-[var(--gold)]"><i class="fas fa-video"></i></div>
-                    <h3 class="text-2xl font-black tracking-tight uppercase">Traduction vidéo</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Sous-titrage et doublage pour vos vidéos professionnelles ou personnelles.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+                                    <!-- Target Panel -->
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Traduction IA + Humaine (Anglais)</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Validé</span>
+                                        </div>
+                                        <p class="text-sm text-white">"Legal and academic documents must be submitted with a certified translation."</p>
+                                    </div>
+                                </div>
 
-    <!-- Testimonials -->
-    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">TÉMOIGNAGES</h2>
-                <div class="h-1.5 w-24 bg-[var(--gold)] mx-auto rounded-full"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">JK</div>
-                        <div>
-                            <h4 class="font-black uppercase text-xs">Jean Kabasele</h4>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Entrepreneur</p>
+                                <div class="flex justify-between items-center text-xs text-slate-400">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                        <span>Conforme aux normes internationales</span>
+                                    </div>
+                                    <span>Confidentialité 100%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm italic leading-relaxed">"Service rapide et hautement professionnel pour mes contrats commerciaux. Je recommande vivement."</p>
-                </div>
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">MM</div>
-                        <div>
-                            <h4 class="font-black uppercase text-xs">Marie-Louise Mbala</h4>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Avocate</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-sm italic leading-relaxed">"L'interprète fourni pour mon procès international était exceptionnel. Très compétent."</p>
-                </div>
-                <div class="glass-card p-8 rounded-3xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-[var(--gold)]">PN</div>
-                        <div>
-                            <h4 class="font-black uppercase text-xs">Pascal Ntumba</h4>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Directeur d'ONG</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-sm italic leading-relaxed">"Nous faisons régulièrement appel à eux pour nos rapports annuels. Toujours à l'heure."</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-24 px-6 bg-[var(--bg-dark)] border-t border-white/5">
-        <div class="max-w-4xl mx-auto glass-card p-16 rounded-[4rem] text-center space-y-8">
-            <h2 class="text-4xl md:text-6xl font-black tracking-tighter">PRÊT À COMMENCER ?</h2>
-            <p class="text-gray-400 text-lg">Obtenez un devis gratuit en quelques minutes pour votre projet linguistique.</p>
-            <a href="https://wa.me/243978415814" class="inline-flex items-center gap-4 bg-[var(--gold)] text-black px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-                Demander un devis
-                <i class="fas fa-paper-plane"></i>
-            </a>
+    <!-- Secteurs Cibles -->
+    <section class="py-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6">Traductions adaptées à vos exigences sectorielles</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="scale" class="w-6 h-6 text-brand-600"></i> Cabinets d'Avocats</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="graduation-cap" class="w-6 h-6 text-brand-600"></i> Universités</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="plane" class="w-6 h-6 text-brand-600"></i> Agences de Voyage</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="building" class="w-6 h-6 text-brand-600"></i> Institutions</div>
+                <div class="flex items-center gap-2 text-slate-800 font-bold"><i data-lucide="hotel" class="w-6 h-6 text-brand-600"></i> Hôtels & Restos</div>
+            </div>
         </div>
     </section>
 
-    <!-- Footer Section -->
+    <!-- Simulateur de Tarification Interactive -->
+    <section id="simulateur" class="py-20 bg-slate-100">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <span class="text-sm font-bold text-brand-600 uppercase tracking-wider" data-fr="Estimez vos coûts en 1 clic" data-en="Estimate your costs in 1 click" data-sw="Kadiria gharama zako kwa mbofyo 1">Estimez vos coûts en 1 clic</span>
+                    <h2 class="text-3xl font-bold text-slate-900 mt-2" data-fr="Simulateur de Devis Instantané" data-en="Instant Quote Simulator" data-sw="Simuleta ya Nukuu ya Papo hapo">Simulateur de Devis Instantané</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2" data-fr="Type de Document" data-en="Document Type" data-sw="Aina ya Hati">Type de Document</label>
+                        <select id="docType" onchange="calculatePrice()" class="w-full px-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            <option value="0.08">Document Général / Commercial ($0.08 / mot)</option>
+                            <option value="0.12">Document Académique / Diplômes ($0.12 / mot)</option>
+                            <option value="0.15">Contrat Juridique / Actes Avocats ($0.15 / mot)</option>
+                            <option value="0.18">Rapport Médical / Technique ($0.18 / mot)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2" data-fr="Langue Source" data-en="Source Language" data-sw="Lugha asilia">Langue Source</label>
+                            <select class="w-full px-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                                <option data-fr="Français (RDC)" data-en="French (DRC)" data-sw="Kifaransa (DRC)">Français (RDC)</option>
+                                <option data-fr="Anglais" data-en="English" data-sw="Kiingereza">Anglais</option>
+                                <option>Lingala / Swahili / Tshiluba / Kikongo</option>
+                                <option>Chinois / Allemand / Espagnol</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2" data-fr="Langue Cible" data-en="Target Language" data-sw="Lugha lengwa">Langue Cible</label>
+                            <select class="w-full px-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                                <option data-fr="Anglais" data-en="English" data-sw="Kiingereza">Anglais</option>
+                                <option data-fr="Français (RDC)" data-en="French (DRC)" data-sw="Kifaransa (DRC)">Français (RDC)</option>
+                                <option>Chinois</option>
+                                <option>Allemand / Espagnol / Portugais</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-sm font-semibold text-slate-700" data-fr="Nombre estimé de mots" data-en="Estimated word count" data-sw="Idadi ya maneno inayokadiriwa">Nombre estimé de mots</label>
+                            <span id="wordCountLabel" class="text-brand-600 font-bold">500 mots</span>
+                        </div>
+                        <input type="range" id="wordRange" min="100" max="10000" step="100" value="500" oninput="updateWordCount(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                    </div>
+
+                    <!-- Certification Option -->
+                    <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" id="certifiedCheck" onchange="calculatePrice()" class="w-5 h-5 accent-brand-600 cursor-pointer">
+                        <div>
+                            <label for="certifiedCheck" class="font-bold text-slate-800 cursor-pointer" data-fr="Ajouter une Certification Assermentée (RDC)" data-en="Add Sworn Certification (DRC)" data-sw="Ongeza Cheti Kilichoidhinishwa (DRC)">Ajouter une Certification Assermentée (RDC)</label>
+                            <p class="text-xs text-slate-500" data-fr="Ajoute un sceau officiel reconnu par les ambassades et ministères (+ $45 fixes)" data-en="Adds an official seal recognized by embassies and ministries (+ $45 fixed)" data-sw="Huongeza muhuri rasmi unaotambuliwa na balozi na wizara (+ $45 za kudumu)">Ajoute un sceau officiel reconnu par les ambassades et ministères (+ $45 fixes)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-950 text-white rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <p class="text-sm text-slate-400" data-fr="Prix total estimé (TVA comprise)" data-en="Total estimated price (VAT included)" data-sw="Jumla ya bei inayokadiriwa (pamoja na VAT)">Prix total estimé (TVA comprise)</p>
+                            <p id="totalPrice" class="text-4xl font-black text-brand-500">$40.00</p>
+                        </div>
+                        <button onclick="addSimulatedToCart()" class="w-full md:w-auto px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            <span data-fr="Ajouter ce devis au panier" data-en="Add this quote to cart" data-sw="Ongeza nukuu hii kwenye kikapu">Ajouter ce devis au panier</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Catalogue Section -->
+    <section id="solutions" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Abonnements & Services Premium" data-en="Subscriptions & Premium Services" data-sw="Usajili na Huduma za Premium">Abonnements & Services Premium</h2>
+                <p class="text-lg text-slate-600" data-fr="Pour les entreprises, cabinets ou universités ayant des besoins réguliers. Optez pour nos forfaits ou services à la carte." data-en="For companies, firms or universities with regular needs. Choose our packages or à la carte services." data-sw="Kwa makampuni, ofisi au vyuo vikuu vyenye mahitaji ya kila mara. Chagua vifurushi vyetu au huduma za mfululizo.">Pour les entreprises, cabinets ou universités ayant des besoins réguliers. Optez pour nos forfaits ou services à la carte.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Service 1: Traduction de documents -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80" alt="Traduction de documents officiels" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Pack Documents Pro</h3>
+                            <span class="text-sky-100 text-sm font-medium">Pour Entreprises & Voyageurs</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Traduction de vos documents Word/PDF (jusqu'à 1500 mots) en conservant la mise en page originale de vos designs.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Conservation des images & tableaux</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Formats PDF, DOCX, PPTX</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Double relecture linguistique</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix du Pack</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$50</p>
+                            </div>
+                            <button onclick="addToCart('Pack Documents Pro', 50)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 2: Accès API -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80" alt="Code informatique intégration" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="code" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Accès API Illimité</h3>
+                            <span class="text-blue-100 text-sm font-medium">Pour Développeurs & Tech</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Intégrez la puissance de traduction de BanikiTranslate directement dans vos applications, sites web ou progiciels ERP.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Latence ultra-faible < 200ms</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> 1 000 000 de caractères par mois</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Support technique prioritaire</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Mensuel / Abonnement</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$200</p>
+                            </div>
+                            <button onclick="addToCart('Accès API Illimité', 200)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 3: Traduction Juridique -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Balance de la justice" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="scale" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Support Juridique</h3>
+                            <span class="text-slate-100 text-sm font-medium">Pour Cabinets d'Avocats</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Prise en charge de vos contrats complexes, brevets, statuts juridiques d'entreprises par des traducteurs experts du droit.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Traducteurs natifs spécialisés en droit</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Clause de confidentialité stricte (NDA)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Certifié conforme RDC & International</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Tarif Forfaitaire</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$150</p>
+                            </div>
+                            <button onclick="addToCart('Support Juridique', 150)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 4: Localisation de Sites Web -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="Ordinateur site internet" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyan-950 via-cyan-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="globe" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Localisation Web</h3>
+                            <span class="text-cyan-100 text-sm font-medium">Pour Hotels & Agences</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Traduisez votre site vitrine, plateforme e-commerce ou application mobile en anglais et chinois pour attirer les clients du monde entier.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Traduction SEO-friendly</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Intégration directe CMS (WordPress, Shopify)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Adaptations culturelles locales</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Par site web (Standard)</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$350</p>
+                            </div>
+                            <button onclick="addToCart('Localisation Web', 350)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 5: Interprétariat Événementiel -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=600&q=80" alt="Conférence microphone" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-950 via-indigo-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="mic" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Interprète Conférence</h3>
+                            <span class="text-indigo-100 text-sm font-medium">Pour Institutions & Sommets</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Mise à disposition d'interprètes professionnels pour vos assemblées, visioconférences, conférences de presse ou réunions d'affaires à Kinshasa.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Traduction simultanée ou consécutive</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Disponible en présentiel ou sur Zoom/Teams</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Matériel d'interprétation fourni en option</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Tarif Journalier</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$500</p>
+                            </div>
+                            <button onclick="addToCart('Interprète Conférence', 500)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 6: Pack Études Étranger -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Étudiants université" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-rose-950 via-rose-950/60 to-transparent z-10 mix-blend-multiply"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
+                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
+                            <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div class="relative z-20">
+                            <h3 class="text-2xl font-bold text-white mb-1">Pack Études Étranger</h3>
+                            <span class="text-rose-100 text-sm font-medium">Pour Étudiants</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6 h-16">Dossier d'inscription complet à l'étranger : Bulletins de notes, diplômes d'État RDC, certificats de naissance, lettre de motivation.</p>
+                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Traduction assermentée officielle incluse</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Conforme exigences WES / Campus France</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Délai rapide (48h max)</li>
+                        </ul>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-semibold">Tarif Étudiant unique</p>
+                                <p class="text-3xl font-extrabold text-brand-950">$120</p>
+                            </div>
+                            <button onclick="addToCart('Pack Études Étranger', 120)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="avantages" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6">Traduisez en toute sécurité avec BanikiLabs</h2>
+                    <p class="text-slate-600 mb-8 text-lg">La précision d'une intelligence artificielle avancée combinée au tact professionnel de nos linguistes agréés en République Démocratique du Congo.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Validé par des experts natifs</h4>
+                                <p class="text-slate-600 text-sm mt-1">Chaque texte traduit fait l'objet d'un examen approfondi par un expert bilingue afin d'éviter tout contresens juridique ou technique.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-cyan-600">
+                                <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Confidentialité Maximale</h4>
+                                <p class="text-slate-600 text-sm mt-1">Vos documents commerciaux et académiques ne sont jamais partagés à des tiers. Signature d'accords de confidentialité automatiques.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                <i data-lucide="credit-card" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900">Facilité de Paiement en RDC</h4>
+                                <p class="text-slate-600 text-sm mt-1">Payez facilement par virement bancaire, carte visa ou par vos applications Mobile Money (M-Pesa, Orange Money, Airtel Money).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract Code / Process representation -->
+                <div class="w-full lg:w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden bg-brand-950 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-brand-400 p-4 overflow-hidden break-words">
+                            translate(text, options) {
+                                return engine.detectLanguage(text)
+                                .then(lang => engine.matchProfessionalTranslators(lang, 'en'))
+                                .then(results => results.applyCertificationSeal())
+                                .catch(err => reportErrorToAdmin(err));
+                            }
+                        </div>
+                        
+                        <div class="relative z-10 w-full">
+                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
+                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
+                                            <i data-lucide="check" class="w-5 h-5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-bold">Linguiste Assermenté</div>
+                                            <div class="text-slate-400 text-xs">Sceau d'État RDC Actif</div>
+                                        </div>
+                                    </div>
+                                    <div class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full border border-emerald-500/30">
+                                        Qualifié
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between text-xs text-slate-300">
+                                        <span>Examen de syntaxe</span>
+                                        <span class="text-brand-400 font-bold">100%</span>
+                                    </div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-brand-500 w-full"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-slate-300">
+                                        <span>Conformité juridique</span>
+                                        <span class="text-brand-400 font-bold">98.9%</span>
+                                    </div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-cyan-500 w-[99%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact form -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4" data-fr="Besoin d'un Devis Personnalisé ?" data-en="Need a Custom Quote?" data-sw="Je, unahitaji Nukuu ya Kipekee?">Besoin d'un Devis Personnalisé ?</h2>
+                    <p class="text-slate-600" data-fr="Pour des rapports complexes, des thèses universitaires entières ou des volumes importants de documents administratifs." data-en="For complex reports, entire university theses or large volumes of administrative documents." data-sw="Kwa ripoti tata, tasnifu nzima za chuo kikuu au idadi kubwa ya hati za kiutawala.">Pour des rapports complexes, des thèses universitaires entières ou des volumes importants de documents administratifs.</p>
+                </div>
+                
+                <form class="space-y-6">
+                    <!-- Zone Panier dans le formulaire -->
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider" data-fr="Votre Sélection" data-en="Your Selection" data-sw="Uteuzi Wako">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span data-fr="Total Estimé" data-en="Estimated Total" data-sw="Jumla Iliyokadiriwa">Total Estimé</span>
+                            <span id="quote-cart-total">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Nom de l'institution / Entreprise" data-en="Institution / Company Name" data-sw="Jina la Taasisi / Kampuni">Nom de l'institution / Entreprise</label>
+                            <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all bg-slate-50" placeholder="Ex: Cabinet d'avocats Lubamba" data-fr-placeholder="Ex: Cabinet d'avocats Lubamba" data-en-placeholder="Ex: Lubamba Law Firm" data-sw-placeholder="Mfano: Kampuni ya sheria ya Lubamba">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Service souhaité" data-en="Desired Service" data-sw="Huduma Inayotakiwa">Service souhaité</label>
+                            <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all bg-slate-50">
+                                <option>Traduction de documents PDF/Word</option>
+                                <option>Traduction Assermentée & Sceau d'État</option>
+                                <option>Service Interprète de Conférence</option>
+                                <option>Intégration API de traduction</option>
+                                <option>Traduction / Localisation de Site Web</option>
+                                <option>Autre projet linguistique</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Email professionnel" data-en="Professional Email" data-sw="Barua pepe ya kitaalamu">Email professionnel</label>
+                            <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all bg-slate-50" placeholder="contact@entreprise.com" data-fr-placeholder="contact@entreprise.com" data-en-placeholder="contact@company.com" data-sw-placeholder="contact@kampuni.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Téléphone (WhatsApp)" data-en="Phone (WhatsApp)" data-sw="Simu (WhatsApp)">Téléphone (WhatsApp)</label>
+                            <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all bg-slate-50" placeholder="+243 ..." data-fr-placeholder="+243 ..." data-en-placeholder="+243 ..." data-sw-placeholder="+243 ...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2" data-fr="Commentaires sur votre projet" data-en="Project Comments" data-sw="Maoni kuhusu mradi wako">Commentaires sur votre projet</label>
+                        <textarea id="userComments" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all bg-slate-50" placeholder="Décrivez vos besoins spécifiques (volume de pages, urgence)..." data-fr-placeholder="Décrivez vos besoins spécifiques (volume de pages, urgence)..." data-en-placeholder="Describe your specific needs (number of pages, urgency)..." data-sw-placeholder="Eleza mahitaji yako maalum (idadi ya kurasa, dharura)..."></textarea>
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center gap-2">
+                        <span data-fr="Envoyer le devis" data-en="Send the quote" data-sw="Tuma nukuu">Envoyer le devis</span> <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section Harmonisée -->
     <footer id="footer" class="pt-32 pb-12 px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
             <div class="space-y-8">
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
                         <span class="text-black font-black text-xl tracking-tighter">BL</span>
                     </div>
-                    <span class="font-extrabold text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
                 </div>
-                <div class="space-y-4 text-gray-400">
+                <div class="space-y-4">
                     <p class="flex items-start gap-3">
-                        <i class="fas fa-map-marker-alt text-[var(--gold)] mt-1"></i>
-                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span data-fr="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo" data-en="No. 18, Salongo Avenue, Bandalungwa, Kinshasa, DR Congo" data-sw="N°18, Avenue Salongo, Comm. Bandalungwa, Kinshasa, RD Congo">N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
                     </p>
                     <p class="flex items-center gap-3">
-                        <i class="fas fa-phone text-[var(--gold)]"></i>
+                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
                         <span>+243 978 415 814</span>
                     </p>
+                    <p class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-6 h-6 text-[var(--gold)]"></i>
+                        <span data-fr="banikilabs@gmail.com" data-en="banikilabs@gmail.com" data-sw="banikilabs@gmail.com">banikilabs@gmail.com</span>
+                    </p>
                     <div class="pt-4 border-t border-white/5 space-y-2">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-fr="Informations Légales" data-en="Legal Information" data-sw="Habari za kisheria">Informations Légales</p>
                         <div class="flex flex-col gap-1 text-xs">
                             <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
                             <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
-                <div class="flex gap-4">
-                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
-                        <i class="fab fa-facebook-f"></i>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Suivez l'innovation" data-en="Follow Innovation" data-sw="Fuata Ubunifu">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
                     </a>
-                    <a href="#" class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
-                        <i class="fab fa-instagram"></i>
+                    <a href="#" class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
                     </a>
                 </div>
             </div>
+
             <div class="space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
-                <p class="text-gray-500 text-sm italic">"L'excellence comme seul standard pour votre communication internationale."</p>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-fr="Vision" data-en="Vision" data-sw="Maono">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-fr="&quot;Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.&quot;" data-en="&quot;Building the future, one project at a time, from the heart of Kinshasa.&quot;" data-sw="&quot;Kujenga mustakabali, mradi mmoja baada ya mwingine, kutoka moyoni mwa Kinshasa.&quot;">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400" data-fr="Heures d'opération : 24/7 Innovation" data-en="Hours of operation: 24/7 Innovation" data-sw="Saa za kazi : Ubunifu 24/7">Heures d'opération : 24/7 Innovation</span>
+                </div>
             </div>
         </div>
+
         <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 font-bold uppercase tracking-[0.2em]">
-            &copy; 2025. TOUS DROITS RÉSERVÉS.
+            &copy; 2025. <span data-fr="TOUS DROITS RÉSERVÉS." data-en="ALL RIGHTS RESERVED." data-sw="HAKI ZOTE ZIMEHIFADHIWA.">TOUS DROITS RÉSERVÉS.</span>
         </div>
     </footer>
+
+    <!-- Scripts de fonctionnement -->
+    <script>
+        let cart = [];
+        let currentLang = 'fr';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-fr], [data-en], [data-sw]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text !== null) {
+                    el.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            node.textContent = text;
+                        }
+                    });
+                    if (el.children.length === 0) el.innerText = text;
+                }
+            });
+            
+            document.querySelectorAll('[data-fr-placeholder][data-en-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
+            });
+
+            const btnFr = document.getElementById('btn-fr');
+            const btnEn = document.getElementById('btn-en');
+            const btnSw = document.getElementById('btn-sw');
+
+            if (lang === 'fr') {
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'en') {
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            } else if (lang === 'sw') {
+                btnSw.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
+                btnFr.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+                btnEn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
+            }
+        }
+
+        // Elements du simulateur
+        const docTypeSelect = document.getElementById('docType');
+        const wordRange = document.getElementById('wordRange');
+        const wordCountLabel = document.getElementById('wordCountLabel');
+        const certifiedCheck = document.getElementById('certifiedCheck');
+        const totalPriceEl = document.getElementById('totalPrice');
+
+        // Met à jour la valeur visuelle des mots
+        function updateWordCount(val) {
+            wordCountLabel.textContent = val + " mots";
+            calculatePrice();
+        }
+
+        // Calcule le prix en direct
+        function calculatePrice() {
+            const costPerWord = parseFloat(docTypeSelect.value);
+            const wordCount = parseInt(wordRange.value);
+            let total = costPerWord * wordCount;
+
+            if (certifiedCheck.checked) {
+                total += 45; // Sceau d'assermentation fixe
+            }
+
+            totalPriceEl.textContent = "$" + total.toFixed(2);
+            return total;
+        }
+
+        // Ajouter la simulation de devis dans le panier
+        function addSimulatedToCart() {
+            const label = "Traduction " + docTypeSelect.options[docTypeSelect.selectedIndex].text.split(' (')[0];
+            const price = calculatePrice();
+            addToCart(label, price);
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartCounter();
+            renderQuoteCart();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCartItemQuantity(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + delta;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+            }
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartCounter();
+            renderQuoteCart();
+        }
+
+        function renderQuoteCart() {
+            const container = document.getElementById('quote-cart-items');
+            const totalSpan = document.getElementById('quote-cart-total');
+            const cartContainer = document.getElementById('quote-cart-container');
+            if (cart.length > 0) {
+                cartContainer.classList.remove('hidden');
+                let total = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const qty = item.quantity || 1;
+                    const itemTotal = item.price * qty;
+                    total += itemTotal;
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-800">${item.name}</p>
+                                <p class="text-sm text-slate-500">$${item.price.toFixed(2)} x ${qty}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="updateCartItemQuantity(${index}, -1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">-</button>
+                                <span class="font-bold text-slate-900">${qty}</span>
+                                <button onclick="updateCartItemQuantity(${index}, 1)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center justify-center text-sm">+</button>
+                                <button onclick="removeCartItem(${index})" class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200 flex items-center justify-center text-sm ml-2">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-slate-900 ml-4">$${itemTotal.toFixed(2)}</span>
+                        </div>`;
+                }).join('');
+                totalSpan.innerText = `$${total.toFixed(2)}`;
+                lucide.createIcons();
+            } else {
+                cartContainer.classList.add('hidden');
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            if (totalQty > 0) {
+                counter.innerText = totalQty;
+                counter.classList.remove('hidden');
+            } else {
+                counter.classList.add('hidden');
+            }
+        }
+ 
+        function sendWhatsAppDevis() {
+            const institution = document.getElementById('institutionName').value;
+            const platform = document.getElementById('platformSelected').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const comments = document.getElementById('userComments').value;
+
+            if(!institution || !email || !phone) {
+                const alertMsg = currentLang === 'fr' ? "Veuillez remplir les champs obligatoires (Institution, Email, Téléphone)." : (currentLang === 'en' ? "Please fill in the required fields (Institution, Email, Phone)." : "Habari BANIKI LABS, ningependa kupata nukuu:");
+                alert(alertMsg);
+                return;
+            }
+
+            let cartInfo = "";
+            if (cart.length > 0) {
+                cartInfo = (currentLang === 'fr' ? "\n\nPanier sélectionné :\n" : (currentLang === 'en' ? "\n\nSelected Cart:\n" : "\n\nKikapu kilichochaguliwa:\n")) + 
+                           cart.map(item => `- ${item.name} (${item.quantity}x $${item.price.toFixed(2)})`).join("\n");
+            }
+
+            const intro = currentLang === 'fr' ? "Bonjour BANIKI LABS, je souhaite obtenir un devis :" : (currentLang === 'en' ? "Hello BANIKI LABS, I would like to get a quote:" : "Habari BANIKI LABS, ningependa kupata nukuu:");
+            const msgInstitution = currentLang === 'fr' ? "- Institution" : (currentLang === 'en' ? "- Institution" : "- Taasisi");
+            const msgPlatform = currentLang === 'fr' ? "- Service" : (currentLang === 'en' ? "- Service" : "- Huduma");
+            const msgEmail = currentLang === 'fr' ? "- Email" : (currentLang === 'en' ? "- Email" : "- Barua pepe");
+            const msgPhone = currentLang === 'fr' ? "- Téléphone" : (currentLang === 'en' ? "- Phone" : "- Simu");
+            const msgComments = currentLang === 'fr' ? "- Commentaires" : (currentLang === 'en' ? "- Comments" : "- Maoni");
+
+            const message = `${intro}\n\n${msgInstitution}: ${institution}\n${msgPlatform}: ${platform}\n${msgEmail}: ${email}\n${msgPhone}: ${phone}\n${msgComments}: ${comments}${cartInfo}`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/243978415814?text=${encodedMessage}`, '_blank');
+        }
+
+        lucide.createIcons();
+
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+            
+        // Premier calcul au chargement
+        calculatePrice();
+    </script>
 </body>
 </html>
