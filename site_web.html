@@ -100,9 +100,31 @@
                 </div>
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button class="text-slate-600 hover:text-brand-600 focus:outline-none">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                        <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
+            <div class="px-6 py-8 space-y-6 flex flex-col">
+                <div class="space-y-4">
+                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                    <a href="#solutions" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
+                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                    <a href="index.html#about" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="À Propos" data-en="About" data-sw="Kuhusu">À Propos</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+                </div>
+                
+                <div class="pt-2">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
+                    <div class="flex gap-2">
+                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -542,10 +564,10 @@
     <!-- Why Us Section -->
     <section id="avantages" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row gap-16 items-center">
+            <div class="flex flex-col lg:flex-row gap-16 items-center" id="avantages">
                 <div class="w-full lg:w-1/2">
                     <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="L'Expertise BanikiLabs pour vos projets" data-en="BanikiLabs Expertise for your projects" data-sw="Utaalamu wa BanikiLabs kwa miradi yako">L'Expertise BanikiLabs pour vos projets</h2>
-                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo." data-en="We don't just sell software. We offer a complete digital transformation, adapted to the economic environment of the Democratic Republic of Congo." data-sw="Hatuzii programu tu. Tunatoa mabadiliko kamili ya dijitali, yaliyobadilishwa kwa mazingira ya kiuchumi ya Jamhuri ya Kidemokrasia ya Kongo.">Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo.</p>
+                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo et d'autres marchés internationaux, y compris les Amériques." data-en="We don't just sell software. We offer a complete digital transformation, adapted to the economic environment of the Democratic Republic of Congo and other international markets, including the Americas." data-sw="Hatuzii programu tu. Tunatoa mabadiliko kamili ya dijitali, yaliyobadilishwa kwa mazingira ya kiuchumi ya Jamhuri ya Kidemokrasia ya Kongo na masoko mengine ya kimataifa, ikiwemo Amerika.">Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo et d'autres marchés internationaux, y compris les Amériques.</p>
                     
                     <div class="space-y-6">
                         <div class="flex gap-4">
@@ -770,6 +792,21 @@
     <script>
         let cart = [];
         let currentLang = 'fr';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
 
         function setLanguage(lang) {
             currentLang = lang;
