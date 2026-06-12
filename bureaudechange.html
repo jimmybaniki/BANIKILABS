@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baniki Change Premium | Bureau de Change & Services Financiers RDC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        accent: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(8, 47, 73, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Accueil</a>
+                    <a href="#simulateur" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Simulateur</a>
+                    <a href="#solutions" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Services Premium</a>
+                    <a href="#taux" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Taux du Jour</a>
+                </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center gap-4">
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
+                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
+                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
+                        </div>
+                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                            <span>Opération Express</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    <div class="md:hidden flex items-center">
+                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
+                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+                <div class="w-full lg:w-1/2 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span>Change de Devises Premium</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                        <span>Optimisez vos finances avec</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiChange</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+                        Change de devises (USD, CDF, EUR) aux meilleurs taux de Kinshasa. Services sécurisés pour entreprises et particuliers.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#simulateur" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] text-center">
+                            Simulateur de Change
+                        </a>
+                        <a href="#taux" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                            Taux du Jour
+                        </a>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
+                    <div class="animate-float">
+                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
+                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-slate-300 text-xs font-mono">baniki-fx-terminal.bin</div>
+                            </div>
+                            <div class="p-6 space-y-4 h-[calc(100%-3rem)] flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-brand-400 font-bold">Ordre d'Achat</span>
+                                            <span class="text-xs text-slate-500">Client VIP</span>
+                                        </div>
+                                        <p class="text-sm text-slate-200">« Je souhaite convertir 1,500 USD en Francs Congolais (CDF). »</p>
+                                    </div>
+                                    <div class="flex justify-center">
+                                        <div class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center border border-brand-500/30">
+                                            <i data-lucide="arrow-down-up" class="w-4 h-4 text-brand-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4 relative overflow-hidden">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] uppercase tracking-wider text-accent-400 font-bold">Calcul Taux Baniki (2350)</span>
+                                            <span class="text-xs text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Approuvé</span>
+                                        </div>
+                                        <p class="text-lg font-black text-white">3,525,000 CDF</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulateur de Change -->
+    <section id="simulateur" class="py-20 bg-slate-100">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <span class="text-sm font-bold text-brand-600 uppercase tracking-wider">Convertissez instantanément</span>
+                    <h2 class="text-3xl font-bold text-slate-900 mt-2">Simulateur de Change Temps Réel</h2>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Type d'Opération</label>
+                        <select id="opType" onchange="calculateExchange()" class="w-full px-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            <option value="buy">J'achète des Francs (Vente USD)</option>
+                            <option value="sell">Je vends des Francs (Achat USD)</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Devise USD ($)</label>
+                            <input type="number" id="usdInput" value="100" oninput="calculateExchange()" class="w-full px-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Résultat estimé (CDF)</label>
+                            <div id="totalExchange" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-brand-600">285,000 CDF</div>
+                        </div>
+                    </div>
+                    <button onclick="addExchangeToCart()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span>Réserver ce montant</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Packs Section -->
+    <section id="solutions" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4">Services Financiers Premium</h2>
+                <p class="text-lg text-slate-600">Au-delà du change, nous facilitons vos transactions et la gestion de vos flux financiers.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1621981386829-9b458a2cddde?auto=format&fit=crop&w=600&q=80" alt="Transfert" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sky-950 via-sky-950/60 to-transparent z-10"></div>
+                        <div class="relative z-20"><h3 class="text-2xl font-bold text-white mb-1">Transfert Pro</h3></div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6">Assistance pour vos envois Western Union et MoneyGram avec sécurité garantie.</p>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div><p class="text-xs text-slate-500 font-semibold">Frais Fixes</p><p class="text-3xl font-extrabold text-brand-950">$5</p></div>
+                            <button onclick="addToCart('Transfert Pro', 5)" class="bg-brand-50 text-brand-700 p-3 rounded-xl"><i data-lucide="shopping-cart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80" alt="Business" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/60 to-transparent z-10"></div>
+                        <div class="relative z-20"><h3 class="text-2xl font-bold text-white mb-1">Abonnement Business</h3></div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6">Taux préférentiels négociés et livraison de devis sécurisée à vos bureaux.</p>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div><p class="text-xs text-slate-500 font-semibold">Par Mois</p><p class="text-3xl font-extrabold text-brand-950">$100</p></div>
+                            <button onclick="addToCart('Abonnement Business', 100)" class="bg-brand-50 text-brand-700 p-3 rounded-xl"><i data-lucide="shopping-cart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Études" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10"></div>
+                        <div class="relative z-20"><h3 class="text-2xl font-bold text-white mb-1">Paiement Scolarité</h3></div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 text-sm mb-6">Règlement direct de vos frais de scolarité vers les universités étrangères.</p>
+                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                            <div><p class="text-xs text-slate-500 font-semibold">Frais de Virement</p><p class="text-3xl font-extrabold text-brand-950">$50</p></div>
+                            <button onclick="addToCart('Paiement Scolarité', 50)" class="bg-brand-50 text-brand-700 p-3 rounded-xl"><i data-lucide="shopping-cart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Taux du Jour -->
+    <section id="taux" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">Taux de Change du Jour</h2>
+                <p class="text-slate-400 text-sm uppercase tracking-widest font-bold">Mis à jour : <span id="last-update">--/--/--</span></p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-8 rounded-[2rem] flex flex-col items-center">
+                    <i data-lucide="dollar-sign" class="w-8 h-8 text-brand-400 mb-4"></i>
+                    <h3 class="text-2xl font-black mb-6">Dollar US (USD)</h3>
+                    <div class="w-full space-y-4">
+                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl"><span>Achat</span><span class="text-2xl font-black text-brand-400">2350 FC</span></div>
+                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl"><span>Vente</span><span class="text-2xl font-black text-emerald-400">2400 FC</span></div>
+                    </div>
+                </div>
+                <div class="glass p-8 rounded-[2rem] flex flex-col items-center">
+                    <i data-lucide="euro" class="w-8 h-8 text-accent-400 mb-4"></i>
+                    <h3 class="text-2xl font-black mb-6">Euro (EUR)</h3>
+                    <div class="w-full space-y-4">
+                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl"><span>Achat</span><span class="text-2xl font-black text-brand-400">3050 FC</span></div>
+                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl"><span>Vente</span><span class="text-2xl font-black text-emerald-400">3100 FC</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section id="contact" class="py-20 relative bg-brand-950 overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Réservez vos devises en ligne</h2>
+                    <p class="text-slate-600">Un agent vous contactera pour valider votre passage au guichet.</p>
+                </div>
+                <form class="space-y-6">
+                    <div id="quote-cart-container" class="hidden mb-6 border-t border-b border-slate-100 py-6">
+                        <h4 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider">Votre Sélection</h4>
+                        <div id="quote-cart-items" class="space-y-3"></div>
+                        <div class="mt-4 flex justify-between items-center text-lg font-black text-brand-950">
+                            <span>Total Estimé</span><span id="quote-cart-total">$0</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="text" id="institutionName" required class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 outline-none" placeholder="Votre Nom">
+                        <select id="platformSelected" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 outline-none">
+                            <option>Achat de Dollars</option>
+                            <option>Vente de Dollars</option>
+                            <option>Assistance Transfert</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 outline-none" placeholder="Email">
+                        <input type="tel" id="userPhone" required class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 outline-none" placeholder="Téléphone">
+                    </div>
+                    <button type="button" onclick="sendWhatsAppDevis()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2">
+                        <span>Confirmer ma demande</span> <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-20 pb-12 px-6 bg-brand-950 text-slate-400 text-center border-t border-white/5">
+        <div class="max-w-7xl mx-auto space-y-8">
+            <div class="flex items-center justify-center gap-3">
+                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full"><span class="text-black font-black">BL</span></div>
+                <span class="font-extrabold text-xl text-white uppercase">Baniki Labs</span>
+            </div>
+            <p class="text-sm italic">"Bureau de change agréé"</p>
+            <p class="text-xs tracking-widest uppercase font-bold">&copy; 2025. TOUS DROITS RÉSERVÉS.</p>
+        </div>
+    </footer>
+
+    <script>
+        let cart = [];
+        const RATES = { buy: 2350, sell: 2400 };
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        function calculateExchange() {
+            const type = document.getElementById('opType').value;
+            const amount = parseFloat(document.getElementById('usdInput').value) || 0;
+            const rate = type === 'buy' ? RATES.buy : RATES.sell;
+            document.getElementById('totalExchange').textContent = (amount * rate).toLocaleString() + " CDF";
+        }
+
+        function addExchangeToCart() {
+            const amount = document.getElementById('usdInput').value + " $";
+            addToCart(`Réservation de change: ${amount}`, 0);
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price, quantity: 1 });
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const counter = document.getElementById('cart-counter');
+            const container = document.getElementById('quote-cart-items');
+            const totalEl = document.getElementById('quote-cart-total');
+            const cartWrap = document.getElementById('quote-cart-container');
+
+            counter.innerText = cart.length;
+            counter.classList.toggle('hidden', cart.length === 0);
+            cartWrap.classList.toggle('hidden', cart.length === 0);
+            
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                total += item.price;
+                return `<div class="flex justify-between items-center text-xs text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                    <span>${item.name}</span>
+                    <span class="font-bold">${item.price > 0 ? '$' + item.price : 'Taux Marché'}</span>
+                </div>`;
+            }).join('');
+            totalEl.innerText = '$' + total.toFixed(2);
+            lucide.createIcons();
+        }
+
+        function sendWhatsAppDevis() {
+            const name = document.getElementById('institutionName').value;
+            const phone = document.getElementById('userPhone').value;
+            if(!name || !phone) return alert("Veuillez remplir votre nom et téléphone.");
+            const message = `Bonjour BanikiChange,\n\nJe suis ${name}.\nJe souhaite effectuer une opération de change.\nTél: ${phone}`;
+            window.open(`https://wa.me/243978415814?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            calculateExchange();
+            document.getElementById('last-update').innerText = new Date().toLocaleDateString();
+        });
+    </script>
+</body>
+</html>
