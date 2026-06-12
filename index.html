@@ -319,7 +319,7 @@
                     </div>
                 </div>
                 
-                <button id="audioToggle" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors" title="Ambiance Sonore">
+                <button id="audioToggle" onclick="playClick()" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors" title="Ambiance Sonore">
                     <i id="audioIcon" class="fa-solid fa-volume-xmark text-[var(--gold)] text-sm sm:text-base"></i>
                 </button>
 
@@ -376,11 +376,11 @@
                 
                 <!-- Boutons CTA -->
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-8 sm:mt-12 px-4">
-                    <a href="#expertises" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[var(--gold)] text-black px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                    <a href="#expertises" onclick="playClick()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[var(--gold)] text-black px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform">
                         Explorer nos services
                         <svg class="w-4 h-4 sm:w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
-                    <a href="news.html" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white/10 border border-[var(--gold)]/50 text-[var(--gold)] px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-[var(--gold)] hover:text-black transition-all">
+                    <a href="news.html" onclick="playClick()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white/10 border border-[var(--gold)]/50 text-[var(--gold)] px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-[var(--gold)] hover:text-black transition-all">
                         📰 Actualités
                         <svg class="w-4 h-4 sm:w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     </a>
@@ -471,6 +471,11 @@
                         <svg class="w-5 h-5 sm:w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     </a>
                 </div>
+                <div class="pt-4">
+                    <a href="emploi.html" class="inline-flex items-center gap-2 bg-[var(--gold)] text-black px-6 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-transform shadow-lg shadow-[var(--gold)]/20">
+                        <i class="fa-solid fa-briefcase"></i> Emploi / Recrutement
+                    </a>
+                </div>
             </div>
 
             <div class="space-y-6 sm:space-y-8">
@@ -479,7 +484,21 @@
                 <div class="pt-4 border-t border-white/5">
                     <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
                 </div>
+                <div class="pt-8 border-t border-white/5 mt-8">
+                    <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Méthodes de Paiement</h4>
+                    <div class="space-y-4 text-gray-400 text-sm sm:text-base">
+                        <p class="flex items-center gap-3">
+                            <svg class="w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>M-Pesa : +243 822 409 702 (Jimmy Baniki)</span>
+                        </p>
+                        <p class="flex items-center gap-3">
+                            <svg class="w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <span>Equity BCDC : 266200286723221 (Jimmy Baniki)</span>
+                        </p>
+                    </div>
+                </div>
             </div>
+
         </div>
 
         <div class="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-gray-600 font-bold uppercase tracking-[0.2em] px-4">
@@ -507,9 +526,19 @@
     </div>
 
     <!-- AUDIO ELEMENT -->
-    <audio id="bgAmbient" loop src="https://www.mfiles.co.uk/mp3-downloads/ambient-loop-1.mp3"></audio>
+    <audio id="bgAmbient" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
     <script>
+        // --- SYSTEME DE SONS PREMIUM ---
+        const clickSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_783cf29965.mp3');
+        clickSound.preload = 'auto';
+
+        // Fonction pour jouer un son de clic sur n'importe quel bouton
+        function playClick() {
+            clickSound.currentTime = 0; // Rembobine pour permettre des clics rapides
+            clickSound.play().catch(() => {}); // On ignore l'erreur silencieusement
+        }
+
         const translations = {
             fr: {
                 "hero-subtitle": "innovation sans limite",
@@ -655,7 +684,7 @@
                 { cat: "biz", name: { fr: "Agence Immobilière", en: "Real Estate Agency", sw: "Wakala wa Mali Isiyohamishika" }, desc: { fr: "Achat, vente et location de propriétés à Kinshasa.", en: "Buying, selling and renting properties in Kinshasa.", sw: "Kununua, kuuza na kukodisha mali katika Kinshasa." }, features: { fr: ["Expertise terrain", "Gestion locative", "Conseil juridique"], en: ["Field Expertise", "Rental Management", "Legal Advice"], sw: ["Ujuzi wa Shamba", "Usimamizi wa Ukodishaji", "Shauri za Kisheria"] }, img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", link: "immobilier.html" },
                 { cat: "media", name: { fr: "Photographie", en: "Photography", sw: "Upigaji Picha" }, desc: { fr: "Portraits et couverture d'événements prestigieux.", en: "Portraits and coverage of prestigious events.", sw: "Picha na chanjo ya matukio ya kifahari." }, features: { fr: ["Shooting Studio", "Événementiel", "Retouche Pro"], en: ["Studio Shooting", "Event Coverage", "Pro Retouching"], sw: ["Upigaji Studio", "Chanjo ya Tukio", "Urekebishaji wa Pro"] }, img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800", link: "photo.html" },
                 { cat: "media", name: { fr: "Vidéographie", en: "Videography", sw: "Upigaji Video" }, desc: { fr: "Production de clips et vidéos d'entreprise premium.", en: "Production of premium clips and corporate videos.", sw: "Uzalishaji wa video na video za kampuni za premium." }, features: { fr: ["Tournage 4K", "Montage Pro", "Scénarisation"], en: ["4K Shooting", "Pro Editing", "Scripting"], sw: ["Upigaji 4K", "Uhariri wa Pro", "Uandishi"] }, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800", link: "videographie.html" },
-                { cat: "lifestyle", name: { fr: "Livraison Rapide", en: "Fast Delivery", sw: "Uwasilishaji wa Haraka" }, desc: { fr: "Transport de colis et repas à travers la capitale.", en: "Package and meal transport across the capital.", sw: "Usafirishaji wa vifurushi na chakula katika mji mkuu." }, features: { fr: ["Suivi GPS", "Rapide & Sûr", "Support 24/7"], en: ["GPS Tracking", "Fast & Safe", "24/7 Support"], sw: ["Kufuatilia GPS", "Haraka & Salama", "Msaada 24/7"] }, img: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800", link: "livraison.html" },
+                { cat: "lifestyle", name: { fr: "Livraison Rapide", en: "Fast Delivery", sw: "Uwasilishaji wa Haraka" }, desc: { fr: "Transport de colis et repas à travers la capitale.", en: "Package and meal transport across the capital.", sw: "Usafirishaji wa vifurushi na chakula katika mji mkuu." }, features: { fr: ["Suivi GPS", "Rapide & Sûr", "Support 24/7"], en: ["GPS Tracking", "Fast & Safe", "24/7 Support"], sw: ["Kufuatilia GPS", "Haraka & Salama", "Msaada 24/7"] }, img: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?auto=format&fit=crop&q=80&w=800", link: "livraison.html" },
                 { cat: "edu", name: { fr: "Développement Personnel", en: "Personal Development", sw: "Maendeleo ya Kibinafsi" }, desc: { fr: "Ateliers de leadership et coaching de vie.", en: "Leadership workshops and life coaching.", sw: "Warsha za uongozi na kufundisha maisha." }, features: { fr: ["Confiance en soi", "Leadership", "Planification"], en: ["Self-Confidence", "Leadership", "Planning"], sw: ["Kujiamini", "Uongozi", "Upangaji"] }, img: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800", link: "developpement-perso.html" },
                 { cat: "biz", name: { fr: "Bureau de Change", en: "Currency Exchange", sw: "Ofisi ya Kubadilisha Sarafu" }, desc: { fr: "Transactions sécurisées aux meilleurs taux du marché.", en: "Secure transactions at the best market rates.", sw: "Miamala salama kwa viwango bora vya soko." }, features: { fr: ["Taux en temps réel", "Zéro commission", "Sécurité totale"], en: ["Real-time rates", "Zero commission", "Total security"], sw: ["Viwango vya wakati halisi", "Tume sifuri", "Usalama kamili"] }, img: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=800", link: "#change" },
                 { cat: "biz", name: { fr: "Traduction", en: "Translation", sw: "Tafsiri" }, desc: { fr: "Traduction dans 10 langues clés par des pros.", en: "Translation into 10 key languages by professionals.", sw: "Tafsiri katika lugha 10 muhimu na wataalamu." }, features: { fr: ["10 Langues", "Interprétation", "Documents Pro"], en: ["10 Languages", "Interpretation", "Pro Documents"], sw: ["Lugha 10", "Tafsiri", "Hati za Pro"] }, img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800", link: "translate.html" },
@@ -916,12 +945,13 @@
         let audioStarted = false;
 
         audioToggle.onclick = () => {
+            playClick(); // Retour sonore immédiat sur le bouton
             if (bgAmbient.paused) {
                 bgAmbient.play().then(() => {
                     audioIcon.classList.replace('fa-volume-xmark', 'fa-volume-high');
                     audioIcon.classList.add('animate-pulse');
                     localStorage.setItem('baniki-audio', 'on');
-                }).catch(err => console.log("Lecture bloquée par le navigateur"));
+                }).catch(err => console.log("L'audio n'a pas pu démarrer : ", err));
             } else {
                 bgAmbient.pause();
                 audioIcon.classList.replace('fa-volume-high', 'fa-volume-xmark');
@@ -930,14 +960,14 @@
             }
         };
 
-        // Tentative de reprise si déjà activé auparavant
-        window.addEventListener('mouseover', () => {
+        // Reprise automatique lors du premier clic sur la page si déjà activé auparavant
+        window.addEventListener('click', () => {
             if(!audioStarted && localStorage.getItem('baniki-audio') === 'on') {
                 bgAmbient.play().then(() => {
                     audioIcon.classList.replace('fa-volume-xmark', 'fa-volume-high');
                     audioIcon.classList.add('animate-pulse');
-                    audioStarted = true;
                 }).catch(() => {});
+                audioStarted = true;
             }
         }, { once: true });
 

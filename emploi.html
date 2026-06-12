@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Opérationnel - Baniki Labs</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.12);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Barre de navigation -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 sm:gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                    <span class="text-black font-black text-sm sm:text-xl tracking-tighter">BL</span>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                    <span class="text-xs block text-slate-400">Portail Interne d'Onboarding 2026</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-1 rounded-full border border-indigo-500/30 font-medium">
+                    <i class="fa-solid fa-user-shield mr-1"></i> Espace Conseiller Client
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Corps Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Alerte Bienvenue -->
+        <div class="bg-gradient-to-r from-indigo-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl">
+                <h1 class="text-3xl font-extrabold mb-2">Bienvenue dans l'équipe, Cher Collaborateur !</h1>
+                <p class="text-slate-300 text-base sm:text-lg mb-4">
+                    Ce portail réunit tous les outils nécessaires pour gérer vos deux missions clés : la promotion des <strong>formations (<code class="text-indigo-300 bg-slate-950/40 px-1.5 py-0.5 rounded">Language</code>)</strong> et les prestations de <strong>traduction (<code class="text-indigo-300 bg-slate-950/40 px-1.5 py-0.5 rounded">Translate</code>)</strong>, ainsi que le protocole d'encaissement sécurisé.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-white/10 text-white text-xs px-3 py-1.5 rounded-lg border border-white/10"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Formations</span>
+                    <span class="bg-white/10 text-white text-xs px-3 py-1.5 rounded-lg border border-white/10"><i class="fa-solid fa-language mr-1.5"></i> Traductions</span>
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30"><i class="fa-solid fa-wallet mr-1.5"></i> Encaissements Stricts</span>
+                </div>
+            </div>
+            <div class="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-y-1/4 translate-x-1/4">
+                <i class="fa-solid fa-circle-nodes text-[300px]"></i>
+            </div>
+        </div>
+
+        <!-- Onglets Principaux -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Menu Latéral Navigation -->
+            <div class="lg:col-span-1 space-y-2">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Navigation Interne</p>
+                <button onclick="switchTab('guide')" id="btn-guide" class="tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 bg-indigo-600 text-white shadow-sm font-medium transition-all duration-200">
+                    <i class="fa-solid fa-book-open text-lg"></i>
+                    <span>1. Guide d'Intégration</span>
+                </button>
+                <button onclick="switchTab('calculette')" id="btn-calculette" class="tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition-all duration-200">
+                    <i class="fa-solid fa-calculator text-lg"></i>
+                    <span>2. Tarificateur & Devis</span>
+                </button>
+                <button onclick="switchTab('scripts')" id="btn-scripts" class="tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition-all duration-200">
+                    <i class="fa-solid fa-comments text-lg"></i>
+                    <span>3. Modèles de messages</span>
+                </button>
+                <button onclick="switchTab('finance')" id="btn-finance" class="tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition-all duration-200">
+                    <i class="fa-solid fa-cash-register text-lg"></i>
+                    <span>4. Enregistrement Paiement</span>
+                </button>
+
+                <!-- Infos Pratiques -->
+                <div class="mt-8 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5 text-base"></i>
+                        <div>
+                            <h4 class="font-bold">Règle de Sécurité Absolue</h4>
+                            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
+                                N'acceptez <strong>AUCUN</strong> paiement sur un compte personnel. Les encaissements s'effectuent uniquement sur les numéros marchands officiels Baniki Labs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenus des sections -->
+            <div class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
+                
+                <!-- SECTION 1 : GUIDE D'INTEGRATION -->
+                <div id="tab-guide" class="tab-content block">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center pb-3 border-b border-slate-100">
+                        <i class="fa-solid fa-book-open text-indigo-600 mr-3"></i> 1. Guide d'Intégration & Processus Client
+                    </h2>
+
+                    <div class="prose prose-slate max-w-none space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-indigo-950 mb-2">Introduction</h3>
+                            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                                En tant que conseiller commercial pour nos services linguistiques, vous êtes au cœur de l'activité. Vous gérez d'une part le recrutement pour les <strong>Formations de Langues</strong> (<a href="https://www.banikilabs.store/language.html" target="_blank" class="text-indigo-600 hover:underline">Language</a>) et d'autre part la contractualisation des <strong>Prestations de Traduction</strong> (<a href="https://www.banikilabs.store/translate.html" target="_blank" class="text-indigo-600 hover:underline">Translate</a>).
+                            </p>
+                        </div>
+
+                        <!-- Tableau de comparaison des services -->
+                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                            <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">Vos deux piliers opérationnels</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-150">
+                                    <div class="flex items-center space-x-2 text-indigo-700 font-bold mb-2">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                        <span>Formations (Language)</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 mb-3">Vente de modules d'apprentissage (Anglais, Français, Espagnol, Swahili, Lingala, Allemand, etc.). Pour professionnels et étudiants.</p>
+                                    <div class="text-xs bg-slate-50 p-2 rounded">
+                                        <strong>Tarification :</strong> Forfaitaire par mois ou par module de formation.
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-150">
+                                    <div class="flex items-center space-x-2 text-indigo-700 font-bold mb-2">
+                                        <i class="fa-solid fa-language"></i>
+                                        <span>Traductions (Translate)</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 mb-3">Traduction certifiée ou simple de documents (actes civils, mémoires, sites web, documents corporatifs).</p>
+                                    <div class="text-xs bg-slate-50 p-2 rounded">
+                                        <strong>Tarification :</strong> Au mot ou forfait par document type (diplômes, etc.).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Les 4 étapes incontournables -->
+                        <div>
+                            <h3 class="text-lg font-bold text-indigo-950 mb-3">Le Processus Client en 4 Étapes</h3>
+                            <div class="relative pl-6 border-l-2 border-indigo-100 space-y-6">
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-0 bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs border-2 border-white">1</span>
+                                    <h4 class="font-bold text-slate-800 text-sm">Qualification</h4>
+                                    <p class="text-xs text-slate-600">Demander le document source (ou niveau de départ s'il s'agit d'une formation), les langues concernées, et le délai de livraison ou les disponibilités de l'apprenant.</p>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-0 bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs border-2 border-white">2</span>
+                                    <h4 class="font-bold text-slate-800 text-sm">Établissement du devis</h4>
+                                    <p class="text-xs text-slate-600">Utiliser notre tarificateur interne (Onglet 2) pour formuler la proposition officielle.</p>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-0 bg-amber-100 text-amber-800 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs border-2 border-white">3</span>
+                                    <h4 class="font-bold text-slate-800 text-sm">Collecte de l'acompte (50% minimum)</h4>
+                                    <p class="text-xs text-slate-600 font-medium text-amber-700">Aucun travail ni intégration en classe ne débute sans encaissement préalable de 50% minimum (100% pour les montants inférieurs à 20 USD).</p>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-0 bg-emerald-100 text-emerald-800 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs border-2 border-white">4</span>
+                                    <h4 class="font-bold text-slate-800 text-sm">Livraison / Clôture</h4>
+                                    <p class="text-xs text-slate-600">Pour les traductions : livraison finale uniquement après règlement du solde de 50%. Pour les formations : paiement du solde de la session selon le calendrier convenu.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SECTION 2 : CALCULETTE DE DEVIS -->
+                <div id="tab-calculette" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center pb-3 border-b border-slate-100">
+                        <i class="fa-solid fa-calculator text-indigo-600 mr-3"></i> 2. Simulateur de Tarifs & Devis
+                    </h2>
+
+                    <div class="space-y-6">
+                        <p class="text-slate-600 text-sm">
+                            Configurez le besoin du client ci-dessous pour obtenir instantanément le prix exact recommandé par Baniki Labs.
+                        </p>
+
+                        <!-- Sélection du Type de Service -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Choisir le Type de Service :</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="border-2 border-indigo-600 bg-indigo-50/50 p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all" id="label-serv-trad">
+                                    <input type="radio" name="service_type" value="traduction" checked class="text-indigo-600 focus:ring-indigo-500 h-4 w-4" onchange="toggleCalculetteForm('traduction')">
+                                    <div>
+                                        <span class="font-bold text-sm block text-slate-900">Prestation de Traduction</span>
+                                        <span class="text-xs text-slate-500">Par mot ou document administratif officiel</span>
+                                    </div>
+                                </label>
+                                <label class="border-2 border-slate-250 bg-white p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all hover:bg-slate-50" id="label-serv-lang">
+                                    <input type="radio" name="service_type" value="formation" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4" onchange="toggleCalculetteForm('formation')">
+                                    <div>
+                                        <span class="font-bold text-sm block text-slate-900">Formation de Langues</span>
+                                        <span class="text-xs text-slate-500">Abonnement mensuel ou sessions de cours</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire Dynamique Traduction -->
+                        <div id="form-traduction" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Type de Document</label>
+                                    <select id="trad-doc-type" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateTraduction()">
+                                        <option value="mot">Document Libre (Tarif au mot)</option>
+                                        <option value="standard">Diplôme / Acte d'état civil (Forfait page)</option>
+                                        <option value="technique">Document Technique / Commercial</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Urgence de la commande</label>
+                                    <select id="trad-urgency" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateTraduction()">
+                                        <option value="normal">Normal (3-5 jours)</option>
+                                        <option value="urgent">Urgent (24h-48h) [+25%]</option>
+                                        <option value="tres_urgent">Très Urgent (Aujourd'hui) [+50%]</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div id="div-words">
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de mots</label>
+                                    <input type="number" id="trad-words" value="500" min="1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" oninput="calculateTraduction()">
+                                </div>
+                                <div id="div-pages" class="hidden">
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de pages</label>
+                                    <input type="number" id="trad-pages" value="1" min="1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" oninput="calculateTraduction()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Option de Révision Additionnelle</label>
+                                    <select id="trad-review" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateTraduction()">
+                                        <option value="sans">Aucune (Traduction + Relecture interne classique)</option>
+                                        <option value="expert">Relecture par un Second Traducteur Expert (+20%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire Dynamique Formation -->
+                        <div id="form-formation" class="space-y-4 hidden">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Formule choisie</label>
+                                    <select id="lang-formula" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateFormation()">
+                                        <option value="standard">Formule Standard (2 sessions / semaine - 50$ / mois)</option>
+                                        <option value="premium">Formule Premium (4 sessions / semaine - 90$ / mois)</option>
+                                        <option value="intensif">Session Intensive Individuelle (Chaque jour - 150$ / mois)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Durée d'Engagement</label>
+                                    <select id="lang-duration" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateFormation()">
+                                        <option value="1">1 Mois (Tarif normal)</option>
+                                        <option value="3">3 Mois (Remise -10%)</option>
+                                        <option value="6">6 Mois (Remise -15%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Supports d'apprentissage physiques requis ?</label>
+                                    <select id="lang-materials" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500" onchange="calculateFormation()">
+                                        <option value="non">Non, supports PDF uniquement (Gratuit)</option>
+                                        <option value="oui">Oui, Livret et fiches imprimées (+15$ payés une fois)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fiche Résultat Devis -->
+                        <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-xl p-6 shadow-md">
+                            <div class="flex justify-between items-start border-b border-white/10 pb-4 mb-4">
+                                <div>
+                                    <span class="text-xs text-indigo-300 font-bold uppercase tracking-widest">Calculateur de Devis Baniki Labs</span>
+                                    <h3 class="text-lg font-bold mt-1" id="summary-title">Estimation Prestation Traduction</h3>
+                                </div>
+                                <div class="bg-white/10 px-3 py-1 rounded text-xs font-semibold text-slate-300" id="badge-service">Traduction</div>
+                            </div>
+
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Base Tarifaire :</span>
+                                    <span id="calc-base" class="font-mono text-white">0.00 $</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Majoration / Remise applicable :</span>
+                                    <span id="calc-modifier" class="font-mono text-white">0.00 $</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300" id="div-calc-materials">
+                                    <span>Option matériels physiques :</span>
+                                    <span id="calc-materials" class="font-mono text-white">0.00 $</span>
+                                </div>
+                                <div class="border-t border-white/10 pt-3 flex justify-between items-center text-lg font-bold text-emerald-400">
+                                    <span>Total Net Estimé :</span>
+                                    <span id="calc-total" class="font-mono text-2xl">0.00 $</span>
+                                </div>
+                            </div>
+
+                            <!-- Devis Acompte Préparé -->
+                            <div class="mt-6 bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div class="flex items-center space-x-2 text-amber-300 font-bold text-xs uppercase tracking-wider mb-2">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                                    <span>Acompte requis pour démarrer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-xs text-slate-300">
+                                        Minimum réglementaire (50%) :
+                                    </div>
+                                    <div class="font-mono text-xl font-bold text-amber-400" id="calc-acompte">
+                                        0.00 $
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2 italic">
+                                    Rappel : Pour tout devis inférieur à 20 $, l'acompte obligatoire est de 100% de la somme.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SECTION 3 : SCRIPTS DE MESSAGES -->
+                <div id="tab-scripts" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center pb-3 border-b border-slate-100">
+                        <i class="fa-solid fa-comments text-indigo-600 mr-3"></i> 3. Modèles de messages prêts à l'emploi
+                    </h2>
+
+                    <div class="space-y-6">
+                        <p class="text-slate-600 text-sm">
+                            Utilisez et adaptez ces modèles textuels pour maintenir une communication irréprochable et professionnelle. Cliquez sur un modèle pour copier son texte.
+                        </p>
+
+                        <!-- Message d'accueil -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                                <span class="font-bold text-xs text-slate-700 uppercase tracking-wide"><i class="fa-solid fa-door-open mr-1 text-slate-400"></i> Phase 1 : Accueil et demande de précisions</span>
+                                <button onclick="copyToClipboard('msg-accueil')" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-2.5 py-1 rounded font-semibold transition-all">
+                                    <i class="fa-solid fa-copy mr-1"></i> Copier
+                                </button>
+                            </div>
+                            <div class="p-4 bg-slate-950 text-slate-100 font-mono text-xs whitespace-pre-wrap leading-relaxed select-all" id="msg-accueil">Bonjour, merci d'avoir contacté le service linguistique de Baniki Labs.
+
+Pour vous proposer un devis personnalisé et précis, pourriez-vous nous envoyer :
+1. Le document à traduire (ou l'évaluation de votre niveau pour nos formations).
+2. Les langues concernées (Exemple: Français vers Anglais).
+3. Votre date limite souhaitée de livraison.
+
+Dès réception de ces informations, nous vous enverrons votre devis. Cordialement, [Votre Nom], Baniki Labs.</div>
+                        </div>
+
+                        <!-- Message de Devis et d'Acompte -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                                <span class="font-bold text-xs text-slate-700 uppercase tracking-wide"><i class="fa-solid fa-receipt mr-1 text-slate-400"></i> Phase 2 : Envoi du devis et acompte obligatoire</span>
+                                <button onclick="copyToClipboard('msg-devis')" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-2.5 py-1 rounded font-semibold transition-all">
+                                    <i class="fa-solid fa-copy mr-1"></i> Copier
+                                </button>
+                            </div>
+                            <div class="p-4 bg-slate-950 text-slate-100 font-mono text-xs whitespace-pre-wrap leading-relaxed select-all" id="msg-devis">Nous avons bien évalué votre demande, merci pour votre confiance.
+
+Le montant de cette prestation s'élève à [Montant total] USD.
+Conformément aux directives de l'entreprise, le démarrage s'effectue après versement de l'acompte de 50%, soit [Montant Acompte] USD.
+
+Vous pouvez effectuer ce versement sécurisé via nos canaux marchands officiels :
+- Mobile Money (M-Pesa, Orange Money, Airtel Money) : [Insérer numéro officiel]
+- Virement/Dépôt de compte : [Insérer RIB de l'agence]
+
+Merci de nous partager la preuve de paiement (capture d'écran ou quittance) dès l'opération effectuée pour entamer le travail immédiatement.</div>
+                        </div>
+
+                        <!-- Message de Livraison (Traduction) -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                                <span class="font-bold text-xs text-slate-700 uppercase tracking-wide"><i class="fa-solid fa-paper-plane mr-1 text-slate-400"></i> Phase 3 : Livraison des travaux (Solde payé)</span>
+                                <button onclick="copyToClipboard('msg-livraison')" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-2.5 py-1 rounded font-semibold transition-all">
+                                    <i class="fa-solid fa-copy mr-1"></i> Copier
+                                </button>
+                            </div>
+                            <div class="p-4 bg-slate-950 text-slate-100 font-mono text-xs whitespace-pre-wrap leading-relaxed select-all" id="msg-livraison">Bonjour [Nom du client],
+
+Nous sommes ravis de vous informer que votre projet a été validé et finalisé avec succès par nos experts linguistiques.
+
+Nous accusons également bonne réception du paiement du solde de votre commande. Vous trouverez en pièce jointe de ce message les livrables associés à votre projet.
+
+Toute l'équipe de Baniki Labs vous remercie pour votre collaboration et se tient prête pour vos prochains projets. Excellente journée à vous !</div>
+                        </div>
+
+                        <!-- Toast de confirmation de copie -->
+                        <div id="toast-copie" class="hidden fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 animate-bounce z-50">
+                            <i class="fa-solid fa-check text-emerald-400"></i>
+                            <span>Modèle de texte copié dans votre presse-papiers !</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SECTION 4 : SAISIE FINANCIERE -->
+                <div id="tab-finance" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center pb-3 border-b border-slate-100">
+                        <i class="fa-solid fa-cash-register text-indigo-600 mr-3"></i> 4. Enregistrement des Encaissements Clients
+                    </h2>
+
+                    <div class="space-y-6">
+                        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-950 leading-relaxed">
+                            <p class="font-bold mb-1"><i class="fa-solid fa-info-circle text-indigo-700 mr-1"></i> Obligation d'enregistrement immédiat :</p>
+                            Dès réception de la confirmation visuelle d'un transfert financier (SMS opérateur, quittance ou capture d'écran valide), vous devez consigner la transaction ici. Cette action alimente la comptabilité et valide la livraison.
+                        </div>
+
+                        <!-- Formulaire d'Enregistrement de Vente -->
+                        <form id="payment-form" onsubmit="saveTransaction(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Nom du client</label>
+                                    <input type="text" id="pay-client" required placeholder="Exemple: Jean Dupont" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Type de service associé</label>
+                                    <select id="pay-service" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Traduction">Traduction (Translate)</option>
+                                        <option value="Formation">Formation de Langues (Language)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Montant Reçu ($ USD)</label>
+                                    <input type="number" id="pay-amount" step="0.01" required placeholder="Exemple: 45.00" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">ID / Référence Transaction</label>
+                                    <input type="text" id="pay-ref" required placeholder="Exemple: MP260612.1245.C99" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Mode de Réception</label>
+                                    <select id="pay-method" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                        <option value="M-Pesa">M-Pesa</option>
+                                        <option value="Orange Money">Orange Money</option>
+                                        <option value="Airtel Money">Airtel Money</option>
+                                        <option value="Virement Bancaire">Virement Bancaire / Dépôt</option>
+                                        <option value="Espèces">Espèces (Contre-quittance bureau)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Statut du paiement</label>
+                                    <select id="pay-status" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Acompte Payé (50%)">Acompte Payé (50%)</option>
+                                        <option value="Soldé (100%)">Soldé (100%)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Commentaire additionnel</label>
+                                    <input type="text" id="pay-notes" placeholder="Ex: Premier mois formation Anglais / Dossier urgent" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span>Enregistrer l'Encaissement</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Liste des Dernières Ventes Enregistrées -->
+                        <div class="mt-8 border-t border-slate-200 pt-6">
+                            <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center justify-between">
+                                <span><i class="fa-solid fa-list-check text-slate-400 mr-2"></i> Historique local des opérations récentes</span>
+                                <span class="bg-slate-100 text-slate-700 font-mono text-xs px-2.5 py-1 rounded-full" id="history-counter">0 transactions</span>
+                            </h3>
+
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-200 text-left text-xs sm:text-sm">
+                                    <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+                                        <tr>
+                                            <th class="px-4 py-3">Client</th>
+                                            <th class="px-4 py-3">Service</th>
+                                            <th class="px-4 py-3">Montant</th>
+                                            <th class="px-4 py-3">ID Transaction</th>
+                                            <th class="px-4 py-3">Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-tbody" class="divide-y divide-slate-150 text-slate-700">
+                                        <!-- Les lignes de transaction seront ajoutées ici dynamiquement -->
+                                        <tr id="empty-state">
+                                            <td colspan="5" class="px-4 py-8 text-center text-slate-400 italic">
+                                                Aucun encaissement saisi pour le moment. Remplissez le formulaire ci-dessus pour simuler une saisie.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Pied de page -->
+    <footer id="footer" class="pt-20 sm:pt-32 pb-12 px-4 sm:px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden mt-12 text-slate-400">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 sm:gap-16 mb-16 sm:mb-24">
+            <div class="space-y-6 sm:space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-lg sm:text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl sm:text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="space-y-4 text-gray-400 text-sm sm:text-base">
+                    <p class="flex items-start gap-3">
+                        <svg class="w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <svg class="w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <svg class="w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span>banikilabs@gmail.com</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                            <a href="admin.html" class="text-[var(--gold)] hover:underline mt-2 inline-block">Accès Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 sm:space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <svg class="w-5 h-5 sm:w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <svg class="w-5 h-5 sm:w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="space-y-6 sm:space-y-8">
+            <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
+            <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+            <div class="pt-4 border-t border-white/5">
+                <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
+            </div>
+            <div class="pt-8 border-t border-white/5 mt-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Méthodes de Paiement</h4>
+                <div class="space-y-4 text-gray-400 text-sm sm:text-base">
+                    <p class="flex items-center gap-3">
+                        <i class="fa-solid fa-mobile-screen-button w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span>M-Pesa : +243 822 409 702 (Jimmy Baniki)</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i class="fa-solid fa-building-columns w-5 h-5 sm:w-6 h-6 text-[var(--gold)] shrink-0"></i>
+                        <span>Equity BCDC : 266200286723221 (Jimmy Baniki)</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-gray-600 font-bold uppercase tracking-[0.2em] px-4">
+        &copy; 2025. TOUS DROITS RÉSERVÉS.
+    </div>
+</footer>
+
+    <!-- Script de logique opérationnelle -->
+    <script>
+        // Changement d'onglets
+        function switchTab(tabId) {
+            // Cacher tous les onglets
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            
+            // Afficher l'onglet actif
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Mettre à jour l'état des boutons de menu
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.className = "tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition-all duration-200";
+            });
+
+            // Bouton actif
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.className = "tab-btn w-full text-left px-4 py-3 rounded-xl flex items-center space-x-3 bg-indigo-600 text-white shadow-sm font-medium transition-all duration-200";
+        }
+
+        // Commutateur de formulaires dans la calculette
+        function toggleCalculetteForm(type) {
+            const labelTrad = document.getElementById('label-serv-trad');
+            const labelLang = document.getElementById('label-serv-lang');
+            
+            if(type === 'traduction') {
+                document.getElementById('form-traduction').classList.remove('hidden');
+                document.getElementById('form-formation').classList.add('hidden');
+                
+                labelTrad.className = "border-2 border-indigo-600 bg-indigo-50/50 p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all";
+                labelLang.className = "border-2 border-slate-250 bg-white p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all hover:bg-slate-50";
+                
+                document.getElementById('summary-title').innerText = "Estimation Prestation Traduction";
+                document.getElementById('badge-service').innerText = "Traduction";
+                document.getElementById('div-calc-materials').classList.add('hidden');
+                calculateTraduction();
+            } else {
+                document.getElementById('form-traduction').classList.add('hidden');
+                document.getElementById('form-formation').classList.remove('hidden');
+                
+                labelTrad.className = "border-2 border-slate-250 bg-white p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all hover:bg-slate-50";
+                labelLang.className = "border-2 border-indigo-600 bg-indigo-50/50 p-4 rounded-xl cursor-pointer flex items-center space-x-3 transition-all";
+                
+                document.getElementById('summary-title').innerText = "Estimation Formation Linguistique";
+                document.getElementById('badge-service').innerText = "Formation";
+                document.getElementById('div-calc-materials').classList.remove('hidden');
+                calculateFormation();
+            }
+        }
+
+        // Logique de Calcul Traduction
+        function calculateTraduction() {
+            const docType = document.getElementById('trad-doc-type').value;
+            const words = parseFloat(document.getElementById('trad-words').value) || 0;
+            const pages = parseFloat(document.getElementById('trad-pages').value) || 0;
+            const urgency = document.getElementById('trad-urgency').value;
+            const review = document.getElementById('trad-review').value;
+
+            // Affichage conditionnel input mots/pages
+            if (docType === 'standard') {
+                document.getElementById('div-words').classList.add('hidden');
+                document.getElementById('div-pages').classList.remove('hidden');
+            } else {
+                document.getElementById('div-words').classList.remove('hidden');
+                document.getElementById('div-pages').classList.add('hidden');
+            }
+
+            let baseCost = 0;
+            if(docType === 'mot') {
+                // 0.08 $ le mot en moyenne
+                baseCost = words * 0.08;
+            } else if (docType === 'standard') {
+                // Forfait de 25$ par page officielle certifiée
+                baseCost = pages * 25.00;
+            } else if (docType === 'technique') {
+                // 0.12 $ le mot technique
+                baseCost = words * 0.12;
+            }
+
+            // Application des modificateurs d'urgence
+            let urgencyModifier = 0;
+            if(urgency === 'urgent') {
+                urgencyModifier = baseCost * 0.25;
+            } else if (urgency === 'tres_urgent') {
+                urgencyModifier = baseCost * 0.50;
+            }
+
+            // Application de la révision par tiers
+            let reviewModifier = 0;
+            if(review === 'expert') {
+                reviewModifier = baseCost * 0.20;
+            }
+
+            const total = baseCost + urgencyModifier + reviewModifier;
+            
+            // Calcul acompte
+            let acompte = total * 0.50;
+            if(total < 20) {
+                acompte = total; // 100% si moins de 20$
+            }
+
+            // Remplissage UI
+            document.getElementById('calc-base').innerText = baseCost.toFixed(2) + " $";
+            document.getElementById('calc-modifier').innerText = "+" + (urgencyModifier + reviewModifier).toFixed(2) + " $";
+            document.getElementById('calc-total').innerText = total.toFixed(2) + " $";
+            document.getElementById('calc-acompte').innerText = acompte.toFixed(2) + " $";
+        }
+
+        // Logique de Calcul Formation
+        function calculateFormation() {
+            const formula = document.getElementById('lang-formula').value;
+            const duration = parseInt(document.getElementById('lang-duration').value);
+            const materials = document.getElementById('lang-materials').value;
+
+            let monthlyRate = 50.00;
+            if(formula === 'premium') {
+                monthlyRate = 90.00;
+            } else if (formula === 'intensif') {
+                monthlyRate = 150.00;
+            }
+
+            let baseCost = monthlyRate * duration;
+
+            // Application de la remise sur engagement de durée
+            let discount = 0;
+            if(duration === 3) {
+                discount = baseCost * 0.10; // -10%
+            } else if (duration === 6) {
+                discount = baseCost * 0.15; // -15%
+            }
+
+            let materialsCost = 0;
+            if(materials === 'oui') {
+                materialsCost = 15.00;
+            }
+
+            const total = baseCost - discount + materialsCost;
+            
+            // Calcul acompte
+            let acompte = total * 0.50;
+            if(total < 20) {
+                acompte = total;
+            }
+
+            // Remplissage UI
+            document.getElementById('calc-base').innerText = baseCost.toFixed(2) + " $";
+            document.getElementById('calc-modifier').innerText = "-" + discount.toFixed(2) + " $";
+            document.getElementById('calc-materials').innerText = "+" + materialsCost.toFixed(2) + " $";
+            document.getElementById('calc-total').innerText = total.toFixed(2) + " $";
+            document.getElementById('calc-acompte').innerText = acompte.toFixed(2) + " $";
+        }
+
+        // Fonction Presse-papier pour copier
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            // Méthode de secours sécurisée recommandée pour iframe
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            // Toast d'information
+            const toast = document.getElementById('toast-copie');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Simulation de base de données locale d'encaissements
+        let localTransactions = [];
+
+        function saveTransaction(event) {
+            event.preventDefault();
+
+            const client = document.getElementById('pay-client').value;
+            const service = document.getElementById('pay-service').value;
+            const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+            const ref = document.getElementById('pay-ref').value;
+            const method = document.getElementById('pay-method').value;
+            const status = document.getElementById('pay-status').value;
+            const notes = document.getElementById('pay-notes').value;
+
+            const transaction = {
+                client,
+                service,
+                amount,
+                ref,
+                method,
+                status,
+                notes,
+                date: new Date().toLocaleString('fr-FR')
+            };
+
+            // Ajouter dans la mémoire locale
+            localTransactions.unshift(transaction);
+
+            // Mettre à jour la table
+            updateTransactionTable();
+
+            // Réinitialiser le formulaire
+            document.getElementById('payment-form').reset();
+        }
+
+        function updateTransactionTable() {
+            const tbody = document.getElementById('history-tbody');
+            const counter = document.getElementById('history-counter');
+            
+            if (localTransactions.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="empty-state">
+                        <td colspan="5" class="px-4 py-8 text-center text-slate-400 italic">
+                            Aucun encaissement saisi pour le moment. Remplissez le formulaire ci-dessus pour simuler une saisie.
+                        </td>
+                    </tr>
+                `;
+                counter.innerText = "0 transaction";
+                return;
+            }
+
+            tbody.innerHTML = "";
+            counter.innerText = `${localTransactions.length} transaction${localTransactions.length > 1 ? 's' : ''}`;
+
+            localTransactions.forEach(tx => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                
+                const badgeColor = tx.status.includes('Soldé') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+                
+                tr.innerHTML = `
+                    <td class="px-4 py-3">
+                        <span class="font-bold text-slate-900 block">${tx.client}</span>
+                        <span class="text-[10px] text-slate-400">${tx.date}</span>
+                    </td>
+                    <td class="px-4 py-3 font-medium text-indigo-700">${tx.service} <span class="text-[10px] text-slate-400">(${tx.method})</span></td>
+                    <td class="px-4 py-3 font-mono font-bold">${tx.amount.toFixed(2)} $</td>
+                    <td class="px-4 py-3 text-slate-500 font-mono text-[11px]">${tx.ref}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${badgeColor}">
+                            ${tx.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initialisation par défaut
+        window.onload = function() {
+            calculateTraduction();
+        }
+    </script>
+</body>
+</html>
