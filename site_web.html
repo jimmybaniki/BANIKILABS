@@ -9,16 +9,22 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-P84YDX128F');
     </script>
     <title>BanikiLabs Store | Plateformes Numériques en RDC et Partout dans le Monde</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
                     colors: {
                         brand: {
                             50: '#eff6ff',
@@ -36,11 +42,21 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                        'fade-up': 'fadeUp 0.6s ease forwards',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(24px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -55,688 +71,1629 @@
             --bg-card: #121212;
             --text-main: #f9fafb;
         }
+
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
+
         .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .glass-dark {
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.13);
         }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Popup Animation */
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* ---------- Popup ---------- */
         .popup-overlay {
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease-in-out;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .popup-overlay.active {
             opacity: 1;
             visibility: visible;
         }
         .popup-content {
-            transform: scale(0.95) translateY(20px);
+            transform: scale(0.94) translateY(24px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
         }
         .popup-overlay.active .popup-content {
             transform: scale(1) translateY(0);
             opacity: 1;
         }
+
+        /* ---------- Shimmer Badge ---------- */
+        .shimmer-badge {
+            background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 40%, #3b82f6 60%, #1e3a8a 100%);
+            background-size: 200% auto;
+            animation: shimmer 2.5s linear infinite;
+        }
+
+        /* ---------- Sector button active state ---------- */
+        .sector-btn.active {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+        .sector-btn.active i { color: #2563eb; }
+
+        /* ---------- Card hover glow ---------- */
+        .product-card:hover {
+            box-shadow: 0 20px 60px -10px rgba(37, 99, 235, 0.15);
+        }
+
+        /* ---------- Gradient text ---------- */
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8, #3b82f6, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ---------- Hero glow orbs ---------- */
+        .orb-1 { background: radial-gradient(circle, rgba(59,130,246,0.35) 0%, transparent 70%); }
+        .orb-2 { background: radial-gradient(circle, rgba(14,165,233,0.28) 0%, transparent 70%); }
+        .orb-3 { background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%); }
+
+        /* ---------- Nav scroll effect ---------- */
+        nav.scrolled {
+            box-shadow: 0 4px 32px rgba(15,23,42,0.09);
+        }
+
+        /* ---------- Toast notification ---------- */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ---------- Advantage icon ring ---------- */
+        .icon-ring {
+            background: conic-gradient(from 180deg, #3b82f620, #3b82f660, #3b82f620);
+            animation: spin 8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* FAQ accordion */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+        }
+        .faq-answer.open {
+            max-height: 300px;
+        }
+
+        /* Parallax subtle */
+        .parallax-bg {
+            will-change: transform;
+        }
+
+        /* ---------- WhatsApp Floating Button ---------- */
+        #wa-float {
+            position: fixed;
+            bottom: 28px;
+            left: 28px;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #25D366;
+            color: white;
+            border-radius: 50px;
+            padding: 14px 20px;
+            font-weight: 700;
+            font-size: 13px;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 8px 32px rgba(37,211,102,0.45);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 56px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        #wa-float:hover {
+            max-width: 320px;
+            box-shadow: 0 12px 40px rgba(37,211,102,0.6);
+            transform: translateY(-2px);
+        }
+        #wa-float svg {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        #wa-float span {
+            opacity: 0;
+            transition: opacity 0.2s ease 0.1s;
+            white-space: nowrap;
+        }
+        #wa-float:hover span {
+            opacity: 1;
+        }
+        @media (max-width: 640px) {
+            #wa-float { max-width: 56px; padding: 14px; }
+            #wa-float:hover { max-width: 56px; }
+            #wa-float span { display: none; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white relative">
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white relative">
 
-    <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
-                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
-                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
-                    </div>
-                    <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+<!-- ===================== WHATSAPP FLOATING BUTTON ===================== -->
+<a id="wa-float" href="https://wa.me/243000000000?text=Bonjour%20BanikiLabs%20!%20J'aimerais%20cr%C3%A9er%20un%20site%20web%20Vitrine%20%C3%A0%20160%24.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" target="_blank" rel="noopener" title="Discuter sur WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.524 5.847L.057 23.5a.5.5 0 0 0 .613.613l5.701-1.457A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.663-.522-5.176-1.427l-.37-.22-3.833.98.999-3.748-.243-.388A9.955 9.955 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+    </svg>
+    <span id="wa-label">J'aimerais un site Vitrine à 160$</span>
+</a>
+
+<!-- ===================== TOAST ===================== -->
+<div id="toast" class="flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700">
+    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+        <i data-lucide="check" class="w-4 h-4 text-white"></i>
+    </div>
+    <div>
+        <p class="font-semibold text-sm" id="toast-title">Ajouté au panier</p>
+        <p class="text-xs text-slate-400" id="toast-sub">Contactez-nous pour finaliser</p>
+    </div>
+</div>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav id="navbar" class="fixed w-full z-40 transition-all duration-300 bg-white/85 backdrop-blur-lg border-b border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.45)] group-hover:shadow-[0_0_36px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                    <span class="text-black font-black text-xl tracking-tighter font-display">BL</span>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#accueil" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
-                    <a href="#solutions" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
-                    <a href="#avantages" class="text-slate-600 hover:text-brand-600 font-medium transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
-                </div>
-                <div class="flex items-center gap-3 md:gap-4">
-                    <!-- Cart Counter visible on all screens -->
-                    <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView()">
-                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600 group-hover:text-brand-600 transition-colors"></i>
-                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
-                    </div>
-
-                    <div class="hidden md:flex items-center gap-4">
-                        <!-- Language Switcher -->
-                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                            <button onclick="setLanguage('fr')" id="btn-fr" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm">FR</button>
-                            <button onclick="setLanguage('en')" id="btn-en" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">EN</button>
-                            <button onclick="setLanguage('sw')" id="btn-sw" class="px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600">SW</button>
-                        </div>
-                        <a href="#contact" class="bg-brand-950 hover:bg-brand-900 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-xl flex items-center gap-2">
-                            <span data-fr="Contacter les ventes" data-en="Contact Sales" data-sw="Wasiliana na mauzo">Contacter les ventes</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-
-                    <!-- Mobile menu button -->
-                    <div class="md:hidden flex items-center">
-                        <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95">
-                            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu Container -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-[40]">
-            <div class="px-6 py-8 space-y-6 flex flex-col">
-                <div class="space-y-4">
-                    <a href="#accueil" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
-                    <a href="#solutions" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
-                    <a href="#avantages" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
-                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-lg font-extrabold text-slate-900 border-b border-slate-50 pb-2" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
-                </div>
-                
-                <div class="pt-2">
-                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Changer de Langue</p>
-                    <div class="flex gap-2">
-                        <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">FRANÇAIS</button>
-                        <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">ENGLISH</button>
-                        <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-brand-950 active:bg-brand-500 active:text-white transition-colors">SWAHILI</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <section id="accueil" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-brand-950">
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-            <div class="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-600/20 blur-3xl filter mix-blend-screen"></div>
-            <div class="absolute bottom-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-accent-500/20 blur-3xl filter mix-blend-screen"></div>
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0"></div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
-                <div class="w-full lg:w-1/2 text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-brand-500/30 text-brand-100 text-sm font-medium mb-6">
-                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                        <span data-fr="Disponibles pour la RDC & le Monde Entier" data-en="Available for DRC & The whole World" data-sw="Inapatikana kwa DRC & Duniani kote">Disponibles pour la RDC & le Monde Entier</span>
-                    </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
-                        <span data-fr="Digitalisez votre institution avec" data-en="Digitalize your institution with" data-sw="Digitalisha taasisi yako na">Digitalisez votre institution avec</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-brand-500">BanikiLabs</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0" data-fr="Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises." data-en="Turnkey, secure and high-performance platforms. Designed for universities, law firms, hospitals, travel agencies, logistics and businesses." data-sw="Majukwaa kamili, salama na yenye utendaji wa hali ya juu. Yaliyoundwa kwa vyuo vikuu, makampuni ya sheria, hospitali, mashirika ya usafiri, vifaa na biashara.">
-                        Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <a href="#solutions" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] text-center" data-fr="Découvrir le catalogue" data-en="Browse Catalogue" data-sw="Gundua Katalogi">
-                            Découvrir le catalogue
-                        </a>
-                        <a href="#contact" class="w-full sm:w-auto px-8 py-3.5 glass text-white hover:bg-white/10 rounded-full font-semibold transition-all text-center flex items-center justify-center gap-2">
-                            <i data-lucide="play-circle" class="w-5 h-5"></i>
-                            <span data-fr="Demander une démo" data-en="Request a demo" data-sw="Omba onyesho">Demander une démo</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="w-full lg:w-1/2 mt-12 lg:mt-0 relative">
-                    <div class="animate-float">
-                        <div class="glass-dark rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden w-full max-w-lg mx-auto relative aspect-[4/3]">
-                            <div class="h-12 border-b border-slate-700/50 flex items-center px-4 justify-between bg-slate-900/50">
-                                <div class="flex gap-2">
-                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                </div>
-                                <div class="h-4 w-32 bg-slate-700/50 rounded-full"></div>
-                            </div>
-                            <div class="flex h-[calc(100%-3rem)]">
-                                <div class="w-1/4 border-r border-slate-700/50 p-4 space-y-4 bg-slate-900/30 hidden sm:block">
-                                    <div class="h-2 w-full bg-slate-700/50 rounded-full mb-6"></div>
-                                    <div class="h-8 w-full bg-brand-600/20 border border-brand-500/30 rounded-lg"></div>
-                                    <div class="h-8 w-full bg-slate-800/50 rounded-lg"></div>
-                                    <div class="h-8 w-full bg-slate-800/50 rounded-lg"></div>
-                                </div>
-                                <div class="flex-1 p-6 space-y-6">
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="h-20 bg-gradient-to-br from-brand-900/40 to-slate-800/40 rounded-xl border border-slate-700/50 p-3 flex flex-col justify-between">
-                                            <div class="w-6 h-6 rounded-full bg-brand-500/20 flex items-center justify-center"><div class="w-3 h-3 bg-brand-400 rounded-sm"></div></div>
-                                            <div class="h-2 w-16 bg-slate-600 rounded-full mt-auto"></div>
-                                            <div class="h-4 w-24 bg-slate-300 rounded-full mt-2"></div>
-                                        </div>
-                                        <div class="h-20 bg-gradient-to-br from-accent-900/40 to-slate-800/40 rounded-xl border border-slate-700/50 p-3 flex flex-col justify-between">
-                                            <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center"><div class="w-3 h-3 bg-accent-400 rounded-full"></div></div>
-                                            <div class="h-2 w-16 bg-slate-600 rounded-full mt-auto"></div>
-                                            <div class="h-4 w-24 bg-slate-300 rounded-full mt-2"></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1 w-full h-32 bg-slate-800/30 rounded-xl border border-slate-700/50 p-4 relative overflow-hidden">
-                                        <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
-                                            <path d="M0 40 L 10 30 L 30 35 L 50 15 L 70 20 L 90 5 L 100 10" fill="none" stroke="#38bdf8" stroke-width="2" class="opacity-70"></path>
-                                            <path d="M0 40 L 10 30 L 30 35 L 50 15 L 70 20 L 90 5 L 100 10 L 100 40 Z" fill="url(#grad)" class="opacity-20"></path>
-                                            <defs>
-                                                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stop-color="#38bdf8"/>
-                                                    <stop offset="100%" stop-color="transparent"/>
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-8 bg-white border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
-            <p class="text-center text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6">
-                Sélectionnez un secteur pour voir nos <span class="text-brand-600 font-bold">forfaits création de site</span>
-            </p>
-            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
-                <!-- Les boutons sont maintenant interactifs pour ouvrir le popup de tarification -->
-                <button onclick="openPricingPopup('Universités / Écoles')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="graduation-cap" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Universités
-                </button>
-                <button onclick="openPricingPopup('Cabinets d\'Avocats')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="scale" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Avocats
-                </button>
-                <button onclick="openPricingPopup('Hôtels & Hébergements')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="hotel" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Hôtels
-                </button>
-                <button onclick="openPricingPopup('Logistique & Livraison')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="truck" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Logistique
-                </button>
-                <button onclick="openPricingPopup('Santé & Cliniques')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="stethoscope" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Santé
-                </button>
-                <button onclick="openPricingPopup('Agences Immobilières')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="building" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Immobilier
-                </button>
-                <button onclick="openPricingPopup('E-commerce & Boutiques')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="shopping-bag" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> E-commerce
-                </button>
-                <button onclick="openPricingPopup('Restaurants & Bars')" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold border border-slate-200 hover:border-brand-200 transition-all shadow-sm group">
-                    <i data-lucide="utensils" class="w-5 h-5 text-slate-400 group-hover:text-brand-500"></i> Restaurants
-                </button>
-            </div>
-            <p class="text-center text-xs text-slate-400 mt-4">*Cliquez sur un secteur pour afficher les tarifs de création web (Vitrine, E-commerce, Pro).</p>
-        </div>
-    </section>
-
-    <section id="solutions" class="py-24 bg-slate-50 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-4" data-fr="Catalogue de nos Plateformes" data-en="Our Platforms Catalogue" data-sw="Katalogi ya Majukwaa Yetu">Catalogue de nos Plateformes</h2>
-                <p class="text-lg text-slate-600" data-fr="Investissez dans une technologie fiable. Des applications complètes, prêtes à être déployées et personnalisées avec votre image de marque." data-en="Invest in reliable technology. Complete applications, ready to be deployed and customized with your brand image." data-sw="Wekeza katika teknolojia ya kuaminika. Programu kamili, tayari kutumika na kubinafsishwa na chapa yako.">Investissez dans une technologie fiable. Des applications complètes, prêtes à être déployées et personnalisées avec votre image de marque.</p>
+                <span class="font-extrabold text-xl tracking-tight uppercase text-brand-950 font-display">Baniki <span class="text-[var(--gold)]">Labs</span></span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product Card 1: Universités -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
-                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=600&q=80" alt="Université" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-900/60 to-transparent z-10 mix-blend-multiply"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
-                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
-                            <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <div class="relative z-20">
-                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Baniki Edu" data-en="Baniki Edu" data-sw="Baniki Edu">Baniki Edu</h3>
-                            <span class="text-blue-100 text-sm font-medium" data-fr="Pour Universités & Écoles" data-en="For Universities & Schools" data-sw="Kwa Vyuo Vikuu & Shule">Pour Universités & Écoles</span>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Gestion complète de la scolarité, inscriptions en ligne, paiements des frais (Mobile Money/Banque), notes, et portail étudiant." data-en="Complete management of schooling, online registrations, fee payments (Mobile Money/Bank), grades, and student portal." data-sw="Usimamizi kamili wa masomo, usajili mtandaoni, malipo ya ada (Mobile Money/Benki), alama, na lango la mwanafunzi.">Gestion complète de la scolarité, inscriptions en ligne, paiements des frais (Mobile Money/Banque), notes, et portail étudiant.</p>
-                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Portail Étudiant / Professeur" data-en="Student / Professor Portal" data-sw="Lango la Mwanafunzi / Profesa">Portail Étudiant / Professeur</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Gestion des relevés de notes" data-en="Grade report management" data-sw="Usimamizi wa ripoti za alama">Gestion des relevés de notes</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="E-learning intégré" data-en="Integrated E-learning" data-sw="E-learning iliyounganishwa">E-learning intégré</span></li>
-                        </ul>
-                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
-                            <div>
-                                <p class="text-xs text-slate-500 uppercase font-semibold" data-fr="Prix de la plateforme" data-en="Platform Price">Prix de la plateforme</p>
-                                <p class="text-3xl font-extrabold text-brand-950">$1,500</p>
-                            </div>
-                            <button onclick="addToCart('Baniki Edu', 1500)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
-                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 2: E-commerce -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
-                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=600&q=80" alt="E-commerce" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-orange-900 via-orange-900/60 to-transparent z-10 mix-blend-multiply"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
-                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
-                            <i data-lucide="store" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <div class="relative z-20">
-                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Baniki Market" data-en="Baniki Market" data-sw="Baniki Market">Baniki Market</h3>
-                            <span class="text-orange-100 text-sm font-medium" data-fr="Boutiques et Multi-vendeurs" data-en="Shops and Multi-vendors" data-sw="Maduka na Wauzaji Wengi">Boutiques et Multi-vendeurs</span>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux." data-en="A robust marketplace like Amazon/Alibaba to sell your products online, with integration of local payments." data-sw="Soko imara kama Amazon/Alibaba kuuza bidhaa zako mtandaoni, na ujumuishaji wa malipo ya ndani.">Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux.</p>
-                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Gestion des stocks & vendeurs" data-en="Stock & vendor management" data-sw="Usimamizi wa hisa & wauzaji">Gestion des stocks & vendeurs</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Intégration M-Pesa, Airtel Money" data-en="M-Pesa, Airtel Money integration" data-sw="Ujumuishaji wa M-Pesa, Airtel Money">Intégration M-Pesa, Airtel Money</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Module de livraison intégré" data-en="Integrated delivery module" data-sw="Moduli ya utoaji iliyounganishwa">Module de livraison intégré</span></li>
-                        </ul>
-                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
-                            <div>
-                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
-                                <p class="text-3xl font-extrabold text-brand-950">$2,000</p>
-                            </div>
-                            <button onclick="addToCart('Baniki Market', 2000)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
-                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product Card 3: Avocats -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden group flex flex-col">
-                    <div class="h-48 relative flex flex-col justify-end p-6 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80" alt="Avocats Justice" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-10 mix-blend-multiply"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10"></div>
-                        <div class="absolute right-4 top-4 z-20 bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/30">
-                            <i data-lucide="scale" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <div class="relative z-20">
-                            <h3 class="text-2xl font-bold text-white mb-1" data-fr="Baniki Law" data-en="Baniki Law" data-sw="Baniki Law">Baniki Law</h3>
-                            <span class="text-slate-300 text-sm font-medium" data-fr="Pour Cabinets d'Avocats" data-en="For Law Firms" data-sw="Kwa Makampuni ya Sheria">Pour Cabinets d'Avocats</span>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <p class="text-slate-600 text-sm mb-6 h-16" data-fr="Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité." data-en="Digitize the monitoring of your legal files, client billing, and securely archive your documents." data-sw="Digitalisha ufuatiliaji wa faili zako za kisheria, malipo ya wateja wako, na uhifadhi salama wa nyaraka zako.">Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité.</p>
-                        <ul class="space-y-2 mb-6 text-sm text-slate-700">
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Suivi des audiences & dossiers" data-en="Hearing & case tracking" data-sw="Ufuatiliaji wa vikao & faili">Suivi des audiences & dossiers</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Coffre-fort numérique sécurisé" data-en="Secure digital vault" data-sw="Sehemu salama ya kuhifadhi dijitali">Coffre-fort numérique sécurisé</span></li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> <span data-fr="Facturation & Honoraires" data-en="Billing & Fees" data-sw="Malipo & Ada">Facturation & Honoraires</span></li>
-                        </ul>
-                        <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
-                            <div>
-                                <p class="text-xs text-slate-500 uppercase font-semibold">Prix de la plateforme</p>
-                                <p class="text-3xl font-extrabold text-brand-950">$1,200</p>
-                            </div>
-                            <button onclick="addToCart('Baniki Law', 1200)" class="bg-brand-50 hover:bg-brand-100 text-brand-700 p-3 rounded-xl transition-colors">
-                                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#accueil" class="text-slate-500 hover:text-brand-600 font-semibold text-sm transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                <a href="#solutions" class="text-slate-500 hover:text-brand-600 font-semibold text-sm transition-colors" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
+                <a href="#avantages" class="text-slate-500 hover:text-brand-600 font-semibold text-sm transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                <a href="#faq" class="text-slate-500 hover:text-brand-600 font-semibold text-sm transition-colors" data-fr="FAQ" data-en="FAQ" data-sw="FAQ">FAQ</a>
             </div>
-        </div>
-    </section>
 
-    <section id="avantages" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row gap-16 items-center">
-                <div class="w-full lg:w-1/2">
-                    <h2 class="text-3xl md:text-4xl font-bold text-brand-950 mb-6" data-fr="L'Expertise BanikiLabs pour vos projets" data-en="BanikiLabs Expertise for your projects" data-sw="Utaalamu wa BanikiLabs kwa miradi yako">L'Expertise BanikiLabs pour vos projets</h2>
-                    <p class="text-slate-600 mb-8 text-lg" data-fr="Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo et d'autres marchés internationaux, y compris les Amériques." data-en="We don't just sell software. We offer a complete digital transformation, adapted to the economic environment of the Democratic Republic of Congo and other international markets, including the Americas." data-sw="Hatuzii programu tu. Tunatoa mabadiliko kamili ya dijitali, yaliyobadilishwa kwa mazingira ya kiuchumi ya Jamhuri ya Kidemokrasia ya Kongo na masoko mengine ya kimataifa, ikiwemo Amerika.">Nous ne faisons pas que vendre des logiciels. Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la République Démocratique du Congo et d'autres marchés internationaux, y compris les Amériques.</p>
-                    
-                    <div class="space-y-6">
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-600">
-                                <i data-lucide="smartphone" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-bold text-slate-900" data-fr="Paiements Locaux Intégrés" data-en="Integrated Local Payments" data-sw="Malipo ya Ndani Yaliyojumuishwa">Paiements Locaux Intégrés</h4>
-                                <p class="text-slate-600 text-sm mt-1" data-fr="Vos plateformes sont livrées avec l'intégration des solutions Mobile Money (M-Pesa, Airtel, Orange) et cartes bancaires." data-en="Your platforms come with integrated Mobile Money (M-Pesa, Airtel, Orange) and bank card solutions." data-sw="Majukwaa yako yanakuja na ujumuishaji wa suluhisho za Mobile Money (M-Pesa, Airtel, Orange) na kadi za benki.">Vos plateformes sont livrées avec l'intégration des solutions Mobile Money (M-Pesa, Airtel, Orange) et cartes bancaires.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center text-accent-600">
-                                <i data-lucide="server" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-bold text-slate-900" data-fr="Hébergement Sécurisé" data-en="Secure Hosting" data-sw="Hosting Salama">Hébergement Sécurisé</h4>
-                                <p class="text-slate-600 text-sm mt-1" data-fr="Nous assurons l'hébergement cloud haute disponibilité pour que votre business ne s'arrête jamais." data-en="We provide high-availability cloud hosting so your business never stops." data-sw="Tunatoa hosting ya wingu yenye upatikanaji wa hali ya juu ili biashara yako isisimame kamwe.">Nous assurons l'hébergement cloud haute disponibilité pour que votre business ne s'arrête jamais.</p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Right controls -->
+            <div class="flex items-center gap-3 md:gap-4">
+                <!-- Cart -->
+                <div class="relative group cursor-pointer" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" title="Voir le panier">
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-500 group-hover:text-brand-600 transition-colors"></i>
+                    <span id="cart-counter" class="absolute -top-2 -right-2 bg-brand-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
                 </div>
-                
-                <div class="w-full lg:w-1/2">
-                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 p-8 shadow-2xl aspect-square max-h-[500px] flex items-center justify-center">
-                        <div class="absolute inset-0 opacity-10 font-mono text-xs text-green-400 p-4 overflow-hidden break-words">
-                            function initPlatform() {
-                                const db = connect('baniki_cluster');
-                                return db.deploy({
-                                    client: 'Enterprise',
-                                    modules: ['payments', 'auth', 'core'],
-                                    secure: true
-                                });
-                            }
-                        </div>
-                        <div class="relative z-10 w-full">
-                            <div class="glass-dark rounded-xl p-6 border border-slate-700 flex flex-col gap-4 relative z-10">
-                                <div class="flex items-center justify-between border-b border-slate-700 pb-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center">
-                                            <i data-lucide="zap" class="w-5 h-5 text-white"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-white font-bold">Baniki Core Engine</div>
-                                            <div class="text-slate-400 text-xs">Statut : En ligne</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space-y-3">
-                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-brand-500 w-3/4"></div></div>
-                                    <div class="h-2 bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-accent-500 w-5/6"></div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <div id="pricingPopup" class="popup-overlay fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="popup-content bg-white w-full max-w-6xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 sticky top-0 z-10">
-                <div>
-                    <h3 class="text-2xl font-extrabold text-brand-950">Forfaits pour <span id="popupSectorName" class="text-brand-600">Secteur</span></h3>
-                    <p class="text-sm text-slate-500 mt-1">Sélectionnez le package qui correspond à vos besoins.</p>
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        <button onclick="setLanguage('fr')" id="btn-fr" class="px-2.5 py-1.5 rounded-md text-[10px] font-black transition-all bg-white text-brand-950 shadow-sm">FR</button>
+                        <button onclick="setLanguage('en')" id="btn-en" class="px-2.5 py-1.5 rounded-md text-[10px] font-black transition-all text-slate-400 hover:text-slate-700">EN</button>
+                        <button onclick="setLanguage('sw')" id="btn-sw" class="px-2.5 py-1.5 rounded-md text-[10px] font-black transition-all text-slate-400 hover:text-slate-700">SW</button>
+                    </div>
+
+                    <a href="#contact" class="bg-brand-950 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md hover:shadow-xl hover:shadow-brand-500/30 flex items-center gap-2 group">
+                        <span data-fr="Contacter les ventes" data-en="Contact Sales" data-sw="Wasiliana na mauzo">Contacter les ventes</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                    </a>
                 </div>
-                <button onclick="closePricingPopup()" class="p-2 bg-slate-200 hover:bg-slate-300 rounded-full text-slate-700 transition-colors">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+
+                <!-- Mobile hamburger -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-600 hover:text-brand-600 focus:outline-none transition-all active:scale-95" aria-label="Menu">
+                    <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
                 </button>
-            </div>
-
-            <div class="p-6 md:p-8 overflow-y-auto">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- Package: Vitrine -->
-                    <div class="relative bg-white rounded-2xl border-2 border-brand-500 shadow-xl flex flex-col transform hover:-translate-y-1 transition-transform">
-                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-md">
-                            ★ Recommandé ★
-                        </div>
-                        <div class="p-8 border-b border-slate-100 text-center">
-                            <h4 class="text-xl font-bold text-slate-900">Vitrine</h4>
-                            <p class="text-sm text-slate-500 mt-2 h-10">Idéal pour présenter vos services et attirer des clients.</p>
-                            <div class="mt-4 flex items-baseline justify-center gap-1">
-                                <span class="text-4xl font-extrabold text-brand-950">160$</span>
-                            </div>
-                        </div>
-                        <div class="p-8 flex-1 flex flex-col bg-slate-50/50">
-                            <ul class="space-y-4 text-sm text-slate-700 flex-1">
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-brand-500 shrink-0"></i> <span>Jusqu'à <strong>5 Pages</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-brand-500 shrink-0"></i> <span>Design <strong>Responsive</strong> (Mobile)</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-brand-500 shrink-0"></i> <span>Configuration SEO de base</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-brand-500 shrink-0"></i> <span>Formulaire de Contact</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-brand-500 shrink-0"></i> <span><strong>1 Tour</strong> de Révision</span></li>
-                                <li class="flex items-start gap-3 opacity-50"><i data-lucide="x" class="w-5 h-5 text-slate-400 shrink-0"></i> <span class="line-through">Boutique & Paiements</span></li>
-                            </ul>
-                            <button onclick="selectPlan('Vitrine', 160)" class="mt-8 w-full py-4 rounded-xl font-bold bg-brand-600 hover:bg-brand-700 text-white transition-colors shadow-lg shadow-brand-500/30">
-                                GET STARTED
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Package: E-Commerce -->
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-md flex flex-col transform hover:-translate-y-1 transition-transform">
-                        <div class="p-8 border-b border-slate-100 text-center">
-                            <h4 class="text-xl font-bold text-slate-900">E-Commerce</h4>
-                            <p class="text-sm text-slate-500 mt-2 h-10">Vendez vos produits en ligne avec paiements intégrés.</p>
-                            <div class="mt-4 flex items-baseline justify-center gap-1">
-                                <span class="text-4xl font-extrabold text-brand-950">650$</span>
-                            </div>
-                        </div>
-                        <div class="p-8 flex-1 flex flex-col">
-                            <ul class="space-y-4 text-sm text-slate-700 flex-1">
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-slate-400 shrink-0"></i> <span>Jusqu'à <strong>10 Pages</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-slate-400 shrink-0"></i> <span><strong>Premium</strong> Design</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-slate-400 shrink-0"></i> <span>Jusqu'à <strong>20 Produits</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 shrink-0"></i> <span><strong>Passerelle de Paiement</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 shrink-0"></i> <span>Configuration des Livraisons</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-slate-400 shrink-0"></i> <span>Formulaire de Contact + Map</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-slate-400 shrink-0"></i> <span><strong>2 Tours</strong> de Révision</span></li>
-                            </ul>
-                            <button onclick="selectPlan('E-Commerce', 650)" class="mt-8 w-full py-4 rounded-xl font-bold bg-slate-900 hover:bg-slate-800 text-white transition-colors">
-                                GET YOUR STORE
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Package: Pro -->
-                    <div class="bg-gradient-to-b from-slate-900 to-brand-950 rounded-2xl border border-slate-700 shadow-2xl flex flex-col transform hover:-translate-y-1 transition-transform text-white">
-                        <div class="p-8 border-b border-slate-700 text-center">
-                            <h4 class="text-xl font-bold text-white">Pro / Sur Mesure</h4>
-                            <p class="text-sm text-slate-400 mt-2 h-10">La solution ultime pour un site performant et complet.</p>
-                            <div class="mt-4 flex items-baseline justify-center gap-1">
-                                <span class="text-4xl font-extrabold text-white">1200$</span>
-                            </div>
-                        </div>
-                        <div class="p-8 flex-1 flex flex-col">
-                            <ul class="space-y-4 text-sm text-slate-300 flex-1">
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span><strong>Pages & Produits Illimités</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span><strong>Premium</strong> Design Avancé</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span>Optimisation <strong>Vitesse & Sécurité</strong></span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span><strong>On-Page SEO</strong> Avancé</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span>Plugins Essentiels & Pro</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span><strong>3 Tours</strong> de Révision</span></li>
-                                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--gold)] shrink-0"></i> <span>Support & Formation Inclus</span></li>
-                            </ul>
-                            <button onclick="selectPlan('Pro', 1200)" class="mt-8 w-full py-4 rounded-xl font-bold bg-[var(--gold)] hover:bg-yellow-400 text-black transition-colors">
-                                CHOOSE PLAN
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-10 border-t border-slate-200 pt-6">
-                    <div class="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-slate-500 uppercase tracking-wide">
-                        <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> 100% Secure & Reliable</span>
-                        <span class="flex items-center gap-1"><i data-lucide="zap" class="w-4 h-4 text-yellow-500"></i> Fast Loading & Optimized</span>
-                        <span class="flex items-center gap-1"><i data-lucide="smartphone" class="w-4 h-4 text-blue-500"></i> Mobile Friendly Design</span>
-                        <span class="flex items-center gap-1"><i data-lucide="life-buoy" class="w-4 h-4 text-rose-500"></i> Support You Can Count On</span>
-                    </div>
-                    
-                    <div class="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">
-                        <p class="text-sm font-bold text-blue-900 mb-2">Modes de paiement acceptés pour ces forfaits :</p>
-                        <div class="flex justify-center items-center gap-4 text-slate-700 font-medium">
-                            <span class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-md shadow-sm border border-slate-100"><i data-lucide="banknote" class="w-4 h-4 text-green-600"></i> Cash</span>
-                            <span class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-md shadow-sm border border-slate-100"><i data-lucide="smartphone-nfc" class="w-4 h-4 text-orange-500"></i> Mobile Money</span>
-                            <span class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-md shadow-sm border border-slate-100"><i data-lucide="credit-card" class="w-4 h-4 text-blue-600"></i> Carte Visa</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <footer id="footer" class="pt-32 pb-12 px-6 border-t border-slate-200 bg-slate-900 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24 text-slate-400">
-            <div class="space-y-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
-                        <span class="text-black font-black text-xl tracking-tighter">BL</span>
-                    </div>
-                    <span class="font-extrabold text-2xl tracking-tight uppercase text-white">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-                </div>
-                <div class="space-y-4">
-                    <p class="flex items-center gap-3">
-                        <i data-lucide="phone" class="w-6 h-6 text-[var(--gold)]"></i>
-                        <span>+243 978 415 814 (Bureau)</span>
-                    </p>
-                    <p class="flex items-center gap-3">
-                        <i data-lucide="message-circle" class="w-6 h-6 text-green-500"></i>
-                        <span>+243 978 415 814 (WhatsApp Direct)</span>
-                    </p>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/97 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-40">
+        <div class="px-6 py-8 space-y-6 flex flex-col">
+            <div class="space-y-2">
+                <a href="#accueil" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
+                <a href="#solutions" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
+                <a href="#avantages" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-brand-50 text-base font-bold text-brand-600 transition-colors" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+            </div>
+            <div class="pt-2">
+                <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Langue</p>
+                <div class="flex gap-2">
+                    <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-brand-50 font-black text-xs text-brand-700 border border-brand-200 transition-colors">FRANÇAIS</button>
+                    <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-slate-700 transition-colors">ENGLISH</button>
+                    <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-slate-700 transition-colors">SWAHILI</button>
                 </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto text-center text-xs text-gray-500 font-bold uppercase tracking-[0.2em]">
-            &copy; 2025. TOUS DROITS RÉSERVÉS.
+    </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="accueil" class="relative pt-32 pb-24 lg:pt-44 lg:pb-32 overflow-hidden" style="background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 40%, #0c1a3a 100%);">
+    <!-- Ambient orbs -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="orb-1 absolute -top-40 -right-20 w-[700px] h-[700px] rounded-full opacity-60 parallax-bg"></div>
+        <div class="orb-2 absolute bottom-0 -left-40 w-[500px] h-[500px] rounded-full opacity-50"></div>
+        <div class="orb-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-30"></div>
+        <!-- Grid pattern -->
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center gap-16">
+
+            <!-- Left: Copy -->
+            <div class="w-full lg:w-1/2 text-center lg:text-left">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-white/10 text-slate-200 text-xs font-semibold mb-8 uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span data-fr="Disponibles pour la RDC & le Monde Entier" data-en="Available for DRC & The Whole World" data-sw="Inapatikana kwa DRC & Duniani kote">Disponibles pour la RDC & le Monde Entier</span>
+                </div>
+
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-6 font-display">
+                    <span data-fr="Digitalisez votre" data-en="Digitalize your" data-sw="Digitalisha">Digitalisez votre</span><br>
+                    <span data-fr="institution avec" data-en="institution with" data-sw="taasisi yako na">institution avec</span><br>
+                    <span class="gradient-text">BanikiLabs</span>
+                </h1>
+
+                <p class="text-base md:text-lg text-slate-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+                   data-fr="Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises."
+                   data-en="Turnkey, secure and high-performance platforms. Designed for universities, law firms, hospitals, travel agencies, logistics and businesses."
+                   data-sw="Majukwaa kamili, salama na yenye utendaji wa hali ya juu. Yaliyoundwa kwa vyuo vikuu, makampuni ya sheria, hospitali, mashirika ya usafiri.">
+                    Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises.
+                </p>
+
+                <!-- Stats row -->
+                <div class="flex justify-center lg:justify-start gap-8 mb-10">
+                    <div class="text-center lg:text-left">
+                        <p class="text-3xl font-black text-white font-display">50+</p>
+                        <p class="text-xs text-slate-400 font-medium" data-fr="Clients satisfaits" data-en="Happy clients" data-sw="Wateja">Clients satisfaits</p>
+                    </div>
+                    <div class="w-px bg-slate-700"></div>
+                    <div class="text-center lg:text-left">
+                        <p class="text-3xl font-black text-white font-display">12</p>
+                        <p class="text-xs text-slate-400 font-medium" data-fr="Secteurs couverts" data-en="Sectors covered" data-sw="Sekta">Secteurs couverts</p>
+                    </div>
+                    <div class="w-px bg-slate-700"></div>
+                    <div class="text-center lg:text-left">
+                        <p class="text-3xl font-black text-white font-display">99%</p>
+                        <p class="text-xs text-slate-400 font-medium">Uptime</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="#solutions" class="w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-full font-bold text-sm transition-all shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:shadow-[0_0_45px_rgba(37,99,235,0.7)] text-center"
+                       data-fr="Découvrir le catalogue" data-en="Browse Catalogue" data-sw="Gundua Katalogi">
+                        Découvrir le catalogue
+                    </a>
+                    <a href="#contact" class="w-full sm:w-auto px-8 py-4 glass text-white hover:bg-white/10 rounded-full font-bold text-sm transition-all text-center flex items-center justify-center gap-2 border border-white/20">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i>
+                        <span data-fr="Demander une démo" data-en="Request a demo" data-sw="Omba onyesho">Demander une démo</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: Dashboard mockup -->
+            <div class="w-full lg:w-1/2 mt-8 lg:mt-0">
+                <div class="animate-float">
+                    <div class="glass-dark rounded-3xl shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-slate-700/60 overflow-hidden w-full max-w-lg mx-auto">
+                        <!-- Title bar -->
+                        <div class="h-12 border-b border-slate-700/60 flex items-center px-5 justify-between bg-slate-900/60">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/90"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/90"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/90"></div>
+                            </div>
+                            <div class="h-4 w-40 bg-slate-700/60 rounded-full"></div>
+                            <div class="w-6"></div>
+                        </div>
+
+                        <div class="flex" style="min-height: 300px;">
+                            <!-- Sidebar -->
+                            <div class="w-1/4 border-r border-slate-700/50 p-4 space-y-3 bg-slate-900/40 hidden sm:flex flex-col">
+                                <div class="h-2 w-full bg-slate-700/50 rounded-full mb-5"></div>
+                                <div class="h-9 w-full bg-brand-600/30 border border-brand-500/40 rounded-lg flex items-center px-2 gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-brand-400"></div>
+                                    <div class="h-1.5 flex-1 bg-brand-400/30 rounded-full"></div>
+                                </div>
+                                <div class="h-9 w-full bg-slate-800/60 rounded-lg"></div>
+                                <div class="h-9 w-full bg-slate-800/60 rounded-lg"></div>
+                                <div class="h-9 w-full bg-slate-800/60 rounded-lg"></div>
+                                <div class="mt-auto h-9 w-full bg-slate-800/30 rounded-lg border border-slate-700/30"></div>
+                            </div>
+
+                            <!-- Main content -->
+                            <div class="flex-1 p-5 space-y-4 bg-slate-900/20">
+                                <!-- KPI cards -->
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-gradient-to-br from-brand-900/50 to-slate-800/50 rounded-2xl border border-brand-500/20 p-4 flex flex-col gap-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="w-7 h-7 rounded-lg bg-brand-500/20 flex items-center justify-center">
+                                                <div class="w-3 h-3 bg-brand-400 rounded-sm"></div>
+                                            </div>
+                                            <span class="text-[9px] text-green-400 font-bold bg-green-400/10 px-1.5 py-0.5 rounded-full">+12%</span>
+                                        </div>
+                                        <div class="h-1.5 w-16 bg-slate-600/60 rounded-full mt-1"></div>
+                                        <div class="h-4 w-20 bg-slate-200/80 rounded-full"></div>
+                                    </div>
+                                    <div class="bg-gradient-to-br from-accent-900/40 to-slate-800/50 rounded-2xl border border-accent-500/20 p-4 flex flex-col gap-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="w-7 h-7 rounded-lg bg-accent-500/20 flex items-center justify-center">
+                                                <div class="w-3 h-3 bg-accent-400 rounded-full"></div>
+                                            </div>
+                                            <span class="text-[9px] text-green-400 font-bold bg-green-400/10 px-1.5 py-0.5 rounded-full">+8%</span>
+                                        </div>
+                                        <div class="h-1.5 w-16 bg-slate-600/60 rounded-full mt-1"></div>
+                                        <div class="h-4 w-20 bg-slate-200/80 rounded-full"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Chart -->
+                                <div class="w-full bg-slate-800/40 rounded-2xl border border-slate-700/50 p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="h-2 w-20 bg-slate-600/60 rounded-full"></div>
+                                        <div class="h-2 w-12 bg-slate-700/60 rounded-full"></div>
+                                    </div>
+                                    <svg class="w-full" viewBox="0 0 200 60" preserveAspectRatio="none" style="height:70px;">
+                                        <defs>
+                                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4"/>
+                                                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <path d="M0 55 L20 42 L50 48 L80 25 L110 32 L140 10 L170 18 L200 8" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>
+                                        <path d="M0 55 L20 42 L50 48 L80 25 L110 32 L140 10 L170 18 L200 8 L200 60 L0 60 Z" fill="url(#chartGrad)"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Table preview -->
+                                <div class="space-y-2">
+                                    <div class="h-7 bg-slate-800/40 rounded-lg border border-slate-700/30 flex items-center px-3 gap-3">
+                                        <div class="w-3 h-3 rounded-full bg-green-400/70"></div>
+                                        <div class="h-1.5 flex-1 bg-slate-600/40 rounded-full"></div>
+                                        <div class="h-1.5 w-10 bg-brand-400/30 rounded-full"></div>
+                                    </div>
+                                    <div class="h-7 bg-slate-800/40 rounded-lg border border-slate-700/30 flex items-center px-3 gap-3">
+                                        <div class="w-3 h-3 rounded-full bg-yellow-400/70"></div>
+                                        <div class="h-1.5 flex-1 bg-slate-600/40 rounded-full"></div>
+                                        <div class="h-1.5 w-14 bg-brand-400/30 rounded-full"></div>
+                                    </div>
+                                    <div class="h-7 bg-slate-800/40 rounded-lg border border-slate-700/30 flex items-center px-3 gap-3">
+                                        <div class="w-3 h-3 rounded-full bg-blue-400/70"></div>
+                                        <div class="h-1.5 flex-1 bg-slate-600/40 rounded-full"></div>
+                                        <div class="h-1.5 w-8 bg-brand-400/30 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </footer>
+    </div>
+</section>
 
-    <a href="https://wa.me/243978415814?text=J'aimerais%20cr%C3%A9er%20un%20siteweb-vitrine%20%C3%A0%20160%24" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 hover:shadow-[0_0_25px_rgba(37,211,102,0.5)] transition-all flex items-center justify-center group">
-        <i data-lucide="message-circle" class="w-8 h-8"></i>
-        <span class="absolute right-16 bg-white text-slate-800 text-sm font-bold py-2 px-4 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none before:content-[''] before:absolute before:top-1/2 before:-right-2 before:-translate-y-1/2 before:border-8 before:border-transparent before:border-l-white">
-            Créer un site Vitrine (160$)
-        </span>
-    </a>
+<!-- ===================== SECTOR STRIP ===================== -->
+<section class="py-10 bg-white border-b border-slate-200/80 sticky top-20 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-5"
+           data-fr="Sélectionnez un secteur pour voir nos forfaits"
+           data-en="Select a sector to see our packages"
+           data-sw="Chagua sekta kuona vifurushi vyetu">
+            Sélectionnez un secteur pour voir nos <span class="text-brand-600">forfaits</span>
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+            <button onclick="openPricingPopup(this)" data-sector-fr="Universités / Écoles" data-sector-en="Universities / Schools" data-sector-sw="Vyuo Vikuu / Shule" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="graduation-cap" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Universités" data-en="Universities" data-sw="Vyuo Vikuu">Universités</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Cabinets d'Avocats" data-sector-en="Law Firms" data-sector-sw="Makampuni ya Sheria" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="scale" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Avocats" data-en="Lawyers" data-sw="Mawakili">Avocats</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Hôtels & Hébergements" data-sector-en="Hotels & Accommodations" data-sector-sw="Hoteli & Makazi" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="hotel" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Hôtels" data-en="Hotels" data-sw="Hoteli">Hôtels</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Logistique & Livraison" data-sector-en="Logistics & Delivery" data-sector-sw="Vifaa & Utoaji" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="truck" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Logistique" data-en="Logistics" data-sw="Vifaa">Logistique</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Santé & Cliniques" data-sector-en="Health & Clinics" data-sector-sw="Afya & Kliniki" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="stethoscope" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Santé" data-en="Health" data-sw="Afya">Santé</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Agences Immobilières" data-sector-en="Real Estate Agencies" data-sector-sw="Mashirika ya Nyumba" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="building" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Immobilier" data-en="Real Estate" data-sw="Nyumba">Immobilier</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="E-commerce & Boutiques" data-sector-en="E-commerce & Shops" data-sector-sw="E-commerce & Maduka" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="E-commerce" data-en="E-commerce" data-sw="E-commerce">E-commerce</span>
+            </button>
+            <button onclick="openPricingPopup(this)" data-sector-fr="Restaurants & Bars" data-sector-en="Restaurants & Bars" data-sector-sw="Migahawa & Baa" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                <i data-lucide="utensils" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                <span data-fr="Restaurants" data-en="Restaurants" data-sw="Migahawa">Restaurants</span>
+            </button>
+        </div>
+        <p class="text-center text-[11px] text-slate-400 mt-4"
+           data-fr="*Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)"
+           data-en="*Click to display web creation pricing (Showcase · E-commerce · Pro)"
+           data-sw="*Bonyeza kuonyesha bei za uundaji wa tovuti (Vitrine · E-commerce · Pro)">
+            *Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)
+        </p>
+    </div>
+</section>
 
-    <script>
-        // Variables globales
-        let cart = [];
-        let currentLang = 'fr';
-        let currentSectorForPopup = '';
+<!-- ===================== PLATFORMS CATALOGUE ===================== -->
+<section id="solutions" class="py-28 bg-slate-50 relative">
+    <!-- Decorative top wave -->
+    <div class="absolute top-0 left-0 w-full overflow-hidden leading-none">
+        <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-10">
+            <path d="M0 40 C360 0 1080 0 1440 40 L1440 0 L0 0 Z" fill="white"/>
+        </svg>
+    </div>
 
-        // Initialisation Lucide Icons
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section header -->
+        <div class="text-center max-w-3xl mx-auto mb-20">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-widest mb-4 border border-brand-100">Catalogue 2025</span>
+            <h2 class="text-3xl md:text-5xl font-black text-brand-950 mb-5 font-display"
+                data-fr="Nos Plateformes Métier" data-en="Our Business Platforms" data-sw="Majukwaa ya Biashara">
+                Nos Plateformes Métier
+            </h2>
+            <p class="text-lg text-slate-500"
+               data-fr="Applications complètes, prêtes à déployer — personnalisées à votre image de marque."
+               data-en="Complete applications, ready to deploy — customized with your brand."
+               data-sw="Programu kamili, tayari kutumika na kubinafsishwa na chapa yako.">
+                Applications complètes, prêtes à déployer — personnalisées à votre image de marque.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Card 1: Baniki Edu -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=700&q=80" alt="Université" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-blue-900/50 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="graduation-cap" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-blue-200 mb-1 bg-blue-500/20 px-2 py-0.5 rounded-full"
+                              data-fr="Pour Universités & Écoles" data-en="For Universities & Schools" data-sw="Kwa Vyuo Vikuu & Shule">
+                            Pour Universités & Écoles
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display" data-fr="Baniki Edu" data-en="Baniki Edu" data-sw="Baniki Edu">Baniki Edu</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Gestion complète de la scolarité, inscriptions en ligne, paiements (Mobile Money/Banque), notes, et portail étudiant."
+                       data-en="Complete school management, online enrollments, fee payments (Mobile Money/Bank), grades, and student portal."
+                       data-sw="Usimamizi kamili wa masomo, usajili mtandaoni, malipo, alama, na lango la mwanafunzi.">
+                        Gestion complète de la scolarité, inscriptions en ligne, paiements (Mobile Money/Banque), notes, et portail étudiant.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Portail Étudiant / Professeur" data-en="Student / Professor Portal" data-sw="Lango la Mwanafunzi / Profesa">Portail Étudiant / Professeur</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Gestion des relevés de notes" data-en="Grade report management" data-sw="Usimamizi wa ripoti za alama">Gestion des relevés de notes</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="E-learning intégré" data-en="Integrated E-learning" data-sw="E-learning iliyounganishwa">E-learning intégré</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5" data-fr="Prix de la plateforme" data-en="Platform Price">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$1,500</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Edu', 1500)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Baniki Market -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=700&q=80" alt="E-commerce" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-orange-900/50 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="store" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <!-- Popular badge -->
+                    <div class="absolute left-4 top-4 z-20">
+                        <span class="shimmer-badge text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">⭐ Populaire</span>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-orange-200 mb-1 bg-orange-500/20 px-2 py-0.5 rounded-full"
+                              data-fr="Boutiques et Multi-vendeurs" data-en="Shops and Multi-vendors" data-sw="Maduka na Wauzaji Wengi">
+                            Boutiques et Multi-vendeurs
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display" data-fr="Baniki Market" data-en="Baniki Market" data-sw="Baniki Market">Baniki Market</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux."
+                       data-en="A robust marketplace like Amazon/Alibaba to sell your products online, with integration of local payments."
+                       data-sw="Soko imara kama Amazon/Alibaba kuuza bidhaa zako mtandaoni, na ujumuishaji wa malipo ya ndani.">
+                        Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Gestion des stocks & vendeurs" data-en="Stock & vendor management" data-sw="Usimamizi wa hisa & wauzaji">Gestion des stocks & vendeurs</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Intégration M-Pesa, Airtel Money" data-en="M-Pesa, Airtel Money integration" data-sw="Ujumuishaji wa M-Pesa, Airtel Money">Intégration M-Pesa, Airtel Money</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Module de livraison intégré" data-en="Integrated delivery module" data-sw="Moduli ya utoaji iliyounganishwa">Module de livraison intégré</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$2,000</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Market', 2000)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Baniki Law -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=700&q=80" alt="Avocats" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-800/60 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="scale" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1 bg-white/10 px-2 py-0.5 rounded-full"
+                              data-fr="Pour Cabinets d'Avocats" data-en="For Law Firms" data-sw="Kwa Makampuni ya Sheria">
+                            Pour Cabinets d'Avocats
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display" data-fr="Baniki Law" data-en="Baniki Law" data-sw="Baniki Law">Baniki Law</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité."
+                       data-en="Digitize legal file tracking, client billing, and securely archive your documents."
+                       data-sw="Digitalisha ufuatiliaji wa faili za kisheria, malipo ya wateja, na uhifadhi salama wa nyaraka zako.">
+                        Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Suivi des audiences & dossiers" data-en="Hearing & case tracking" data-sw="Ufuatiliaji wa vikao & faili">Suivi des audiences & dossiers</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Coffre-fort numérique sécurisé" data-en="Secure digital vault" data-sw="Sehemu salama ya kuhifadhi dijitali">Coffre-fort numérique sécurisé</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Facturation & Honoraires" data-en="Billing & Fees" data-sw="Malipo & Ada">Facturation & Honoraires</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$1,200</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Law', 1200)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Baniki Health -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=700&q=80" alt="Santé" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-teal-900/50 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="stethoscope" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-teal-200 mb-1 bg-teal-500/20 px-2 py-0.5 rounded-full"
+                              data-fr="Pour Hôpitaux & Cliniques" data-en="For Hospitals & Clinics" data-sw="Kwa Hospitali & Kliniki">
+                            Pour Hôpitaux & Cliniques
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display">Baniki Health</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Dossiers médicaux électroniques, gestion des rendez-vous, pharmacie intégrée et facturation des soins."
+                       data-en="Electronic medical records, appointment management, integrated pharmacy and care billing."
+                       data-sw="Rekodi za matibabu za kielektroniki, usimamizi wa miadi, duka la dawa na malipo ya utunzaji.">
+                        Dossiers médicaux électroniques, gestion des rendez-vous, pharmacie intégrée et facturation des soins.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Dossiers patients numériques" data-en="Digital patient records" data-sw="Rekodi za mgonjwa za dijitali">Dossiers patients numériques</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Gestion des rendez-vous" data-en="Appointment management" data-sw="Usimamizi wa miadi">Gestion des rendez-vous</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Pharmacie & Stock médicaments" data-en="Pharmacy & Drug Stock" data-sw="Duka la dawa & Hifadhi">Pharmacie & Stock médicaments</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$1,800</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Health', 1800)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Baniki Hotel -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=700&q=80" alt="Hôtel" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-purple-900/50 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="hotel" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-purple-200 mb-1 bg-purple-500/20 px-2 py-0.5 rounded-full"
+                              data-fr="Hôtels & Hébergements" data-en="Hotels & Accommodations" data-sw="Hoteli & Makazi">
+                            Hôtels & Hébergements
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display">Baniki Hotel</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Réservations en ligne, gestion des chambres, check-in/out digital et reporting de revenus en temps réel."
+                       data-en="Online reservations, room management, digital check-in/out and real-time revenue reporting."
+                       data-sw="Uhifadhi mtandaoni, usimamizi wa vyumba, kuingia/kutoka kwa dijitali na ripoti za mapato.">
+                        Réservations en ligne, gestion des chambres, check-in/out digital et reporting de revenus en temps réel.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Réservation & Calendrier" data-en="Booking & Calendar" data-sw="Uhifadhi & Kalenda">Réservation & Calendrier</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Check-in / Check-out Digital" data-en="Digital Check-in/out" data-sw="Kuingia/Kutoka kwa Dijitali">Check-in / Check-out Digital</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Tableau de bord revenus" data-en="Revenue dashboard" data-sw="Dashibodi ya mapato">Tableau de bord revenus</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$1,400</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Hotel', 1400)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Baniki Logistics -->
+            <div class="product-card bg-white rounded-3xl shadow-md hover:shadow-2xl border border-slate-100 transition-all duration-400 overflow-hidden group flex flex-col">
+                <div class="h-52 relative flex flex-col justify-end p-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=700&q=80" alt="Logistique" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-amber-900/50 to-transparent z-10"></div>
+                    <div class="absolute right-4 top-4 z-20 glass p-2.5 rounded-xl">
+                        <i data-lucide="truck" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="relative z-20">
+                        <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-200 mb-1 bg-amber-500/20 px-2 py-0.5 rounded-full"
+                              data-fr="Logistique & Livraison" data-en="Logistics & Delivery" data-sw="Vifaa & Utoaji">
+                            Logistique & Livraison
+                        </span>
+                        <h3 class="text-2xl font-black text-white font-display">Baniki Logistics</h3>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <p class="text-slate-500 text-sm mb-5 leading-relaxed"
+                       data-fr="Suivi GPS des livraisons, gestion de flotte, optimisation des routes et portail clients en temps réel."
+                       data-en="GPS delivery tracking, fleet management, route optimization and real-time customer portal."
+                       data-sw="Ufuatiliaji wa GPS wa utoaji, usimamizi wa meli, uboreshaji wa njia na lango la wateja.">
+                        Suivi GPS des livraisons, gestion de flotte, optimisation des routes et portail clients en temps réel.
+                    </p>
+                    <ul class="space-y-2.5 mb-6 text-sm">
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Tracking GPS en temps réel" data-en="Real-time GPS tracking" data-sw="Ufuatiliaji wa GPS">Tracking GPS en temps réel</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Gestion de flotte" data-en="Fleet management" data-sw="Usimamizi wa meli">Gestion de flotte</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-slate-700">
+                            <span class="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3 h-3 text-green-500"></i></span>
+                            <span data-fr="Portail client & notifications" data-en="Client portal & notifications" data-sw="Lango la mteja & arifa">Portail client & notifications</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-end justify-between mt-auto pt-4 border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Prix de la plateforme</p>
+                            <p class="text-3xl font-black text-brand-950 font-display">$1,600</p>
+                        </div>
+                        <button onclick="addToCart('Baniki Logistics', 1600)" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-semibold shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 active:scale-95">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span data-fr="Ajouter" data-en="Add" data-sw="Ongeza">Ajouter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================== WHY US ===================== -->
+<section id="avantages" class="py-28 bg-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-brand-50 opacity-60 -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="text-center max-w-3xl mx-auto mb-20">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-blue-50 text-brand-600 text-xs font-bold uppercase tracking-widest mb-4 border border-blue-100">Nos Avantages</span>
+            <h2 class="text-3xl md:text-5xl font-black text-brand-950 mb-5 font-display"
+                data-fr="L'Expertise BanikiLabs" data-en="BanikiLabs Expertise" data-sw="Utaalamu wa BanikiLabs">
+                L'Expertise BanikiLabs
+            </h2>
+            <p class="text-lg text-slate-500"
+               data-fr="Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la RDC et des marchés internationaux."
+               data-en="We offer complete digital transformation, adapted to the DRC's economic environment and international markets."
+               data-sw="Tunatoa mabadiliko kamili ya dijitali, yaliyobadilishwa kwa mazingira ya kiuchumi ya DRC.">
+                Nous offrons une transformation numérique complète, adaptée à l'environnement économique de la RDC et des marchés internationaux.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Advantage 1 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-brand-100 rounded-2xl flex items-center justify-center mb-6 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="smartphone" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Paiements Locaux Intégrés" data-en="Integrated Local Payments" data-sw="Malipo ya Ndani">
+                    Paiements Locaux Intégrés
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="M-Pesa, Airtel Money, Orange Money, et cartes bancaires — toutes les solutions intégrées nativement."
+                   data-en="M-Pesa, Airtel Money, Orange Money, and bank cards — all solutions natively integrated."
+                   data-sw="M-Pesa, Airtel Money, Orange Money, na kadi za benki — suluhisho zote zilizojumuishwa.">
+                    M-Pesa, Airtel Money, Orange Money, et cartes bancaires — toutes les solutions intégrées nativement.
+                </p>
+            </div>
+
+            <!-- Advantage 2 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center mb-6 text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="server" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Hébergement Haute Disponibilité" data-en="High-Availability Hosting" data-sw="Hosting Salama">
+                    Hébergement Haute Disponibilité
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="Infrastructures cloud redondantes garantissant 99.9% d'uptime pour votre business."
+                   data-en="Redundant cloud infrastructure guaranteeing 99.9% uptime for your business."
+                   data-sw="Miundombinu ya wingu yenye kurudia inayohakikisha upatikanaji wa 99.9% kwa biashara yako.">
+                    Infrastructures cloud redondantes garantissant 99.9% d'uptime pour votre business.
+                </p>
+            </div>
+
+            <!-- Advantage 3 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-6 text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="shield-check" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Sécurité de Niveau Bancaire" data-en="Bank-Grade Security" data-sw="Usalama wa Benki">
+                    Sécurité de Niveau Bancaire
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="Chiffrement SSL/TLS, authentification 2FA, sauvegardes automatiques et conformité RGPD."
+                   data-en="SSL/TLS encryption, 2FA authentication, automatic backups and GDPR compliance."
+                   data-sw="Usimbaji wa SSL/TLS, uthibitisho wa 2FA, nakala rudufu za kiotomatiki na uzingatiaji wa GDPR.">
+                    Chiffrement SSL/TLS, authentification 2FA, sauvegardes automatiques et conformité RGPD.
+                </p>
+            </div>
+
+            <!-- Advantage 4 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="brush" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Personnalisation Totale" data-en="Full Customization" data-sw="Ubinafsishaji Kamili">
+                    Personnalisation Totale
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="Logo, couleurs, domaine personnalisé — votre plateforme à votre image, prête en 48h."
+                   data-en="Logo, colors, custom domain — your platform with your branding, ready in 48h."
+                   data-sw="Nembo, rangi, kikoa maalum — jukwaa lako kwa chapa yako, tayari ndani ya masaa 48.">
+                    Logo, couleurs, domaine personnalisé — votre plateforme à votre image, prête en 48h.
+                </p>
+            </div>
+
+            <!-- Advantage 5 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="headset" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Support 24/7" data-en="24/7 Support" data-sw="Msaada 24/7">
+                    Support 24/7
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="Équipe technique disponible en permanence par WhatsApp, email ou téléphone."
+                   data-en="Technical team available 24/7 via WhatsApp, email or phone."
+                   data-sw="Timu ya kiufundi inapatikana 24/7 kupitia WhatsApp, barua pepe au simu.">
+                    Équipe technique disponible en permanence par WhatsApp, email ou téléphone.
+                </p>
+            </div>
+
+            <!-- Advantage 6 -->
+            <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:border-brand-100 hover:shadow-xl transition-all duration-300">
+                <div class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mb-6 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
+                    <i data-lucide="trending-up" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3 font-display"
+                    data-fr="Analytiques & Rapports" data-en="Analytics & Reports" data-sw="Uchanganuzi & Ripoti">
+                    Analytiques & Rapports
+                </h4>
+                <p class="text-slate-500 text-sm leading-relaxed"
+                   data-fr="Tableaux de bord en temps réel, rapports téléchargeables et insights pour vos décisions."
+                   data-en="Real-time dashboards, downloadable reports and insights for your decisions."
+                   data-sw="Dashibodi za wakati halisi, ripoti zinazoweza kupakuliwa na maarifa kwa maamuzi yako.">
+                    Tableaux de bord en temps réel, rapports téléchargeables et insights pour vos décisions.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section id="faq" class="py-28 bg-slate-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-widest mb-4 border border-brand-100">FAQ</span>
+            <h2 class="text-3xl md:text-4xl font-black text-brand-950 font-display"
+                data-fr="Questions fréquentes" data-en="Frequently Asked Questions" data-sw="Maswali ya Kawaida">
+                Questions fréquentes
+            </h2>
+        </div>
+        <div class="space-y-3" id="faq-list">
+            <!-- FAQ items injected by JS -->
+        </div>
+    </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="py-28 relative overflow-hidden" style="background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 60%, #1e3a8a 100%);">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="orb-1 absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-40"></div>
+        <div class="orb-2 absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-30"></div>
+        <div class="absolute inset-0 opacity-[0.035]" style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <span class="inline-block px-4 py-1.5 rounded-full glass text-slate-200 text-xs font-bold uppercase tracking-widest mb-6">Contactez-nous</span>
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-6 font-display"
+            data-fr="Prêt à digitaliser votre institution ?" data-en="Ready to digitalize your institution?" data-sw="Tayari kudijitalize taasisi yako?">
+            Prêt à digitaliser votre institution ?
+        </h2>
+        <p class="text-slate-300 mb-12 text-lg"
+           data-fr="Notre équipe vous répond sous 24h. Expliquez-nous votre projet et obtenez un devis personnalisé."
+           data-en="Our team responds within 24h. Tell us about your project and get a custom quote."
+           data-sw="Timu yetu inajibu ndani ya masaa 24. Tuambie kuhusu mradi wako na upate bei maalum.">
+            Notre équipe vous répond sous 24h. Expliquez-nous votre projet et obtenez un devis personnalisé.
+        </p>
+
+        <form id="contact-form" onsubmit="handleFormSubmit(event)" class="glass rounded-3xl p-8 md:p-10 text-left space-y-5 border border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2" data-fr="Nom complet" data-en="Full Name" data-sw="Jina kamili">Nom complet</label>
+                    <input type="text" id="field-name" required class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand-500 focus:bg-white/10 transition-all" placeholder="Jean-Pierre Mbeki">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2" data-fr="Organisation" data-en="Organization" data-sw="Shirika">Organisation</label>
+                    <input type="text" id="field-org" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand-500 focus:bg-white/10 transition-all" placeholder="Université de Kinshasa">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Email</label>
+                    <input type="email" id="field-email" required class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand-500 focus:bg-white/10 transition-all" placeholder="email@institution.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2" data-fr="WhatsApp / Téléphone" data-en="WhatsApp / Phone" data-sw="WhatsApp / Simu">WhatsApp / Téléphone</label>
+                    <input type="tel" id="field-phone" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand-500 focus:bg-white/10 transition-all" placeholder="+243 ...">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2" data-fr="Votre message" data-en="Your message" data-sw="Ujumbe wako">Votre message</label>
+                <textarea id="field-message" rows="4" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand-500 focus:bg-white/10 transition-all resize-none" placeholder="Décrivez votre projet, secteur d'activité et vos besoins..."></textarea>
+            </div>
+            <div id="cart-summary" class="hidden">
+                <div class="p-5 bg-brand-500/10 rounded-2xl border border-brand-500/20">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-xs font-bold text-brand-300 uppercase tracking-wider"
+                           data-fr="Votre sélection" data-en="Your selection" data-sw="Uchaguzi wako">Votre sélection</p>
+                        <span class="text-[10px] text-slate-400" data-fr="(cliquez ✕ pour retirer)" data-en="(click ✕ to remove)" data-sw="(bonyeza ✕ kuondoa)">(cliquez ✕ pour retirer)</span>
+                    </div>
+                    <div id="cart-items-list" class="space-y-2"></div>
+                    <div class="border-t border-brand-500/20 mt-4 pt-3 flex justify-between items-center">
+                        <span class="text-sm text-slate-300 font-semibold" data-fr="Total estimé" data-en="Estimated total" data-sw="Jumla ya makadirio">Total estimé</span>
+                        <span id="cart-total" class="text-brand-400 font-black text-sm">$0</span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 flex items-center justify-center gap-2 group">
+                <span data-fr="Envoyer ma demande" data-en="Send my request" data-sw="Tuma ombi langu">Envoyer ma demande</span>
+                <i data-lucide="send" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+            </button>
+        </form>
+
+        <!-- Direct contact links -->
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a href="https://wa.me/243978415814" target="_blank" class="flex items-center gap-2 px-5 py-3 glass rounded-full text-white text-sm font-semibold hover:bg-white/10 transition-all border border-white/10">
+                <i data-lucide="message-circle" class="w-4 h-4 text-green-400"></i> WhatsApp
+            </a>
+            <a href="mailto:banikilabs@gmail.com" class="flex items-center gap-2 px-5 py-3 glass rounded-full text-white text-sm font-semibold hover:bg-white/10 transition-all border border-white/10">
+                <i data-lucide="mail" class="w-4 h-4 text-accent-400"></i> Email
+            </a>
+            <a href="tel:+255793455303" class="flex items-center gap-2 px-5 py-3 glass rounded-full text-white text-sm font-semibold hover:bg-white/10 transition-all border border-white/10">
+                <i data-lucide="phone" class="w-4 h-4 text-brand-400"></i> Appel
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_16px_rgba(255,215,0,0.4)]">
+                    <span class="text-black font-black text-sm font-display">BL</span>
+                </div>
+                <span class="font-bold text-white font-display">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+            <p class="text-sm text-center">&copy; <span id="footer-year"></span> BanikiLabs. Tous droits réservés.</p>
+            <div class="flex gap-4 text-sm">
+                <a href="#" class="hover:text-white transition-colors">Confidentialité</a>
+                <a href="#" class="hover:text-white transition-colors">Conditions</a>
+                <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ===================== PRICING POPUP ===================== -->
+<div id="pricingPopup" class="popup-overlay fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="popup-content bg-white w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+
+        <!-- Popup Header -->
+        <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+            <div>
+                <h3 class="text-2xl font-black text-brand-950 font-display">
+                    <span data-fr="Forfaits pour" data-en="Packages for" data-sw="Vifurushi vya">Forfaits pour</span>
+                    <span id="popupSectorName" class="text-brand-600">Secteur</span>
+                </h3>
+                <p class="text-sm text-slate-500 mt-0.5"
+                   data-fr="Sélectionnez le package qui correspond à vos besoins."
+                   data-en="Select the package that fits your needs."
+                   data-sw="Chagua kifurushi kinachofaa mahitaji yako.">
+                    Sélectionnez le package qui correspond à vos besoins.
+                </p>
+            </div>
+            <button onclick="closePricingPopup()" class="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors active:scale-95">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Popup Body -->
+        <div class="p-8 overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Vitrine Plan -->
+                <div class="relative bg-white rounded-2xl border border-slate-200 shadow-md flex flex-col hover:-translate-y-1 transition-transform duration-200">
+                    <div class="p-7 border-b border-slate-100 text-center">
+                        <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-600">
+                            <i data-lucide="layout" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-xl font-black text-slate-900 font-display"
+                            data-fr="Vitrine" data-en="Showcase" data-sw="Onyesho">Vitrine</h4>
+                        <p class="text-xs text-slate-500 mt-2 h-8 leading-tight"
+                           data-fr="Idéal pour présenter vos services et attirer des clients."
+                           data-en="Ideal to showcase your services and attract clients."
+                           data-sw="Bora kuonyesha huduma zako na kuvutia wateja.">
+                            Idéal pour présenter vos services et attirer des clients.
+                        </p>
+                        <div class="mt-5">
+                            <span class="text-4xl font-black text-brand-950 font-display">160$</span>
+                        </div>
+                    </div>
+                    <div class="p-7 flex-1 flex flex-col bg-slate-50/50">
+                        <ul class="space-y-3.5 text-sm text-slate-700 flex-1">
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+                                <span data-fr="Jusqu'à 5 Pages" data-en="Up to 5 Pages" data-sw="Hadi kurasa 5">Jusqu'à <strong>5 Pages</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+                                <span data-fr="Design Responsive (Mobile)" data-en="Responsive Design (Mobile)" data-sw="Muundo Unaobadilika (Simu)">Design <strong>Responsive</strong> mobile</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+                                <span data-fr="SEO de base" data-en="Basic SEO" data-sw="SEO ya Msingi">SEO de base</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+                                <span data-fr="Formulaire de Contact" data-en="Contact Form" data-sw="Fomu ya Mawasiliano">Formulaire de Contact</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+                                <span data-fr="1 Tour de Révision" data-en="1 Revision Round" data-sw="Duru 1 ya Marekebisho"><strong>1 Tour</strong> de Révision</span></li>
+                            <li class="flex items-start gap-3 opacity-40"><i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                                <span class="line-through" data-fr="Boutique & Paiements" data-en="Shop & Payments" data-sw="Duka & Malipo">Boutique & Paiements</span></li>
+                        </ul>
+                        <button onclick="selectPlan('Vitrine', 160)" class="mt-8 w-full py-3.5 rounded-xl font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all active:scale-95 text-sm"
+                                data-fr="COMMENCER →" data-en="GET STARTED →" data-sw="ANZA →">
+                            COMMENCER →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- E-Commerce Plan — RECOMMENDED -->
+                <div class="relative bg-white rounded-2xl border-2 border-brand-500 shadow-xl flex flex-col hover:-translate-y-1 transition-transform duration-200">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-600 text-white px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-md whitespace-nowrap"
+                         data-fr="★ Recommandé ★" data-en="★ Recommended ★" data-sw="★ Inapendekezwa ★">
+                        ★ Recommandé ★
+                    </div>
+                    <div class="p-7 border-b border-brand-50 text-center bg-brand-50/30">
+                        <div class="w-12 h-12 bg-brand-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-brand-600">
+                            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-xl font-black text-slate-900 font-display">E-Commerce</h4>
+                        <p class="text-xs text-slate-500 mt-2 h-8 leading-tight"
+                           data-fr="Vendez vos produits en ligne avec paiements intégrés."
+                           data-en="Sell your products online with integrated payments."
+                           data-sw="Uza bidhaa zako mtandaoni na malipo yaliyojumuishwa.">
+                            Vendez vos produits en ligne avec paiements intégrés.
+                        </p>
+                        <div class="mt-5">
+                            <span class="text-4xl font-black text-brand-950 font-display">650$</span>
+                        </div>
+                    </div>
+                    <div class="p-7 flex-1 flex flex-col bg-brand-50/10">
+                        <ul class="space-y-3.5 text-sm text-slate-700 flex-1">
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="Jusqu'à 10 Pages" data-en="Up to 10 Pages" data-sw="Hadi kurasa 10">Jusqu'à <strong>10 Pages</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="Premium Design" data-en="Premium Design" data-sw="Muundo wa Premium"><strong>Premium</strong> Design</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="Jusqu'à 20 Produits" data-en="Up to 20 Products" data-sw="Hadi bidhaa 20">Jusqu'à <strong>20 Produits</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="Passerelle de Paiement" data-en="Payment Gateway" data-sw="Lango la Malipo"><strong>Passerelle de Paiement</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="Configuration des Livraisons" data-en="Delivery Setup" data-sw="Usanidi wa Utoaji">Configuration des Livraisons</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+                                <span data-fr="2 Tours de Révision" data-en="2 Revision Rounds" data-sw="Duru 2 za Marekebisho"><strong>2 Tours</strong> de Révision</span></li>
+                        </ul>
+                        <button onclick="selectPlan('E-Commerce', 650)" class="mt-8 w-full py-3.5 rounded-xl font-bold bg-brand-600 hover:bg-brand-700 text-white transition-all shadow-lg shadow-brand-500/30 active:scale-95 text-sm"
+                                data-fr="OBTENIR MON STORE →" data-en="GET MY STORE →" data-sw="PATA DUKA LANGU →">
+                            OBTENIR MON STORE →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="rounded-2xl border border-slate-700 shadow-2xl flex flex-col hover:-translate-y-1 transition-transform duration-200 text-white overflow-hidden" style="background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 100%);">
+                    <div class="p-7 border-b border-white/10 text-center">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[var(--gold)]">
+                            <i data-lucide="crown" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-xl font-black text-white font-display"
+                            data-fr="Pro / Sur Mesure" data-en="Pro / Custom" data-sw="Pro / Maalum">Pro / Sur Mesure</h4>
+                        <p class="text-xs text-slate-400 mt-2 h-8 leading-tight"
+                           data-fr="La solution ultime pour un site performant et complet."
+                           data-en="The ultimate solution for a high-performing complete website."
+                           data-sw="Suluhisho bora kwa tovuti kamili yenye utendaji wa hali ya juu.">
+                            La solution ultime pour un site performant et complet.
+                        </p>
+                        <div class="mt-5">
+                            <span class="text-4xl font-black text-white font-display">1200$</span>
+                        </div>
+                    </div>
+                    <div class="p-7 flex-1 flex flex-col">
+                        <ul class="space-y-3.5 text-sm text-slate-300 flex-1">
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Pages Illimitées" data-en="Unlimited Pages" data-sw="Kurasa Zisizo na Kikomo">Pages <strong class="text-white">Illimitées</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Design Sur Mesure" data-en="Custom Design" data-sw="Muundo Maalum">Design <strong class="text-white">Sur Mesure</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Produits Illimités" data-en="Unlimited Products" data-sw="Bidhaa Zisizo na Kikomo">Produits <strong class="text-white">Illimités</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Intégrations Multi-passerelles" data-en="Multi-gateway Integrations" data-sw="Ujumuishaji wa Lango Nyingi">Intégrations <strong class="text-white">Multi-passerelles</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Hébergement 1 an inclus" data-en="1 year hosting included" data-sw="Hosting wa mwaka 1 umejumuishwa"><strong class="text-white">Hébergement 1 an</strong> inclus</span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Révisions Illimitées" data-en="Unlimited Revisions" data-sw="Marekebisho Yasiyokuwa na Kikomo">Révisions <strong class="text-white">Illimitées</strong></span></li>
+                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
+                                <span data-fr="Support Prioritaire" data-en="Priority Support" data-sw="Msaada wa Kipaumbele">Support <strong class="text-white">Prioritaire</strong></span></li>
+                        </ul>
+                        <button onclick="selectPlan('Pro / Sur Mesure', 1200)" class="mt-8 w-full py-3.5 rounded-xl font-bold text-slate-900 transition-all active:scale-95 text-sm" style="background: var(--gold);"
+                                data-fr="CHOISIR LE PRO →" data-en="CHOOSE PRO →" data-sw="CHAGUA PRO →">
+                            CHOISIR LE PRO →
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="text-center text-xs text-slate-400 mt-8"
+               data-fr="💳 Paiement sécurisé · 🌍 Disponible dans toute l'Afrique et le Monde · ✅ Devis gratuit sous 24h"
+               data-en="💳 Secure payment · 🌍 Available across Africa and the World · ✅ Free quote within 24h"
+               data-sw="💳 Malipo salama · 🌍 Inapatikana Afrika yote na Duniani · ✅ Kadirio bure ndani ya masaa 24">
+                💳 Paiement sécurisé · 🌍 Disponible dans toute l'Afrique et le Monde · ✅ Devis gratuit sous 24h
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+    // ---- Lucide init ----
+    lucide.createIcons();
+
+    // ---- Footer year ----
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // ---- Navbar scroll effect ----
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // ---- Mobile Menu ----
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('mobile-menu-icon');
+        const isHidden = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !isHidden);
+        if (isHidden) {
+            icon.setAttribute('data-lucide', 'x');
+        } else {
+            icon.setAttribute('data-lucide', 'menu');
+        }
         lucide.createIcons();
+    }
 
-        // Menu Mobile
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.setAttribute('data-lucide', 'x');
-            } else {
-                menu.classList.add('hidden');
-                icon.setAttribute('data-lucide', 'menu');
-            }
-            lucide.createIcons();
-        }
+    // ============================================================
+    // ---- Full i18n System ----
+    // ============================================================
+    let currentLang = 'fr';
 
-        // Logic de popup des prix pour les secteurs
-        function openPricingPopup(sectorName) {
-            currentSectorForPopup = sectorName;
-            document.getElementById('popupSectorName').innerText = sectorName;
-            const popup = document.getElementById('pricingPopup');
-            popup.classList.add('active');
-            
-            // Empêcher le scroll du body quand le modal est ouvert
-            document.body.style.overflow = 'hidden';
-            lucide.createIcons();
-        }
+    // WhatsApp messages per language
+    const waMessages = {
+        fr: "Bonjour BanikiLabs ! J'aimerais créer un site web Vitrine à 160$. Pouvez-vous me donner plus d'informations ?",
+        en: "Hello BanikiLabs! I would like to create a Showcase website for $160. Can you give me more information?",
+        sw: "Habari BanikiLabs! Ningependa kuunda tovuti ya Vitrine kwa $160. Je, unaweza kunipa maelezo zaidi?"
+    };
+    const waLabels = {
+        fr: "J'aimerais un site Vitrine à 160$",
+        en: "I want a Showcase site for $160",
+        sw: "Nataka tovuti ya Vitrine kwa $160"
+    };
 
-        function closePricingPopup() {
-            const popup = document.getElementById('pricingPopup');
-            popup.classList.remove('active');
-            
-            // Rétablir le scroll
-            document.body.style.overflow = '';
-        }
+    function setLanguage(lang) {
+        currentLang = lang;
 
-        // Fermer le popup en cliquant à l'extérieur
-        document.getElementById('pricingPopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePricingPopup();
+        // ---- Update nav language buttons ----
+        ['fr','en','sw'].forEach(l => {
+            const btn = document.getElementById('btn-' + l);
+            if (btn) {
+                btn.classList.toggle('bg-white', l === lang);
+                btn.classList.toggle('text-brand-950', l === lang);
+                btn.classList.toggle('shadow-sm', l === lang);
+                btn.classList.toggle('text-slate-400', l !== lang);
             }
         });
 
-        // Fonction d'achat/sélection de plan via WhatsApp
-        function selectPlan(planName, price) {
-            const numero = "243978415814";
-            const message = `Bonjour BanikiLabs, je suis intéressé(e) par la création d'un site web pour le secteur "${currentSectorForPopup}". J'aimerais choisir le package "${planName}" à ${price}$. Quels sont les modes de paiement (Cash, Mobile Money, Carte Visa) ?`;
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/${numero}?text=${encodedMessage}`, '_blank');
-        }
-
-        // Logic de panier simple
-        function addToCart(product, price) {
-            cart.push({ product, price });
-            const counter = document.getElementById('cart-counter');
-            counter.innerText = cart.length;
-            counter.classList.remove('hidden');
-            
-            // Animation du compteur
-            counter.classList.add('animate-bounce');
-            setTimeout(() => counter.classList.remove('animate-bounce'), 1000);
-        }
-        
-        // Logique de changement de langue
-        const translations = {
-            fr: {
-                "Accueil": "Accueil",
-                "Nos Plateformes": "Nos Plateformes",
-                "Pourquoi Nous ?": "Pourquoi Nous ?",
-                "À Propos": "À Propos",
-                "Contact": "Contact",
-                "Contacter les ventes": "Contacter les ventes",
-                "Disponibles pour la RDC & le Monde Entier": "Disponibles pour la RDC & le Monde Entier",
-                "Digitalisez votre institution avec": "Digitalisez votre institution avec",
-                "Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises.": "Des plateformes clés en main, sécurisées et performantes. Conçues pour les universités, cabinets d'avocats, hôpitaux, agences de voyages, logistique et entreprises.",
-                "Découvrir le catalogue": "Découvrir le catalogue",
-                "Demander une démo": "Demander une démo",
-                "Catalogue de nos Plateformes": "Catalogue de nos Plateformes",
-                "Investissez dans une technologie fiable. Des applications complètes, prêtes à être déployées et personnalisées avec votre image de marque.": "Investissez dans une technologie fiable. Des applications complètes, prêtes à être déployées et personnalisées avec votre image de marque.",
-                "Baniki Edu": "Baniki Edu",
-                "Pour Universités & Écoles": "Pour Universités & Écoles",
-                "Gestion complète de la scolarité, inscriptions en ligne, paiements des frais (Mobile Money/Banque), notes, et portail étudiant.": "Gestion complète de la scolarité, inscriptions en ligne, paiements des frais (Mobile Money/Banque), notes, et portail étudiant.",
-                "Prix de la plateforme": "Prix de la plateforme",
-                "Baniki Market": "Baniki Market",
-                "Boutiques et Multi-vendeurs": "Boutiques et Multi-vendeurs",
-                "Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux.": "Une place de marché robuste type Amazon/Alibaba pour vendre vos produits en ligne, avec intégration des paiements locaux.",
-                "Baniki Law": "Baniki Law",
-                "Pour Cabinets d'Avocats": "Pour Cabinets d'Avocats",
-                "Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité.": "Digitalisez le suivi de vos dossiers juridiques, la facturation de vos clients, et archivez vos documents en toute sécurité.",
-                "L'Expertise BanikiLabs pour vos projets": "L'Expertise BanikiLabs pour vos projets"
+        // ---- Translate every element with data-{lang} attribute ----
+        // This covers the entire page INCLUDING the popup
+        document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+            const translation = el.getAttribute('data-' + lang);
+            // Only update textContent if the element has no important child elements
+            // (i.e., it is a leaf text node or a simple span/p/a/button/li/h*)
+            const hasTranslatableChildren = el.querySelector('[data-fr],[data-en],[data-sw]');
+            if (!hasTranslatableChildren) {
+                el.textContent = translation;
             }
-        };
+        });
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            const buttons = ['btn-fr', 'btn-en', 'btn-sw'];
-            
-            buttons.forEach(id => {
-                const btn = document.getElementById(id);
-                if(btn) {
-                    if(id === `btn-${lang}`) {
-                        btn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors bg-white text-brand-950 shadow-sm";
-                    } else {
-                        btn.className = "px-2 py-1 rounded-md text-[10px] font-black transition-colors text-slate-400 hover:text-slate-600";
-                    }
-                }
-            });
-
-            const elements = document.querySelectorAll(`[data-${lang}]`);
-            elements.forEach(el => {
-                if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = el.getAttribute(`data-${lang}`);
-                } else if (!el.children.length || el.getAttribute(`data-${lang}`) === el.innerHTML.trim()) {
-                    el.innerText = el.getAttribute(`data-${lang}`);
-                } else {
-                    const temp = document.createElement('div');
-                    temp.innerHTML = el.innerHTML;
-                    const textNode = Array.from(temp.childNodes).find(n => n.nodeType === 3 && n.textContent.trim().length > 0);
-                    if(textNode) {
-                        el.innerHTML = el.innerHTML.replace(textNode.textContent, el.getAttribute(`data-${lang}`) + ' ');
-                    } else {
-                        el.innerText = el.getAttribute(`data-${lang}`);
-                    }
-                }
-            });
+        // ---- Update WhatsApp button ----
+        const waEl = document.getElementById('wa-float');
+        const waLabelEl = document.getElementById('wa-label');
+        if (waEl && waLabelEl) {
+            const msg = encodeURIComponent(waMessages[lang] || waMessages.fr);
+            waEl.href = 'https://wa.me/243000000000?text=' + msg;
+            waLabelEl.textContent = waLabels[lang] || waLabels.fr;
         }
-    </script>
+
+        // ---- Update <html lang> attribute ----
+        document.documentElement.lang = lang;
+
+        // ---- Re-render Lucide icons (textContent swap may wipe SVGs nearby) ----
+        lucide.createIcons();
+    }
+
+    // ---- Cart System ----
+    const cartI18n = {
+        alreadyIn: { fr: 'déjà dans le panier', en: 'already in cart', sw: 'tayari kwenye mkoba' },
+        contact:   { fr: 'Contactez-nous pour finaliser', en: 'Contact us to finalize', sw: 'Wasiliana nasi kukamilisha' },
+        added:     { fr: 'ajouté !', en: 'added!', sw: 'imeongezwa!' },
+    };
+
+    let cart = [];
+    function addToCart(name, price) {
+        const existing = cart.find(i => i.name === name);
+        if (existing) {
+            showToast(name + ' ' + (cartI18n.alreadyIn[currentLang] || cartI18n.alreadyIn.fr),
+                      cartI18n.contact[currentLang] || cartI18n.contact.fr);
+            return;
+        }
+        cart.push({ name, price });
+        updateCartUI();
+        showToast(name + ' ' + (cartI18n.added[currentLang] || cartI18n.added.fr),
+                  '$' + price.toLocaleString() + ' — ' + (cartI18n.contact[currentLang] || cartI18n.contact.fr));
+    }
+
+    // updateCartUI is defined later (after removeFromCart) to support remove buttons
+    function updateCartUI() {
+        const counter = document.getElementById('cart-counter');
+        counter.textContent = cart.length;
+        counter.classList.toggle('hidden', cart.length === 0);
+        const summary = document.getElementById('cart-summary');
+        const list = document.getElementById('cart-items-list');
+        const total = document.getElementById('cart-total');
+        if (cart.length > 0) {
+            summary.classList.remove('hidden');
+            list.innerHTML = cart.map(i =>
+                `<div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-200 font-medium">${i.name}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="font-black text-white">$${i.price.toLocaleString()}</span>
+                        <button onclick="removeFromCart('${i.name.replace(/'/g, "\\'")}')"
+                            class="w-5 h-5 rounded-full bg-red-500/20 hover:bg-red-500/60 text-red-300 hover:text-white flex items-center justify-center transition-all shrink-0 font-black text-[10px]">
+                            ✕
+                        </button>
+                    </div>
+                </div>`
+            ).join('');
+            total.textContent = '$' + cart.reduce((s, i) => s + i.price, 0).toLocaleString();
+        } else {
+            summary.classList.add('hidden');
+        }
+    }
+
+    // ---- Toast ----
+    let toastTimeout;
+    function showToast(title, sub) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-title').textContent = title;
+        document.getElementById('toast-sub').textContent = sub;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ---- Pricing Popup ----
+    // Accepts either a sector name string (legacy) or a button element (new sector-btn)
+    function openPricingPopup(btnOrSector) {
+        let sectorName;
+        if (typeof btnOrSector === 'string') {
+            sectorName = btnOrSector;
+        } else {
+            // Read the localised sector name from the button's data-sector-{lang}
+            sectorName = btnOrSector.getAttribute('data-sector-' + currentLang)
+                      || btnOrSector.getAttribute('data-sector-fr')
+                      || 'Secteur';
+        }
+        document.getElementById('popupSectorName').textContent = sectorName;
+        document.getElementById('pricingPopup').classList.add('active');
+        // Re-apply current language translations inside the popup
+        document.querySelectorAll('#pricingPopup [data-' + currentLang + ']').forEach(el => {
+            const translation = el.getAttribute('data-' + currentLang);
+            const hasTranslatableChildren = el.querySelector('[data-fr],[data-en],[data-sw]');
+            if (!hasTranslatableChildren) el.textContent = translation;
+        });
+        lucide.createIcons();
+        document.body.style.overflow = 'hidden';
+    }
+    function closePricingPopup() {
+        document.getElementById('pricingPopup').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.getElementById('pricingPopup').addEventListener('click', function(e) {
+        if (e.target === this) closePricingPopup();
+    });
+
+    // ---- selectPlan : add to cart + pre-fill form ----
+    function selectPlan(planName, price) {
+        closePricingPopup();
+        const fullName = planName + ' (Site Web)';
+        addToCart(fullName, price);
+        // Pre-fill the message field with the chosen plan
+        preFillForm(fullName, price);
+        setTimeout(() => {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+    }
+
+    // ---- Pre-fill contact form ----
+    const formPrefill = {
+        fr: (name, price) => `Bonjour BanikiLabs,\n\nJe suis intéressé(e) par le forfait "${name}" à $${price.toLocaleString()}.\n\nMerci de me contacter pour plus d'informations et pour finaliser ma commande.`,
+        en: (name, price) => `Hello BanikiLabs,\n\nI am interested in the "${name}" package for $${price.toLocaleString()}.\n\nPlease contact me for more information and to finalize my order.`,
+        sw: (name, price) => `Habari BanikiLabs,\n\nNina nia ya kifurushi cha "${name}" kwa $${price.toLocaleString()}.\n\nTafadhali wasiliana nami kwa maelezo zaidi na kukamilisha oda yangu.`,
+    };
+
+    function preFillForm(planName, price) {
+        const msgField = document.getElementById('field-message');
+        if (msgField) {
+            const builder = formPrefill[currentLang] || formPrefill.fr;
+            msgField.value = builder(planName, price);
+            // Highlight the field briefly
+            msgField.classList.add('border-brand-500', 'bg-white/10');
+            setTimeout(() => msgField.classList.remove('border-brand-500', 'bg-white/10'), 2000);
+        }
+    }
+
+    // ---- FAQ — full trilingual data ----
+    const faqsData = [
+        {
+            q: { fr: "Dans combien de temps ma plateforme sera-t-elle prête ?",
+                 en: "How long will it take for my platform to be ready?",
+                 sw: "Ni muda gani itachukua majukwaa yangu kuwa tayari?" },
+            a: { fr: "La livraison standard est de 2 à 4 semaines après signature du contrat et réception des contenus. Les projets Pro peuvent prendre 4 à 8 semaines selon la complexité.",
+                 en: "Standard delivery is 2 to 4 weeks after signing the contract and receiving the content. Pro projects can take 4 to 8 weeks depending on complexity.",
+                 sw: "Utoaji wa kawaida ni wiki 2 hadi 4 baada ya kusaini mkataba na kupokea maudhui. Miradi ya Pro inaweza kuchukua wiki 4 hadi 8 kulingana na ugumu." }
+        },
+        {
+            q: { fr: "Puis-je personnaliser la plateforme avec mon logo et mes couleurs ?",
+                 en: "Can I customize the platform with my logo and colors?",
+                 sw: "Je, ninaweza kubinafsisha jukwaa kwa nembo na rangi zangu?" },
+            a: { fr: "Absolument. Toutes nos plateformes sont livrées avec votre identité visuelle complète : logo, palette de couleurs, typographie et domaine personnalisé.",
+                 en: "Absolutely. All our platforms are delivered with your complete visual identity: logo, color palette, typography and custom domain.",
+                 sw: "Kabisa. Majukwaa yetu yote yanatolewa na utambulisho wako kamili wa kuona: nembo, rangi, fonti na kikoa maalum." }
+        },
+        {
+            q: { fr: "Quels modes de paiement sont acceptés ?",
+                 en: "What payment methods are accepted?",
+                 sw: "Njia gani za malipo zinakubaliwa?" },
+            a: { fr: "Vous pouvez payer par virement bancaire, Mobile Money (M-Pesa, Airtel, Orange), PayPal ou carte bancaire. Nous acceptons aussi les paiements en plusieurs tranches.",
+                 en: "You can pay by bank transfer, Mobile Money (M-Pesa, Airtel, Orange), PayPal or credit card. We also accept installment payments.",
+                 sw: "Unaweza kulipa kwa uhamishaji wa benki, Mobile Money (M-Pesa, Airtel, Orange), PayPal au kadi ya benki. Tunakubali pia malipo ya awamu." }
+        },
+        {
+            q: { fr: "L'hébergement est-il inclus dans le prix ?",
+                 en: "Is hosting included in the price?",
+                 sw: "Je, hosting imejumuishwa katika bei?" },
+            a: { fr: "L'hébergement de la première année est inclus dans le forfait Pro. Pour les autres forfaits, nous proposons des plans d'hébergement à partir de $20/mois.",
+                 en: "The first year of hosting is included in the Pro package. For other packages, we offer hosting plans starting at $20/month.",
+                 sw: "Hosting ya mwaka wa kwanza imejumuishwa katika kifurushi cha Pro. Kwa vifurushi vingine, tunatoa mipango ya hosting kuanzia $20/mwezi." }
+        },
+        {
+            q: { fr: "Fournissez-vous une formation pour utiliser la plateforme ?",
+                 en: "Do you provide training to use the platform?",
+                 sw: "Je, mnatoa mafunzo ya kutumia jukwaa?" },
+            a: { fr: "Oui, chaque livraison inclut une session de formation en ligne (1-2h) et une documentation complète en français. Notre support reste disponible 24/7 par WhatsApp.",
+                 en: "Yes, each delivery includes an online training session (1-2h) and complete documentation. Our support remains available 24/7 via WhatsApp.",
+                 sw: "Ndiyo, kila utoaji unajumuisha kipindi cha mafunzo ya mtandaoni (saa 1-2) na nyaraka kamili. Msaada wetu unapatikana 24/7 kupitia WhatsApp." }
+        },
+        {
+            q: { fr: "Travaillez-vous en dehors de la RDC ?",
+                 en: "Do you work outside the DRC?",
+                 sw: "Je, mnafanya kazi nje ya DRC?" },
+            a: { fr: "Oui ! Nous travaillons avec des clients dans toute l'Afrique francophone, en Europe et dans les Amériques. Notre infrastructure cloud est internationale.",
+                 en: "Yes! We work with clients across French-speaking Africa, Europe and the Americas. Our cloud infrastructure is international.",
+                 sw: "Ndiyo! Tunafanya kazi na wateja katika Afrika yote ya Kifaransa, Ulaya na Amerika. Miundombinu yetu ya wingu ni ya kimataifa." }
+        },
+    ];
+
+    function renderFaq(lang) {
+        const faqList = document.getElementById('faq-list');
+        const openIndex = Array.from(document.querySelectorAll('.faq-answer')).findIndex(el => el.classList.contains('open'));
+        faqList.innerHTML = '';
+        faqsData.forEach((faq, i) => {
+            const q = faq.q[lang] || faq.q.fr;
+            const a = faq.a[lang] || faq.a.fr;
+            faqList.innerHTML += `
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <button class="w-full flex items-center justify-between p-6 text-left font-semibold text-slate-900 text-sm md:text-base gap-4" onclick="toggleFaq(${i})" id="faq-btn-${i}">
+                        <span>${q}</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300" id="faq-icon-${i}"></i>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-${i}">
+                        <p class="px-6 pb-6 text-sm text-slate-500 leading-relaxed">${a}</p>
+                    </div>
+                </div>
+            `;
+        });
+        lucide.createIcons();
+        // Re-open the previously open FAQ
+        if (openIndex >= 0) {
+            const ans = document.getElementById('faq-answer-' + openIndex);
+            const ico = document.getElementById('faq-icon-' + openIndex);
+            if (ans) ans.classList.add('open');
+            if (ico) ico.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // Initial render in French
+    renderFaq('fr');
+
+    // Patch setLanguage to also re-render FAQ
+    const _origSetLanguage = setLanguage;
+    setLanguage = function(lang) {
+        _origSetLanguage(lang);
+        renderFaq(lang);
+        // Also update pre-fill if a plan message was already written
+        const msgField = document.getElementById('field-message');
+        if (msgField && msgField.value.trim() && cart.length > 0) {
+            const last = cart[cart.length - 1];
+            preFillForm(last.name, last.price);
+        }
+    };
+
+    function toggleFaq(i) {
+        const answer = document.getElementById('faq-answer-' + i);
+        const icon = document.getElementById('faq-icon-' + i);
+        const isOpen = answer.classList.contains('open');
+        document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+        document.querySelectorAll('[id^="faq-icon-"]').forEach(ic => ic.style.transform = '');
+        if (!isOpen) {
+            answer.classList.add('open');
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // ---- Cart: remove item ----
+    function removeFromCart(name) {
+        cart = cart.filter(i => i.name !== name);
+        updateCartUI();
+        // Clear pre-fill if cart is now empty
+        if (cart.length === 0) {
+            const msgField = document.getElementById('field-message');
+            if (msgField && (msgField.value.includes('BanikiLabs') || msgField.value.includes('forfait'))) {
+                msgField.value = '';
+            }
+        } else {
+            // Re-prefill with last remaining item
+            const last = cart[cart.length - 1];
+            preFillForm(last.name, last.price);
+        }
+        const removedI18n = { fr: 'retiré du panier', en: 'removed from cart', sw: 'imeondolewa mkononi' };
+        showToast(name + ' ' + (removedI18n[currentLang] || removedI18n.fr), '');
+    }
+
+    // ---- Override updateCartUI to include remove buttons ----
+    function updateCartUI() {
+        const counter = document.getElementById('cart-counter');
+        counter.textContent = cart.length;
+        counter.classList.toggle('hidden', cart.length === 0);
+
+        const summary = document.getElementById('cart-summary');
+        const list = document.getElementById('cart-items-list');
+        const total = document.getElementById('cart-total');
+
+        if (cart.length > 0) {
+            summary.classList.remove('hidden');
+            list.innerHTML = cart.map(i =>
+                `<div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-200 font-medium">${i.name}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="font-black text-white">$${i.price.toLocaleString()}</span>
+                        <button onclick="removeFromCart('${i.name.replace(/'/g, "\\'")}')"
+                            title="Retirer"
+                            class="w-5 h-5 rounded-full bg-red-500/20 hover:bg-red-500/60 text-red-300 hover:text-white flex items-center justify-center transition-all shrink-0 text-xs font-black leading-none">
+                            ✕
+                        </button>
+                    </div>
+                </div>`
+            ).join('');
+            total.textContent = '$' + cart.reduce((s, i) => s + i.price, 0).toLocaleString();
+        } else {
+            summary.classList.add('hidden');
+        }
+    }
+
+    // Override addToCart to also pre-fill form for platform cards
+    const _origAddToCart = addToCart;
+    addToCart = function(name, price) {
+        const wasEmpty = cart.length === 0;
+        _origAddToCart(name, price);
+        // Pre-fill the form with the added item if it was newly added
+        if (cart.find(i => i.name === name)) {
+            preFillForm(name, price);
+        }
+    };
+
+    // ---- Form Submit ----
+    const submitI18n = {
+        sending: { fr: 'Envoi en cours...', en: 'Sending...', sw: 'Inatumwa...' },
+        sent:    { fr: 'Message envoyé ! Nous vous répondons sous 24h', en: 'Message sent! We reply within 24h', sw: 'Ujumbe umetumwa! Tunajibu ndani ya masaa 24' },
+        toast:   { fr: 'Notre équipe vous contacte sous 24h', en: 'Our team will contact you within 24h', sw: 'Timu yetu itawasiliana nawe ndani ya masaa 24' },
+    };
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ${submitI18n.sending[currentLang] || submitI18n.sending.fr}`;
+        lucide.createIcons();
+        setTimeout(() => {
+            btn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> ${submitI18n.sent[currentLang] || submitI18n.sent.fr}`;
+            lucide.createIcons();
+            btn.classList.remove('bg-brand-600', 'hover:bg-brand-500');
+            btn.classList.add('bg-green-600');
+            showToast('✅ ' + (submitI18n.sent[currentLang] || submitI18n.sent.fr), submitI18n.toast[currentLang] || submitI18n.toast.fr);
+        }, 1800);
+    }
+
+    // ---- Smooth scroll close mobile menu on link click ----
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            if (!menu.classList.contains('hidden')) toggleMobileMenu();
+        });
+    });
+</script>
 </body>
 </html>
