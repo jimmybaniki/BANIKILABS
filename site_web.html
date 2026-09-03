@@ -274,6 +274,85 @@
             flex-shrink: 0;
         }
         .send-channel-txt { white-space: nowrap; }
+
+        /* ---------- Sector strip collapse (mobile only) ---------- */
+        .strip-inner-transition {
+            overflow: hidden;
+            transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity    0.28s ease,
+                        padding    0.38s ease;
+            max-height: 400px;
+            opacity: 1;
+        }
+        .strip-hidden {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* ---------- Mobile menu dark panel ---------- */
+        .mobile-menu-panel {
+            animation: mobileMenuSlide 0.22s cubic-bezier(0.4,0,0.2,1) both;
+        }
+        @keyframes mobileMenuSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.85);
+            transition: background 0.15s, color 0.15s;
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .mobile-nav-link:hover, .mobile-nav-link:active {
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+        }
+        .mobile-nav-link-accent {
+            color: #60a5fa;
+        }
+        .mobile-nav-link-accent:hover {
+            background: rgba(96,165,250,0.10);
+            color: #93c5fd;
+        }
+        .mobile-nav-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: rgba(255,255,255,0.5);
+        }
+        .mobile-nav-icon-accent {
+            background: rgba(96,165,250,0.12);
+            color: #60a5fa;
+        }
+        .mobile-lang-btn {
+            padding: 10px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.65);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer;
+        }
+        .mobile-lang-btn:hover, .mobile-lang-btn:active {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white relative">
@@ -349,23 +428,55 @@
         </div>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/97 backdrop-blur-xl absolute w-full shadow-2xl left-0 top-20 z-40">
-        <div class="px-6 py-8 space-y-6 flex flex-col">
-            <div class="space-y-2">
-                <a href="#accueil" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">Accueil</a>
-                <a href="#solutions" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">Nos Plateformes</a>
-                <a href="#avantages" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-base font-bold text-slate-900 transition-colors" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">Pourquoi Nous ?</a>
-                <a href="#contact" onclick="toggleMobileMenu()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-brand-50 text-base font-bold text-brand-600 transition-colors" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">Contact</a>
+    <!-- Mobile Menu — full opaque dark panel -->
+    <div id="mobile-menu" class="hidden md:hidden absolute w-full left-0 top-20 z-40 mobile-menu-panel">
+        <!-- Solid dark card -->
+        <div class="mx-3 mb-3 rounded-2xl overflow-hidden shadow-2xl" style="background:#0f172a; border:1px solid rgba(255,255,255,0.10);">
+
+            <!-- Nav links -->
+            <div class="px-5 pt-6 pb-2 space-y-1">
+                <a href="#accueil" onclick="toggleMobileMenu()" class="mobile-nav-link" data-fr="Accueil" data-en="Home" data-sw="Nyumbani">
+                    <span class="mobile-nav-icon"><i data-lucide="home" class="w-4 h-4"></i></span>
+                    <span>Accueil</span>
+                </a>
+                <a href="#solutions" onclick="toggleMobileMenu()" class="mobile-nav-link" data-fr="Nos Plateformes" data-en="Our Platforms" data-sw="Majukwaa Yetu">
+                    <span class="mobile-nav-icon"><i data-lucide="layout-grid" class="w-4 h-4"></i></span>
+                    <span>Nos Plateformes</span>
+                </a>
+                <a href="#avantages" onclick="toggleMobileMenu()" class="mobile-nav-link" data-fr="Pourquoi Nous ?" data-en="Why Us?" data-sw="Kwa Nini Sisi?">
+                    <span class="mobile-nav-icon"><i data-lucide="star" class="w-4 h-4"></i></span>
+                    <span>Pourquoi Nous ?</span>
+                </a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="mobile-nav-link mobile-nav-link-accent" data-fr="Contact" data-en="Contact" data-sw="Mawasiliano">
+                    <span class="mobile-nav-icon mobile-nav-icon-accent"><i data-lucide="mail" class="w-4 h-4"></i></span>
+                    <span>Contact</span>
+                </a>
             </div>
-            <div class="pt-2">
-                <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Langue</p>
-                <div class="flex gap-2">
-                    <button onclick="setLanguage('fr')" class="flex-1 py-3 rounded-xl bg-brand-50 font-black text-xs text-brand-700 border border-brand-200 transition-colors">FRANÇAIS</button>
-                    <button onclick="setLanguage('en')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-slate-700 transition-colors">ENGLISH</button>
-                    <button onclick="setLanguage('sw')" class="flex-1 py-3 rounded-xl bg-slate-100 font-black text-xs text-slate-700 transition-colors">SWAHILI</button>
+
+            <!-- Divider -->
+            <div class="mx-5 my-4 border-t" style="border-color:rgba(255,255,255,0.08);"></div>
+
+            <!-- CTA button -->
+            <div class="px-5 pb-4">
+                <a href="#contact" onclick="toggleMobileMenu()" class="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm text-slate-900 transition-all active:scale-95" style="background: var(--gold);">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span data-fr="Envoyer ma demande" data-en="Send my request" data-sw="Tuma ombi langu">Envoyer ma demande</span>
+                </a>
+            </div>
+
+            <!-- Divider -->
+            <div class="mx-5 border-t" style="border-color:rgba(255,255,255,0.08);"></div>
+
+            <!-- Language switcher -->
+            <div class="px-5 py-4">
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-3" style="color:rgba(255,255,255,0.3);">Langue / Language</p>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setLanguage('fr'); toggleMobileMenu()" class="mobile-lang-btn" id="mobile-btn-fr">🇫🇷 Français</button>
+                    <button onclick="setLanguage('en'); toggleMobileMenu()" class="mobile-lang-btn" id="mobile-btn-en">🇬🇧 English</button>
+                    <button onclick="setLanguage('sw'); toggleMobileMenu()" class="mobile-lang-btn" id="mobile-btn-sw">🌍 Swahili</button>
                 </div>
             </div>
+
         </div>
     </div>
 </nav>
@@ -537,56 +648,79 @@
 </section>
 
 <!-- ===================== SECTOR STRIP ===================== -->
-<section class="py-10 bg-white border-b border-slate-200/80 sticky top-20 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-5"
-           data-fr="Sélectionnez un secteur pour voir nos forfaits"
-           data-en="Select a sector to see our packages"
-           data-sw="Chagua sekta kuona vifurushi vyetu">
-            Sélectionnez un secteur pour voir nos <span class="text-brand-600">forfaits</span>
-        </p>
-        <div class="flex flex-wrap justify-center gap-3">
-            <button onclick="openPricingPopup(this)" data-sector-fr="Universités / Écoles" data-sector-en="Universities / Schools" data-sector-sw="Vyuo Vikuu / Shule" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="graduation-cap" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Universités" data-en="Universities" data-sw="Vyuo Vikuu">Universités</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Cabinets d'Avocats" data-sector-en="Law Firms" data-sector-sw="Makampuni ya Sheria" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="scale" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Avocats" data-en="Lawyers" data-sw="Mawakili">Avocats</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Hôtels & Hébergements" data-sector-en="Hotels & Accommodations" data-sector-sw="Hoteli & Makazi" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="hotel" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Hôtels" data-en="Hotels" data-sw="Hoteli">Hôtels</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Logistique & Livraison" data-sector-en="Logistics & Delivery" data-sector-sw="Vifaa & Utoaji" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="truck" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Logistique" data-en="Logistics" data-sw="Vifaa">Logistique</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Santé & Cliniques" data-sector-en="Health & Clinics" data-sector-sw="Afya & Kliniki" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="stethoscope" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Santé" data-en="Health" data-sw="Afya">Santé</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Agences Immobilières" data-sector-en="Real Estate Agencies" data-sector-sw="Mashirika ya Nyumba" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="building" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Immobilier" data-en="Real Estate" data-sw="Nyumba">Immobilier</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="E-commerce & Boutiques" data-sector-en="E-commerce & Shops" data-sector-sw="E-commerce & Maduka" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="shopping-bag" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="E-commerce" data-en="E-commerce" data-sw="E-commerce">E-commerce</span>
-            </button>
-            <button onclick="openPricingPopup(this)" data-sector-fr="Restaurants & Bars" data-sector-en="Restaurants & Bars" data-sector-sw="Migahawa & Baa" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
-                <i data-lucide="utensils" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
-                <span data-fr="Restaurants" data-en="Restaurants" data-sw="Migahawa">Restaurants</span>
-            </button>
+<section id="sector-strip" class="bg-white border-b border-slate-200/80 sticky top-20 z-30 shadow-sm">
+
+    <!-- Mini bar — visible only on mobile after a plan is chosen -->
+    <div id="sector-strip-mini" class="hidden items-center justify-between px-4 py-3 gap-2">
+        <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-brand-500 shrink-0"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span id="strip-mini-sector" class="text-xs font-bold text-brand-600 truncate"></span>
+            <span class="text-slate-300 shrink-0 text-xs">&middot;</span>
+            <span id="strip-mini-plan" class="text-xs text-slate-600 font-semibold truncate"></span>
         </div>
-        <p class="text-center text-[11px] text-slate-400 mt-4"
-           data-fr="*Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)"
-           data-en="*Click to display web creation pricing (Showcase · E-commerce · Pro)"
-           data-sw="*Bonyeza kuonyesha bei za uundaji wa tovuti (Vitrine · E-commerce · Pro)">
-            *Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)
-        </p>
+        <button onclick="expandSectorStrip()"
+            class="shrink-0 flex items-center gap-1 text-[11px] font-bold text-brand-600 border border-brand-200 bg-brand-50 hover:bg-brand-100 rounded-full px-3 py-1.5 transition-all"
+            id="strip-mini-change-btn"
+            data-fr="Changer" data-en="Change" data-sw="Badilisha">
+            Changer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
     </div>
+
+    <!-- Full strip content -->
+    <div id="sector-strip-inner" class="py-10 strip-inner-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-5"
+               data-fr="Sélectionnez un secteur pour voir nos forfaits"
+               data-en="Select a sector to see our packages"
+               data-sw="Chagua sekta kuona vifurushi vyetu">
+                Sélectionnez un secteur pour voir nos <span class="text-brand-600">forfaits</span>
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="openPricingPopup(this)" data-sector-fr="Universités / Écoles" data-sector-en="Universities / Schools" data-sector-sw="Vyuo Vikuu / Shule" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Universités" data-en="Universities" data-sw="Vyuo Vikuu">Universités</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Cabinets d'Avocats" data-sector-en="Law Firms" data-sector-sw="Makampuni ya Sheria" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="scale" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Avocats" data-en="Lawyers" data-sw="Mawakili">Avocats</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Hôtels &amp; Hébergements" data-sector-en="Hotels &amp; Accommodations" data-sector-sw="Hoteli &amp; Makazi" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="hotel" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Hôtels" data-en="Hotels" data-sw="Hoteli">Hôtels</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Logistique &amp; Livraison" data-sector-en="Logistics &amp; Delivery" data-sector-sw="Vifaa &amp; Utoaji" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="truck" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Logistique" data-en="Logistics" data-sw="Vifaa">Logistique</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Santé &amp; Cliniques" data-sector-en="Health &amp; Clinics" data-sector-sw="Afya &amp; Kliniki" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="stethoscope" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Santé" data-en="Health" data-sw="Afya">Santé</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Agences Immobilières" data-sector-en="Real Estate Agencies" data-sector-sw="Mashirika ya Nyumba" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="building" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Immobilier" data-en="Real Estate" data-sw="Nyumba">Immobilier</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="E-commerce &amp; Boutiques" data-sector-en="E-commerce &amp; Shops" data-sector-sw="E-commerce &amp; Maduka" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="E-commerce" data-en="E-commerce" data-sw="E-commerce">E-commerce</span>
+                </button>
+                <button onclick="openPricingPopup(this)" data-sector-fr="Restaurants &amp; Bars" data-sector-en="Restaurants &amp; Bars" data-sector-sw="Migahawa &amp; Baa" class="sector-btn flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-600 font-semibold text-sm border border-slate-200 hover:border-brand-300 transition-all shadow-sm group">
+                    <i data-lucide="utensils" class="w-4 h-4 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                    <span data-fr="Restaurants" data-en="Restaurants" data-sw="Migahawa">Restaurants</span>
+                </button>
+            </div>
+            <p class="text-center text-[11px] text-slate-400 mt-4"
+               data-fr="*Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)"
+               data-en="*Click to display web creation pricing (Showcase · E-commerce · Pro)"
+               data-sw="*Bonyeza kuonyesha bei za uundaji wa tovuti (Vitrine · E-commerce · Pro)">
+                *Cliquez pour afficher les tarifs création web (Vitrine · E-commerce · Pro)
+            </p>
+        </div>
+    </div>
+
 </section>
+
 
 <!-- ===================== PLATFORMS CATALOGUE ===================== -->
 <section id="solutions" class="py-28 bg-slate-50 relative">
@@ -1808,9 +1942,43 @@
         const fullName = planName + ' (Site Web)';
         addToCart(fullName, price);
         preFillForm(fullName, price);
+        // Minimize sector strip on mobile after plan selection
+        if (window.innerWidth < 768) {
+            minimizeSectorStrip(currentSectorLabel, planName);
+        }
         setTimeout(() => {
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         }, 400);
+    }
+
+    // ---- Sector strip collapse / expand (mobile) ----
+    function minimizeSectorStrip(sectorLabel, planLabel) {
+        const inner = document.getElementById('sector-strip-inner');
+        const mini  = document.getElementById('sector-strip-mini');
+        if (!inner || !mini) return;
+
+        // Update mini labels
+        const miniSector = document.getElementById('strip-mini-sector');
+        const miniPlan   = document.getElementById('strip-mini-plan');
+        if (miniSector) miniSector.textContent = sectorLabel || '';
+        if (miniPlan)   miniPlan.textContent   = planLabel   || '';
+
+        // Collapse the full inner strip
+        inner.classList.add('strip-hidden');
+        // Show mini bar
+        mini.classList.remove('hidden');
+        mini.classList.add('flex');
+    }
+
+    function expandSectorStrip() {
+        const inner = document.getElementById('sector-strip-inner');
+        const mini  = document.getElementById('sector-strip-mini');
+        if (!inner || !mini) return;
+        // Expand
+        inner.classList.remove('strip-hidden');
+        // Hide mini bar
+        mini.classList.add('hidden');
+        mini.classList.remove('flex');
     }
 
     // ---- Pre-fill contact form (with sector) ----
