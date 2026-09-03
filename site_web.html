@@ -235,6 +235,45 @@
             #wa-float:hover { max-width: 56px; }
             #wa-float span { display: none; }
         }
+
+        /* ---------- Send-channel radio pills ---------- */
+        .send-channel-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px 9px 10px;
+            border-radius: 50px;
+            border: 1.5px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.04);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+        .send-channel-label:hover {
+            border-color: rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.08);
+            color: #e2e8f0;
+        }
+        .send-channel-label.channel-active {
+            border-color: rgba(99,179,237,0.55);
+            background: rgba(99,179,237,0.10);
+            color: #e2e8f0;
+            box-shadow: 0 0 0 3px rgba(99,179,237,0.12);
+        }
+        .send-channel-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .send-channel-txt { white-space: nowrap; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white relative">
@@ -1084,8 +1123,55 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 flex items-center justify-center gap-2 group">
-                <span data-fr="Envoyer ma demande" data-en="Send my request" data-sw="Tuma ombi langu">Envoyer ma demande</span>
+
+            <!-- ===== CANAL D'ENVOI ===== -->
+            <div class="p-4 rounded-2xl border border-white/10 bg-white/5">
+                <p class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3"
+                   data-fr="Envoyer via" data-en="Send via" data-sw="Tuma kupitia">Envoyer via</p>
+                <div class="flex flex-wrap gap-3" id="send-channel-group">
+
+                    <!-- WhatsApp (default) -->
+                    <label for="channel-wa" class="send-channel-label" id="lbl-wa">
+                        <input type="radio" name="send-channel" id="channel-wa" value="whatsapp" checked class="sr-only">
+                        <span class="send-channel-icon" style="background:rgba(37,211,102,0.15); border-color:rgba(37,211,102,0.35);">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;width:16px;height:16px;flex-shrink:0;">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.524 5.847L.057 23.5a.5.5 0 0 0 .613.613l5.701-1.457A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.663-.522-5.176-1.427l-.37-.22-3.833.98.999-3.748-.243-.388A9.955 9.955 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                            </svg>
+                        </span>
+                        <span class="send-channel-txt" data-fr="WhatsApp" data-en="WhatsApp" data-sw="WhatsApp">WhatsApp</span>
+                        <span class="send-channel-default text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-300 ml-1 border border-green-500/30"
+                              data-fr="défaut" data-en="default" data-sw="chaguo-msingi">défaut</span>
+                    </label>
+
+                    <!-- Email -->
+                    <label for="channel-email" class="send-channel-label" id="lbl-email">
+                        <input type="radio" name="send-channel" id="channel-email" value="email" class="sr-only">
+                        <span class="send-channel-icon" style="background:rgba(99,102,241,0.15); border-color:rgba(99,102,241,0.35);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#818cf8;width:16px;height:16px;flex-shrink:0;">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                            </svg>
+                        </span>
+                        <span class="send-channel-txt" data-fr="Email" data-en="Email" data-sw="Barua pepe">Email</span>
+                    </label>
+
+                    <!-- SMS -->
+                    <label for="channel-sms" class="send-channel-label" id="lbl-sms">
+                        <input type="radio" name="send-channel" id="channel-sms" value="sms" class="sr-only">
+                        <span class="send-channel-icon" style="background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.3);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#fbbf24;width:16px;height:16px;flex-shrink:0;">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </span>
+                        <span class="send-channel-txt" data-fr="SMS" data-en="SMS" data-sw="SMS">SMS</span>
+                    </label>
+
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 flex items-center justify-center gap-2 group">
+                <span id="submit-btn-text" data-fr="Envoyer via WhatsApp" data-en="Send via WhatsApp" data-sw="Tuma kupitia WhatsApp">Envoyer via WhatsApp</span>
                 <i data-lucide="send" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
             </button>
         </form>
@@ -1171,20 +1257,7 @@
                         </div>
                     </div>
                     <div class="p-7 flex-1 flex flex-col bg-slate-50/50">
-                        <ul class="space-y-3.5 text-sm text-slate-700 flex-1">
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-                                <span data-fr="Jusqu'à 5 Pages" data-en="Up to 5 Pages" data-sw="Hadi kurasa 5">Jusqu'à <strong>5 Pages</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-                                <span data-fr="Design Responsive (Mobile)" data-en="Responsive Design (Mobile)" data-sw="Muundo Unaobadilika (Simu)">Design <strong>Responsive</strong> mobile</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-                                <span data-fr="SEO de base" data-en="Basic SEO" data-sw="SEO ya Msingi">SEO de base</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-                                <span data-fr="Formulaire de Contact" data-en="Contact Form" data-sw="Fomu ya Mawasiliano">Formulaire de Contact</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-                                <span data-fr="1 Tour de Révision" data-en="1 Revision Round" data-sw="Duru 1 ya Marekebisho"><strong>1 Tour</strong> de Révision</span></li>
-                            <li class="flex items-start gap-3 opacity-40"><i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i>
-                                <span class="line-through" data-fr="Boutique & Paiements" data-en="Shop & Payments" data-sw="Duka & Malipo">Boutique & Paiements</span></li>
-                        </ul>
+                        <ul id="popup-features-vitrine" class="space-y-3.5 text-sm text-slate-700 flex-1"></ul>
                         <button onclick="selectPlan('Vitrine', 160)" class="mt-8 w-full py-3.5 rounded-xl font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all active:scale-95 text-sm"
                                 data-fr="COMMENCER →" data-en="GET STARTED →" data-sw="ANZA →">
                             COMMENCER →
@@ -1214,20 +1287,7 @@
                         </div>
                     </div>
                     <div class="p-7 flex-1 flex flex-col bg-brand-50/10">
-                        <ul class="space-y-3.5 text-sm text-slate-700 flex-1">
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="Jusqu'à 10 Pages" data-en="Up to 10 Pages" data-sw="Hadi kurasa 10">Jusqu'à <strong>10 Pages</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="Premium Design" data-en="Premium Design" data-sw="Muundo wa Premium"><strong>Premium</strong> Design</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="Jusqu'à 20 Produits" data-en="Up to 20 Products" data-sw="Hadi bidhaa 20">Jusqu'à <strong>20 Produits</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="Passerelle de Paiement" data-en="Payment Gateway" data-sw="Lango la Malipo"><strong>Passerelle de Paiement</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="Configuration des Livraisons" data-en="Delivery Setup" data-sw="Usanidi wa Utoaji">Configuration des Livraisons</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                                <span data-fr="2 Tours de Révision" data-en="2 Revision Rounds" data-sw="Duru 2 za Marekebisho"><strong>2 Tours</strong> de Révision</span></li>
-                        </ul>
+                        <ul id="popup-features-ecommerce" class="space-y-3.5 text-sm text-slate-700 flex-1"></ul>
                         <button onclick="selectPlan('E-Commerce', 650)" class="mt-8 w-full py-3.5 rounded-xl font-bold bg-brand-600 hover:bg-brand-700 text-white transition-all shadow-lg shadow-brand-500/30 active:scale-95 text-sm"
                                 data-fr="OBTENIR MON STORE →" data-en="GET MY STORE →" data-sw="PATA DUKA LANGU →">
                             OBTENIR MON STORE →
@@ -1254,22 +1314,7 @@
                         </div>
                     </div>
                     <div class="p-7 flex-1 flex flex-col">
-                        <ul class="space-y-3.5 text-sm text-slate-300 flex-1">
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Pages Illimitées" data-en="Unlimited Pages" data-sw="Kurasa Zisizo na Kikomo">Pages <strong class="text-white">Illimitées</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Design Sur Mesure" data-en="Custom Design" data-sw="Muundo Maalum">Design <strong class="text-white">Sur Mesure</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Produits Illimités" data-en="Unlimited Products" data-sw="Bidhaa Zisizo na Kikomo">Produits <strong class="text-white">Illimités</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Intégrations Multi-passerelles" data-en="Multi-gateway Integrations" data-sw="Ujumuishaji wa Lango Nyingi">Intégrations <strong class="text-white">Multi-passerelles</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Hébergement 1 an inclus" data-en="1 year hosting included" data-sw="Hosting wa mwaka 1 umejumuishwa"><strong class="text-white">Hébergement 1 an</strong> inclus</span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Révisions Illimitées" data-en="Unlimited Revisions" data-sw="Marekebisho Yasiyokuwa na Kikomo">Révisions <strong class="text-white">Illimitées</strong></span></li>
-                            <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[var(--gold)] shrink-0 mt-0.5"></i>
-                                <span data-fr="Support Prioritaire" data-en="Priority Support" data-sw="Msaada wa Kipaumbele">Support <strong class="text-white">Prioritaire</strong></span></li>
-                        </ul>
+                        <ul id="popup-features-pro" class="space-y-3.5 text-sm text-slate-300 flex-1"></ul>
                         <button onclick="selectPlan('Pro / Sur Mesure', 1200)" class="mt-8 w-full py-3.5 rounded-xl font-bold text-slate-900 transition-all active:scale-95 text-sm" style="background: var(--gold);"
                                 data-fr="CHOISIR LE PRO →" data-en="CHOOSE PRO →" data-sw="CHAGUA PRO →">
                             CHOISIR LE PRO →
@@ -1435,21 +1480,312 @@
         toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
+    // ---- Sector catalog: per-sector features for each plan ----
+    // Structure: sectorCatalog[sectorKey].vitrine/ecommerce/pro = [{ok:bool, text:{fr,en,sw}}]
+    const sectorCatalog = {
+        universites: {
+            label: { fr: 'Universités / Écoles', en: 'Universities / Schools', sw: 'Vyuo Vikuu / Shule' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil avec présentation de l’établissement', en:'Homepage with institution presentation', sw:'Ukurasa wa nyumbani wa taasisi' } },
+                { ok:true,  text:{ fr:'Section Filières & Programmes', en:'Courses & Programs section', sw:'Sehemu ya Kozi & Programu' } },
+                { ok:true,  text:{ fr:'Calendrier académique', en:'Academic calendar', sw:'Kalenda ya masomo' } },
+                { ok:true,  text:{ fr:'Formulaire de contact / pré-inscription', en:'Contact / pre-registration form', sw:'Fomu ya mawasiliano / usajili' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps', en:'Local SEO + Google Maps', sw:'SEO ya ndani + Google Maps' } },
+                { ok:false, text:{ fr:'Portail étudiants en ligne', en:'Online student portal', sw:'Lango la wanafunzi mtandaoni' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Portail étudiants (espace privé)', en:'Student portal (private area)', sw:'Lango la wanafunzi (eneo la kibinafsi)' } },
+                { ok:true,  text:{ fr:'Paiement des frais de scolarité en ligne', en:'Online tuition fee payment', sw:'Malipo ya ada ya shule mtandaoni' } },
+                { ok:true,  text:{ fr:'Inscription & gestion des cours en ligne', en:'Online course registration & management', sw:'Usajili & usimamizi wa kozi mtandaoni' } },
+                { ok:true,  text:{ fr:'Galerie photo / vidéos de campus', en:'Campus photo / video gallery', sw:'Picha / video za kampasi' } },
+                { ok:true,  text:{ fr:'Blog actualités & événements', en:'News & events blog', sw:'Blogu ya habari & matukio' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'LMS (cours en ligne, quiz, certificats)', en:'LMS (online courses, quizzes, certificates)', sw:'LMS (kozi mtandaoni, maswali, vyeti)' } },
+                { ok:true,  text:{ fr:'Portail profs + étudiants + admins', en:'Teacher + student + admin portals', sw:'Lango la walimu + wanafunzi + wasimamizi' } },
+                { ok:true,  text:{ fr:'Paiements multi-devises (Mobile Money, carte)', en:'Multi-currency payments (Mobile Money, card)', sw:'Malipo ya sarafu nyingi (Mobile Money, kadi)' } },
+                { ok:true,  text:{ fr:'Rapports de performance & statistiques', en:'Performance reports & statistics', sw:'Ripoti za utendaji & takwimu' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        avocats: {
+            label: { fr: 'Cabinets d’Avocats', en: 'Law Firms', sw: 'Makampuni ya Sheria' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil cabinet (expertise & équipe)', en:'Law firm homepage (expertise & team)', sw:'Ukurasa mkuu wa ofisi (utaalamu & timu)' } },
+                { ok:true,  text:{ fr:'Présentation des domaines juridiques', en:'Legal practice areas presentation', sw:'Uwasilishaji wa maeneo ya kisheria' } },
+                { ok:true,  text:{ fr:'Formulaire de prise de rendez-vous', en:'Appointment booking form', sw:'Fomu ya kutoa miadi' } },
+                { ok:true,  text:{ fr:'Blog juridique / actualités droit', en:'Legal blog / law news', sw:'Blogu ya kisheria / habari za sheria' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps', en:'Local SEO + Google Maps', sw:'SEO ya ndani + Google Maps' } },
+                { ok:false, text:{ fr:'Espace client privé', en:'Private client area', sw:'Eneo la mteja la kibinafsi' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Espace client sécurisé (dossiers en ligne)', en:'Secure client area (online case files)', sw:'Eneo salama la mteja (faili za kesi mtandaoni)' } },
+                { ok:true,  text:{ fr:'Paiement d’honoraires en ligne', en:'Online legal fees payment', sw:'Malipo ya ada ya kisheria mtandaoni' } },
+                { ok:true,  text:{ fr:'Formulaire de consultation initiale', en:'Initial consultation form', sw:'Fomu ya mashauriano ya awali' } },
+                { ok:true,  text:{ fr:'Chat juridique & messagerie sécurisée', en:'Legal chat & secure messaging', sw:'Mazungumzo ya kisheria & ujumbe salama' } },
+                { ok:true,  text:{ fr:'Gestion des rendez-vous en ligne', en:'Online appointment management', sw:'Usimamizi wa miadi mtandaoni' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'CRM Clients intégré (suivi dossiers)', en:'Integrated client CRM (case tracking)', sw:'CRM ya wateja iliyojumuishwa (ufuatiliaji wa kesi)' } },
+                { ok:true,  text:{ fr:'Signature électronique de documents', en:'Electronic document signing', sw:'Utia saini wa hati wa kielektroniki' } },
+                { ok:true,  text:{ fr:'Multi-avocats & gestion des rôles', en:'Multi-lawyer & role management', sw:'Washauri wa kisheria wengi & usimamizi wa majukumu' } },
+                { ok:true,  text:{ fr:'Facturation automatique & rapports', en:'Automatic billing & reports', sw:'Bili ya otomatiki & ripoti' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        hotels: {
+            label: { fr: 'Hôtels & Hébergements', en: 'Hotels & Accommodations', sw: 'Hoteli & Makazi' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil hôtel avec galerie photos', en:'Hotel homepage with photo gallery', sw:'Ukurasa mkuu wa hoteli na picha' } },
+                { ok:true,  text:{ fr:'Présentation des chambres & suites', en:'Rooms & suites presentation', sw:'Uwasilishaji wa vyumba & suites' } },
+                { ok:true,  text:{ fr:'Section Restaurants & Services', en:'Restaurant & Services section', sw:'Sehemu ya Mgahawa & Huduma' } },
+                { ok:true,  text:{ fr:'Formulaire de contact & réservation simple', en:'Contact & simple reservation form', sw:'Fomu ya mawasiliano & uhifadhi rahisi' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps + TripAdvisor', en:'Local SEO + Google Maps + TripAdvisor', sw:'SEO ya ndani + Google Maps + TripAdvisor' } },
+                { ok:false, text:{ fr:'Système de réservation en ligne', en:'Online booking system', sw:'Mfumo wa uhifadhi mtandaoni' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Système de réservation de chambres en ligne', en:'Online room booking system', sw:'Mfumo wa uhifadhi wa vyumba mtandaoni' } },
+                { ok:true,  text:{ fr:'Paiement en ligne sécurisé (Mobile Money, carte)', en:'Secure online payment (Mobile Money, card)', sw:'Malipo salama mtandaoni (Mobile Money, kadi)' } },
+                { ok:true,  text:{ fr:'Tarification dynamique & offres spéciales', en:'Dynamic pricing & special offers', sw:'Bei inayobadilika & matoleo maalum' } },
+                { ok:true,  text:{ fr:'Galerie chambre + visite virtuelle', en:'Room gallery + virtual tour', sw:'Picha za chumba + ziara ya mtandaoni' } },
+                { ok:true,  text:{ fr:'Gestion des avis clients intégrée', en:'Integrated customer review management', sw:'Usimamizi wa maoni ya wateja uliotengwa' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'PMS Hôtel (gestion complète des réservations)', en:'Hotel PMS (full booking management)', sw:'PMS ya hoteli (usimamizi kamili wa uhifadhi)' } },
+                { ok:true,  text:{ fr:'Tableau de bord check-in/check-out', en:'Check-in/check-out dashboard', sw:'Dashibodi ya kuingia/kutoka' } },
+                { ok:true,  text:{ fr:'Intégration Booking.com / Airbnb / Expedia', en:'Booking.com / Airbnb / Expedia integration', sw:'Ujumuishaji wa Booking.com / Airbnb / Expedia' } },
+                { ok:true,  text:{ fr:'Facturation automatique & rapports hôteliers', en:'Auto invoicing & hotel reports', sw:'Bili ya otomatiki & ripoti za hoteli' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        logistique: {
+            label: { fr: 'Logistique & Livraison', en: 'Logistics & Delivery', sw: 'Vifaa & Utoaji' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil entreprise logistique', en:'Logistics company homepage', sw:'Ukurasa mkuu wa kampuni ya usafirishaji' } },
+                { ok:true,  text:{ fr:'Présentation des zones de livraison', en:'Delivery zones presentation', sw:'Uwasilishaji wa maeneo ya uwasilishaji' } },
+                { ok:true,  text:{ fr:'Calculateur de tarif de livraison', en:'Shipping cost calculator', sw:'Kikokotoo cha gharama ya uwasilishaji' } },
+                { ok:true,  text:{ fr:'Formulaire de demande de devis', en:'Quote request form', sw:'Fomu ya ombi la bei' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps', en:'Local SEO + Google Maps', sw:'SEO ya ndani + Google Maps' } },
+                { ok:false, text:{ fr:'Suivi de colis en temps réel', en:'Real-time package tracking', sw:'Ufuatiliaji wa kifurushi kwa wakati halisi' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Suivi de colis en temps réel', en:'Real-time package tracking', sw:'Ufuatiliaji wa kifurushi kwa wakati halisi' } },
+                { ok:true,  text:{ fr:'Paiement des livraisons en ligne', en:'Online delivery payment', sw:'Malipo ya uwasilishaji mtandaoni' } },
+                { ok:true,  text:{ fr:'Espace client: historique des livraisons', en:'Client area: delivery history', sw:'Eneo la mteja: historia ya uwasilishaji' } },
+                { ok:true,  text:{ fr:'Gestion des commandes & statuts', en:'Order & status management', sw:'Usimamizi wa maagizo & hali' } },
+                { ok:true,  text:{ fr:'Notifications SMS / Email automatiques', en:'Automatic SMS / Email notifications', sw:'Arifa za SMS / Email otomatiki' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'TMS (Transport Management System) complet', en:'Full TMS (Transport Management System)', sw:'TMS kamili (Mfumo wa Usimamizi wa Usafirishaji)' } },
+                { ok:true,  text:{ fr:'Gestion flotte & chauffeurs', en:'Fleet & driver management', sw:'Usimamizi wa meli & madereva' } },
+                { ok:true,  text:{ fr:'API de suivi intégrée (GPS live)', en:'Integrated tracking API (live GPS)', sw:'API ya ufuatiliaji iliyojumuishwa (GPS ya moja kwa moja)' } },
+                { ok:true,  text:{ fr:'Tableau de bord logistique avancé', en:'Advanced logistics dashboard', sw:'Dashibodi ya usafirishaji ya hali ya juu' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        sante: {
+            label: { fr: 'Santé & Cliniques', en: 'Health & Clinics', sw: 'Afya & Kliniki' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil clinique / hôpital', en:'Clinic / hospital homepage', sw:'Ukurasa mkuu wa kliniki / hospitali' } },
+                { ok:true,  text:{ fr:'Liste des spécialistes & services médicaux', en:'Specialists & medical services list', sw:'Orodha ya wataalamu & huduma za afya' } },
+                { ok:true,  text:{ fr:'Formulaire de prise de rendez-vous', en:'Appointment booking form', sw:'Fomu ya kutoa miadi' } },
+                { ok:true,  text:{ fr:'Page urgences & informations pratiques', en:'Emergency & practical info page', sw:'Ukurasa wa dharura & habari za vitendo' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps', en:'Local SEO + Google Maps', sw:'SEO ya ndani + Google Maps' } },
+                { ok:false, text:{ fr:'Dossier patient numérique', en:'Digital patient file', sw:'Faili ya mgonjwa ya kidijitali' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Réservation de consultations en ligne', en:'Online consultation booking', sw:'Uhifadhi wa mashauriano mtandaoni' } },
+                { ok:true,  text:{ fr:'Paiement des consultations / ordonnances', en:'Payment for consultations / prescriptions', sw:'Malipo ya mashauriano / dawa' } },
+                { ok:true,  text:{ fr:'Pharmacie en ligne (catalogue produits)', en:'Online pharmacy (product catalog)', sw:'Duka la dawa mtandaoni (katalogi ya bidhaa)' } },
+                { ok:true,  text:{ fr:'Rappels de rendez-vous automatiques (SMS)', en:'Automatic appointment reminders (SMS)', sw:'Vikumbusho vya miadi otomatiki (SMS)' } },
+                { ok:true,  text:{ fr:'Télémédecine (consultation vidéo)', en:'Telemedicine (video consultation)', sw:'Telemedicine (mashauriano ya video)' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'Dossier Patient Électronique (DPE) complet', en:'Full Electronic Patient Record (EPR)', sw:'Rekodi kamili ya mgonjwa ya kielektroniki' } },
+                { ok:true,  text:{ fr:'Tableau de bord médecins + infirmiers', en:'Doctor + nurse dashboard', sw:'Dashibodi ya madaktari + wauguzi' } },
+                { ok:true,  text:{ fr:'Gestion des lits, blocs & plannings', en:'Bed, block & schedule management', sw:'Usimamizi wa vitanda, bloki & ratiba' } },
+                { ok:true,  text:{ fr:'Facturation & rapports médicaux', en:'Medical billing & reports', sw:'Bili ya matibabu & ripoti' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        immobilier: {
+            label: { fr: 'Agences Immobilières', en: 'Real Estate Agencies', sw: 'Mashirika ya Nyumba' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil agence immobilière', en:'Real estate agency homepage', sw:'Ukurasa mkuu wa wakala wa mali isiyohamishika' } },
+                { ok:true,  text:{ fr:'Listing de propriétés (vente & location)', en:'Property listings (sale & rental)', sw:'Orodha ya mali (mauzo & kukodisha)' } },
+                { ok:true,  text:{ fr:'Formulaire de contact agent', en:'Agent contact form', sw:'Fomu ya kuwasiliana na wakala' } },
+                { ok:true,  text:{ fr:'Google Maps des biens disponibles', en:'Google Maps of available properties', sw:'Google Maps ya mali zilizopo' } },
+                { ok:true,  text:{ fr:'SEO local optimisé', en:'Optimized local SEO', sw:'SEO ya ndani iliyoboreshwa' } },
+                { ok:false, text:{ fr:'Recherche avancée de biens', en:'Advanced property search', sw:'Utafutaji wa mali wa hali ya juu' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Recherche avancée (quartier, prix, type)', en:'Advanced search (area, price, type)', sw:'Utafutaji wa hali ya juu (eneo, bei, aina)' } },
+                { ok:true,  text:{ fr:'Visite virtuelle 360° des biens', en:'360° virtual property tours', sw:'Ziara ya mtandaoni ya 360° ya mali' } },
+                { ok:true,  text:{ fr:'Prise de rendez-vous visite en ligne', en:'Online visit appointment booking', sw:'Uhifadhi wa miadi ya ziara mtandaoni' } },
+                { ok:true,  text:{ fr:'Paiement de caution ou avance en ligne', en:'Online deposit or advance payment', sw:'Malipo ya amana au malipo ya mapema mtandaoni' } },
+                { ok:true,  text:{ fr:'Espace agent : gestion du portefeuille', en:'Agent area: portfolio management', sw:'Eneo la wakala: usimamizi wa mkoba' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'CRM Immobilier complet (prospects, contrats)', en:'Full Real Estate CRM (leads, contracts)', sw:'CRM kamili ya mali isiyohamishika (wateja watarajiwa, mikataba)' } },
+                { ok:true,  text:{ fr:'Multi-agences & gestion des agents', en:'Multi-agency & agent management', sw:'Wakala wengi & usimamizi wa mawakala' } },
+                { ok:true,  text:{ fr:'Signature électronique de contrats de bail', en:'Electronic lease contract signing', sw:'Utia saini wa mkataba wa kukodisha wa kielektroniki' } },
+                { ok:true,  text:{ fr:'Tableau de bord & statistiques du marché', en:'Market dashboard & statistics', sw:'Dashibodi ya soko & takwimu' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        ecommerce: {
+            label: { fr: 'E-commerce & Boutiques', en: 'E-commerce & Shops', sw: 'E-commerce & Maduka' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Catalogue produits (photos, descriptions)', en:'Product catalog (photos, descriptions)', sw:'Katalogi ya bidhaa (picha, maelezo)' } },
+                { ok:true,  text:{ fr:'Page Marque & Histoire de la boutique', en:'Brand & shop story page', sw:'Ukurasa wa chapa & historia ya duka' } },
+                { ok:true,  text:{ fr:'Formulaire de commande par WhatsApp', en:'WhatsApp order form', sw:'Fomu ya agizo kupitia WhatsApp' } },
+                { ok:true,  text:{ fr:'Instagram / Réseaux sociaux intégrés', en:'Instagram / social media integrated', sw:'Instagram / mitandao ya kijamii imejumuishwa' } },
+                { ok:true,  text:{ fr:'SEO produits optimisé', en:'Optimized product SEO', sw:'SEO ya bidhaa iliyoboreshwa' } },
+                { ok:false, text:{ fr:'Paiement en ligne & panier', en:'Online payment & cart', sw:'Malipo mtandaoni & kikapu' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Boutique en ligne avec panier d’achat', en:'Online store with shopping cart', sw:'Duka mtandaoni na kikapu cha ununuzi' } },
+                { ok:true,  text:{ fr:'Jusqu’à 20 produits avec variantes', en:'Up to 20 products with variants', sw:'Hadi bidhaa 20 zenye tofauti' } },
+                { ok:true,  text:{ fr:'Paiement Mobile Money + carte bancaire', en:'Mobile Money + bank card payment', sw:'Malipo ya Mobile Money + kadi ya benki' } },
+                { ok:true,  text:{ fr:'Gestion des commandes & livraisons', en:'Order & delivery management', sw:'Usimamizi wa maagizo & uwasilishaji' } },
+                { ok:true,  text:{ fr:'Codes promo & offres flash', en:'Promo codes & flash deals', sw:'Nambari za punguzo & matoleo ya haraka' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'Produits illimités + gestion avancée', en:'Unlimited products + advanced management', sw:'Bidhaa zisizo na kikomo + usimamizi wa hali ya juu' } },
+                { ok:true,  text:{ fr:'Multi-passerelles de paiement', en:'Multi-payment gateway', sw:'Lango nyingi za malipo' } },
+                { ok:true,  text:{ fr:'Système de fidélité & points clients', en:'Loyalty system & customer points', sw:'Mfumo wa uaminifu & pointi za wateja' } },
+                { ok:true,  text:{ fr:'Tableau de bord ventes & analytics', en:'Sales dashboard & analytics', sw:'Dashibodi ya mauzo & uchambuzi' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+        restaurants: {
+            label: { fr: 'Restaurants & Bars', en: 'Restaurants & Bars', sw: 'Migahawa & Baa' },
+            vitrine: [
+                { ok:true,  text:{ fr:'Page d’accueil restaurant avec ambiance', en:'Restaurant homepage with atmosphere', sw:'Ukurasa mkuu wa mgahawa wenye mazingira' } },
+                { ok:true,  text:{ fr:'Menu en ligne (plats, photos, prix)', en:'Online menu (dishes, photos, prices)', sw:'Menyu mtandaoni (vyakula, picha, bei)' } },
+                { ok:true,  text:{ fr:'Section Équipe & Histoire du restaurant', en:'Team & restaurant story section', sw:'Sehemu ya timu & historia ya mgahawa' } },
+                { ok:true,  text:{ fr:'Formulaire de réservation de table', en:'Table reservation form', sw:'Fomu ya uhifadhi wa meza' } },
+                { ok:true,  text:{ fr:'SEO local + Google Maps + Horaires', en:'Local SEO + Google Maps + Hours', sw:'SEO ya ndani + Google Maps + Masaa' } },
+                { ok:false, text:{ fr:'Commande en ligne & livraison', en:'Online order & delivery', sw:'Agizo mtandaoni & uwasilishaji' } },
+            ],
+            ecommerce: [
+                { ok:true,  text:{ fr:'Commande en ligne (sur place / à emporter)', en:'Online ordering (dine-in / takeaway)', sw:'Agizo mtandaoni (ndani / kuchukua)' } },
+                { ok:true,  text:{ fr:'Paiement Mobile Money + carte', en:'Mobile Money + card payment', sw:'Malipo ya Mobile Money + kadi' } },
+                { ok:true,  text:{ fr:'Gestion des livraisons & zones', en:'Delivery & zone management', sw:'Usimamizi wa uwasilishaji & maeneo' } },
+                { ok:true,  text:{ fr:'Menu QR Code intégré', en:'Integrated QR Code menu', sw:'Menyu ya QR Code iliyojumuishwa' } },
+                { ok:true,  text:{ fr:'Programme fidélité clients', en:'Customer loyalty program', sw:'Programu ya uaminifu wa wateja' } },
+                { ok:true,  text:{ fr:'2 Tours de Révision', en:'2 Revision Rounds', sw:'Duru 2 za Marekebisho' } },
+            ],
+            pro: [
+                { ok:true,  text:{ fr:'Système de commande multi-tables & caisses', en:'Multi-table & cashier ordering system', sw:'Mfumo wa maagizo ya meza nyingi & kasisi' } },
+                { ok:true,  text:{ fr:'Tableau de bord cuisine (tickets en temps réel)', en:'Kitchen dashboard (real-time tickets)', sw:'Dashibodi ya jikoni (tikiti za wakati halisi)' } },
+                { ok:true,  text:{ fr:'Gestion des stocks & fournisseurs', en:'Stock & supplier management', sw:'Usimamizi wa hisa & wasambazaji' } },
+                { ok:true,  text:{ fr:'Rapports ventes quotidiens & mensuels', en:'Daily & monthly sales reports', sw:'Ripoti za mauzo za kila siku & kila mwezi' } },
+                { ok:true,  text:{ fr:'Hébergement 1 an inclus', en:'1 year hosting included', sw:'Hosting wa mwaka 1 umejumuishwa' } },
+                { ok:true,  text:{ fr:'Support Prioritaire 24/7', en:'Priority Support 24/7', sw:'Msaada wa Kipaumbele 24/7' } },
+            ],
+        },
+    };
+
+    // Map from data-sector-fr value to catalog key
+    const sectorKeyMap = {
+        'Universités / Écoles': 'universites',
+        'Universities / Schools': 'universites',
+        'Vyuo Vikuu / Shule': 'universites',
+        'Cabinets d’Avocats': 'avocats',
+        'Cabinets d\'Avocats': 'avocats',
+        'Law Firms': 'avocats',
+        'Makampuni ya Sheria': 'avocats',
+        'Hôtels & Hébergements': 'hotels',
+        'Hotels & Accommodations': 'hotels',
+        'Hoteli & Makazi': 'hotels',
+        'Logistique & Livraison': 'logistique',
+        'Logistics & Delivery': 'logistique',
+        'Vifaa & Utoaji': 'logistique',
+        'Santé & Cliniques': 'sante',
+        'Health & Clinics': 'sante',
+        'Afya & Kliniki': 'sante',
+        'Agences Immobilières': 'immobilier',
+        'Real Estate Agencies': 'immobilier',
+        'Mashirika ya Nyumba': 'immobilier',
+        'E-commerce & Boutiques': 'ecommerce',
+        'E-commerce & Shops': 'ecommerce',
+        'E-commerce & Maduka': 'ecommerce',
+        'Restaurants & Bars': 'restaurants',
+        'Migahawa & Baa': 'restaurants',
+    };
+
+    let currentSector = null; // key of current sector in sectorCatalog
+    let currentSectorLabel = '';
+
+    // ---- Render per-sector features into the popup ----
+    function renderPopupFeatures(sectorKey, lang) {
+        const catalog = sectorCatalog[sectorKey];
+        if (!catalog) return;
+
+        // Helper to render one plan's features
+        function buildList(items, ulId, isLight) {
+            const ul = document.getElementById(ulId);
+            if (!ul) return;
+            const checkColor = isLight ? 'text-slate-400' : (ulId.includes('ecommerce') ? 'text-brand-500' : 'text-yellow-400');
+            ul.innerHTML = items.map(item => {
+                const txt = item.text[lang] || item.text.fr;
+                if (item.ok) {
+                    return `<li class="flex items-start gap-3">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 ${checkColor} shrink-0 mt-0.5"></i>
+                        <span>${txt}</span>
+                    </li>`;
+                } else {
+                    return `<li class="flex items-start gap-3 opacity-40">
+                        <i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                        <span class="line-through">${txt}</span>
+                    </li>`;
+                }
+            }).join('');
+        }
+
+        buildList(catalog.vitrine,   'popup-features-vitrine',   true);
+        buildList(catalog.ecommerce, 'popup-features-ecommerce', false);
+        buildList(catalog.pro,       'popup-features-pro',       false);
+        lucide.createIcons();
+    }
+
     // ---- Pricing Popup ----
-    // Accepts either a sector name string (legacy) or a button element (new sector-btn)
     function openPricingPopup(btnOrSector) {
         let sectorName;
         if (typeof btnOrSector === 'string') {
             sectorName = btnOrSector;
         } else {
-            // Read the localised sector name from the button's data-sector-{lang}
             sectorName = btnOrSector.getAttribute('data-sector-' + currentLang)
                       || btnOrSector.getAttribute('data-sector-fr')
                       || 'Secteur';
         }
+        // Resolve catalog key
+        const sectorKey = sectorKeyMap[sectorName] || Object.keys(sectorCatalog)[0];
+        currentSector = sectorKey;
+        currentSectorLabel = sectorName;
+
         document.getElementById('popupSectorName').textContent = sectorName;
         document.getElementById('pricingPopup').classList.add('active');
-        // Re-apply current language translations inside the popup
+
+        // Render sector-specific features
+        renderPopupFeatures(sectorKey, currentLang);
+
+        // Re-apply i18n to popup static elements
         document.querySelectorAll('#pricingPopup [data-' + currentLang + ']').forEach(el => {
             const translation = el.getAttribute('data-' + currentLang);
             const hasTranslatableChildren = el.querySelector('[data-fr],[data-en],[data-sw]');
@@ -1466,30 +1802,38 @@
         if (e.target === this) closePricingPopup();
     });
 
-    // ---- selectPlan : add to cart + pre-fill form ----
+    // ---- selectPlan: add to cart + pre-fill with sector ----
     function selectPlan(planName, price) {
         closePricingPopup();
         const fullName = planName + ' (Site Web)';
         addToCart(fullName, price);
-        // Pre-fill the message field with the chosen plan
         preFillForm(fullName, price);
         setTimeout(() => {
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         }, 400);
     }
 
-    // ---- Pre-fill contact form ----
+    // ---- Pre-fill contact form (with sector) ----
     const formPrefill = {
-        fr: (name, price) => `Bonjour BanikiLabs,\n\nJe suis intéressé(e) par le forfait "${name}" à $${price.toLocaleString()}.\n\nMerci de me contacter pour plus d'informations et pour finaliser ma commande.`,
-        en: (name, price) => `Hello BanikiLabs,\n\nI am interested in the "${name}" package for $${price.toLocaleString()}.\n\nPlease contact me for more information and to finalize my order.`,
-        sw: (name, price) => `Habari BanikiLabs,\n\nNina nia ya kifurushi cha "${name}" kwa $${price.toLocaleString()}.\n\nTafadhali wasiliana nami kwa maelezo zaidi na kukamilisha oda yangu.`,
+        fr: (name, price, sector) => {
+            const sec = sector ? ` pour mon/ma ${sector}` : '';
+            return `Bonjour BanikiLabs,\n\nJe suis intéressé(e) par le forfait "${name}" à $${price.toLocaleString()}${sec}.\n\nMerci de me contacter pour plus d'informations et pour finaliser ma commande.`;
+        },
+        en: (name, price, sector) => {
+            const sec = sector ? ` for my ${sector}` : '';
+            return `Hello BanikiLabs,\n\nI am interested in the "${name}" package for $${price.toLocaleString()}${sec}.\n\nPlease contact me for more information and to finalize my order.`;
+        },
+        sw: (name, price, sector) => {
+            const sec = sector ? ` kwa ${sector} yangu` : '';
+            return `Habari BanikiLabs,\n\nNina nia ya kifurushi cha "${name}" kwa $${price.toLocaleString()}${sec}.\n\nTafadhali wasiliana nami kwa maelezo zaidi na kukamilisha oda yangu.`;
+        },
     };
 
     function preFillForm(planName, price) {
         const msgField = document.getElementById('field-message');
         if (msgField) {
             const builder = formPrefill[currentLang] || formPrefill.fr;
-            msgField.value = builder(planName, price);
+            msgField.value = builder(planName, price, currentSectorLabel);
             // Highlight the field briefly
             msgField.classList.add('border-brand-500', 'bg-white/10');
             setTimeout(() => msgField.classList.remove('border-brand-500', 'bg-white/10'), 2000);
@@ -1666,25 +2010,119 @@
         }
     };
 
+    // ---- Channel picker: update button label dynamically ----
+    const channelLabels = {
+        whatsapp: { fr: 'Envoyer via WhatsApp', en: 'Send via WhatsApp', sw: 'Tuma kupitia WhatsApp' },
+        email:    { fr: 'Envoyer par Email',     en: 'Send by Email',     sw: 'Tuma kwa Barua pepe' },
+        sms:      { fr: 'Envoyer par SMS',       en: 'Send by SMS',       sw: 'Tuma kwa SMS' },
+    };
+
+    // Custom radio UI — highlight selected label
+    document.querySelectorAll('input[name="send-channel"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Reset all
+            document.querySelectorAll('.send-channel-label').forEach(l => {
+                l.classList.remove('channel-active');
+            });
+            // Activate selected
+            radio.closest('.send-channel-label').classList.add('channel-active');
+            // Update button text
+            const btnText = document.getElementById('submit-btn-text');
+            const ch = radio.value;
+            if (btnText) btnText.textContent = channelLabels[ch]?.[currentLang] || channelLabels[ch]?.fr || 'Envoyer';
+        });
+    });
+    // Trigger on load to style the default (WhatsApp)
+    document.getElementById('channel-wa').closest('.send-channel-label').classList.add('channel-active');
+
     // ---- Form Submit ----
     const submitI18n = {
-        sending: { fr: 'Envoi en cours...', en: 'Sending...', sw: 'Inatumwa...' },
-        sent:    { fr: 'Message envoyé ! Nous vous répondons sous 24h', en: 'Message sent! We reply within 24h', sw: 'Ujumbe umetumwa! Tunajibu ndani ya masaa 24' },
-        toast:   { fr: 'Notre équipe vous contacte sous 24h', en: 'Our team will contact you within 24h', sw: 'Timu yetu itawasiliana nawe ndani ya masaa 24' },
+        sending:  { fr: 'Envoi en cours...', en: 'Sending...', sw: 'Inatumwa...' },
+        sent:     { fr: 'Message envoyé ! Nous vous répondons sous 24h', en: 'Message sent! We reply within 24h', sw: 'Ujumbe umetumwa! Tunajibu ndani ya masaa 24' },
+        toast:    { fr: 'Notre équipe vous contacte sous 24h', en: 'Our team will contact you within 24h', sw: 'Timu yetu itawasiliana nawe ndani ya masaa 24' },
+        openWA:   { fr: 'Ouverture de WhatsApp…', en: 'Opening WhatsApp…', sw: 'Inafungua WhatsApp…' },
+        openMail: { fr: 'Ouverture de votre messagerie…', en: 'Opening your email…', sw: 'Inafungua barua pepe yako…' },
+        openSMS:  { fr: 'Ouverture SMS…', en: 'Opening SMS…', sw: 'Inafungua SMS…' },
     };
+
+    const BANIKI_WA  = '243978415814';
+    const BANIKI_MAIL = 'banikilabs@gmail.com';
+    const BANIKI_SMS  = '+243978415814';
 
     function handleFormSubmit(e) {
         e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> ${submitI18n.sending[currentLang] || submitI18n.sending.fr}`;
+        const form  = e.target;
+        const btn   = document.getElementById('submit-btn');
+        const btnTxt = document.getElementById('submit-btn-text');
+
+        // Gather form data
+        const name    = (document.getElementById('field-name')?.value || '').trim();
+        const org     = (document.getElementById('field-org')?.value  || '').trim();
+        const email   = (document.getElementById('field-email')?.value|| '').trim();
+        const phone   = (document.getElementById('field-phone')?.value|| '').trim();
+        const message = (document.getElementById('field-message')?.value || '').trim();
+
+        // Build full text
+        const sep = '\n─────────────────\n';
+        const selItems = cart.length > 0
+            ? cart.map(i => `  • ${i.name} — $${i.price.toLocaleString()}`).join('\n')
+            : '';
+        const body = [
+            name    ? `👤 ${name}${org ? ' (' + org + ')' : ''}` : '',
+            email   ? `📧 ${email}` : '',
+            phone   ? `📞 ${phone}` : '',
+            selItems ? sep + '🛒 Sélection:\n' + selItems : '',
+            message ? sep + message : '',
+        ].filter(Boolean).join('\n');
+
+        // Get chosen channel (default = whatsapp)
+        const channel = (document.querySelector('input[name="send-channel"]:checked')?.value) || 'whatsapp';
+
+        // Loading state
+        if (btnTxt) btnTxt.textContent = submitI18n.sending[currentLang] || submitI18n.sending.fr;
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-wait');
         lucide.createIcons();
+
         setTimeout(() => {
-            btn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> ${submitI18n.sent[currentLang] || submitI18n.sent.fr}`;
-            lucide.createIcons();
+            let targetUrl = '';
+            let toastMsg  = '';
+
+            if (channel === 'whatsapp') {
+                targetUrl = `https://wa.me/${BANIKI_WA}?text=${encodeURIComponent(body)}`;
+                toastMsg  = submitI18n.openWA[currentLang] || submitI18n.openWA.fr;
+            } else if (channel === 'email') {
+                const subject = encodeURIComponent(`[BanikiLabs] Demande de ${name || 'un visiteur'}`);
+                targetUrl = `mailto:${BANIKI_MAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
+                toastMsg  = submitI18n.openMail[currentLang] || submitI18n.openMail.fr;
+            } else if (channel === 'sms') {
+                // sms: works on mobile; body may be truncated by OS
+                targetUrl = `sms:${BANIKI_SMS}${/iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?'}body=${encodeURIComponent(body.substring(0, 320))}`;
+                toastMsg  = submitI18n.openSMS[currentLang] || submitI18n.openSMS.fr;
+            }
+
+            // Open the link
+            window.open(targetUrl, '_blank');
+
+            // Success state
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-wait');
             btn.classList.remove('bg-brand-600', 'hover:bg-brand-500');
             btn.classList.add('bg-green-600');
-            showToast('✅ ' + (submitI18n.sent[currentLang] || submitI18n.sent.fr), submitI18n.toast[currentLang] || submitI18n.toast.fr);
-        }, 1800);
+            if (btnTxt) btnTxt.textContent = submitI18n.sent[currentLang] || submitI18n.sent.fr;
+            lucide.createIcons();
+            showToast('✅ ' + toastMsg, submitI18n.toast[currentLang] || submitI18n.toast.fr);
+
+            // Reset button after 4s
+            setTimeout(() => {
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('bg-brand-600', 'hover:bg-brand-500');
+                const ch = document.querySelector('input[name="send-channel"]:checked')?.value || 'whatsapp';
+                if (btnTxt) btnTxt.textContent = channelLabels[ch]?.[currentLang] || channelLabels[ch]?.fr || 'Envoyer';
+                lucide.createIcons();
+            }, 4000);
+
+        }, 800);
     }
 
     // ---- Smooth scroll close mobile menu on link click ----
