@@ -1,491 +1,1606 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="fr" class="h-full bg-slate-50">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P84YDX128F"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T00CMP9WFH"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
-      gtag('config', 'G-P84YDX128F');
+      gtag('config', 'G-T00CMP9WFH');
     </script>
-    <title>Mlimani City - BanikiLabs Store</title>
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-    
-    <!-- Tailwind CSS -->
+    <title>Mlimani City - Boutiques & Shopping en ligne</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cloud JS Client (Supabase) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    screens: {
+                        'xs': '480px',
+                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                    colors: {
-                        tzgreen: '#1EB53A',
-                        tzyellow: '#FCD116',
-                        tzblue: '#00A3E0',
-                        tzblack: '#0A0A0A',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        }
+                    boxShadow: {
+                        'phone': '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(0,0,0,0.03)',
+                        'neon': '0 0 20px rgba(245, 158, 11, 0.4)',
+                        'glow': '0 0 15px rgba(79, 70, 229, 0.3)',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { -webkit-font-smoothing: antialiased; }
-        .glass {
+        :root {
+            --primary-rgb: 79, 70, 229; /* Default Indigo */
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 3px;
+        }
+        .phone-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .phone-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .phone-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.3);
+            border-radius: 10px;
+        }
+        .glass-panel {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .hero-bg {
-            background-color: #0A0A0A;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(30, 181, 58, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(252, 209, 22, 0.1) 0%, transparent 50%),
-                linear-gradient(to bottom, rgba(10, 10, 10, 0.8), #0A0A0A),
-                url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
         }
-        
-        /* Language Transition effect */
-        .lang-change {
-            animation: fadeInOut 0.3s ease-in-out;
-        }
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(-5px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body class="font-sans antialiased text-slate-800 h-full flex flex-col selection:bg-amber-500 selection:text-white">
 
-    <!-- Navigation -->
-    <header class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-tzgreen flex items-center justify-center shadow-lg shadow-tzgreen/30">
-                        <i class="fa-solid fa-shopping-bag text-white text-xl"></i>
+    <!-- PORTAL AUTHENTICATION OVERLAY (Optionnel - S'ouvre uniquement via le bouton Connexion) -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-md overflow-hidden flex flex-col transform transition-all">
+            <!-- Auth Header -->
+            <div class="p-6 bg-slate-900 text-white flex items-center justify-between relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-500/20 rounded-full blur-xl"></div>
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="bg-amber-500 text-slate-950 p-2.5 rounded-2xl shadow-md font-bold">
+                        <i class="fa-solid fa-user-check text-lg"></i>
                     </div>
-                    <span class="font-black text-2xl tracking-tight text-tzblack hidden sm:block">
-                        Baniki<span class="text-tzgreen">Labs</span>
-                    </span>
+                    <div>
+                        <h2 class="text-base font-extrabold tracking-tight" data-i18n="authTitle">Espace Client Mlimani City</h2>
+                        <p class="text-xs text-slate-300" data-i18n="authSubtitle">Connectez-vous pour suivre vos commandes</p>
+                    </div>
+                </div>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition relative z-10">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Auth Form & Tabs -->
+            <div class="p-6 space-y-4">
+                <!-- Tabs Selector -->
+                <div class="bg-slate-100 p-1 rounded-xl flex gap-1">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition" data-i18n="loginBtn">Se connecter</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-900 transition" data-i18n="registerTab">Créer un compte</button>
                 </div>
 
-                <!-- Desktop Menu -->
-                <nav class="hidden lg:flex space-x-6 items-center">
-                    <a href="#shops" class="text-gray-800 hover:text-tzgreen font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
-                        <i class="fa-solid fa-store text-tzgreen"></i>
-                        <span data-en="All Shops" data-sw="Maduka Yote">All Shops</span>
-                    </a>
-                    <a href="#offers" class="text-gray-800 hover:text-red-500 font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
-                        <i class="fa-solid fa-tag text-red-500"></i>
-                        <span data-en="Offers" data-sw="Ofa Maalum">Offers</span>
-                    </a>
-                    <a href="#services" class="text-gray-800 hover:text-tzyellow font-bold transition flex items-center gap-2 text-sm uppercase tracking-wide">
-                        <i class="fa-solid fa-headset text-tzyellow"></i>
-                        <span data-en="Services" data-sw="Huduma Zetu">Services</span>
-                    </a>
-                </nav>
-
-                <!-- Actions & Language Switcher -->
-                <div class="flex items-center space-x-3 md:space-x-4">
-                    <!-- Language Toggle -->
-                    <div class="bg-gray-100 p-1 rounded-lg flex items-center border border-gray-200">
-                        <button onclick="setLang('en')" id="btn-en" class="px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm">EN</button>
-                        <button onclick="setLang('sw')" id="btn-sw" class="px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700">SW</button>
+                <!-- Input Forms -->
+                <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1" data-i18n="emailLabel">Adresse E-mail</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-2.5 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
+                            <input type="email" id="auth-email" required placeholder="exemple@domaine.com" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        </div>
                     </div>
 
-                    <a href="#" class="hidden sm:flex bg-tzblack hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl font-bold transition items-center gap-2 text-sm">
-                        <i class="fa-regular fa-user"></i> 
-                        <span data-en="Login" data-sw="Ingia">Login</span>
-                    </a>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1" data-i18n="passLabel">Mot de Passe</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-2.5 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                            <input type="password" id="auth-password" required minlength="6" placeholder="••••••••" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        </div>
+                    </div>
 
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn" class="lg:hidden text-gray-800 focus:outline-none p-2">
-                        <i class="fa-solid fa-bars text-2xl"></i>
+                    <!-- Auth Actions -->
+                    <button type="submit" id="auth-submit-btn" class="w-full mt-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="loginBtn">Se connecter</span>
+                    </button>
+                </form>
+
+                <div class="border-t border-slate-100 pt-3">
+                    <button onclick="closeAuthModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5" data-i18n="continueAsGuest">
+                        <i class="fa-solid fa-eye"></i> Continuer la navigation
                     </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl">
-            <div class="px-4 py-6 space-y-2 flex flex-col">
-                <a href="#shops" class="px-4 py-3 rounded-xl bg-green-50 text-green-700 font-bold flex items-center gap-3">
-                    <i class="fa-solid fa-store"></i> <span data-en="All Shops" data-sw="Maduka Yote">All Shops</span>
+    <!-- MAIN APP CONTENT -->
+    <div id="app-main-content" class="h-full flex flex-col">
+        
+        <!-- TOP HEADER BAR -->
+        <header id="main-header" class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-30 px-4 md:px-6 py-3 flex flex-wrap gap-3 items-center justify-between shadow-lg">
+            
+            <!-- Brand & Navigation -->
+            <div class="flex items-center gap-3">
+                <a href="index.html?skipRedirect=true" class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-800 text-amber-400 hover:bg-slate-700 transition" title="Accueil">
+                    <i class="fa-solid fa-shop text-sm"></i>
                 </a>
-                <a href="#offers" class="px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold flex items-center gap-3">
-                    <i class="fa-solid fa-tag"></i> <span data-en="Special Offers" data-sw="Ofa Maalum">Special Offers</span>
-                </a>
-                <a href="#services" class="px-4 py-3 rounded-xl bg-yellow-50 text-yellow-700 font-bold flex items-center gap-3">
-                    <i class="fa-solid fa-headset"></i> <span data-en="Services" data-sw="Huduma Zetu">Services</span>
-                </a>
-                <div class="h-px bg-gray-100 my-4"></div>
-                <a href="#" class="px-4 py-3 rounded-xl bg-tzblack text-white text-center font-bold">
-                    <span data-en="Login / Register" data-sw="Ingia / Jisajili">Login / Register</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 hero-bg min-h-[85vh] flex items-center z-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-            <div class="max-w-3xl text-center md:text-left">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-tzyellow text-xs font-black tracking-widest uppercase mb-6">
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tzyellow opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-tzyellow"></span>
-                    </span>
-                    <!-- Updated Welcome Text -->
-                    <span data-en="Welcome to online shopping" data-sw="Karibu kwenye manunuzi mtandaoni">Welcome to online shopping</span>
+                <div class="flex items-center gap-2">
+                    <div class="bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 p-2 rounded-xl shadow-md font-black">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base md:text-lg font-black tracking-tight flex items-center gap-1.5 leading-none">
+                            Mlimani<span class="text-amber-400">City</span>
+                        </h1>
+                        <span class="text-[9px] uppercase tracking-widest text-emerald-400 font-bold" data-i18n="headerSubtitle">Boutiques & Ventes</span>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Header Controls & Actions -->
+            <div class="flex items-center flex-wrap gap-2 md:gap-3">
                 
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6 tracking-tight">
-                    <span data-en="Shop Premium." data-sw="Fanya Manunuzi Bora.">Shop Premium.</span><br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-tzgreen to-tzyellow" data-en="Live Better." data-sw="Ishi Vizuri.">Live Better.</span>
-                </h1>
+                <!-- Quick Access: Vendor Dashboard -->
+                <a href="dashboard_boutiques.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition shadow-sm" title="Accéder à la gestion de vos boutiques">
+                    <i class="fa-solid fa-gauge-high text-amber-400"></i>
+                    <span class="hidden sm:inline" data-i18n="dashboardLink">Tableau de Bord Vendeur</span>
+                </a>
+
+                <!-- Fullscreen Toggle Button -->
+                <button onclick="toggleFullscreenPhone()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-xl text-xs border border-slate-700 transition" title="Mode plein écran">
+                    <i class="fa-solid fa-expand text-xs" id="header-fullscreen-icon"></i>
+                </button>
+
+                <!-- Language Selector -->
+                <div class="relative inline-block text-left">
+                    <select id="language-select" onchange="changeLanguage(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium cursor-pointer">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                        <option value="sw">🇹🇿 SW</option>
+                    </select>
+                </div>
+
+                <!-- Create Shop Action Button -->
+                <a href="dashboard_boutiques.html" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-md shadow-emerald-900/30 flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span data-i18n="createShopBtn">Créer une boutique</span>
+                </a>
+
+                <!-- HIGHLIGHTED LOGIN BUTTON (En surbrillance) -->
+                <button id="nav-login-btn" onclick="openAuthModal()" class="bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold px-4 py-1.5 rounded-xl text-xs transition-all duration-300 shadow-neon ring-2 ring-amber-300/60 flex items-center gap-2 animate-pulse-subtle">
+                    <i class="fa-solid fa-user"></i>
+                    <span id="user-badge-text" data-i18n="loginBtn">Se connecter</span>
+                </button>
+
+                <!-- Logout Button (Hidden by default until logged in) -->
+                <button id="nav-logout-btn" onclick="handleLogout()" class="hidden bg-slate-800 hover:bg-rose-600/20 hover:text-rose-400 text-slate-400 p-2 rounded-xl text-xs border border-slate-700 transition" title="Déconnexion">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+
+                <!-- Cloud Database Badge -->
+                <div id="cloud-status-badge" class="hidden md:flex text-[10px] font-bold text-amber-400 items-center gap-1 pl-1">
+                    <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-y-auto lg:overflow-hidden bg-slate-100">
+            
+            <!-- LEFT PANEL: Hero Banner & Shops Catalog Explorer -->
+            <section id="left-panel" class="w-full lg:w-[58%] xl:w-[62%] lg:shrink-0 p-4 lg:p-6 lg:overflow-y-scroll custom-scrollbar flex flex-col gap-5 relative">
+
+                <!-- MAIN HERO INVITING BANNER -->
+                <div class="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-xl overflow-hidden border border-slate-800">
+                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute right-1/3 -bottom-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div class="relative z-10 max-w-2xl space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[11px] font-bold">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span data-i18n="heroBadge">Plateforme E-Commerce Intelligente</span>
+                        </div>
+                        <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight leading-tight" data-i18n="heroTitle">
+                            Créez votre propre boutique en ligne ou faites vos achats en toute simplicité
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-300 leading-relaxed" data-i18n="heroDesc">
+                            Rejoignez nos vendeurs partenaires pour déployer votre vitrine digitale en quelques clics ou découvrez nos boutiques exclusives pour passer vos commandes en direct.
+                        </p>
+                        
+                        <div class="pt-2 flex flex-wrap gap-3">
+                            <a href="dashboard_boutiques.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                                <i class="fa-solid fa-store"></i> <span data-i18n="createMyShop">Créer ma boutique</span>
+                            </a>
+                            <button onclick="switchClientTab('shops-tab')" class="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs backdrop-blur transition border border-white/15 flex items-center gap-2">
+                                <i class="fa-solid fa-compass"></i> <span data-i18n="exploreShopsBtn">Explorer les boutiques</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hub Controls / Navigation Tabs -->
+                <div id="hub-navigation" class="bg-white/80 backdrop-blur p-1.5 rounded-2xl flex gap-1.5 border border-slate-200/80 shadow-sm sticky top-0 z-20">
+                    <button onclick="switchClientTab('shops-tab')" id="btn-shops-tab" class="client-tab-btn flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 bg-slate-900 text-white shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-shop text-amber-400"></i> <span data-i18n="partnerShops">Boutiques Partenaires</span>
+                    </button>
+                    <button onclick="switchClientTab('favorites-tab')" id="btn-favorites-tab" class="client-tab-btn flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-heart text-rose-500"></i> <span data-i18n="favorites">Mes Favoris</span>
+                    </button>
+                    <button onclick="switchClientTab('history-tab')" id="btn-history-tab" class="client-tab-btn flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> <span data-i18n="orderHistory">Historique d'Achats</span>
+                    </button>
+                </div>
+
+                <!-- SHOPS EXPLORER TAB -->
+                <div id="shops-tab" class="client-tab-content block space-y-4">
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                            <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                <span class="bg-amber-100 text-amber-700 p-1.5 rounded-xl text-xs"><i class="fa-solid fa-store"></i></span>
+                                <span data-i18n="selectShop">Sélectionnez une boutique à visiter</span>
+                            </h3>
+                            <div class="relative w-full sm:w-64">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                                <input type="text" id="shop-search-input" onkeyup="filterShopsExplorer()" placeholder="Rechercher une boutique..." data-i18n-placeholder="searchShopPlaceholder" class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                            </div>
+                        </div>
+
+                        <div id="shops-explorer-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <p class="text-slate-400 text-xs text-center py-10 col-span-2 italic">Chargement des boutiques disponibles...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAVORITES TAB -->
+                <div id="favorites-tab" class="client-tab-content hidden space-y-4">
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-sm font-extrabold text-slate-900 mb-4 flex items-center gap-2">
+                            <span class="bg-rose-100 text-rose-600 p-1.5 rounded-xl text-xs"><i class="fa-solid fa-heart"></i></span>
+                            <span data-i18n="favoritesTitle">Mes Boutiques Favorites</span>
+                        </h3>
+                        <div id="favorites-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <p class="text-slate-400 text-xs text-center py-10 col-span-2 italic">Vous n'avez pas encore de favoris.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HISTORY TAB -->
+                <div id="history-tab" class="client-tab-content hidden space-y-4">
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-sm font-extrabold text-slate-900 mb-4 flex items-center gap-2">
+                            <span class="bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs"><i class="fa-solid fa-receipt"></i></span>
+                            <span data-i18n="historyTitle">Mes Commandes Passées</span>
+                        </h3>
+                        <div id="client-history-container" class="space-y-3">
+                            <p class="text-slate-400 text-xs text-center py-10">Connectez-vous pour voir l'historique de vos achats.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Realistic Smartphone Simulator Frame (Shop Viewer) -->
+            <section class="w-full lg:w-[42%] xl:w-[38%] lg:shrink-0 p-4 lg:p-6 bg-slate-200/60 flex items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-300/80 relative">
                 
-                <p class="text-lg md:text-xl text-gray-300 mb-10 font-light max-w-2xl mx-auto md:mx-0" data-en="Everything you need, from farm-fresh produce to everyday household essentials, delivered to your door or ready for pickup." data-sw="Kila unachohitaji, kuanzia mazao mapya shambani hadi mahitaji ya kila siku ya nyumbani, yakiletwa mlangoni kwako au tayari kuchukuliwa.">
-                    Everything you need, from farm-fresh produce to everyday household essentials, delivered to your door or ready for pickup.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                    <a href="#shops" class="bg-tzgreen hover:bg-green-600 text-white px-8 py-4 rounded-xl font-black text-lg transition-all shadow-lg shadow-tzgreen/30 transform hover:-translate-y-1 flex items-center justify-center gap-3">
-                        <i class="fa-solid fa-cart-shopping"></i> 
-                        <span data-en="Start Shopping" data-sw="Anza Manunuzi">Start Shopping</span>
-                    </a>
-                    <a href="#offers" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-3">
-                        <i class="fa-solid fa-bolt text-tzyellow"></i> 
-                        <span data-en="View Deals" data-sw="Tazama Ofa">View Deals</span>
-                    </a>
+                <div class="sticky top-6 flex flex-col items-center">
+                    
+                    <!-- Bouton Plein Écran pour Desktop -->
+                    <div class="w-full flex justify-end mb-4">
+                        <button onclick="toggleFullscreenPhone()" class="hidden lg:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg border border-slate-700">
+                            <i class="fa-solid fa-expand"></i> <span data-i18n="expandSim">Agrandir le simulateur</span>
+                        </button>
+                    </div>
+
+                    <!-- Device Container -->
+                    <div id="phone-simulator" class="relative w-[340px] h-[670px] bg-slate-950 rounded-[50px] shadow-phone border-[8px] border-slate-900 p-2.5 flex flex-col overflow-hidden ring-[8px] ring-slate-900/20 transition-all duration-300">
+                        
+                        <!-- Notch -->
+                        <div id="phone-notch" class="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-50 flex items-center justify-between px-3 text-white transition-opacity">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <div class="w-1 h-1 rounded-full bg-slate-800"></div>
+                        </div>
+
+                        <!-- Speaker and Sensors -->
+                        <div id="phone-speaker" class="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-1 bg-slate-900 rounded-full z-50 transition-opacity"></div>
+
+                        <!-- Smartphone Screen View -->
+                        <div id="phone-inner-screen" class="w-full h-full bg-white rounded-[38px] overflow-hidden flex flex-col relative select-none transition-all duration-300">
+                            
+                            <!-- Fullscreen Menu Button (Hidden by default, shown when fullscreen) -->
+                            <button id="fullscreen-settings-btn" onclick="toggleFullscreenPhone()" class="hidden absolute top-14 right-4 z-[45] bg-slate-900/90 text-white p-2.5 rounded-xl shadow-lg border border-slate-800 transition backdrop-blur">
+                                <i class="fa-solid fa-compress"></i>
+                            </button>
+
+                            <!-- Smartphone Native Status Bar -->
+                            <div id="phone-status-bar" class="bg-white/95 backdrop-blur px-5 pt-3 pb-1 flex justify-between items-center text-[10px] font-bold text-slate-900 z-40 select-none transition-all">
+                                <span id="phone-time" class="tracking-wide">09:41</span>
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-signal text-[9px]"></i>
+                                    <span class="text-[9px]">5G</span>
+                                    <i class="fa-solid fa-wifi text-[9px]"></i>
+                                    <div class="flex items-center gap-0.5 border border-slate-800 rounded px-0.5 py-px text-[7px] leading-none">
+                                        <span>100%</span>
+                                        <i class="fa-solid fa-battery-full text-[8px]"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Store Promo Banner Inside Phone -->
+                            <div id="phone-promo-banner" class="bg-indigo-600 text-white text-[9.5px] py-1 px-4 text-center font-bold tracking-wide transition duration-300 hidden">
+                                Profitez de nos offres spéciales ! ✨
+                            </div>
+
+                            <!-- Main Screen Navigable Area -->
+                            <div id="phone-screen-content" class="flex-1 overflow-y-auto phone-scrollbar bg-slate-50 relative pb-16 flex flex-col">
+                                
+                                <!-- SCREEN 1: HOME / SHOPPING -->
+                                <div id="screen-home" class="phone-view active space-y-3.5">
+                                    <!-- Phone Header Banner -->
+                                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 pt-5 pb-5 flex flex-col justify-end space-y-1 relative overflow-hidden shadow-inner">
+                                        <div class="absolute right-0 bottom-0 opacity-10 text-7xl translate-y-2 translate-x-2"><i class="fa-solid fa-bag-shopping"></i></div>
+                                        
+                                        <!-- Custom Shop Logo -->
+                                        <img id="phone-hero-logo" src="" class="h-11 w-11 rounded-2xl border-2 border-white/20 mb-1 object-cover hidden shadow-md" alt="Logo">
+                                        
+                                        <span id="phone-hero-subtitle" class="text-[9.5px] text-amber-400 font-bold uppercase tracking-wider">Boutique Officielle</span>
+                                        <h2 id="phone-hero-title" class="text-base font-black tracking-tight leading-tight">Mlimani City</h2>
+                                        <p id="phone-hero-desc" class="text-[10px] text-slate-300 max-w-[85%]">Explorez nos catalogues</p>
+                                        <p id="phone-hero-address" class="text-[9px] text-slate-400 max-w-[85%] mt-0.5 hidden"><i class="fa-solid fa-location-dot mr-1"></i></p>
+
+                                        <!-- Social links -->
+                                        <div id="phone-social-links" class="flex gap-2.5 mt-2 pt-2 border-t border-white/10 hidden">
+                                            <a id="phone-social-fb" href="#" target="_blank" class="text-white/60 hover:text-white transition"><i class="fa-brands fa-facebook"></i></a>
+                                            <a id="phone-social-ig" href="#" target="_blank" class="text-white/60 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                                            <a id="phone-social-tk" href="#" target="_blank" class="text-white/60 hover:text-white transition"><i class="fa-brands fa-tiktok"></i></a>
+                                            <a id="phone-social-wa" href="#" target="_blank" class="text-white/60 hover:text-white transition"><i class="fa-brands fa-whatsapp"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search & Quick Categories Navigation inside Phone -->
+                                    <div class="px-3 space-y-2">
+                                        <div class="relative">
+                                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                                            <input type="text" id="phone-search-input" onkeyup="handlePhoneSearch()" placeholder="Rechercher un produit..." data-i18n-placeholder="searchProductPlaceholder" class="w-full pl-8 pr-3 py-1.5 bg-slate-100 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600">
+                                        </div>
+                                        
+                                        <div class="flex gap-1.5 overflow-x-auto pb-1 phone-scrollbar text-xs whitespace-nowrap">
+                                            <button onclick="filterCategory('tous')" class="cat-pill bg-slate-900 text-white px-3 py-1 rounded-full font-semibold shadow-sm transition">Tous</button>
+                                            <button onclick="filterCategory('mode')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-semibold transition">Mode</button>
+                                            <button onclick="filterCategory('tech')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-semibold transition">Tech</button>
+                                            <button onclick="filterCategory('decor')" class="cat-pill bg-white text-slate-600 border border-slate-200 px-3 py-1 rounded-full font-semibold transition">Maison</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Catalog Layout inside Smartphone -->
+                                    <div class="px-3 pb-4">
+                                        <div id="phone-products-list" class="grid grid-cols-2 gap-2">
+                                            <div class="col-span-2 text-center py-10 text-slate-400">
+                                                <i class="fa-solid fa-shop text-2xl mb-2 text-slate-300"></i>
+                                                <p class="text-[11px]" data-i18n="selectShopPrompt">Veuillez sélectionner une boutique à gauche</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN 2: PRODUCT DETAILS -->
+                                <div id="screen-detail" class="phone-view hidden bg-white">
+                                    <button onclick="navigatePhoneTo('home')" class="absolute top-2 left-2 z-10 bg-white/95 shadow text-slate-800 h-7 w-7 rounded-full flex items-center justify-center text-xs border border-slate-200 hover:scale-105 transition">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <div class="h-52 w-full relative bg-slate-100 overflow-hidden">
+                                        <img id="detail-img" src="" class="w-full h-full object-cover" alt="Detail Image">
+                                    </div>
+                                    <div class="p-4 space-y-2.5">
+                                        <span id="detail-category" class="text-[9px] font-extrabold text-indigo-600 uppercase bg-indigo-50 px-2 py-0.5 rounded-md">Catégorie</span>
+                                        <h3 id="detail-name" class="text-sm font-extrabold text-slate-900 leading-tight">Nom du Produit</h3>
+                                        <div class="flex items-baseline gap-2">
+                                            <span id="detail-price" class="text-base font-extrabold text-slate-900">0.00 $</span>
+                                            <span id="detail-old-price" class="text-xs text-slate-400 line-through">0.00 $</span>
+                                        </div>
+                                        <p id="detail-desc" class="text-xs text-slate-500 leading-relaxed pt-1 border-t border-slate-100">Description du produit...</p>
+                                        
+                                        <div class="pt-1">
+                                            <span id="detail-stock" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">Disponible</span>
+                                        </div>
+
+                                        <button id="detail-add-btn" class="w-full mt-3 bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 active:scale-95 transition shadow-md">
+                                            <i class="fa-solid fa-cart-plus"></i> <span data-i18n="addToCart">Ajouter au panier</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN 3: SHOPPING CART -->
+                                <div id="screen-cart" class="phone-view hidden px-3 pt-3 flex flex-col h-full">
+                                    <h3 class="text-xs font-extrabold text-slate-900 mb-2 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-cart-shopping text-amber-500"></i> <span data-i18n="yourCart">Votre Panier</span>
+                                    </h3>
+                                    <div id="phone-cart-items" class="space-y-2 flex-1 overflow-y-auto phone-scrollbar max-h-[380px]">
+                                        <!-- Cart Items render here -->
+                                    </div>
+                                    <div id="phone-cart-summary" class="border-t border-slate-200 pt-3 pb-16 space-y-2 bg-slate-50 sticky bottom-0">
+                                        <div class="flex justify-between text-xs font-semibold">
+                                            <span class="text-slate-500" data-i18n="subtotal">Sous-total</span>
+                                            <span id="cart-subtotal" class="text-slate-900 font-bold">0.00 $</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs font-semibold">
+                                            <span class="text-slate-500" data-i18n="shipping">Livraison</span>
+                                            <span class="text-emerald-600 font-bold" data-i18n="free">Gratuite</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs font-extrabold pt-1.5 border-t border-dashed border-slate-200">
+                                            <span class="text-slate-900">Total</span>
+                                            <span id="cart-total" class="text-slate-900">0.00 $</span>
+                                        </div>
+                                        <button onclick="navigatePhoneTo('checkout')" id="btn-goto-checkout" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold active:scale-95 transition flex items-center justify-center gap-1.5 shadow-md mt-2">
+                                            <i class="fa-solid fa-credit-card"></i> <span data-i18n="checkoutBtn">Passer la Commande</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN 4: CHECKOUT FORM -->
+                                <div id="screen-checkout" class="phone-view hidden px-3.5 pt-3 space-y-3">
+                                    <h3 class="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-truck-fast text-indigo-600"></i> <span data-i18n="checkoutTitle">Coordonnées & Paiement</span>
+                                    </h3>
+                                    <form id="checkout-form" onsubmit="handlePlaceOrder(event)" class="space-y-2.5">
+                                        <div>
+                                            <label class="block text-[9.5px] font-bold text-slate-500 mb-0.5" data-i18n="fullName">Nom complet</label>
+                                            <input type="text" id="cust-name" required class="w-full px-2.5 py-1.5 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9.5px] font-bold text-slate-500 mb-0.5" data-i18n="whatsappNumber">Numéro WhatsApp</label>
+                                            <input type="tel" id="cust-whatsapp" required placeholder="+243..." class="w-full px-2.5 py-1.5 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9.5px] font-bold text-slate-500 mb-0.5" data-i18n="deliveryAddress">Adresse de livraison</label>
+                                            <input type="text" id="cust-address" required class="w-full px-2.5 py-1.5 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9.5px] font-bold text-slate-500 mb-0.5" data-i18n="promoCode">Code Promo / Agent Commercial</label>
+                                            <input type="text" id="cust-promo-code" oninput="checkPromoCode()" placeholder="Ex: AGENT01" class="w-full px-2.5 py-1.5 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 uppercase">
+                                            <p id="promo-status-msg" class="text-[9px] mt-0.5 font-bold"></p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9.5px] font-bold text-slate-500 mb-0.5" data-i18n="paymentMethod">Mode de règlement</label>
+                                            <div id="payment-options-list" class="grid grid-cols-2 gap-1 mt-1">
+                                                <!-- Dynamic based on storeConfig.paymentMethods -->
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-slate-100 border border-slate-200 rounded-xl p-2.5 mt-2">
+                                            <span class="text-[9.5px] text-slate-500 block font-bold mb-0.5" data-i18n="summary">Résumé de la transaction</span>
+                                            <div id="checkout-discount-row" class="hidden flex justify-between text-[10px] text-emerald-600 mb-1">
+                                                <span data-i18n="agentDiscount">Remise Agent (5%)</span>
+                                                <span id="checkout-discount-val">-0.00 $</span>
+                                            </div>
+                                            <div class="flex justify-between text-[11px] font-black text-slate-900">
+                                                <span data-i18n="finalTotal">Montant final à payer</span>
+                                                <span id="checkout-total">0.00 $</span>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold active:scale-95 transition flex items-center justify-center gap-1.5 shadow-md">
+                                            <i class="fa-solid fa-lock"></i> <span data-i18n="validateOrder">Valider la commande</span>
+                                        </button>
+                                        <button type="button" onclick="navigatePhoneTo('cart')" class="w-full text-slate-500 hover:text-slate-800 py-1 text-center text-xs" data-i18n="backToCart">
+                                            Retourner au panier
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- SCREEN 5: MESSAGING / MESSAGERIE DIRECTE -->
+                                <div id="screen-chat" class="phone-view hidden flex flex-col h-full bg-slate-100">
+                                    <!-- Chat Header inside Phone -->
+                                    <div class="bg-slate-900 text-white p-3 flex items-center gap-2.5 shadow-sm">
+                                        <div class="relative">
+                                            <img id="chat-shop-logo" src="" class="h-8 w-8 rounded-full object-cover border border-amber-400/50 bg-slate-800">
+                                            <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-slate-900"></span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h4 id="chat-shop-name" class="text-xs font-extrabold truncate">Support Vendeur</h4>
+                                            <span class="text-[8px] text-emerald-400 font-bold block" data-i18n="onlineStatus">En ligne • Répond rapidement</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chat Messages Stream -->
+                                    <div id="chat-messages-container" class="flex-1 p-3 overflow-y-auto phone-scrollbar space-y-2.5 text-xs">
+                                        <!-- Messages dynamically loaded here -->
+                                    </div>
+
+                                    <!-- Quick Prompts Bubbles -->
+                                    <div class="px-2 py-1 bg-white border-t border-slate-200 flex gap-1 overflow-x-auto phone-scrollbar text-[9px]">
+                                        <button onclick="sendQuickPrompt(this.innerText)" class="shrink-0 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded-full border border-slate-200" data-i18n="quickMsg1">Bonjour, ce produit est-il disponible ?</button>
+                                        <button onclick="sendQuickPrompt(this.innerText)" class="shrink-0 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded-full border border-slate-200" data-i18n="quickMsg2">Quels sont vos délais de livraison ?</button>
+                                    </div>
+
+                                    <!-- Chat Input Area -->
+                                    <div class="p-2 bg-white border-t border-slate-200 flex items-center gap-1.5">
+                                        <input type="text" id="chat-input" onkeypress="if(event.key==='Enter') sendChatMessage()" placeholder="Écrivez un message..." data-i18n-placeholder="chatPlaceholder" class="flex-1 px-3 py-1.5 bg-slate-100 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                        <button onclick="sendChatMessage()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition">
+                                            <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- SCREEN 6: SUCCESS / THANK YOU -->
+                                <div id="screen-success" class="phone-view hidden p-5 flex flex-col items-center justify-center text-center h-full space-y-3">
+                                    <div class="h-14 w-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl animate-bounce shadow">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h4 class="text-sm font-extrabold text-slate-900" data-i18n="orderSuccessTitle">Merci pour votre commande !</h4>
+                                        <p class="text-[10px] text-slate-500" data-i18n="orderSuccessDesc">Votre achat a été enregistré et transmis directement au gérant de la boutique.</p>
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-[10px] w-full text-left space-y-1">
+                                        <div class="flex justify-between"><span class="text-slate-400" data-i18n="orderNum">N° de Commande</span><span class="font-bold text-slate-800" id="success-order-id">#BC-1024</span></div>
+                                        <div class="flex justify-between"><span class="text-slate-400">Total</span><span class="font-bold text-emerald-600" id="success-order-total">0.00 $</span></div>
+                                    </div>
+                                    <button onclick="trackOrder()" class="w-full bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl transition">
+                                        <i class="fa-brands fa-whatsapp mr-1"></i> <span data-i18n="trackWhatsApp">Suivre sur WhatsApp</span>
+                                    </button>
+                                    <button onclick="navigatePhoneTo('home')" class="w-full bg-slate-900 text-white text-xs font-bold py-2 rounded-xl transition">
+                                        <span data-i18n="backToShop">Retour à la boutique</span>
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- Smartphone Native Bottom Navigation Bar -->
+                            <div class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-4 py-2 flex justify-between items-center z-40">
+                                <button onclick="navigatePhoneTo('home')" id="phone-nav-home" class="phone-nav-btn flex flex-col items-center gap-0.5 text-amber-500">
+                                    <i class="fa-solid fa-store text-xs"></i>
+                                    <span class="text-[8px] font-bold" data-i18n="navShop">Boutique</span>
+                                </button>
+                                <button onclick="navigatePhoneTo('cart')" id="phone-nav-cart" class="phone-nav-btn flex flex-col items-center gap-0.5 text-slate-400 relative">
+                                    <i class="fa-solid fa-bag-shopping text-xs"></i>
+                                    <span class="text-[8px] font-bold" data-i18n="navCart">Panier</span>
+                                    <span id="phone-cart-badge" class="absolute -top-1 -right-1.5 bg-amber-500 text-slate-950 text-[8px] h-3.5 w-3.5 rounded-full flex items-center justify-center font-black">0</span>
+                                </button>
+                                <button onclick="navigatePhoneTo('chat')" id="phone-nav-chat" class="phone-nav-btn flex flex-col items-center gap-0.5 text-slate-400 relative">
+                                    <i class="fa-solid fa-comments text-xs"></i>
+                                    <span class="text-[8px] font-bold" data-i18n="navMessage">Discussion</span>
+                                    <span id="phone-chat-badge" class="hidden absolute -top-1 -right-1.5 bg-emerald-500 text-white text-[7px] h-2 w-2 rounded-full"></span>
+                                </button>
+                                <button onclick="openAuthModal()" id="phone-nav-account" class="phone-nav-btn flex flex-col items-center gap-0.5 text-slate-400">
+                                    <i class="fa-solid fa-user text-xs"></i>
+                                    <span class="text-[8px] font-bold" data-i18n="navAccount">Compte</span>
+                                </button>
+                            </div>
+
+                            <!-- Safe area indicator -->
+                            <div id="phone-safe-area" class="absolute bottom-1 left-1/2 -translate-x-1/2 w-24 h-1 bg-slate-300 rounded-full z-50 transition-opacity"></div>
+
+                            <!-- Smartphone Toast Notification -->
+                            <div id="phone-toast" class="absolute top-14 left-3 right-3 bg-slate-900 text-white text-[10px] py-2 px-3 rounded-xl shadow-lg flex items-center gap-2 transform -translate-y-24 opacity-0 transition-all duration-300 z-50 border border-slate-800">
+                                <i class="fa-solid fa-circle-info text-amber-400"></i>
+                                <span id="phone-toast-msg" class="font-semibold">Notification</span>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- The 8 Gateway Pages Section -->
-    <section id="shops" class="py-20 relative z-20 -mt-10 bg-gray-50 rounded-t-[3rem]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-black text-gray-900 mb-4" data-en="Explore Our Stores" data-sw="Gundua Maduka Yetu">Explore Our Stores</h2>
-                <p class="text-gray-500 max-w-2xl mx-auto" data-en="Navigate directly to our main departments to find exactly what you're looking for." data-sw="Nenda moja kwa moja kwenye idara zetu kuu ili kupata kile unachotafuta.">Navigate directly to our main departments to find exactly what you're looking for.</p>
-            </div>
+            </section>
+        </main>
+    </div>
 
-            <!-- 8 Categories Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <!-- 1: Supermarket -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600&auto=format&fit=crop" alt="Supermarket" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-tzblack/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-tzgreen rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-basket-shopping"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Supermarket" data-sw="Supa Maketi">Supermarket</h3>
-                        <p class="text-gray-300 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Daily groceries" data-sw="Vyakula vya kila siku">Daily groceries</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-tzgreen opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
+    <!-- NOTIFICATION CONTAINER -->
+    <div id="dashboard-toast" class="fixed bottom-5 left-5 bg-slate-950 text-white text-xs px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-2 transform translate-y-24 opacity-0 transition-all duration-300 border border-slate-800">
+        <i class="fa-solid fa-circle-check text-emerald-500"></i> <span class="font-medium" id="toast-msg">Notification</span>
+    </div>
 
-                <!-- 2: Jewelry -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=600&auto=format&fit=crop" alt="Jewelry" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-regular fa-gem"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Jewelry" data-sw="Urembo & Vito">Jewelry</h3>
-                        <p class="text-amber-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Luxury accessories" data-sw="Mapambo ya kifahari">Luxury accessories</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-amber-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 3: Clothing -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e07?q=80&w=600&auto=format&fit=crop" alt="Clothing" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-pink-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-shirt"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Clothing" data-sw="Mavazi">Clothing</h3>
-                        <p class="text-pink-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Fashion & apparel" data-sw="Fasheni na nguo">Fashion & apparel</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-pink-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 4: Restaurant -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop" alt="Restaurant" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-utensils"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Restaurants" data-sw="Migahawa">Restaurants</h3>
-                        <p class="text-orange-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Dine in or takeout" data-sw="Chakula kizuri">Dine in or takeout</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-orange-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 5: Carpentry -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1565118531796-763e5082d113?q=80&w=600&auto=format&fit=crop" alt="Carpentry" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-yellow-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-hammer"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Carpentry" data-sw="Useremala">Carpentry</h3>
-                        <p class="text-yellow-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Furniture & wood" data-sw="Samani na mbao">Furniture & wood</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-yellow-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 6: Plumbing -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=600&auto=format&fit=crop" alt="Plumbing" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-tzblue/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-tzblue rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-faucet-drip"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Plumbing" data-sw="Mabomba">Plumbing</h3>
-                        <p class="text-blue-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Fixtures & pipes" data-sw="Vifaa vya mabomba">Fixtures & pipes</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-white opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 7: Tiles -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1523413363574-c30aa1c2a516?q=80&w=600&auto=format&fit=crop" alt="Tiles" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-border-all"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Tiles" data-sw="Vigae">Tiles</h3>
-                        <p class="text-teal-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Ceramics & flooring" data-sw="Vigae vya sakafu">Ceramics & flooring</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-teal-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-                <!-- 8: Electronics -->
-                <a href="boutiques.html" class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 h-64 flex flex-col justify-end p-6 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format&fit=crop" alt="Electronics" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/90 via-tzblack/30 to-transparent"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-xl mb-3 shadow-lg">
-                            <i class="fa-solid fa-mobile-screen"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-white mb-1" data-en="Electronics" data-sw="Elektroniki">Electronics</h3>
-                        <p class="text-indigo-100 text-sm font-medium flex items-center gap-1">
-                            <span data-en="Gadgets & tech" data-sw="Vifaa vya kisasa">Gadgets & tech</span>
-                            <i class="fa-solid fa-arrow-right text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all"></i>
-                        </p>
-                    </div>
-                </a>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-tzgreen mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-                <!-- Brand Info -->
-                <div>
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 rounded-lg bg-tzgreen flex items-center justify-center">
-                            <i class="fa-solid fa-shopping-bag text-white text-sm"></i>
-                        </div>
-                        <span class="font-black text-xl tracking-tight">
-                            Baniki<span class="text-tzgreen">Labs</span>
-                        </span>
-                    </div>
-                    <p class="text-gray-400 text-sm mb-6" data-en="Your premier online shopping experience. Quality, variety, and value in every category." data-sw="Uzoefu bora wa manunuzi mtandaoni. Ubora, aina mbalimbali, na thamani kwa kila idara.">
-                        Your premier online shopping experience. Quality, variety, and value in every category.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
-                    </div>
-                </div>
-
-                <!-- Departments Links (Updated) -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4" data-en="Our Departments" data-sw="Idara Zetu">Our Departments</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Supermarket" data-sw="Supa Maketi">Supermarket</a></li>
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Jewelry" data-sw="Urembo & Vito">Jewelry</a></li>
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Clothing" data-sw="Mavazi">Clothing</a></li>
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Plumbing & Tiles" data-sw="Mabomba & Vigae">Plumbing & Tiles</a></li>
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Carpentry" data-sw="Useremala">Carpentry</a></li>
-                        <li><a href="boutiques.html" class="hover:text-tzgreen transition" data-en="Electronics" data-sw="Elektroniki">Electronics</a></li>
-                    </ul>
-                </div>
-
-                <!-- Customer Service Links -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4" data-en="Customer Service" data-sw="Huduma kwa Wateja">Customer Service</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Contact Us" data-sw="Wasiliana Nasi">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Delivery Info" data-sw="Maelezo ya Uletaji">Delivery Info</a></li>
-                        <li><a href="#" class="hover:text-tzyellow transition" data-en="Returns" data-sw="Kurudisha Bidhaa">Returns</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact (Updated) -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4" data-en="Find Us" data-sw="Tupate">Find Us</h4>
-                    <ul class="space-y-3 text-sm text-gray-400">
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-globe text-tzgreen"></i>
-                            <a href="https://banikilabs.store" class="hover:text-white transition">banikilabs.store</a>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-envelope text-tzgreen"></i>
-                            <a href="mailto:banikilabs@gmail.com" class="hover:text-white transition">banikilabs@gmail.com</a>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-phone text-tzgreen"></i>
-                            <a href="tel:+255793455303" class="hover:text-white transition">+255 793 455 303</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-                <p>&copy; 2024 BanikiLabs. <span data-en="All rights reserved." data-sw="Haki zote zimehifadhiwa.">All rights reserved.</span></p>
-                <div class="flex gap-4">
-                    <a href="#" class="hover:text-white" data-en="Privacy Policy" data-sw="Sera ya Faragha">Privacy Policy</a>
-                    <a href="#" class="hover:text-white" data-en="Terms of Service" data-sw="Vigezo na Masharti">Terms of Service</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript for Interactions and Language Translation -->
+    <!-- SCRIPT DE LOGIQUE ET DE GESTION -->
     <script>
-        // --- 1. Language Toggle Logic ---
-        let currentLang = 'en'; // Default language
+        // CREDENTIALS CLOUD SUPABASE
+        const CLOUD_URL = 'https://sdqizkumqudwbnrdcoma.supabase.co';
+        const CLOUD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkcWl6a3VtcXVkd2JucmRjb21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4ODY5NDcsImV4cCI6MjA5NTQ2Mjk0N30.3bjAcBSu64FZ9AaGiuVTZNpM4fsqc6NKOdEdD4WuX6c';
 
-        function setLang(lang) {
-            currentLang = lang;
-            
-            // Update Toggle Button Styles
-            const btnEn = document.getElementById('btn-en');
-            const btnSw = document.getElementById('btn-sw');
-            
-            if (lang === 'en') {
-                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm";
-                btnSw.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700 bg-transparent shadow-none";
-            } else {
-                btnSw.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors bg-white text-tzblack shadow-sm";
-                btnEn.className = "px-3 py-1.5 rounded-md text-xs font-black transition-colors text-gray-400 hover:text-gray-700 bg-transparent shadow-none";
+        // State variables
+        let sb = null;
+        let useSupabase = false;
+        let currentUser = null; 
+        let authMode = 'login'; 
+
+        let allShops = [];
+        let activeShopId = null;
+        let activeCategoryFilter = 'tous';
+        let appliedDiscount = 0;
+        let favorites = JSON.parse(localStorage.getItem('lg_client_favorites') || '[]');
+        let platformCategories = [];
+
+        // Data arrays
+        let products = [];
+        let cart = [];
+        let chatMessages = [];
+        let lastPlacedOrder = null;
+
+        let storeConfig = {
+            name: "Mlimani City",
+            slogan: "Explorez nos boutiques partenaires",
+            banner: "",
+            currency: "USD",
+            exchangeRate: 2800,
+            defaultCategory: "Général",
+            themeColor: "#f59e0b",
+            themeRgb: "245, 158, 11",
+            layout: "grid",
+            logoUrl: "",
+            paymentMethods: {
+                card: { active: false, info: "" },
+                mpesa: { active: true, info: "" },
+                orange: { active: true, info: "" },
+                delivery: { active: true, info: "" }
+            },
+            contact: { phone: "", address: "" },
+            social: { facebook: "", instagram: "", tiktok: "" }
+        };
+
+        // --- DICTIONNAIRE I18N (FR, EN, SW) ---
+        const i18n = {
+            fr: {
+                authTitle: "Espace Client Mlimani City",
+                authSubtitle: "Connectez-vous pour suivre vos commandes",
+                loginBtn: "Se connecter",
+                registerTab: "Créer un compte",
+                emailLabel: "Adresse E-mail",
+                passLabel: "Mot de Passe",
+                continueAsGuest: "Continuer sans se connecter",
+                headerSubtitle: "Boutiques & Ventes",
+                dashboardLink: "Tableau de Bord Vendeur",
+                createShopBtn: "Créer une boutique",
+                heroBadge: "Plateforme E-Commerce Intelligente",
+                heroTitle: "Créez votre propre boutique en ligne ou faites vos achats en toute simplicité",
+                heroDesc: "Rejoignez nos vendeurs partenaires pour déployer votre vitrine digitale en quelques clics ou découvrez nos boutiques exclusives pour passer vos commandes en direct.",
+                createMyShop: "Créer ma boutique",
+                exploreShopsBtn: "Explorer les boutiques",
+                partnerShops: "Boutiques Partenaires",
+                favorites: "Mes Favoris",
+                orderHistory: "Historique d'Achats",
+                selectShop: "Sélectionnez une boutique à visiter",
+                searchShopPlaceholder: "Rechercher une boutique...",
+                favoritesTitle: "Mes Boutiques Favorites",
+                historyTitle: "Mes Commandes Passées",
+                selectShopPrompt: "Veuillez sélectionner une boutique à gauche",
+                searchProductPlaceholder: "Rechercher un produit...",
+                addToCart: "Ajouter au panier",
+                yourCart: "Votre Panier",
+                subtotal: "Sous-total",
+                shipping: "Livraison",
+                free: "Gratuite",
+                checkoutBtn: "Passer la Commande",
+                checkoutTitle: "Coordonnées & Paiement",
+                fullName: "Nom complet",
+                whatsappNumber: "Numéro WhatsApp",
+                deliveryAddress: "Adresse de livraison",
+                promoCode: "Code Promo / Agent Commercial",
+                paymentMethod: "Mode de règlement",
+                summary: "Résumé de la transaction",
+                agentDiscount: "Remise Agent (5%)",
+                finalTotal: "Montant final à payer",
+                validateOrder: "Valider la commande",
+                backToCart: "Retourner au panier",
+                onlineStatus: "En ligne • Répond rapidement",
+                chatPlaceholder: "Écrivez un message...",
+                quickMsg1: "Bonjour, ce produit est-il disponible ?",
+                quickMsg2: "Quels sont vos délais de livraison ?",
+                orderSuccessTitle: "Merci pour votre commande !",
+                orderSuccessDesc: "Votre achat a été enregistré et transmis directement au gérant de la boutique.",
+                orderNum: "N° de Commande",
+                trackWhatsApp: "Suivre sur WhatsApp",
+                backToShop: "Retour à la boutique",
+                navShop: "Boutique",
+                navCart: "Panier",
+                navMessage: "Discussion",
+                navAccount: "Compte",
+                expandSim: "Agrandir le simulateur"
+            },
+            en: {
+                authTitle: "Mlimani City Customer Portal",
+                authSubtitle: "Log in to track your purchases",
+                loginBtn: "Log In",
+                registerTab: "Create Account",
+                emailLabel: "Email Address",
+                passLabel: "Password",
+                continueAsGuest: "Continue as Guest",
+                headerSubtitle: "Stores & Shopping",
+                dashboardLink: "Vendor Dashboard",
+                createShopBtn: "Create a Store",
+                heroBadge: "Smart E-Commerce Platform",
+                heroTitle: "Create your own online store or shop with complete ease",
+                heroDesc: "Join our partner sellers to launch your digital store in seconds, or discover exclusive shops to order directly.",
+                createMyShop: "Create My Store",
+                exploreShopsBtn: "Explore Stores",
+                partnerShops: "Partner Stores",
+                favorites: "My Favorites",
+                orderHistory: "Purchase History",
+                selectShop: "Select a store to visit",
+                searchShopPlaceholder: "Search store...",
+                favoritesTitle: "My Favorite Stores",
+                historyTitle: "My Past Orders",
+                selectShopPrompt: "Please select a store from the left",
+                searchProductPlaceholder: "Search product...",
+                addToCart: "Add to Cart",
+                yourCart: "Your Cart",
+                subtotal: "Subtotal",
+                shipping: "Shipping",
+                free: "Free",
+                checkoutBtn: "Proceed to Checkout",
+                checkoutTitle: "Contact & Payment",
+                fullName: "Full Name",
+                whatsappNumber: "WhatsApp Number",
+                deliveryAddress: "Delivery Address",
+                promoCode: "Promo / Agent Code",
+                paymentMethod: "Payment Method",
+                summary: "Transaction Summary",
+                agentDiscount: "Agent Discount (5%)",
+                finalTotal: "Total Amount",
+                validateOrder: "Place Order",
+                backToCart: "Back to Cart",
+                onlineStatus: "Online • Replies quickly",
+                chatPlaceholder: "Type a message...",
+                quickMsg1: "Hello, is this product available?",
+                quickMsg2: "What are your delivery times?",
+                orderSuccessTitle: "Thank you for your order!",
+                orderSuccessDesc: "Your purchase has been recorded and sent directly to the store manager.",
+                orderNum: "Order No.",
+                trackWhatsApp: "Track on WhatsApp",
+                backToShop: "Back to Store",
+                navShop: "Shop",
+                navCart: "Cart",
+                navMessage: "Message",
+                navAccount: "Account",
+                expandSim: "Expand simulator"
+            },
+            sw: {
+                authTitle: "Eneo la Mteja la Mlimani City",
+                authSubtitle: "Ingia ili kufuatilia manunuzi yako",
+                loginBtn: "Ingia",
+                registerTab: "Fungua Akaunti",
+                emailLabel: "Barua Pepe",
+                passLabel: "Nenosiri",
+                continueAsGuest: "Endelea bila kuingia",
+                headerSubtitle: "Maduka na Manunuzi",
+                dashboardLink: "Dashboard ya Muuzaji",
+                createShopBtn: "Tengeneza Duka",
+                heroBadge: "Jukwaa la Biashara la Kidijitali",
+                heroTitle: "Tengeneza duka lako la mtandaoni au fanya manunuzi kwa urahisi",
+                heroDesc: "Jiunge na wauzaji wetu kuzindua duka lako la mtandaoni au gundua maduka ya kipekee ili kuagiza moja kwa moja.",
+                createMyShop: "Tengeneza Duka Langu",
+                exploreShopsBtn: "Chunguza Maduka",
+                partnerShops: "Maduka ya Washirika",
+                favorites: "Vipendwa Vyangu",
+                orderHistory: "Historia ya Manunuzi",
+                selectShop: "Chagua duka la kutembelea",
+                searchShopPlaceholder: "Tafuta duka...",
+                favoritesTitle: "Maduka Yanayopendwa",
+                historyTitle: "Agizo Langu la Zamani",
+                selectShopPrompt: "Tafadhali chagua duka upande wa kushoto",
+                searchProductPlaceholder: "Tafuta bidhaa...",
+                addToCart: "Weka kwenye kikapu",
+                yourCart: "Kikapu Chako",
+                subtotal: "Jumla ndogo",
+                shipping: "Utoaji",
+                free: "Bure",
+                checkoutBtn: "Kamilisha Agizo",
+                checkoutTitle: "Anwani & Malipo",
+                fullName: "Jina Kamili",
+                whatsappNumber: "Nambari ya WhatsApp",
+                deliveryAddress: "Anwani ya Utoaji",
+                promoCode: "Kodi ya Promo / Wakala",
+                paymentMethod: "Njia ya Malipo",
+                summary: "Muhtasari wa Muamala",
+                agentDiscount: "Punguzo la Wakala (5%)",
+                finalTotal: "Kiasi cha Kulipa",
+                validateOrder: "Thibitisha Agizo",
+                backToCart: "Rudi kwenye Kikapu",
+                onlineStatus: "Yupo mtandaoni • Anajibu haraka",
+                chatPlaceholder: "Andika ujumbe...",
+                quickMsg1: "Hujambo, je bidhaa hii ipo?",
+                quickMsg2: "Muda wa utoaji ni upi?",
+                orderSuccessTitle: "Asante kwa agizo yako!",
+                orderSuccessDesc: "Manunuzi yako yamesajiliwa na kutumwa kwa meneja wa duka.",
+                orderNum: "Nambari ya Agizo",
+                trackWhatsApp: "Fuatilia kwenye WhatsApp",
+                backToShop: "Rudi Dukani",
+                navShop: "Duka",
+                navCart: "Kikapu",
+                navMessage: "Ujumbe",
+                navAccount: "Akaunti",
+                expandSim: "Kuza kiigaji"
             }
+        };
 
-            // Find all elements with data-en and data-sw attributes
-            const elements = document.querySelectorAll('[data-en][data-sw]');
-            
-            elements.forEach(el => {
-                // Apply animation class for smooth transition
-                el.classList.remove('lang-change');
-                void el.offsetWidth; // Trigger reflow to restart animation
-                el.classList.add('lang-change');
-                
-                // Update text content
-                el.innerText = el.getAttribute(`data-${lang}`);
+        function changeLanguage(lang) {
+            if (!i18n[lang]) return;
+            const dict = i18n[lang];
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) el.placeholder = dict[key];
             });
         }
 
-        // --- 2. Navbar Scroll Effect ---
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                navbar.classList.add('shadow-md', 'bg-white/95');
-                navbar.classList.remove('glass', 'py-2');
-            } else {
-                navbar.classList.remove('shadow-md', 'bg-white/95');
-                navbar.classList.add('glass', 'py-2');
+        // Live Clock
+        setInterval(() => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const phoneTime = document.getElementById('phone-time');
+            if (phoneTime) phoneTime.innerText = `${hours}:${minutes}`;
+        }, 1000);
+
+        window.onload = function() {
+            initCloud();
+        };
+
+        // --- AUTH & CLOUD INITIALIZATION ---
+
+        function initCloud() {
+            const badge = document.getElementById('cloud-status-badge');
+            try {
+                sb = supabase.createClient(CLOUD_URL, CLOUD_KEY);
+                useSupabase = true;
+                if (badge) badge.innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Cloud Connecté`;
+                
+                sb.auth.onAuthStateChange((event, session) => {
+                    if (session) {
+                        currentUser = session.user;
+                        document.getElementById('nav-login-btn').classList.remove('animate-pulse-subtle');
+                        document.getElementById('user-badge-text').innerText = currentUser.email.split('@')[0];
+                        document.getElementById('nav-logout-btn').classList.remove('hidden');
+
+                        const custNameInput = document.getElementById('cust-name');
+                        if (custNameInput && !custNameInput.value) custNameInput.value = currentUser.email.split('@')[0];
+
+                        loadAllData();
+                    } else {
+                        currentUser = null;
+                        document.getElementById('nav-logout-btn').classList.add('hidden');
+                        document.getElementById('user-badge-text').setAttribute('data-i18n', 'loginBtn');
+                        changeLanguage(document.getElementById('language-select').value);
+                        loadAllData();
+                    }
+                });
+            } catch (e) {
+                console.error("Erreur d'initialisation Cloud:", e);
+                useSupabase = false;
+                if (badge) badge.innerHTML = `<span class="h-2 w-2 rounded-full bg-rose-500"></span> Mode Local`;
+                loadAllData();
             }
-        });
+        }
 
-        // --- 3. Mobile Menu Toggle ---
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        function openAuthModal() {
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
 
-        mobileBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            const icon = mobileBtn.querySelector('i');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
+        function closeAuthModal() {
+            document.getElementById('auth-screen').classList.add('hidden');
+        }
+
+        function switchAuthTab(mode) {
+            authMode = mode;
+            const btnLogin = document.getElementById('tab-login');
+            const btnReg = document.getElementById('tab-register');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (mode === 'login') {
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition";
+                btnReg.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-900 transition";
+                submitBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> <span>${i18n[document.getElementById('language-select').value].loginBtn}</span>`;
             } else {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
+                btnReg.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition";
+                btnLogin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-900 transition";
+                submitBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>Créer un compte</span>`;
             }
-        });
+        }
 
-        // Close mobile menu on link click
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                mobileBtn.querySelector('i').classList.remove('fa-xmark');
-                mobileBtn.querySelector('i').classList.add('fa-bars');
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            if (!useSupabase) {
+                alert("Le service Cloud est temporairement indisponible.");
+                return;
+            }
+
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            const submitBtn = document.getElementById('auth-submit-btn');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Patientez...`;
+
+            try {
+                if (authMode === 'login') {
+                    const { error } = await sb.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    showNotification("Ravi de vous revoir !");
+                    closeAuthModal();
+                } else {
+                    const { error } = await sb.auth.signUp({ email, password });
+                    if (error) throw error;
+                    alert("Compte créé avec succès ! Connectez-vous maintenant.");
+                    switchAuthTab('login');
+                }
+            } catch (err) {
+                alert("Erreur : " + (err.message || "Veuillez vérifier vos identifiants."));
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function handleLogout() {
+            if (useSupabase) await sb.auth.signOut();
+            currentUser = null;
+            document.getElementById('nav-logout-btn').classList.add('hidden');
+            document.getElementById('user-badge-text').innerText = "Se connecter";
+            showNotification("Déconnecté.");
+        }
+
+        // --- DATA FETCHING ---
+
+        async function loadAllData(specificShopOnly = false) {
+            if (!useSupabase) return;
+
+            try {
+                if (!specificShopOnly) {
+                    const { data: shopsData } = await sb.from('boutique_config').select('*');
+                    if (shopsData) {
+                        allShops = shopsData;
+                        const systemIds = ['platform_global_settings', 'platform_content_settings', 'platform_settings'];
+                        allShops = allShops.filter(s => !systemIds.includes(s.shop_id));
+                        
+                        // Tri: Les boutiques "Vedette/Top" en premier, puis alphabétique
+                        allShops.sort((a, b) => {
+                            if (a.is_featured === b.is_featured) return a.name.localeCompare(b.name);
+                            return a.is_featured ? -1 : 1;
+                        });
+
+                        // Sélection par défaut OBLIGATOIRE de la première boutique (la mieux classée)
+                        if (allShops.length > 0 && !activeShopId) {
+                            activeShopId = allShops[0].shop_id;
+                            await enterShop(activeShopId); // Charge et sélectionne visuellement
+                        } else {
+                            renderShopsExplorer();
+                        }
+                    }
+
+                    if (currentUser) {
+                        const { data: historyData } = await sb
+                            .from('boutique_orders')
+                            .select('*')
+                            .eq('customer_email', currentUser.email)
+                            .order('created_at', { ascending: false });
+                        
+                        if (historyData) renderClientHistory(historyData);
+                    }
+                }
+
+                if (activeShopId) {
+                    const { data: configData } = await sb.from('boutique_config').select('*').eq('shop_id', activeShopId).single();
+                    if (configData) {
+                        storeConfig = {
+                            name: configData.name,
+                            slogan: configData.slogan,
+                            banner: configData.banner,
+                            currency: configData.currency,
+                            exchangeRate: Number(configData.exchange_rate),
+                            defaultCategory: configData.default_category,
+                            themeColor: configData.theme_color || '#f59e0b',
+                            themeRgb: configData.theme_rgb || '245, 158, 11',
+                            layout: configData.layout || 'grid',
+                            logoUrl: configData.logo_url || '',
+                            paymentMethods: configData.payment_methods || storeConfig.paymentMethods,
+                            contact: configData.contact_info || storeConfig.contact,
+                            social: configData.social_links || storeConfig.social
+                        };
+                    }
+
+                    const { data: productsData } = await sb.from('boutique_products').select('*').eq('shop_id', activeShopId).order('created_at', { ascending: false });
+                    products = productsData ? productsData.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        category: p.category,
+                        price: Number(p.price),
+                        oldPrice: p.old_price ? Number(p.old_price) : null,
+                        stock: Number(p.stock),
+                        minQty: Number(p.min_order_qty || 1),
+                        description: p.description,
+                        imgUrl: p.img_url
+                    })) : [];
+
+                    applyStoreConfig();
+                    renderPhoneProducts();
+                    initChatForShop();
+                }
+            } catch (e) {
+                console.error("Erreur chargement données:", e);
+            }
+        }
+
+        async function enterShop(shopId) {
+            activeShopId = shopId;
+            cart = [];
+            appliedDiscount = 0;
+            updatePhoneCartBadge();
+            navigatePhoneTo('home');
+            
+            // On s'assure que la liste des boutiques reflète le nouvel état actif
+            renderShopsExplorer(); 
+            if(document.getElementById('favorites-tab').offsetParent !== null) renderFavorites();
+            
+            await loadAllData(true);
+        }
+
+        function filterShopsExplorer() {
+            const query = document.getElementById('shop-search-input').value.toLowerCase();
+            const filteredShops = allShops.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                (s.slogan || '').toLowerCase().includes(query) ||
+                (s.default_category || '').toLowerCase().includes(query)
+            );
+            renderShopsExplorer(filteredShops);
+        }
+
+        // --- RENDERERS ---
+
+        function renderShopsExplorer(shopsToRender = allShops) {
+            const container = document.getElementById('shops-explorer-container');
+            if (!shopsToRender.length) {
+                container.innerHTML = `<p class="text-slate-400 text-xs text-center py-10 col-span-2">Aucune boutique disponible.</p>`;
+                return;
+            }
+
+            const sorted = [...shopsToRender].sort((a, b) => {
+                if (a.is_featured === b.is_featured) return a.name.localeCompare(b.name);
+                return a.is_featured ? -1 : 1;
             });
-        });
 
-        // Initialize language on load
-        document.addEventListener('DOMContentLoaded', () => {
-            setLang('en'); // Ensure UI matches state
-        });
+            container.innerHTML = sorted.map(s => {
+                const isFav = favorites.includes(s.shop_id);
+                const favIcon = isFav ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart text-slate-300';
+                const isActive = activeShopId === s.shop_id;
+                
+                return `
+                <div onclick="enterShop('${s.shop_id}')" class="bg-white p-3.5 rounded-2xl border ${isActive ? 'border-amber-500 ring-2 ring-amber-100 shadow-md' : 'border-slate-200/80 shadow-sm'} hover:border-amber-400 transition cursor-pointer flex items-center gap-3 group relative">
+                    ${s.is_featured ? `<div class="absolute -top-2 left-3 bg-amber-500 text-slate-950 text-[7.5px] font-black px-2 py-0.5 rounded-full shadow-sm"><i class="fa-solid fa-star mr-0.5"></i>TOP</div>` : ''}
+                    <div class="h-11 w-11 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+                        ${s.logo_url ? `<img src="${s.logo_url}" class="h-full w-full object-cover">` : `<i class="fa-solid fa-store text-slate-400 text-base"></i>`}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-black text-slate-900 truncate">${s.name}</h4>
+                        <p class="text-[10px] text-slate-400 truncate">${s.slogan || 'Boutique officielle'}</p>
+                    </div>
+                    <button onclick="toggleFavorite('${s.shop_id}', event)" class="p-1.5 rounded-full hover:bg-rose-50 transition">
+                        <i class="${favIcon} text-xs"></i>
+                    </button>
+                </div>
+            `;}).join('');
+        }
+
+        function toggleFavorite(shopId, event) {
+            if(event) event.stopPropagation();
+            const index = favorites.indexOf(shopId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showNotification("Retiré des favoris");
+            } else {
+                favorites.push(shopId);
+                showNotification("Ajouté aux favoris !");
+            }
+            localStorage.setItem('lg_client_favorites', JSON.stringify(favorites));
+            renderShopsExplorer(); 
+            if(document.getElementById('favorites-tab').offsetParent !== null) renderFavorites();
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-container');
+            const favShops = allShops.filter(s => favorites.includes(s.shop_id));
+            
+            if (favShops.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-xs text-center py-10 col-span-2 italic">Vous n'avez pas encore de favoris.</p>`;
+                return;
+            }
+            
+            container.innerHTML = favShops.map(s => `
+                <div onclick="enterShop('${s.shop_id}')" class="bg-white p-3.5 rounded-2xl border ${activeShopId === s.shop_id ? 'border-amber-500 shadow-md' : 'border-slate-200'} hover:border-amber-400 transition cursor-pointer flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+                        ${s.logo_url ? `<img src="${s.logo_url}" class="h-full w-full object-cover">` : `<i class="fa-solid fa-store text-slate-400"></i>`}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-slate-900 truncate">${s.name}</h4>
+                        <p class="text-[10px] text-slate-400 truncate">${s.slogan || 'Boutique'}</p>
+                    </div>
+                    <button onclick="toggleFavorite('${s.shop_id}', event)" class="p-1.5 rounded-full hover:bg-rose-50 transition">
+                        <i class="fa-solid fa-heart text-rose-500 text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderClientHistory(history) {
+            const container = document.getElementById('client-history-container');
+            if (!history || !history.length) {
+                container.innerHTML = `<p class="text-slate-400 text-xs text-center py-10">Vous n'avez pas encore passé de commande.</p>`;
+                return;
+            }
+            container.innerHTML = history.map(o => `
+                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-slate-900">${o.id}</span>
+                        <span class="text-[9px] font-black uppercase text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">${o.status}</span>
+                    </div>
+                    <p class="text-[10.5px] text-slate-500 mb-1.5">Passée le : ${o.date} - Total : <b class="text-slate-800">${formatVal(Number(o.total))}</b></p>
+                </div>
+            `).join('');
+        }
+
+        function applyStoreConfig() {
+            if (!activeShopId) return;
+
+            const pTitle = document.getElementById('phone-hero-title');
+            if(pTitle) pTitle.innerText = storeConfig.name;
+            const pDesc = document.getElementById('phone-hero-desc');
+            if(pDesc) pDesc.innerText = storeConfig.slogan;
+            const pSub = document.getElementById('phone-hero-subtitle');
+            if(pSub) pSub.innerText = storeConfig.defaultCategory || "Boutique Officielle";
+
+            const pAddress = document.getElementById('phone-hero-address');
+            if(pAddress) {
+                const address = storeConfig.contact?.address;
+                pAddress.innerText = address ? `📍 ${address}` : '';
+                pAddress.classList.toggle('hidden', !address);
+            }
+
+            const phoneLogo = document.getElementById('phone-hero-logo');
+            if(phoneLogo) {
+                if(storeConfig.logoUrl) {
+                    phoneLogo.src = storeConfig.logoUrl;
+                    phoneLogo.classList.remove('hidden');
+                } else {
+                    phoneLogo.classList.add('hidden');
+                }
+            }
+
+            const chatLogo = document.getElementById('chat-shop-logo');
+            if(chatLogo && storeConfig.logoUrl) chatLogo.src = storeConfig.logoUrl;
+            const chatName = document.getElementById('chat-shop-name');
+            if(chatName) chatName.innerText = storeConfig.name;
+
+            const banner = document.getElementById('phone-promo-banner');
+            if (banner) {
+                if (storeConfig.banner && storeConfig.banner.trim()) {
+                    banner.innerText = storeConfig.banner;
+                    banner.classList.remove('hidden');
+                } else {
+                    banner.classList.add('hidden');
+                }
+            }
+        }
+
+        function switchClientTab(tabId) {
+            document.querySelectorAll('.client-tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.client-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-600', 'hover:text-slate-900');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900');
+            }
+
+            if(tabId === 'favorites-tab') renderFavorites();
+        }
+
+        // --- FULLSCREEN TOGGLE ---
+
+        function toggleFullscreenPhone() {
+            const phone = document.getElementById('phone-simulator');
+            const innerScreen = document.getElementById('phone-inner-screen');
+            const notch = document.getElementById('phone-notch');
+            const speaker = document.getElementById('phone-speaker');
+            const statusBar = document.getElementById('phone-status-bar');
+            const safeArea = document.getElementById('phone-safe-area');
+            const icon = document.getElementById('header-fullscreen-icon');
+            const settingsBtn = document.getElementById('fullscreen-settings-btn');
+            const mainHeader = document.getElementById('main-header');
+            const isFullscreen = phone.classList.contains('fixed');
+
+            if (!isFullscreen) {
+                // MASQUE LE HEADER GLOBAL
+                if (mainHeader) mainHeader.classList.add('hidden');
+                
+                // LE SIMULATEUR PREND TOUT L'ECRAN (plus de bords)
+                phone.classList.remove('w-[340px]', 'h-[670px]', 'rounded-[50px]', 'border-[8px]', 'shadow-phone', 'relative', 'p-2.5');
+                phone.classList.add('fixed', 'inset-0', 'w-full', 'h-full', 'z-[100]', 'bg-slate-950', 'rounded-none', 'border-none', 'p-0');
+                
+                innerScreen.classList.remove('rounded-[38px]');
+                innerScreen.classList.add('rounded-none');
+                
+                // MASQUE LA BARRE D'EN HAUT ET LES ELEMENTS NATIFS DU TELEPHONE
+                if (notch) notch.classList.add('opacity-0', 'hidden');
+                if (speaker) speaker.classList.add('opacity-0', 'hidden');
+                if (statusBar) statusBar.classList.add('hidden'); // Retire la barre d'heure / réseau
+                if (safeArea) safeArea.classList.add('opacity-0', 'hidden');
+                
+                // Affiche le bouton de sortie de plein écran (ajusté en haut)
+                if (settingsBtn) {
+                    settingsBtn.classList.remove('hidden');
+                    settingsBtn.classList.replace('top-14', 'top-4');
+                }
+                
+                if (icon) icon.classList.replace('fa-expand', 'fa-compress');
+                document.body.style.overflow = 'hidden';
+            } else {
+                // AFFICHE LE HEADER GLOBAL
+                if (mainHeader) mainHeader.classList.remove('hidden');
+                
+                // RETOUR AU MODE SIMULATEUR
+                phone.classList.add('w-[340px]', 'h-[670px]', 'rounded-[50px]', 'border-[8px]', 'shadow-phone', 'relative', 'p-2.5');
+                phone.classList.remove('fixed', 'inset-0', 'w-full', 'h-full', 'z-[100]', 'bg-slate-950', 'rounded-none', 'border-none', 'p-0');
+                
+                innerScreen.classList.add('rounded-[38px]');
+                innerScreen.classList.remove('rounded-none');
+                
+                // REAFFICHE LES ELEMENTS NATIFS
+                if (notch) notch.classList.remove('opacity-0', 'hidden');
+                if (speaker) speaker.classList.remove('opacity-0', 'hidden');
+                if (statusBar) statusBar.classList.remove('hidden');
+                if (safeArea) safeArea.classList.remove('opacity-0', 'hidden');
+                
+                // Masque le bouton de sortie de plein écran
+                if (settingsBtn) {
+                    settingsBtn.classList.add('hidden');
+                    settingsBtn.classList.replace('top-4', 'top-14');
+                }
+                
+                if (icon) icon.classList.replace('fa-compress', 'fa-expand');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // --- SHOPPING SIMULATOR & MESSAGING LOGIC ---
+
+        function formatVal(amount) {
+            return '$' + amount.toFixed(2);
+        }
+
+        function navigatePhoneTo(screenId) {
+            document.querySelectorAll('.phone-view').forEach(screen => screen.classList.add('hidden'));
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.phone-nav-btn').forEach(btn => btn.className = 'phone-nav-btn flex flex-col items-center gap-0.5 text-slate-400');
+
+            if (screenId === 'home') document.getElementById('phone-nav-home').className = 'phone-nav-btn flex flex-col items-center gap-0.5 text-amber-500';
+            else if (screenId === 'cart' || screenId === 'checkout') document.getElementById('phone-nav-cart').className = 'phone-nav-btn flex flex-col items-center gap-0.5 text-amber-500 relative';
+            else if (screenId === 'chat') document.getElementById('phone-nav-chat').className = 'phone-nav-btn flex flex-col items-center gap-0.5 text-amber-500 relative';
+
+            document.getElementById('phone-screen-content').scrollTop = 0;
+            
+            if (screenId === 'cart') renderPhoneCart();
+            else if (screenId === 'checkout') {
+                updateCheckoutTotals();
+                renderPaymentOptions();
+            } else if (screenId === 'chat') {
+                renderChatStream();
+            }
+        }
+
+        function filterCategory(cat) {
+            activeCategoryFilter = cat;
+            renderPhoneProducts();
+        }
+
+        function handlePhoneSearch() {
+            renderPhoneProducts(document.getElementById('phone-search-input').value.toLowerCase());
+        }
+
+        function renderPhoneProducts(searchQuery = '') {
+            const container = document.getElementById('phone-products-list');
+            if (!activeShopId) return;
+
+            let filtered = products;
+            if (activeCategoryFilter !== 'tous') {
+                filtered = filtered.filter(p => p.category.toLowerCase().includes(activeCategoryFilter.toLowerCase()));
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-400"><p class="text-[11px]">Aucun produit disponible</p></div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(product => `
+                <div onclick="openProductDetail('${product.id}')" class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col justify-between group active:scale-95 transition duration-200 cursor-pointer relative">
+                    <div class="h-28 w-full bg-slate-50 overflow-hidden relative">
+                        <img src="${product.imgUrl}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-2 flex-1 flex flex-col justify-between gap-1">
+                        <div>
+                            <span class="text-[8px] text-amber-600 font-extrabold uppercase block">${product.category}</span>
+                            <h4 class="text-[10.5px] font-bold text-slate-800 line-clamp-1">${product.name}</h4>
+                        </div>
+                        <span class="text-xs font-black text-slate-900">${formatVal(product.price)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openProductDetail(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('detail-img').src = product.imgUrl;
+            document.getElementById('detail-category').innerText = product.category;
+            document.getElementById('detail-name').innerText = product.name;
+            document.getElementById('detail-price').innerText = formatVal(product.price);
+            document.getElementById('detail-desc').innerText = product.description || "Aucune description.";
+            
+            const stockBadge = document.getElementById('detail-stock');
+            if (product.stock > 0) {
+                stockBadge.className = "text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md";
+                stockBadge.innerText = `En stock (${product.stock})`;
+                document.getElementById('detail-add-btn').onclick = () => addProductToCart(product);
+            } else {
+                stockBadge.className = "text-[9px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md";
+                stockBadge.innerText = "Rupture de Stock";
+            }
+
+            navigatePhoneTo('detail');
+        }
+
+        function addProductToCart(product) {
+            const existing = cart.find(item => item.product.id === product.id);
+            if (existing) {
+                if (existing.quantity < product.stock) existing.quantity += 1;
+                else return openPhoneToast("Limite de stock !");
+            } else {
+                cart.push({ product: product, quantity: 1 });
+            }
+            updatePhoneCartBadge();
+            openPhoneToast(`🛒 Article ajouté au panier !`);
+        }
+
+        function updatePhoneCartBadge() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('phone-cart-badge').innerText = count;
+        }
+
+        function renderPhoneCart() {
+            const container = document.getElementById('phone-cart-items');
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-basket-shopping text-3xl mb-2 text-slate-300 block"></i><p class="text-xs font-bold">Votre panier est vide</p></div>`;
+                document.getElementById('phone-cart-summary').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('phone-cart-summary').style.display = 'block';
+
+            container.innerHTML = cart.map(item => `
+                <div class="bg-white p-2 rounded-2xl border border-slate-100 flex items-center justify-between gap-2 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <img src="${item.product.imgUrl}" class="h-9 w-9 rounded-lg object-cover border border-slate-100">
+                        <div>
+                            <h4 class="text-[10px] font-bold text-slate-800 line-clamp-1">${item.product.name}</h4>
+                            <span class="text-[10px] font-extrabold text-slate-900">${formatVal(item.product.price)}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeCartQty('${item.product.id}', -1)" class="w-5 h-5 bg-slate-100 rounded text-xs font-bold">-</button>
+                        <span class="text-xs font-bold">${item.quantity}</span>
+                        <button onclick="changeCartQty('${item.product.id}', 1)" class="w-5 h-5 bg-slate-100 rounded text-xs font-bold">+</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            document.getElementById('cart-subtotal').innerText = formatVal(subtotal);
+            document.getElementById('cart-total').innerText = formatVal(subtotal);
+        }
+
+        function changeCartQty(id, delta) {
+            const item = cart.find(i => i.product.id === id);
+            if(item) {
+                item.quantity += delta;
+                if(item.quantity <= 0) cart = cart.filter(i => i.product.id !== id);
+                renderPhoneCart();
+                updatePhoneCartBadge();
+            }
+        }
+
+        function renderPaymentOptions() {
+            const container = document.getElementById('payment-options-list');
+            container.innerHTML = `
+                <label class="border border-amber-500 bg-amber-50/40 rounded-xl p-2 flex flex-col items-center justify-center cursor-pointer text-center">
+                    <i class="fa-solid fa-mobile-screen text-amber-600 text-xs"></i>
+                    <span class="text-[9px] font-extrabold mt-1">Mobile Money</span>
+                </label>
+                <label class="border border-slate-200 rounded-xl p-2 flex flex-col items-center justify-center cursor-pointer text-center">
+                    <i class="fa-solid fa-hand-holding-dollar text-slate-500 text-xs"></i>
+                    <span class="text-[9px] font-extrabold mt-1">Paiement Livraison</span>
+                </label>
+            `;
+        }
+
+        async function handlePlaceOrder(e) {
+            e.preventDefault();
+            if (!activeShopId) return;
+
+            const name = document.getElementById('cust-name').value;
+            const whatsapp = document.getElementById('cust-whatsapp').value;
+            const address = document.getElementById('cust-address').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const totalVal = subtotal * (1 - appliedDiscount);
+            const orderId = '#BC-' + Math.floor(1000 + Math.random() * 9000);
+
+            if (useSupabase) {
+                try {
+                    await sb.from('boutique_orders').insert({
+                        id: orderId,
+                        shop_id: activeShopId,
+                        customer_name: name,
+                        customer_whatsapp: whatsapp,
+                        customer_email: currentUser ? currentUser.email : 'invité',
+                        delivery_address: address,
+                        total: totalVal,
+                        date: new Date().toLocaleDateString('fr-FR'),
+                        status: 'En attente'
+                    });
+                } catch(err) { console.error(err); }
+            }
+
+            cart = [];
+            updatePhoneCartBadge();
+
+            document.getElementById('success-order-id').innerText = orderId;
+            document.getElementById('success-order-total').innerText = formatVal(totalVal);
+            navigatePhoneTo('success');
+        }
+
+        function checkPromoCode() {
+            const code = document.getElementById('cust-promo-code').value.trim().toUpperCase();
+            if (code.startsWith('AGENT') || code.startsWith('LGA')) {
+                appliedDiscount = 0.05;
+                document.getElementById('promo-status-msg').innerText = "✅ Remise 5% appliquée !";
+            } else {
+                appliedDiscount = 0;
+                document.getElementById('promo-status-msg').innerText = "";
+            }
+            updateCheckoutTotals();
+        }
+
+        function updateCheckoutTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const discountAmt = subtotal * appliedDiscount;
+            const finalTotal = subtotal - discountAmt;
+
+            document.getElementById('checkout-discount-row').classList.toggle('hidden', appliedDiscount === 0);
+            document.getElementById('checkout-discount-val').innerText = "-" + formatVal(discountAmt);
+            document.getElementById('checkout-total').innerText = formatVal(finalTotal);
+        }
+
+        function trackOrder() {
+            const shopPhone = storeConfig.contact?.phone || "";
+            const msg = encodeURIComponent("Bonjour, je souhaite suivre ma commande.");
+            if (shopPhone) window.open(`https://wa.me/${shopPhone.replace(/\D/g, '')}?text=${msg}`, '_blank');
+            else openPhoneToast("Numéro WhatsApp de la boutique non configuré.");
+        }
+
+        // --- MESSAGING SYSTEM (MESSAGERIE INTEGREE) ---
+
+        function initChatForShop() {
+            chatMessages = [
+                { sender: 'seller', text: `Bonjour ! Bienvenue chez ${storeConfig.name}. Comment pouvons-nous vous aider aujourd'hui ?`, time: '09:41' }
+            ];
+            renderChatStream();
+        }
+
+        function renderChatStream() {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+
+            container.innerHTML = chatMessages.map(msg => {
+                const isUser = msg.sender === 'user';
+                return `
+                    <div class="flex flex-col ${isUser ? 'items-end' : 'items-start'}">
+                        <div class="max-w-[80%] p-2.5 rounded-2xl ${isUser ? 'bg-amber-500 text-slate-950 font-medium rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'}">
+                            <p class="text-[11px] leading-snug">${msg.text}</p>
+                        </div>
+                        <span class="text-[8px] text-slate-400 mt-0.5 px-1">${msg.time}</span>
+                    </div>
+                `;
+            }).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendQuickPrompt(text) {
+            document.getElementById('chat-input').value = text;
+            sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            chatMessages.push({ sender: 'user', text: text, time: timeStr });
+            input.value = '';
+            renderChatStream();
+
+            // Automatic simulated response from seller
+            setTimeout(() => {
+                let reply = "Merci pour votre message ! Notre équipe va vous répondre d'ici quelques instants.";
+                if (text.toLowerCase().includes('prix') || text.toLowerCase().includes('combien')) {
+                    reply = "Tous nos prix sont affichés sur le catalogue avec possibilité de remise selon la quantité.";
+                } else if (text.toLowerCase().includes('disponible') || text.toLowerCase().includes('stock')) {
+                    reply = "Oui ! Tous les articles visibles sont actuellement en stock et prêts pour expédition.";
+                }
+
+                chatMessages.push({ sender: 'seller', text: reply, time: timeStr });
+                renderChatStream();
+            }, 1000);
+        }
+
+        // --- NOTIFICATIONS ---
+
+        function showNotification(msg) {
+            const container = document.getElementById('dashboard-toast');
+            document.getElementById('toast-msg').innerText = msg;
+            container.classList.remove('hidden');
+            setTimeout(() => { container.classList.remove('translate-y-24', 'opacity-0'); }, 10);
+            setTimeout(() => {
+                container.classList.add('translate-y-24', 'opacity-0');
+                setTimeout(() => container.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        function openPhoneToast(msg) {
+            const toast = document.getElementById('phone-toast');
+            document.getElementById('phone-toast-msg').innerText = msg;
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            setTimeout(() => toast.classList.add('-translate-y-24', 'opacity-0'), 2500);
+        }
     </script>
 </body>
 </html>
