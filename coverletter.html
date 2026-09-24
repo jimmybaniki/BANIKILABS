@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS | Lettre de Motivation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Style spécifique pour la feuille de papier (Aperçu) */
+        .paper-preview {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            min-height: 297mm; /* Format A4 */
+            width: 100%;
+            max-width: 210mm;
+            padding: 2.5rem;
+            margin: 0 auto;
+            font-family: 'Times New Roman', Times, serif; /* Police classique pour les lettres */
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+
+        /* Masquer l'interface utilisateur lors de l'impression PDF */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                min-height: auto;
+            }
+            @page {
+                margin: 2cm;
+            }
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .input-field:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Navigation simplifiée -->
+    <nav class="sticky top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <a href="javascript:history.back()" class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-9 h-9 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110 text-black">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase hidden sm:block">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </a>
+            <div class="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+                Lettre de Motivation IA
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+        
+        <!-- Colonne Gauche : Formulaire -->
+        <div class="lg:col-span-5 space-y-6 bg-[var(--bg-card)] p-6 sm:p-8 rounded-[2rem] border border-[var(--gold)]/20 shadow-2xl h-fit lg:sticky lg:top-24">
+            
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tighter mb-2 text-white">Créer votre Lettre</h1>
+                <p class="text-xs text-gray-400">Remplissez les champs ci-dessous pour générer automatiquement une lettre professionnelle.</p>
+            </div>
+
+            <form id="coverLetterForm" class="space-y-5">
+                
+                <!-- Informations personnelles -->
+                <div class="space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]"><i class="fa-solid fa-user mr-2"></i>Vos Informations</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="input-label">Prénom & Nom</label>
+                            <input type="text" id="userName" class="input-field" placeholder="Ex: Jimmy Baniki" oninput="generateLetter()">
+                        </div>
+                        <div>
+                            <label class="input-label">Téléphone</label>
+                            <input type="text" id="userPhone" class="input-field" placeholder="Ex: +243 900 000 000" oninput="generateLetter()">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="input-label">Email</label>
+                            <input type="email" id="userEmail" class="input-field" placeholder="Ex: contact@email.com" oninput="generateLetter()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informations de l'entreprise -->
+                <div class="space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]"><i class="fa-solid fa-building mr-2"></i>L'Entreprise</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="input-label">Nom de l'entreprise</label>
+                            <input type="text" id="companyName" class="input-field" placeholder="Ex: Vodacom RDC" oninput="generateLetter()">
+                        </div>
+                        <div>
+                            <label class="input-label">Nom du Recruteur (Optionnel)</label>
+                            <input type="text" id="managerName" class="input-field" placeholder="Ex: M. Le Directeur" oninput="generateLetter()">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="input-label">Titre du poste visé</label>
+                            <input type="text" id="jobTitle" class="input-field" placeholder="Ex: Développeur Web Full-Stack" oninput="generateLetter()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu & Compétences -->
+                <div class="space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.2em]"><i class="fa-solid fa-lightbulb mr-2"></i>Atouts & Langue</h3>
+                    <div>
+                        <label class="input-label">Vos compétences clés (Séparées par des virgules)</label>
+                        <input type="text" id="keySkills" class="input-field" placeholder="Ex: HTML, Python, Gestion de projet..." oninput="generateLetter()">
+                    </div>
+                    <div>
+                        <label class="input-label">Années d'expérience</label>
+                        <select id="experience" class="input-field" onchange="generateLetter()">
+                            <option value="junior">Débutant / Junior (0-2 ans)</option>
+                            <option value="mid">Intermédiaire (3-5 ans)</option>
+                            <option value="senior">Senior (5+ ans)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="input-label">Langue de la lettre</label>
+                        <select id="letterLang" class="input-field" onchange="generateLetter()">
+                            <option value="fr">Français</option>
+                            <option value="en">Anglais (English)</option>
+                            <option value="sw">Swahili (Kiswahili)</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Boutons d'action rapides (Desktop) -->
+            <div class="hidden lg:flex gap-4 pt-4 border-t border-white/10">
+                <button onclick="downloadPDF()" class="flex-1 bg-[var(--gold)] text-black font-black uppercase tracking-widest text-[10px] py-3 rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    <i class="fa-solid fa-download text-sm"></i> Télécharger PDF
+                </button>
+                <button onclick="copyToClipboard()" class="flex-1 bg-white/10 text-white font-black uppercase tracking-widest text-[10px] py-3 rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center gap-2 border border-white/10">
+                    <i class="fa-solid fa-copy text-sm"></i> Copier
+                </button>
+            </div>
+        </div>
+
+        <!-- Colonne Droite : Aperçu de la lettre -->
+        <div class="lg:col-span-7 flex flex-col items-center">
+            
+            <div class="w-full flex justify-between items-center mb-4 lg:hidden">
+                <h2 class="text-white font-bold text-sm uppercase tracking-widest">Aperçu en direct</h2>
+                <div class="flex gap-2">
+                    <button onclick="copyToClipboard()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-colors"><i class="fa-solid fa-copy"></i></button>
+                    <button onclick="downloadPDF()" class="w-10 h-10 rounded-full bg-[var(--gold)] text-black flex items-center justify-center shadow-lg"><i class="fa-solid fa-download"></i></button>
+                </div>
+            </div>
+
+            <!-- C'est cette zone qui sera imprimée en PDF -->
+            <div class="overflow-x-auto w-full flex justify-center pb-8">
+                <div id="printArea" class="paper-preview relative">
+                    
+                    <!-- Entête Lettre -->
+                    <div class="flex flex-col mb-10">
+                        <span id="outName" class="font-bold text-lg uppercase tracking-wider mb-1">[Votre Nom]</span>
+                        <span id="outEmail" class="text-gray-700 text-sm">[Votre Email]</span>
+                        <span id="outPhone" class="text-gray-700 text-sm">[Votre Téléphone]</span>
+                    </div>
+
+                    <div class="flex flex-col items-end mb-10 text-right">
+                        <span id="outCompanyName" class="font-bold text-md uppercase">[Nom de l'entreprise]</span>
+                        <span id="outManagerName" class="text-gray-700">[Nom du Recruteur]</span>
+                        <span id="outDate" class="text-gray-500 italic mt-2"></span>
+                    </div>
+
+                    <div class="mb-8 font-bold">
+                        <span id="outSubjectLabel">Objet :</span> <span id="outJobTitle">[Titre du Poste]</span>
+                    </div>
+
+                    <!-- Corps de la lettre -->
+                    <div id="outLetterBody" class="text-justify space-y-4">
+                        <!-- Le texte généré ira ici -->
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="mt-16 text-right">
+                        <p id="outSignoff" class="mb-8">Cordialement,</p>
+                        <p id="outSignatureName" class="font-bold uppercase">[Votre Nom]</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Fonction pour obtenir la date du jour formatée selon la langue
+        function getCurrentDate(lang) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date();
+            if(lang === 'en') return date.toLocaleDateString('en-US', options);
+            if(lang === 'sw') return date.toLocaleDateString('sw-KE', options);
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        // Modèles de lettres selon la langue et l'expérience
+        const templates = {
+            fr: {
+                subject: "Objet : Candidature au poste de ",
+                salutation: "Madame, Monsieur",
+                intro: "C'est avec un grand intérêt que je vous soumets ma candidature pour le poste de <strong>[JOB]</strong> au sein de <strong>[COMPANY]</strong>. Les projets innovants et la réputation de votre entreprise ont particulièrement retenu mon attention, et je souhaite vivement rejoindre vos équipes pour contribuer à votre développement.",
+                exp_junior: "Récemment diplômé(e) et passionné(e) par ce domaine, j'ai eu l'opportunité de développer de solides bases, notamment en <strong>[SKILLS]</strong>. Mon dynamisme, ma capacité d'apprentissage rapide et ma volonté de m'investir font de moi un candidat motivé et prêt à relever de nouveaux défis.",
+                exp_mid: "Fort(e) de plusieurs années d'expérience réussie dans ce secteur, j'ai acquis une expertise reconnue, tout particulièrement en <strong>[SKILLS]</strong>. Mon parcours m'a permis de développer une approche orientée vers les résultats et de m'adapter rapidement à de nouveaux environnements de travail.",
+                exp_senior: "Avec une solide expérience de niveau senior et une maîtrise approfondie des enjeux de notre secteur, j'ai mené à bien des projets d'envergure impliquant <strong>[SKILLS]</strong>. Je suis désormais à la recherche d'un nouveau challenge où mon leadership et ma vision stratégique pourront bénéficier à la croissance de votre structure.",
+                outro: "Je me tiens à votre entière disposition pour un entretien qui nous permettrait d'échanger plus en détail sur mon parcours et sur vos attentes.",
+                signoff: "Je vous prie d'agréer, <strong>[MANAGER]</strong>, l'expression de mes salutations distinguées."
+            },
+            en: {
+                subject: "Subject: Application for the position of ",
+                salutation: "Dear Hiring Manager",
+                intro: "I am writing to express my strong interest in the <strong>[JOB]</strong> position at <strong>[COMPANY]</strong>. Your company's innovative projects and stellar reputation in the industry have caught my attention, and I am very eager to bring my talents to your team.",
+                exp_junior: "As a highly motivated professional early in my career, I have built a strong foundation of knowledge, particularly in <strong>[SKILLS]</strong>. I am a fast learner, highly adaptable, and ready to bring my energy and dedication to your organization.",
+                exp_mid: "With several years of proven experience in the industry, I have developed a strong skill set, most notably in <strong>[SKILLS]</strong>. Throughout my career, I have consistently demonstrated a results-driven approach and the ability to thrive in fast-paced environments.",
+                exp_senior: "As a senior professional with an extensive background in this field, I have successfully led large-scale initiatives utilizing my expertise in <strong>[SKILLS]</strong>. I am seeking a new challenge where my leadership, strategic vision, and deep industry knowledge can drive significant growth for your company.",
+                outro: "I would welcome the opportunity to discuss how my background, skills, and certifications will be beneficial to your organization.",
+                signoff: "Sincerely,"
+            },
+            sw: {
+                subject: "Kichwa: Maombi ya kazi ya ",
+                salutation: "Mpendwa Meneja",
+                intro: "Ninaandika kuelezea nia yangu kubwa ya kuomba nafasi ya <strong>[JOB]</strong> katika <strong>[COMPANY]</strong>. Miradi ya ubunifu na sifa nzuri ya kampuni yako imevutia umakini wangu, na nina hamu kubwa ya kuleta ujuzi wangu kwenye timu yenu.",
+                exp_junior: "Kama mtaalamu kijana mwenye motisha kubwa, nimejenga msingi imara wa maarifa, hasa katika <strong>[SKILLS]</strong>. Ninajifunza haraka, nina uwezo wa kukabiliana na mazingira mapya, na niko tayari kuleta nguvu na kujitolea kwangu kwenye shirika lenu.",
+                exp_mid: "Nikiwa na uzoefu wa miaka kadhaa iliyothibitishwa katika tasnia hii, nimekuza seti yenye nguvu ya ujuzi, hasa katika <strong>[SKILLS]</strong>. Katika kipindi chote cha taaluma yangu, nimeonyesha mbinu inayoongozwa na matokeo na uwezo wa kufanikiwa katika mazingira ya haraka.",
+                exp_senior: "Kama mtaalamu mwandamizi aliye na uzoefu mpana katika uwanja huu, nimeongoza kwa mafanikio mipango mikubwa nikitumia utaalamu wangu katika <strong>[SKILLS]</strong>. Ninatafuta changamoto mpya ambapo uongozi wangu, maono ya kimkakati, na ujuzi wa kina unaweza kuleta ukuaji mkubwa kwa kampuni yako.",
+                outro: "Ningependa kupata fursa ya kujadili jinsi historia yangu na ujuzi wangu vitakavyokuwa na faida kwa shirika lenu. Nipo tayari kwa mahojiano wakati wowote.",
+                signoff: "Wako mwaminifu,"
+            }
+        };
+
+        function generateLetter() {
+            // Récupérer les valeurs
+            const name = document.getElementById('userName').value || "[Votre Prénom et Nom]";
+            const phone = document.getElementById('userPhone').value || "[Votre Téléphone]";
+            const email = document.getElementById('userEmail').value || "[Votre Email]";
+            const company = document.getElementById('companyName').value || "[Nom de l'entreprise]";
+            const managerRaw = document.getElementById('managerName').value;
+            const job = document.getElementById('jobTitle').value || "[Titre du poste]";
+            const skills = document.getElementById('keySkills').value || "[Vos Compétences]";
+            const expLevel = document.getElementById('experience').value; // junior, mid, senior
+            const lang = document.getElementById('letterLang').value; // fr, en, sw
+
+            // Mettre à jour l'entête
+            document.getElementById('outName').innerText = name;
+            document.getElementById('outPhone').innerText = phone;
+            document.getElementById('outEmail').innerText = email;
+            document.getElementById('outCompanyName').innerText = company;
+            
+            const t = templates[lang];
+            let manager = managerRaw ? managerRaw : t.salutation;
+            document.getElementById('outManagerName').innerText = managerRaw ? managerRaw : "Département des Ressources Humaines";
+            
+            // Date
+            document.getElementById('outDate').innerText = getCurrentDate(lang);
+
+            // Objet
+            document.getElementById('outSubjectLabel').innerText = t.subject;
+            document.getElementById('outJobTitle').innerText = job.toUpperCase();
+
+            // Corps
+            let bodyHTML = `<p>${manager},</p>`;
+            bodyHTML += `<p>${t.intro.replace('[JOB]', job).replace('[COMPANY]', company)}</p>`;
+            
+            let expText = "";
+            if(expLevel === 'junior') expText = t.exp_junior;
+            else if(expLevel === 'mid') expText = t.exp_mid;
+            else expText = t.exp_senior;
+
+            bodyHTML += `<p>${expText.replace('[SKILLS]', skills)}</p>`;
+            bodyHTML += `<p>${t.outro}</p>`;
+
+            document.getElementById('outLetterBody').innerHTML = bodyHTML;
+
+            // Signature
+            let finalSignoff = t.signoff.replace('[MANAGER]', manager);
+            document.getElementById('outSignoff').innerHTML = finalSignoff;
+            document.getElementById('outSignatureName').innerText = name;
+        }
+
+        // Fonction pour imprimer en PDF
+        function downloadPDF() {
+            // Déclenche l'impression du navigateur (CSS @media print gère le formatage)
+            window.print();
+        }
+
+        // Fonction pour copier le texte brut dans le presse-papier
+        function copyToClipboard() {
+            const printArea = document.getElementById('printArea');
+            // Récupérer le texte sans le HTML
+            const textToCopy = printArea.innerText;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("La lettre a été copiée dans le presse-papier !");
+            }).catch(err => {
+                console.error('Erreur lors de la copie', err);
+            });
+        }
+
+        // Générer une première fois au chargement pour afficher les placeholders
+        window.onload = generateLetter;
+
+    </script>
+</body>
+</html>
