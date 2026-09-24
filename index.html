@@ -52,16 +52,12 @@
             scrollbar-width: none;
         }
 
-        /* --- Animation du Logo Central Responsive --- */
+        /* --- Animation du Logo Central (Système Solaire) --- */
         .hero-service-visual {
             position: relative;
-            width: 100%;
-            max-width: min(90vw, 400px);
-            margin: 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: clamp(250px, 40vw, 400px);
             z-index: 20;
         }
 
@@ -80,31 +76,34 @@
 
         .orbit-ring {
             position: absolute;
-            border: 1px solid rgba(255, 215, 0, 0.1);
             border-radius: 50%;
             animation: rotate 10s linear infinite;
         }
 
-        .ring-1 { width: 70%; height: 70%; border-style: dashed; animation-duration: 20s; }
-        .ring-2 { width: 95%; height: 95%; border-width: 2px; border-color: rgba(255, 215, 0, 0.05); animation-duration: 30s; animation-direction: reverse; }
+        .ring-1 { width: 55%; height: 55%; border: 1px dashed rgba(255, 215, 0, 0.4); animation-duration: 15s; }
+        .ring-2 { width: 75%; height: 75%; border: 1px solid rgba(255, 215, 0, 0.2); animation-duration: 25s; animation-direction: reverse; }
+        .ring-3 { width: 95%; height: 95%; border: 1px solid rgba(255, 215, 0, 0.1); animation-duration: 35s; }
 
-        .particle {
+        .planet {
             position: absolute;
-            width: clamp(4px, 1.5vw, 6px);
-            height: clamp(4px, 1.5vw, 6px);
-            background: var(--gold);
             border-radius: 50%;
-            filter: blur(1px);
-            box-shadow: 0 0 10px var(--gold);
         }
+        
+        .planet-1 { width: 8px; height: 8px; background: #fff; top: -4px; left: calc(50% - 4px); box-shadow: 0 0 10px #fff; }
+        .planet-2 { width: 14px; height: 14px; background: var(--gold); bottom: 15%; right: 10%; box-shadow: 0 0 15px var(--gold); }
+        .planet-3 { width: 6px; height: 6px; background: #ffaa00; top: 40%; left: -3px; box-shadow: 0 0 8px #ffaa00; }
+        .planet-4 { width: 10px; height: 10px; background: #00e5ff; bottom: -5px; left: calc(50% - 5px); box-shadow: 0 0 12px #00e5ff; }
 
-        .p1 { top: 0; left: 50%; transform: translateX(-50%); }
-        .p2 { bottom: 20%; right: 10%; }
-        .p3 { top: 30%; left: -3px; }
+        .sun-glow {
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            background: radial-gradient(circle at center, rgba(255,215,0,0.15) 0%, rgba(0,0,0,0.9) 70%);
+            backdrop-filter: blur(10px);
+        }
 
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- STREAMING_CHUNK:Styling the service rows and UI elements... --- */
+        /* --- Styling the service rows and UI elements... --- */
         .service-row {
             border-bottom: 1px solid rgba(255, 215, 0, 0.05);
             transition: all 0.5s ease;
@@ -156,7 +155,7 @@
             width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.8);
         }
 
-        /* --- STREAMING_CHUNK:Defining Modals and specific animations... --- */
+        /* --- Defining Modals and specific animations... --- */
         .custom-modal {
             display: none; position: fixed; inset: 0; z-index: 200;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
@@ -265,44 +264,40 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 min-h-screen flex flex-col items-center justify-center overflow-hidden">
+    <section class="relative pt-24 sm:pt-32 pb-16 sm:pb-24 px-2 sm:px-6 min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <div class="bg-animate">
             <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072" alt="Fonds technologiques Baniki Labs">
         </div>
 
         <div class="max-w-7xl mx-auto text-center relative z-10 w-full mt-4">
             
-            <!-- Logo Animé et Boutons d'accès rapides à coté -->
-            <div class="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 mb-8 sm:mb-12 animate-fadeIn">
+            <!-- Structure d'accès rapide avec le Logo Soleil au centre -->
+            <div class="flex flex-row items-center justify-between gap-1 sm:gap-6 lg:gap-12 mb-8 sm:mb-12 animate-fadeIn w-full max-w-7xl mx-auto px-1 sm:px-2">
                 
-                <!-- Liste des services (Gauche Desktop) -->
-                <div id="quick-links-left" class="hidden lg:flex flex-col gap-3 w-48 max-h-[350px] overflow-y-auto no-scrollbar pr-2 py-4">
+                <!-- Liste des services (Gauche) -->
+                <div id="quick-links-left" class="flex flex-col gap-1.5 sm:gap-3 w-[28%] lg:w-48 max-h-[300px] lg:max-h-[400px] overflow-y-auto no-scrollbar py-2">
                     <!-- Généré dynamiquement -->
                 </div>
 
-                <!-- Le Logo Animé Cliquable (vers WhatsApp) -->
-                <div class="hero-service-visual shrink-0 cursor-pointer group" onclick="window.open('https://wa.me/243978415814', '_blank')">
+                <!-- Le Logo Animé Cliquable (Système Solaire) -->
+                <div class="hero-service-visual shrink-0 cursor-pointer group w-[45%] lg:w-[400px] aspect-square mx-auto" onclick="window.open('https://wa.me/243978415814', '_blank')">
                     <div class="main-orb"></div>
                     <div class="orbit-container">
-                        <div class="orbit-ring ring-1"><div class="particle p1"></div><div class="particle p2"></div></div>
-                        <div class="orbit-ring ring-2"><div class="particle p3"></div></div>
+                        <div class="orbit-ring ring-1"><div class="planet planet-1"></div></div>
+                        <div class="orbit-ring ring-2"><div class="planet planet-2"></div><div class="planet planet-4"></div></div>
+                        <div class="orbit-ring ring-3"><div class="planet planet-3"></div></div>
                     </div>
 
-                    <!-- Wrapper pour le logo -->
-                    <div class="relative z-20 bg-black/60 p-8 sm:p-12 rounded-[2.5rem] sm:rounded-[3.5rem] border border-[var(--gold)]/30 backdrop-blur-2xl shadow-2xl transition-all duration-700 group-hover:border-[var(--gold)] group-hover:shadow-[0_0_40px_rgba(255,215,0,0.4)]">
-                        <div class="text-[var(--gold)] text-6xl sm:text-8xl font-black tracking-tighter mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-500">BL</div>
-                        <div class="h-1.5 sm:h-2 w-16 sm:w-20 bg-[var(--gold)] mx-auto rounded-full shadow-[0_0_15px_var(--gold)] mb-4"></div>
-                        <div class="text-[10px] text-white font-bold tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity">Contact WhatsApp</div>
+                    <!-- Wrapper pour le logo Soleil -->
+                    <div class="relative z-20 sun-glow rounded-full aspect-square flex flex-col items-center justify-center w-[60%] sm:w-[50%] transition-all duration-700 group-hover:shadow-[0_0_80px_rgba(255,215,0,0.8)] group-hover:scale-105">
+                        <div class="text-[var(--gold)] text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter mb-1 lg:mb-2 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]">BL</div>
+                        <div class="h-0.5 sm:h-1 lg:h-1.5 w-6 sm:w-10 lg:w-16 bg-[var(--gold)] mx-auto rounded-full shadow-[0_0_15px_var(--gold)] mb-1 lg:mb-2"></div>
+                        <div class="text-[5px] sm:text-[7px] lg:text-[9px] text-white font-bold tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Contact</div>
                     </div>
                 </div>
 
-                <!-- Liste des services (Droite Desktop) -->
-                <div id="quick-links-right" class="hidden lg:flex flex-col gap-3 w-48 max-h-[350px] overflow-y-auto no-scrollbar pl-2 py-4">
-                    <!-- Généré dynamiquement -->
-                </div>
-
-                <!-- Liste des services (Mobile Horizontal) -->
-                <div id="quick-links-mobile" class="flex lg:hidden w-full max-w-[90vw] overflow-x-auto gap-3 py-4 no-scrollbar items-center">
+                <!-- Liste des services (Droite) -->
+                <div id="quick-links-right" class="flex flex-col gap-1.5 sm:gap-3 w-[28%] lg:w-48 max-h-[300px] lg:max-h-[400px] overflow-y-auto no-scrollbar py-2">
                     <!-- Généré dynamiquement -->
                 </div>
             </div>
@@ -454,92 +449,97 @@
     
     <!-- Pop-up À Propos (Entreprise + Jimmy Baniki) -->
     <div id="aboutModal" class="custom-modal">
-        <div class="bg-[var(--bg-card)] max-w-4xl w-full rounded-[2rem] sm:rounded-[3rem] border border-[var(--gold)]/30 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative flex flex-col md:flex-row">
-            <button onclick="toggleAboutModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/50 p-2 rounded-full">
+        <div class="bg-[var(--bg-card)] max-w-4xl w-full rounded-[2rem] sm:rounded-[3rem] border border-[var(--gold)]/30 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative flex flex-col">
+            
+            <button onclick="toggleAboutModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/80 p-2 rounded-full backdrop-blur-md">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             
-            <!-- Partie Entreprise -->
-            <div class="md:w-1/2 p-8 sm:p-12 space-y-6 bg-gradient-to-br from-black/50 to-transparent">
-                <div>
-                    <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Notre Histoire</span>
-                    <h3 class="text-3xl sm:text-4xl font-black tracking-tighter mt-2">BANIKI LABS</h3>
-                </div>
-                <p class="text-gray-300 text-sm leading-relaxed">
-                    Baniki Labs n'est pas seulement une entreprise multiservices ; c'est un écosystème d'innovation implanté au cœur de Kinshasa. Nous accompagnons la transformation digitale et opérationnelle des leaders de demain en alliant rigueur professionnelle et créativité sans limite.
-                </p>
-                <p class="text-gray-400 text-xs italic">"L'Excellence comme seul standard."</p>
-            </div>
-
-            <!-- Partie Profil Jimmy Baniki -->
-            <div class="md:w-1/2 relative bg-neutral-900/50 p-8 sm:p-12 border-l border-white/5 flex flex-col justify-center">
-                <div class="flex items-center gap-6 mb-6">
-                    <!-- Image de Jimmy Baniki -->
-                    <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[var(--gold)] shadow-xl shrink-0">
-                        <a href="https://ibb.co/q32nvNYm"><img src="https://i.ibb.co/Hf92jtTG/jimmy-baniki.jpg" alt="jimmy-baniki" border="0" class="w-full h-full object-cover" /></a>
-                    </div>
+            <div class="flex flex-col md:flex-row overflow-y-auto max-h-[85vh] w-full">
+                <!-- Partie Entreprise -->
+                <div class="md:w-1/2 p-8 sm:p-12 space-y-6 bg-gradient-to-br from-black/50 to-transparent">
                     <div>
-                        <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Le Visionnaire</span>
-                        <h4 class="text-2xl sm:text-3xl font-black tracking-tighter text-white mt-1">Jimmy Baniki</h4>
-                        <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Fondateur & CEO</p>
+                        <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Notre Histoire</span>
+                        <h3 class="text-3xl sm:text-4xl font-black tracking-tighter mt-2">BANIKI LABS</h3>
                     </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Baniki Labs n'est pas seulement une entreprise multiservices ; c'est un écosystème d'innovation implanté au cœur de Kinshasa. Nous accompagnons la transformation digitale et opérationnelle des leaders de demain en alliant rigueur professionnelle et créativité sans limite.
+                    </p>
+                    <p class="text-gray-400 text-xs italic">"L'Excellence comme seul standard."</p>
                 </div>
-                <p class="text-gray-300 text-sm leading-relaxed mb-8">
-                    Entrepreneur passionné et stratège visionnaire, je suis le moteur derrière l'innovation chez Baniki Labs. Ma mission est de bâtir un futur numérique et structurel ambitieux pour nos clients, en misant sur l'audace et la performance.
-                </p>
-                <a href="https://www.linkedin.com/in/jimmy-baniki-mukishi-241b771ba" target="_blank" class="inline-flex items-center justify-center gap-3 bg-[#0077b5] text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#005582] transition-colors shadow-lg">
-                    <i class="fa-brands fa-linkedin text-lg"></i>
-                    Connecter sur LinkedIn
-                </a>
+
+                <!-- Partie Profil Jimmy Baniki -->
+                <div class="md:w-1/2 relative bg-neutral-900/50 p-8 sm:p-12 border-t md:border-t-0 md:border-l border-white/5 flex flex-col justify-center">
+                    <div class="flex items-center gap-6 mb-6">
+                        <!-- Image de Jimmy Baniki -->
+                        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[var(--gold)] shadow-xl shrink-0">
+                            <a href="https://ibb.co/q32nvNYm"><img src="https://i.ibb.co/Hf92jtTG/jimmy-baniki.jpg" alt="jimmy-baniki" border="0" class="w-full h-full object-cover" /></a>
+                        </div>
+                        <div>
+                            <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Le Visionnaire</span>
+                            <h4 class="text-2xl sm:text-3xl font-black tracking-tighter text-white mt-1">Jimmy Baniki</h4>
+                            <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Fondateur & CEO</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                        Entrepreneur passionné et stratège visionnaire, je suis le moteur derrière l'innovation chez Baniki Labs. Ma mission est de bâtir un futur numérique et structurel ambitieux pour nos clients, en misant sur l'audace et la performance.
+                    </p>
+                    <a href="https://www.linkedin.com/in/jimmy-baniki-mukishi-241b771ba" target="_blank" class="inline-flex items-center justify-center gap-3 bg-[#0077b5] text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#005582] transition-colors shadow-lg">
+                        <i class="fa-brands fa-linkedin text-lg"></i>
+                        Connecter sur LinkedIn
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Pop-up Jobs / Outils Emploi -->
     <div id="jobsModal" class="custom-modal">
-        <div class="bg-[var(--bg-card)] max-w-3xl w-full rounded-[2rem] border border-[var(--gold)]/30 overflow-hidden shadow-2xl relative p-8 sm:p-12">
-            <button onclick="toggleJobsModal()" class="absolute top-6 right-6 sm:top-8 sm:right-8 text-white/50 hover:text-white transition-colors z-10">
+        <div class="bg-[var(--bg-card)] max-w-3xl w-full rounded-[2rem] border border-[var(--gold)]/30 overflow-hidden shadow-2xl relative flex flex-col">
+            <button onclick="toggleJobsModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/80 p-2 rounded-full backdrop-blur-md">
                 <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             
-            <div class="text-center mb-10">
-                <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Carrières & Outils</span>
-                <h3 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 text-white">Espace Emploi</h3>
-                <p class="text-gray-400 text-sm mt-4">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
-            </div>
+            <div class="p-8 sm:p-12 overflow-y-auto max-h-[85vh] w-full">
+                <div class="text-center mb-10">
+                    <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Carrières & Outils</span>
+                    <h3 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 text-white">Espace Emploi</h3>
+                    <p class="text-gray-400 text-sm mt-4">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
+                </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
-                    <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-file-pdf text-xl"></i>
-                    </div>
-                    <h4 class="text-white font-bold mb-2">Générateur de CV</h4>
-                    <p class="text-xs text-gray-400">Créez un CV professionnel moderne et attractif en quelques clics.</p>
-                </a>
-                
-                <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
-                    <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-envelope-open-text text-xl"></i>
-                    </div>
-                    <h4 class="text-white font-bold mb-2">Lettre de Motivation</h4>
-                    <p class="text-xs text-gray-400">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
-                </a>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-pdf text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2">Générateur de CV</h4>
+                        <p class="text-xs text-gray-400">Créez un CV professionnel moderne et attractif en quelques clics.</p>
+                    </a>
+                    
+                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-envelope-open-text text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2">Lettre de Motivation</h4>
+                        <p class="text-xs text-gray-400">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
+                    </a>
 
-                <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
-                    <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-user-tie text-xl"></i>
-                    </div>
-                    <h4 class="text-white font-bold mb-2">Astuces Entretien</h4>
-                    <p class="text-xs text-gray-400">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
-                </a>
+                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-user-tie text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2">Astuces Entretien</h4>
+                        <p class="text-xs text-gray-400">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
+                    </a>
 
-                <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
-                    <div class="w-12 h-12 rounded-full bg-[var(--gold)] text-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-briefcase text-xl"></i>
-                    </div>
-                    <h4 class="font-bold mb-2 text-white group-hover:text-black transition-colors">Offres Baniki Labs</h4>
-                    <p class="text-xs text-gray-400 group-hover:text-black/70 transition-colors">Rejoignez notre équipe d'innovateurs.</p>
-                </a>
+                    <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)] text-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-briefcase text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2 text-white group-hover:text-black transition-colors">Offres Baniki Labs</h4>
+                        <p class="text-xs text-gray-400 group-hover:text-black/70 transition-colors">Rejoignez notre équipe d'innovateurs.</p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -556,7 +556,7 @@
             clickSound.play().catch(() => {});
         }
 
-        const translations = { /* Conservé tel quel */
+        const translations = {
             fr: {
                 "hero-subtitle": "innovation sans limite",
                 "hero-title": "VOTRE VISION,<br/><span class=\"text-[var(--gold)]\">NOTRE LAB</span>",
@@ -593,7 +593,7 @@
             if (document.getElementById('servicesContainer')) {
                 populateDropdown();
                 renderServices();
-                generateQuickLinks(); // Re-render quick links for language change
+                generateQuickLinks();
             }
             localStorage.setItem('lang', lang);
         }
@@ -635,8 +635,11 @@
             },
             list: [
                 { cat: "tech", icon: "fa-solid fa-code", name: { fr: "Création Site Web", en: "Website Creation" }, desc: { fr: "Sites vitrines et e-commerce sur mesure optimisés SEO.", en: "Custom showcase and e-commerce websites." }, features: { fr: ["Design Mobile First", "Optimisation SEO"], en: ["Mobile First", "SEO"] }, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "tech", icon: "fa-solid fa-cart-shopping", name: { fr: "E-commerce Mlimani", en: "Mlimani E-commerce" }, desc: { fr: "Plateforme de vente en ligne complète et sécurisée.", en: "Complete and secure online sales platform." }, features: { fr: ["Paiements Sécurisés", "Gestion des stocks"], en: ["Secure Payments", "Stock Management"] }, img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800", link: "mlimanicity.html" },
+                { cat: "biz", icon: "fa-solid fa-ship", name: { fr: "Import / Export", en: "Import / Export" }, desc: { fr: "Services de logistique internationale et transport de marchandises.", en: "International logistics and freight transport services." }, features: { fr: ["Dédouanement", "Suivi Logistique"], en: ["Customs Clearance", "Logistics Tracking"] }, img: "https://images.unsplash.com/photo-1586528116311-ad8ed7c508d0?auto=format&fit=crop&q=80&w=800", link: "transport.html" },
                 { cat: "tech", icon: "fa-solid fa-desktop", name: { fr: "Centre Informatique", en: "Computer Center" }, desc: { fr: "Internet haut débit, impression et maintenance technique.", en: "High-speed internet, printing and maintenance." }, features: { fr: ["Fibre Optique", "Maintenance Pro"], en: ["Fiber Optic", "Pro Maintenance"] }, img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800", link: "" },
                 { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Cours de Langues", en: "Language Courses" }, desc: { fr: "Anglais, Swahili et Français pour tous les niveaux.", en: "English, Swahili and French." }, features: { fr: ["Profs natifs", "Certifications"], en: ["Native Teachers", "Certifications"] }, img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Traduction Pro", en: "Pro Translation" }, desc: { fr: "Traduction certifiée de documents et interprétariat.", en: "Certified document translation and interpreting." }, features: { fr: ["Multilingue", "Assermentée"], en: ["Multilingual", "Certified"] }, img: "https://images.unsplash.com/photo-1451226428352-cf66bf8a0317?auto=format&fit=crop&q=80&w=800", link: "translate.html" },
                 { cat: "media", icon: "fa-solid fa-microphone", name: { fr: "Studio Podcast", en: "Podcast Studio" }, desc: { fr: "Production audio haute qualité pour vos émissions.", en: "High-quality audio production." }, features: { fr: ["Isolation Phonique", "Mixage Audio"], en: ["Sound Isolation", "Audio Mixing"] }, img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800", link: "" },
                 { cat: "biz", icon: "fa-solid fa-chart-line", name: { fr: "Marketing Digital", en: "Digital Marketing" }, desc: { fr: "Stratégies digitales pour accroître votre visibilité.", en: "Digital strategies to increase visibility." }, features: { fr: ["SEO & SEM", "Réseaux Sociaux"], en: ["SEO & SEM", "Social Networks"] }, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", link: "" },
                 { cat: "biz", icon: "fa-solid fa-house-flag", name: { fr: "Agence Immobilière", en: "Real Estate" }, desc: { fr: "Achat, vente et location de propriétés.", en: "Buying, selling and renting properties." }, features: { fr: ["Expertise terrain", "Gestion locative"], en: ["Field Expertise", "Rental Management"] }, img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", link: "" },
@@ -653,7 +656,6 @@
         let currentServiceIndex = 0;
         let serviceSearchQuery = '';
 
-        /* --- STREAMING_CHUNK:Core Initialization and UI Handlers... --- */
         function init() {
             populateDropdown();
             renderServices();
@@ -678,49 +680,35 @@
             document.getElementById('filterMenu').classList.toggle('show');
         }
 
-        // --- GÉNÉRATION DES BOUTONS ACCÈS RAPIDE (AUTOUR DU LOGO) ---
         function generateQuickLinks() {
             const leftContainer = document.getElementById('quick-links-left');
             const rightContainer = document.getElementById('quick-links-right');
-            const mobileContainer = document.getElementById('quick-links-mobile');
             
             leftContainer.innerHTML = '';
             rightContainer.innerHTML = '';
-            mobileContainer.innerHTML = '';
 
             const half = Math.ceil(servicesData.list.length / 2);
 
             servicesData.list.forEach((s, index) => {
                 const title = s.name[currentLang] || s.name.fr;
                 
-                // Modèle de bouton Desktop
                 const btnHTML = `
-                    <button onclick="jumpToService(${index})" class="quick-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left">
-                        <i class="${s.icon} text-[var(--gold)] text-sm"></i>
-                        <span class="text-xs font-bold text-gray-200 truncate">${title}</span>
+                    <button onclick="jumpToService(${index})" class="quick-btn w-full flex items-center justify-start gap-1.5 lg:gap-3 px-1.5 lg:px-4 py-1.5 lg:py-2.5 rounded-lg lg:rounded-xl text-left">
+                        <i class="${s.icon} text-[var(--gold)] text-[9px] lg:text-sm shrink-0"></i>
+                        <span class="text-[7.5px] sm:text-[9px] lg:text-xs font-bold text-gray-200 truncate leading-tight">${title}</span>
                     </button>
                 `;
                 
-                // Modèle de bouton Mobile
-                const mobBtnHTML = `
-                    <button onclick="jumpToService(${index})" class="quick-btn shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl">
-                        <i class="${s.icon} text-[var(--gold)] text-sm"></i>
-                        <span class="text-[10px] font-bold text-gray-200 whitespace-nowrap">${title}</span>
-                    </button>
-                `;
-
                 if(index < half) {
                     leftContainer.innerHTML += btnHTML;
                 } else {
                     rightContainer.innerHTML += btnHTML;
                 }
-                mobileContainer.innerHTML += mobBtnHTML;
             });
         }
 
         function jumpToService(index) {
             playClick();
-            // Reset filter if we're jumping to a specific service
             lastFilter = 'all';
             serviceSearchQuery = '';
             document.getElementById('serviceSearch').value = '';
@@ -729,11 +717,9 @@
             currentServiceIndex = index;
             renderServices();
             
-            // Scroll en douceur vers la section expertises
             document.getElementById('expertises').scrollIntoView({ behavior: 'smooth' });
         }
 
-        /* --- STREAMING_CHUNK:Filtering and Carousel rendering logic... --- */
         function populateDropdown() {
             const menu = document.getElementById('filterMenu');
             menu.innerHTML = '';
@@ -777,7 +763,8 @@
 
             const s = filtered[currentServiceIndex];
             const message = encodeURIComponent(`Bonjour BANIKI LABS, je souhaite obtenir des informations concernant votre service : ${s.name[currentLang] || s.name.fr}`);
-            const finalLink = `https://wa.me/243978415814?text=${message}`;
+            
+            const finalLink = (s.link && s.link.trim() !== "") ? s.link : `https://wa.me/243978415814?text=${message}`;
 
             const name = s.name[currentLang] || s.name.fr;
             const desc = s.desc[currentLang] || s.desc.fr;
@@ -844,7 +831,6 @@
             if (index >= 0 && index < filtered.length) { currentServiceIndex = index; renderServices(); }
         }
 
-        // Click outside handlers
         window.onclick = (e) => {
             const aboutModal = document.getElementById('aboutModal');
             const jobsModal = document.getElementById('jobsModal');
@@ -857,7 +843,6 @@
             }
         };
 
-        // Audio Handler
         const bgAmbient = document.getElementById('bgAmbient');
         const audioToggle = document.getElementById('audioToggle');
         const audioIcon = document.getElementById('audioIcon');
