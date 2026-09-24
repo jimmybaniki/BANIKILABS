@@ -415,6 +415,14 @@
                     <a href="https://www.tiktok.com/@banikilabs?_r=1&_t=ZS-9A0IB4ftzKT" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
                         <i class="fa-brands fa-tiktok text-xl"></i>
                     </a>
+                    <!-- YouTube -->
+                    <a href="https://youtube.com/@banikilabs?si=cmXIpqVlRAihfwug" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i class="fa-brands fa-youtube text-xl"></i>
+                    </a>
+                    <!-- WhatsApp -->
+                    <a href="https://whatsapp.com/channel/0029VbCiRDyDDmFQ4Q8p462j" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                    </a>
                 </div>
             </div>
 
@@ -508,7 +516,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                    <a href="cv.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-file-pdf text-xl"></i>
                         </div>
@@ -516,7 +524,7 @@
                         <p class="text-xs text-gray-400">Créez un CV professionnel moderne et attractif en quelques clics.</p>
                     </a>
                     
-                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                    <a href="coverletter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-envelope-open-text text-xl"></i>
                         </div>
@@ -524,7 +532,7 @@
                         <p class="text-xs text-gray-400">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
                     </a>
 
-                    <a href="#" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                    <a href="interview.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-user-tie text-xl"></i>
                         </div>
@@ -576,6 +584,16 @@
                 "about": "About",
                 "expertises": "Expertise",
                 "contact": "Info & Contact"
+            },
+            sw: {
+                "hero-subtitle": "ubunifu bila mipaka",
+                "hero-title": "MAONO YAKO,<br/><span class=\"text-[var(--gold)]\">MAABARA YETU</span>",
+                "hero-description": "Thubutu kubuni. <span class=\"text-[var(--gold)]\">Banikilabs.store</span> inakupa suluhisho za kiteknolojia za kipekee kubadilisha kila changamoto kuwa fursa.",
+                "services-title": "Huduma",
+                "all-categories": "KATEGORIA ZOTE",
+                "about": "Kuhusu",
+                "expertises": "Utaalam",
+                "contact": "Mawasiliano"
             }
         };
 
@@ -623,32 +641,32 @@
             setLanguage(savedLang);
         });
 
-        // --- Données Services ---
+        // --- Données Services avec Traductions Swahili ---
         const servicesData = {
             categories: {
-                all: { fr: "TOUTES LES CATÉGORIES", en: "ALL CATEGORIES" },
-                tech: { fr: "TECHNOLOGIE & WEB", en: "TECHNOLOGY & WEB" },
-                media: { fr: "MÉDIA & STUDIO", en: "MEDIA & STUDIO" },
-                edu: { fr: "FORMATION & ACADÉMIE", en: "TRAINING & ACADEMY" },
-                lifestyle: { fr: "SERVICES & LOGISTIQUE", en: "SERVICES & LOGISTICS" },
-                biz: { fr: "BUSINESS & IMMOBILIER", en: "BUSINESS & REAL ESTATE" }
+                all: { fr: "TOUTES LES CATÉGORIES", en: "ALL CATEGORIES", sw: "KATEGORIA ZOTE" },
+                tech: { fr: "TECHNOLOGIE & WEB", en: "TECHNOLOGY & WEB", sw: "TEKNOLOJIA & MTANDAO" },
+                media: { fr: "MÉDIA & STUDIO", en: "MEDIA & STUDIO", sw: "MEDIA & STUDIO" },
+                edu: { fr: "FORMATION & ACADÉMIE", en: "TRAINING & ACADEMY", sw: "MAFUNZO & AKADEMIA" },
+                lifestyle: { fr: "SERVICES & LOGISTIQUE", en: "SERVICES & LOGISTICS", sw: "HUDUMA & LOGISTIKI" },
+                biz: { fr: "BUSINESS & IMMOBILIER", en: "BUSINESS & REAL ESTATE", sw: "BIASHARA & MAJENGO" }
             },
             list: [
-                { cat: "tech", icon: "fa-solid fa-code", name: { fr: "Création Site Web", en: "Website Creation" }, desc: { fr: "Sites vitrines et e-commerce sur mesure optimisés SEO.", en: "Custom showcase and e-commerce websites." }, features: { fr: ["Design Mobile First", "Optimisation SEO"], en: ["Mobile First", "SEO"] }, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "tech", icon: "fa-solid fa-cart-shopping", name: { fr: "E-commerce Mlimani", en: "Mlimani E-commerce" }, desc: { fr: "Plateforme de vente en ligne complète et sécurisée.", en: "Complete and secure online sales platform." }, features: { fr: ["Paiements Sécurisés", "Gestion des stocks"], en: ["Secure Payments", "Stock Management"] }, img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800", link: "mlimanicity.html" },
-                { cat: "biz", icon: "fa-solid fa-ship", name: { fr: "Import / Export", en: "Import / Export" }, desc: { fr: "Services de logistique internationale et transport de marchandises.", en: "International logistics and freight transport services." }, features: { fr: ["Dédouanement", "Suivi Logistique"], en: ["Customs Clearance", "Logistics Tracking"] }, img: "https://images.unsplash.com/photo-1586528116311-ad8ed7c508d0?auto=format&fit=crop&q=80&w=800", link: "transport.html" },
-                { cat: "tech", icon: "fa-solid fa-desktop", name: { fr: "Centre Informatique", en: "Computer Center" }, desc: { fr: "Internet haut débit, impression et maintenance technique.", en: "High-speed internet, printing and maintenance." }, features: { fr: ["Fibre Optique", "Maintenance Pro"], en: ["Fiber Optic", "Pro Maintenance"] }, img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Cours de Langues", en: "Language Courses" }, desc: { fr: "Anglais, Swahili et Français pour tous les niveaux.", en: "English, Swahili and French." }, features: { fr: ["Profs natifs", "Certifications"], en: ["Native Teachers", "Certifications"] }, img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Traduction Pro", en: "Pro Translation" }, desc: { fr: "Traduction certifiée de documents et interprétariat.", en: "Certified document translation and interpreting." }, features: { fr: ["Multilingue", "Assermentée"], en: ["Multilingual", "Certified"] }, img: "https://images.unsplash.com/photo-1451226428352-cf66bf8a0317?auto=format&fit=crop&q=80&w=800", link: "translate.html" },
-                { cat: "media", icon: "fa-solid fa-microphone", name: { fr: "Studio Podcast", en: "Podcast Studio" }, desc: { fr: "Production audio haute qualité pour vos émissions.", en: "High-quality audio production." }, features: { fr: ["Isolation Phonique", "Mixage Audio"], en: ["Sound Isolation", "Audio Mixing"] }, img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "biz", icon: "fa-solid fa-chart-line", name: { fr: "Marketing Digital", en: "Digital Marketing" }, desc: { fr: "Stratégies digitales pour accroître votre visibilité.", en: "Digital strategies to increase visibility." }, features: { fr: ["SEO & SEM", "Réseaux Sociaux"], en: ["SEO & SEM", "Social Networks"] }, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "biz", icon: "fa-solid fa-house-flag", name: { fr: "Agence Immobilière", en: "Real Estate" }, desc: { fr: "Achat, vente et location de propriétés.", en: "Buying, selling and renting properties." }, features: { fr: ["Expertise terrain", "Gestion locative"], en: ["Field Expertise", "Rental Management"] }, img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "media", icon: "fa-solid fa-camera", name: { fr: "Photographie", en: "Photography" }, desc: { fr: "Portraits et couverture d'événements prestigieux.", en: "Portraits and event coverage." }, features: { fr: ["Shooting Studio", "Événementiel"], en: ["Studio Shooting", "Event Coverage"] }, img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "media", icon: "fa-solid fa-video", name: { fr: "Vidéographie", en: "Videography" }, desc: { fr: "Production de clips et vidéos d'entreprise premium.", en: "Premium video production." }, features: { fr: ["Tournage 4K", "Montage Pro"], en: ["4K Shooting", "Pro Editing"] }, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "lifestyle", icon: "fa-solid fa-truck-fast", name: { fr: "Livraison Rapide", en: "Fast Delivery" }, desc: { fr: "Transport de colis et repas à travers la capitale.", en: "Package and meal transport." }, features: { fr: ["Suivi GPS", "Rapide & Sûr"], en: ["GPS Tracking", "Fast & Safe"] }, img: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "biz", icon: "fa-solid fa-money-bill-wave", name: { fr: "Bureau de Change", en: "Currency Exchange" }, desc: { fr: "Transactions sécurisées aux meilleurs taux du marché.", en: "Secure transactions at best rates." }, features: { fr: ["Taux en temps réel", "Sécurité totale"], en: ["Real-time rates", "Total security"] }, img: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "lifestyle", icon: "fa-solid fa-burger", name: { fr: "Fast Food", en: "Fast Food" }, desc: { fr: "Restauration rapide et savoureuse de qualité.", en: "Fast and tasty quality food." }, features: { fr: ["Plats cuisinés", "Livraison"], en: ["Cooked Dishes", "Delivery"] }, img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=800", link: "" },
-                { cat: "tech", icon: "fa-solid fa-gamepad", name: { fr: "E-sport Hub", en: "E-sport Hub" }, desc: { fr: "Espace dédié aux gamers avec PC et tournois.", en: "Dedicated gamer space." }, features: { fr: ["PC Gaming", "Tournois"], en: ["Gaming PCs", "Tournaments"] }, img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800", link: "" }
+                { cat: "tech", icon: "fa-solid fa-code", name: { fr: "Création Site Web", en: "Website Creation", sw: "Kutengeneza Tovuti" }, desc: { fr: "Sites vitrines et e-commerce sur mesure optimisés SEO.", en: "Custom showcase and e-commerce websites.", sw: "Tovuti za kuonyesha na biashara ya mtandaoni." }, features: { fr: ["Design Mobile First", "Optimisation SEO"], en: ["Mobile First", "SEO"], sw: ["Muundo wa Simu", "Uboreshaji wa SEO"] }, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "tech", icon: "fa-solid fa-cart-shopping", name: { fr: "E-commerce Mlimani", en: "Mlimani E-commerce", sw: "E-commerce Mlimani" }, desc: { fr: "Plateforme de vente en ligne complète et sécurisée.", en: "Complete and secure online sales platform.", sw: "Jukwaa kamili na salama la mauzo mtandaoni." }, features: { fr: ["Paiements Sécurisés", "Gestion des stocks"], en: ["Secure Payments", "Stock Management"], sw: ["Malipo Salama", "Usimamizi wa Hifadhi"] }, img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800", link: "mlimanicity.html" },
+                { cat: "biz", icon: "fa-solid fa-ship", name: { fr: "Import / Export", en: "Import / Export", sw: "Uingizaji / Uuzaji nje" }, desc: { fr: "Services de logistique internationale et transport de marchandises.", en: "International logistics and freight transport services.", sw: "Huduma za kimataifa za usafirishaji na mizigo." }, features: { fr: ["Dédouanement", "Suivi Logistique"], en: ["Customs Clearance", "Logistics Tracking"], sw: ["Kibali cha Forodha", "Ufuatiliaji wa Usafirishaji"] }, img: "https://images.unsplash.com/photo-1586528116311-ad8ed7c508d0?auto=format&fit=crop&q=80&w=800", link: "transport.html" },
+                { cat: "tech", icon: "fa-solid fa-desktop", name: { fr: "Centre Informatique", en: "Computer Center", sw: "Kituo cha Kompyuta" }, desc: { fr: "Internet haut débit, impression et maintenance technique.", en: "High-speed internet, printing and maintenance.", sw: "Mtandao wa kasi, uchapishaji na matengenezo." }, features: { fr: ["Fibre Optique", "Maintenance Pro"], en: ["Fiber Optic", "Pro Maintenance"], sw: ["Fiber Optic", "Matengenezo ya Pro"] }, img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Cours de Langues", en: "Language Courses", sw: "Kozi za Lugha" }, desc: { fr: "Anglais, Swahili et Français pour tous les niveaux.", en: "English, Swahili and French.", sw: "Kiingereza, Kiswahili na Kifaransa." }, features: { fr: ["Profs natifs", "Certifications"], en: ["Native Teachers", "Certifications"], sw: ["Walimu Wazawa", "Vyeti"] }, img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "edu", icon: "fa-solid fa-language", name: { fr: "Traduction Pro", en: "Pro Translation", sw: "Tafsiri ya Pro" }, desc: { fr: "Traduction certifiée de documents et interprétariat.", en: "Certified document translation and interpreting.", sw: "Tafsiri iliyothibitishwa ya nyaraka na ukalimani." }, features: { fr: ["Multilingue", "Assermentée"], en: ["Multilingual", "Certified"], sw: ["Lugha nyingi", "Imethibitishwa"] }, img: "https://images.unsplash.com/photo-1451226428352-cf66bf8a0317?auto=format&fit=crop&q=80&w=800", link: "translate.html" },
+                { cat: "media", icon: "fa-solid fa-microphone", name: { fr: "Studio Podcast", en: "Podcast Studio", sw: "Studio ya Podcast" }, desc: { fr: "Production audio haute qualité pour vos émissions.", en: "High-quality audio production.", sw: "Uzalishaji wa sauti wa hali ya juu." }, features: { fr: ["Isolation Phonique", "Mixage Audio"], en: ["Sound Isolation", "Audio Mixing"], sw: ["Utengaji wa Sauti", "Kuchanganya Sauti"] }, img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "biz", icon: "fa-solid fa-chart-line", name: { fr: "Marketing Digital", en: "Digital Marketing", sw: "Masoko ya Kidijitali" }, desc: { fr: "Stratégies digitales pour accroître votre visibilité.", en: "Digital strategies to increase visibility.", sw: "Mikakati ya kidijitali kuongeza muonekano." }, features: { fr: ["SEO & SEM", "Réseaux Sociaux"], en: ["SEO & SEM", "Social Networks"], sw: ["SEO & SEM", "Mitandao ya Kijamii"] }, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "biz", icon: "fa-solid fa-house-flag", name: { fr: "Agence Immobilière", en: "Real Estate", sw: "Shirika la Majengo" }, desc: { fr: "Achat, vente et location de propriétés.", en: "Buying, selling and renting properties.", sw: "Kununua, kuuza na kukodisha mali." }, features: { fr: ["Expertise terrain", "Gestion locative"], en: ["Field Expertise", "Rental Management"], sw: ["Utaalam wa Uwanja", "Usimamizi wa Ukodishaji"] }, img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "media", icon: "fa-solid fa-camera", name: { fr: "Photographie", en: "Photography", sw: "Picha" }, desc: { fr: "Portraits et couverture d'événements prestigieux.", en: "Portraits and event coverage.", sw: "Picha na chanjo ya matukio." }, features: { fr: ["Shooting Studio", "Événementiel"], en: ["Studio Shooting", "Event Coverage"], sw: ["Upigaji picha wa Studio", "Chanjo ya Tukio"] }, img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "media", icon: "fa-solid fa-video", name: { fr: "Vidéographie", en: "Videography", sw: "Video" }, desc: { fr: "Production de clips et vidéos d'entreprise premium.", en: "Premium video production.", sw: "Uzalishaji wa video bora." }, features: { fr: ["Tournage 4K", "Montage Pro"], en: ["4K Shooting", "Pro Editing"], sw: ["Risasi 4K", "Uhariri wa Pro"] }, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "lifestyle", icon: "fa-solid fa-truck-fast", name: { fr: "Livraison Rapide", en: "Fast Delivery", sw: "Utoaji wa Haraka" }, desc: { fr: "Transport de colis et repas à travers la capitale.", en: "Package and meal transport.", sw: "Usafirishaji wa vifurushi na chakula." }, features: { fr: ["Suivi GPS", "Rapide & Sûr"], en: ["GPS Tracking", "Fast & Safe"], sw: ["Ufuatiliaji wa GPS", "Haraka & Salama"] }, img: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "biz", icon: "fa-solid fa-money-bill-wave", name: { fr: "Bureau de Change", en: "Currency Exchange", sw: "Ofisi ya Kubadilisha Pesa" }, desc: { fr: "Transactions sécurisées aux meilleurs taux du marché.", en: "Secure transactions at best rates.", sw: "Miamala salama kwa viwango bora." }, features: { fr: ["Taux en temps réel", "Sécurité totale"], en: ["Real-time rates", "Total security"], sw: ["Viwango vya wakati halisi", "Usalama kamili"] }, img: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "lifestyle", icon: "fa-solid fa-burger", name: { fr: "Fast Food", en: "Fast Food", sw: "Chakula cha Haraka" }, desc: { fr: "Restauration rapide et savoureuse de qualité.", en: "Fast and tasty quality food.", sw: "Chakula cha haraka na kitamu." }, features: { fr: ["Plats cuisinés", "Livraison"], en: ["Cooked Dishes", "Delivery"], sw: ["Chakula Kilichopikwa", "Utoaji"] }, img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=800", link: "" },
+                { cat: "tech", icon: "fa-solid fa-gamepad", name: { fr: "E-sport Hub", en: "E-sport Hub", sw: "E-sport Hub" }, desc: { fr: "Espace dédié aux gamers avec PC et tournois.", en: "Dedicated gamer space.", sw: "Nafasi maalum kwa wachezaji." }, features: { fr: ["PC Gaming", "Tournois"], en: ["Gaming PCs", "Tournaments"], sw: ["Kompyuta za Michezo", "Mashindano"] }, img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800", link: "" }
             ]
         };
 
