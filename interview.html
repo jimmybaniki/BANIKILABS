@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKI LABS | Astuces Entretien</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Style pour les accordéons (Questions/Réponses) */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+            color: var(--gold);
+        }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <a href="javascript:history.back()" class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-9 h-9 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110 text-black">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <span class="font-extrabold text-lg tracking-tight uppercase hidden sm:block">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <select id="langSelector" class="input-field text-xs font-bold uppercase tracking-widest cursor-pointer" onchange="changeLanguage()">
+                    <option value="fr">FRANÇAIS</option>
+                    <option value="en">ENGLISH</option>
+                    <option value="sw">KISWAHILI</option>
+                </select>
+                <div class="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)] hidden sm:block" id="navTitle">
+                    Astuces Entretien
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full space-y-12">
+        
+        <!-- En-tête -->
+        <div class="text-center space-y-4 animate-fadeIn">
+            <div class="w-16 h-16 mx-auto bg-[var(--gold)]/10 text-[var(--gold)] rounded-full flex items-center justify-center text-3xl mb-2">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tighter text-white" id="pageTitle">Maîtrisez votre Entretien</h1>
+            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto" id="pageSubtitle">Découvrez les secrets des recruteurs, préparez vos réponses avec la méthode STAR et gagnez en confiance pour décrocher le poste idéal.</p>
+        </div>
+
+        <!-- Section 1 : La méthode STAR -->
+        <section class="bg-[var(--bg-card)] rounded-[2rem] border border-[var(--gold)]/20 p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-[var(--gold)]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fa-solid fa-star text-[var(--gold)] text-2xl"></i>
+                    <h2 class="text-2xl font-black uppercase tracking-tight text-white" id="starTitle">La Méthode S.T.A.R</h2>
+                </div>
+                <p class="text-gray-400 text-sm mb-8" id="starDesc">C'est la technique infaillible pour répondre aux questions comportementales (ex: "Racontez-moi une fois où..."). Structurez toujours vos réponses ainsi :</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-[var(--gold)]/50 transition-colors">
+                        <div class="text-[var(--gold)] font-black text-xl mb-1">S</div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-widest mb-2" id="starS_title">Situation</h3>
+                        <p class="text-xs text-gray-400" id="starS_desc">Plantez le décor. Quel était le contexte ? (Où, quand, avec qui ?)</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-[var(--gold)]/50 transition-colors">
+                        <div class="text-[var(--gold)] font-black text-xl mb-1">T</div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-widest mb-2" id="starT_title">Tâche</h3>
+                        <p class="text-xs text-gray-400" id="starT_desc">Quel était votre rôle exact ? Quel problème deviez-vous résoudre ?</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-[var(--gold)]/50 transition-colors">
+                        <div class="text-[var(--gold)] font-black text-xl mb-1">A</div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-widest mb-2" id="starA_title">Action</h3>
+                        <p class="text-xs text-gray-400" id="starA_desc">Qu'avez-vous fait CONCRÈTEMENT ? (Utilisez le "Je", pas le "Nous").</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-[var(--gold)]/50 transition-colors">
+                        <div class="text-[var(--gold)] font-black text-xl mb-1">R</div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-widest mb-2" id="starR_title">Résultat</h3>
+                        <p class="text-xs text-gray-400" id="starR_desc">Quel a été l'impact ? (Donnez des chiffres, des pourcentages, du concret).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 : Checklist -->
+        <section>
+            <div class="flex items-center gap-3 mb-6 px-2">
+                <i class="fa-solid fa-list-check text-[var(--gold)] text-xl"></i>
+                <h2 class="text-xl font-black uppercase tracking-tight text-white" id="checkTitle">Checklist de Préparation</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Avant -->
+                <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-[var(--gold)] font-bold text-sm uppercase tracking-widest mb-4 border-b border-white/10 pb-2" id="checkBefore_title">Avant l'entretien</h3>
+                    <ul class="space-y-3 text-sm text-gray-300" id="checkBefore_list">
+                        <li class="flex gap-2"><i class="fa-solid fa-check mt-1 text-[var(--gold)] text-[10px]"></i> Faire des recherches approfondies sur l'entreprise.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check mt-1 text-[var(--gold)] text-[10px]"></i> Relire attentivement la description du poste.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check mt-1 text-[var(--gold)] text-[10px]"></i> Préparer 3 questions intelligentes à poser à la fin.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check mt-1 text-[var(--gold)] text-[10px]"></i> Tester son matériel (caméra/micro) si c'est en ligne.</li>
+                    </ul>
+                </div>
+                <!-- Pendant -->
+                <div class="bg-white/5 rounded-2xl p-6 border border-[var(--gold)]/30 relative">
+                    <div class="absolute -top-3 right-4 bg-[var(--gold)] text-black text-[9px] font-black uppercase px-2 py-1 rounded">Crucial</div>
+                    <h3 class="text-[var(--gold)] font-bold text-sm uppercase tracking-widest mb-4 border-b border-white/10 pb-2" id="checkDuring_title">Pendant l'entretien</h3>
+                    <ul class="space-y-3 text-sm text-gray-300" id="checkDuring_list">
+                        <li class="flex gap-2"><i class="fa-solid fa-play mt-1 text-[var(--gold)] text-[10px]"></i> Soigner son langage corporel (sourire, contact visuel).</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-play mt-1 text-[var(--gold)] text-[10px]"></i> Écouter activement sans couper la parole.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-play mt-1 text-[var(--gold)] text-[10px]"></i> Prendre 2 secondes pour respirer avant de répondre.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-play mt-1 text-[var(--gold)] text-[10px]"></i> Assumer ses erreurs passées en montrant ce qu'on en a appris.</li>
+                    </ul>
+                </div>
+                <!-- Après -->
+                <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-[var(--gold)] font-bold text-sm uppercase tracking-widest mb-4 border-b border-white/10 pb-2" id="checkAfter_title">Après l'entretien</h3>
+                    <ul class="space-y-3 text-sm text-gray-300" id="checkAfter_list">
+                        <li class="flex gap-2"><i class="fa-solid fa-envelope mt-1 text-[var(--gold)] text-[10px]"></i> Envoyer un email de remerciement dans les 24h.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-envelope mt-1 text-[var(--gold)] text-[10px]"></i> Réitérer brièvement sa motivation dans l'email.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-envelope mt-1 text-[var(--gold)] text-[10px]"></i> Noter les questions difficiles pour s'améliorer.</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-envelope mt-1 text-[var(--gold)] text-[10px]"></i> Relancer après 1 à 2 semaines si aucun retour.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3 : Questions Fréquentes (Accordéon) -->
+        <section>
+            <div class="flex items-center gap-3 mb-6 px-2">
+                <i class="fa-solid fa-comments text-[var(--gold)] text-xl"></i>
+                <h2 class="text-xl font-black uppercase tracking-tight text-white" id="faqTitle">Questions Fréquentes & Réponses Idéales</h2>
+            </div>
+
+            <div class="space-y-3" id="faqContainer">
+                <!-- Généré dynamiquement par JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Base de données de traductions -->
+    <script>
+        const translations = {
+            fr: {
+                navTitle: "Astuces Entretien",
+                pageTitle: "Maîtrisez votre Entretien",
+                pageSubtitle: "Découvrez les secrets des recruteurs, préparez vos réponses avec la méthode STAR et gagnez en confiance pour décrocher le poste idéal.",
+                
+                starTitle: "La Méthode S.T.A.R",
+                starDesc: "C'est la technique infaillible pour répondre aux questions comportementales (ex: \"Racontez-moi une fois où...\"). Structurez toujours vos réponses ainsi :",
+                starS_title: "Situation", starS_desc: "Plantez le décor. Quel était le contexte ? (Où, quand, avec qui ?)",
+                starT_title: "Tâche", starT_desc: "Quel était votre rôle exact ? Quel problème deviez-vous résoudre ?",
+                starA_title: "Action", starA_desc: "Qu'avez-vous fait CONCRÈTEMENT ? (Utilisez le \"Je\", pas le \"Nous\").",
+                starR_title: "Résultat", starR_desc: "Quel a été l'impact ? (Donnez des chiffres, des pourcentages, du concret).",
+                
+                checkTitle: "Checklist de Préparation",
+                checkBefore_title: "Avant l'entretien",
+                checkBefore_list: [
+                    "Faire des recherches approfondies sur l'entreprise.",
+                    "Relire attentivement la description du poste.",
+                    "Préparer 3 questions intelligentes à poser à la fin.",
+                    "Tester son matériel (caméra/micro) si c'est en ligne."
+                ],
+                checkDuring_title: "Pendant l'entretien",
+                checkDuring_list: [
+                    "Soigner son langage corporel (sourire, contact visuel).",
+                    "Écouter activement sans couper la parole.",
+                    "Prendre 2 secondes pour respirer avant de répondre.",
+                    "Assumer ses erreurs passées en montrant ce qu'on en a appris."
+                ],
+                checkAfter_title: "Après l'entretien",
+                checkAfter_list: [
+                    "Envoyer un email de remerciement dans les 24h.",
+                    "Réitérer brièvement sa motivation dans l'email.",
+                    "Noter les questions difficiles pour s'améliorer.",
+                    "Relancer après 1 à 2 semaines si aucun retour."
+                ],
+
+                faqTitle: "Questions Fréquentes & Réponses Idéales",
+                faqs: [
+                    {
+                        q: "Parlez-moi de vous.",
+                        a: "<strong>Le piège :</strong> Raconter toute sa vie personnelle.<br><strong>La solution :</strong> Utilisez la formule Présent-Passé-Futur. Commencez par votre poste actuel, évoquez brièvement 2 ou 3 réalisations clés de votre passé, puis expliquez pourquoi ce nouveau poste correspond exactement à vos objectifs d'avenir."
+                    },
+                    {
+                        q: "Quels sont vos défauts / faiblesses ?",
+                        a: "<strong>Le piège :</strong> Dire 'Je suis perfectionniste' (trop cliché) ou un vrai défaut bloquant pour le poste.<br><strong>La solution :</strong> Choisissez un vrai point faible qui n'est pas critique pour le job, et SURTOUT, expliquez les mesures concrètes que vous prenez actuellement pour vous améliorer (ex: 'J'avais du mal à parler en public, alors j'ai suivi une formation et je me force à animer les réunions')."
+                    },
+                    {
+                        q: "Pourquoi voulez-vous travailler chez nous ?",
+                        a: "<strong>Le piège :</strong> Parler uniquement du salaire ou des avantages.<br><strong>La solution :</strong> Montrez que vous avez fait vos recherches. Mentionnez un projet récent de l'entreprise, leurs valeurs ou leur culture, et faites le lien avec vos propres compétences et ambitions."
+                    },
+                    {
+                        q: "Où vous voyez-vous dans 5 ans ?",
+                        a: "<strong>Le piège :</strong> Dire 'À votre place' ou montrer un manque d'ambition.<br><strong>La solution :</strong> Restez réaliste mais ambitieux. Montrez que vous souhaitez évoluer, prendre plus de responsabilités ou devenir un expert dans votre domaine, idéalement au sein de cette même entreprise."
+                    },
+                    {
+                        q: "Avez-vous des questions pour nous ?",
+                        a: "<strong>Le piège :</strong> Répondre 'Non, tout est clair' (Montre un manque d'intérêt).<br><strong>La solution :</strong> Posez des questions sur l'équipe ('Quelle est la dynamique de l'équipe ?'), le poste ('Quel est le plus grand défi pour la personne qui prendra ce poste ?') ou l'entreprise ('Comment mesurez-vous le succès à ce poste ?')."
+                    }
+                ]
+            },
+            en: {
+                navTitle: "Interview Tips",
+                pageTitle: "Master Your Interview",
+                pageSubtitle: "Discover recruiter secrets, prepare your answers using the STAR method, and build the confidence needed to land your dream job.",
+                
+                starTitle: "The S.T.A.R Method",
+                starDesc: "This is the foolproof technique for answering behavioral questions (e.g., \"Tell me about a time when...\"). Always structure your answers like this:",
+                starS_title: "Situation", starS_desc: "Set the scene. What was the context? (Where, when, with whom?)",
+                starT_title: "Task", starT_desc: "What was your exact role? What problem did you have to solve?",
+                starA_title: "Action", starA_desc: "What did you ACTUALLY do? (Use 'I', not 'We').",
+                starR_title: "Result", starR_desc: "What was the outcome? (Provide numbers, percentages, concrete facts).",
+                
+                checkTitle: "Preparation Checklist",
+                checkBefore_title: "Before the interview",
+                checkBefore_list: [
+                    "Conduct in-depth research on the company.",
+                    "Carefully review the job description.",
+                    "Prepare 3 smart questions to ask at the end.",
+                    "Test your equipment (camera/mic) if it's an online interview."
+                ],
+                checkDuring_title: "During the interview",
+                checkDuring_list: [
+                    "Mind your body language (smile, eye contact).",
+                    "Listen actively without interrupting.",
+                    "Take 2 seconds to breathe before answering.",
+                    "Own your past mistakes by showing what you learned from them."
+                ],
+                checkAfter_title: "After the interview",
+                checkAfter_list: [
+                    "Send a thank-you email within 24 hours.",
+                    "Briefly reiterate your motivation in the email.",
+                    "Note down difficult questions for future improvement.",
+                    "Follow up after 1-2 weeks if you haven't heard back."
+                ],
+
+                faqTitle: "Common Questions & Ideal Answers",
+                faqs: [
+                    {
+                        q: "Tell me about yourself.",
+                        a: "<strong>The Trap:</strong> Reciting your entire personal life story.<br><strong>The Solution:</strong> Use the Present-Past-Future formula. Start with your current role, briefly mention 2-3 key achievements from your past, then explain why this new role perfectly aligns with your future goals."
+                    },
+                    {
+                        q: "What are your weaknesses?",
+                        a: "<strong>The Trap:</strong> Saying 'I am a perfectionist' (too cliché) or mentioning a flaw that ruins your chances for the job.<br><strong>The Solution:</strong> Choose a real weakness that isn't critical to the job, and MOST IMPORTANTLY, explain the concrete steps you are taking to improve it."
+                    },
+                    {
+                        q: "Why do you want to work here?",
+                        a: "<strong>The Trap:</strong> Only talking about salary or benefits.<br><strong>The Solution:</strong> Show you've done your research. Mention a recent company project, their values, or culture, and connect it to your own skills and ambitions."
+                    },
+                    {
+                        q: "Where do you see yourself in 5 years?",
+                        a: "<strong>The Trap:</strong> Saying 'In your job' or showing a lack of ambition.<br><strong>The Solution:</strong> Be realistic but ambitious. Show that you want to grow, take on more responsibilities, or become an expert in your field, ideally within this company."
+                    },
+                    {
+                        q: "Do you have any questions for us?",
+                        a: "<strong>The Trap:</strong> Replying 'No, everything is clear' (shows lack of interest).<br><strong>The Solution:</strong> Ask questions about the team ('What is the team dynamic like?'), the role ('What is the biggest challenge for the person taking this role?'), or the company ('How do you measure success in this position?')."
+                    }
+                ]
+            },
+            sw: {
+                navTitle: "Vidokezo vya Usaili",
+                pageTitle: "Miliki Usaili Wako",
+                pageSubtitle: "Gundua siri za waajiri, andaa majibu yako kwa mbinu ya STAR, na ujenge ujasiri wa kupata kazi ya ndoto yako.",
+                
+                starTitle: "Mbinu ya S.T.A.R",
+                starDesc: "Hii ni mbinu isiyoshindwa ya kujibu maswali ya tabia (mfano: \"Niambie wakati ambapo...\"). Panga majibu yako hivi kila wakati:",
+                starS_title: "Hali (Situation)", starS_desc: "Eleza mazingira. Ilikuwa wapi, lini, na nani?",
+                starT_title: "Kazi (Task)", starT_desc: "Jukumu lako haswa lilikuwa nini? Tatizo gani ulipaswa kutatua?",
+                starA_title: "Hatua (Action)", starA_desc: "Ulifanya nini HASWA? (Tumia 'Mimi', sio 'Sisi').",
+                starR_title: "Matokeo (Result)", starR_desc: "Matokeo yalikuwa nini? (Toa namba, asilimia, ukweli thabiti).",
+                
+                checkTitle: "Orodha ya Maandalizi",
+                checkBefore_title: "Kabla ya usaili",
+                checkBefore_list: [
+                    "Fanya utafiti wa kina kuhusu kampuni.",
+                    "Soma kwa makini maelezo ya kazi.",
+                    "Andaa maswali 3 ya busara ya kuuliza mwishoni.",
+                    "Jaribu vifaa vyako (kamera/maikrofoni) kama ni mtandaoni."
+                ],
+                checkDuring_title: "Wakati wa usaili",
+                checkDuring_list: [
+                    "Zingatia lugha ya mwili wako (tabasamu, mawasiliano ya macho).",
+                    "Sikiliza kwa makini bila kukatiza.",
+                    "Chukua sekunde 2 kuvuta pumzi kabla ya kujibu.",
+                    "Kubali makosa yako ya zamani kwa kuonyesha ulichojifunza."
+                ],
+                checkAfter_title: "Baada ya usaili",
+                checkAfter_list: [
+                    "Tuma barua pepe ya shukrani ndani ya masaa 24.",
+                    "Rudia kwa ufupi motisha yako kwenye barua pepe.",
+                    "Andika maswali magumu ili ujiboreshe baadaye.",
+                    "Fuatilia baada ya wiki 1-2 kama hujapata majibu."
+                ],
+
+                faqTitle: "Maswali ya Kawaida & Majibu Bora",
+                faqs: [
+                    {
+                        q: "Niambie kuhusu wewe.",
+                        a: "<strong>Mtego:</strong> Kusimulia hadithi nzima ya maisha yako binafsi.<br><strong>Suluhisho:</strong> Tumia kanuni ya Sasa-Zamani-Ujao. Anza na jukumu lako la sasa, taja kwa ufupi mafanikio 2-3 kutoka zamani, kisha eleza kwa nini jukumu hili jipya linaendana na malengo yako ya baadaye."
+                    },
+                    {
+                        q: "Udhaifu wako ni upi?",
+                        a: "<strong>Mtego:</strong> Kusema 'Mimi ni mkamilifu' au kutaja kasoro inayoharibu nafasi yako ya kazi hii.<br><strong>Suluhisho:</strong> Chagua udhaifu wa kweli ambao sio muhimu sana kwa kazi hiyo, na MUHIMU ZAIDI, eleza hatua madhubuti unazochukua ili kujiboresha."
+                    },
+                    {
+                        q: "Kwa nini unataka kufanya kazi hapa?",
+                        a: "<strong>Mtego:</strong> Kuzungumzia mshahara au faida pekee.<br><strong>Suluhisho:</strong> Onyesha umefanya utafiti. Taja mradi wa hivi karibuni wa kampuni, maadili yao, au utamaduni wao, na unganisha na ujuzi na matarajio yako."
+                    },
+                    {
+                        q: "Unajiona wapi miaka 5 ijayo?",
+                        a: "<strong>Mtego:</strong> Kusema 'Kwenye kiti chako' au kuonyesha ukosefu wa malengo.<br><strong>Suluhisho:</strong> Kuwa mkweli lakini mwenye malengo. Onyesha kuwa unataka kukua, kuchukua majukumu zaidi, au kuwa mtaalamu katika uwanja wako, ikiwezekana ndani ya kampuni hii."
+                    },
+                    {
+                        q: "Una maswali yoyote kwetu?",
+                        a: "<strong>Mtego:</strong> Kujibu 'Hapana, kila kitu kiko wazi' (Inaonyesha ukosefu wa nia).<br><strong>Suluhisho:</strong> Uliza maswali kuhusu timu ('Mienendo ya timu ikoje?'), jukumu ('Changamoto kubwa kwa mtu atakayechukua nafasi hii ni nini?'), au kampuni ('Mnapimaje mafanikio katika nafasi hii?')."
+                    }
+                ]
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelector').value;
+            const t = translations[lang];
+
+            // Textes simples
+            document.getElementById('navTitle').innerText = t.navTitle;
+            document.getElementById('pageTitle').innerText = t.pageTitle;
+            document.getElementById('pageSubtitle').innerText = t.pageSubtitle;
+            
+            document.getElementById('starTitle').innerText = t.starTitle;
+            document.getElementById('starDesc').innerText = t.starDesc;
+            document.getElementById('starS_title').innerText = t.starS_title;
+            document.getElementById('starS_desc').innerText = t.starS_desc;
+            document.getElementById('starT_title').innerText = t.starT_title;
+            document.getElementById('starT_desc').innerText = t.starT_desc;
+            document.getElementById('starA_title').innerText = t.starA_title;
+            document.getElementById('starA_desc').innerText = t.starA_desc;
+            document.getElementById('starR_title').innerText = t.starR_title;
+            document.getElementById('starR_desc').innerText = t.starR_desc;
+
+            document.getElementById('checkTitle').innerText = t.checkTitle;
+            document.getElementById('checkBefore_title').innerText = t.checkBefore_title;
+            document.getElementById('checkDuring_title').innerText = t.checkDuring_title;
+            document.getElementById('checkAfter_title').innerText = t.checkAfter_title;
+
+            // Listes Checklist
+            const renderList = (id, items, icon) => {
+                const ul = document.getElementById(id);
+                ul.innerHTML = items.map(item => `<li class="flex gap-2"><i class="fa-solid ${icon} mt-1 text-[var(--gold)] text-[10px]"></i> ${item}</li>`).join('');
+            };
+            renderList('checkBefore_list', t.checkBefore_list, 'fa-check');
+            renderList('checkDuring_list', t.checkDuring_list, 'fa-play');
+            renderList('checkAfter_list', t.checkAfter_list, 'fa-envelope');
+
+            // FAQ / Accordéon
+            document.getElementById('faqTitle').innerText = t.faqTitle;
+            const faqContainer = document.getElementById('faqContainer');
+            faqContainer.innerHTML = t.faqs.map((faq, index) => `
+                <div class="accordion-item bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                    <button class="w-full text-left p-5 flex justify-between items-center hover:bg-white/5 transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                        <span class="font-bold text-white text-sm md:text-base">${faq.q}</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 accordion-icon transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content bg-black/30">
+                        <div class="p-5 pt-0 text-gray-300 text-sm leading-relaxed border-t border-white/5 mt-2 pt-4">
+                            ${faq.a}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fonction pour ouvrir/fermer l'accordéon
+        function toggleAccordion(button) {
+            const item = button.parentElement;
+            
+            // Si on veut fermer tous les autres lors de l'ouverture (Optionnel)
+            // document.querySelectorAll('.accordion-item').forEach(el => {
+            //     if(el !== item) el.classList.remove('active');
+            // });
+
+            item.classList.toggle('active');
+        }
+
+        // Initialisation au chargement
+        window.onload = changeLanguage;
+
+    </script>
+</body>
+</html>
