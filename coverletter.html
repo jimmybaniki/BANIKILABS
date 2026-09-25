@@ -98,8 +98,9 @@
     <nav class="sticky top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
             <a href="javascript:history.back()" class="flex items-center gap-3 group cursor-pointer">
-                <div class="w-9 h-9 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110 text-black">
-                    <i class="fa-solid fa-arrow-left"></i>
+                <!-- Logo BL Banikilabs -->
+                <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-1.5 rounded-lg shadow-[0_0_15px_rgba(255,215,0,0.4)] group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                    <span class="text-black font-black text-sm sm:text-xl tracking-tighter">BL</span>
                 </div>
                 <span class="font-extrabold text-lg tracking-tight uppercase hidden sm:block">Baniki <span class="text-[var(--gold)]">Labs</span></span>
             </a>
@@ -188,8 +189,8 @@
 
             <!-- Boutons d'action rapides (Desktop) -->
             <div class="hidden lg:flex gap-4 pt-4 border-t border-white/10">
-                <button onclick="downloadPDF()" class="flex-1 bg-[var(--gold)] text-black font-black uppercase tracking-widest text-[10px] py-3 rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                    <i class="fa-solid fa-download text-sm"></i> Télécharger PDF
+                <button onclick="openPaymentModal()" class="flex-1 bg-[var(--gold)] text-black font-black uppercase tracking-widest text-[10px] py-3 rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    <i class="fa-solid fa-download text-sm"></i> Imprimer / Exporter
                 </button>
                 <button onclick="copyToClipboard()" class="flex-1 bg-white/10 text-white font-black uppercase tracking-widest text-[10px] py-3 rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center gap-2 border border-white/10">
                     <i class="fa-solid fa-copy text-sm"></i> Copier
@@ -204,7 +205,7 @@
                 <h2 class="text-white font-bold text-sm uppercase tracking-widest">Aperçu en direct</h2>
                 <div class="flex gap-2">
                     <button onclick="copyToClipboard()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-colors"><i class="fa-solid fa-copy"></i></button>
-                    <button onclick="downloadPDF()" class="w-10 h-10 rounded-full bg-[var(--gold)] text-black flex items-center justify-center shadow-lg"><i class="fa-solid fa-download"></i></button>
+                    <button onclick="openPaymentModal()" class="w-10 h-10 rounded-full bg-[var(--gold)] text-black flex items-center justify-center shadow-lg"><i class="fa-solid fa-download"></i></button>
                 </div>
             </div>
 
@@ -245,7 +246,98 @@
         </div>
     </main>
 
+    <!-- Modal Paiement / Mot de passe -->
+    <div id="payment-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-[200] p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full transform scale-95 transition-transform duration-300" id="payment-modal-box">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-indigo-600"></i> Code d'accès requis
+                </h3>
+                <button onclick="closePaymentModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <p class="text-sm text-gray-600 mb-5 leading-relaxed">Veuillez entrer votre mot de passe pour imprimer ou exporter votre lettre. Si vous n'avez pas de code, suivez les instructions ci-dessous pour payer l'accès indéfini.</p>
+            
+            <div class="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-sm">
+                <p class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-credit-card"></i> Tarif Accès Indéfini : 0.5$ ou 1000 FC
+                </p>
+                <ul class="space-y-3 text-indigo-800">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-mobile-screen-button mt-0.5 flex-shrink-0"></i>
+                        <span><strong>M-Pesa :</strong> <br>+243978415814 ou <br>+255793455303 (Jimmy Baniki)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg mt-0.5 flex-shrink-0"></i>
+                        <span><strong>WhatsApp :</strong> <br>Envoyez la capture d'écran du paiement au <a href="https://wa.me/243978415814" target="_blank" class="font-bold underline hover:text-indigo-600">+243978415814</a> pour recevoir votre code d'accès.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-700">Mot de passe :</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-key text-gray-400"></i>
+                    </div>
+                    <input type="password" id="input-password" placeholder="Entrez le code de déverrouillage..." class="w-full border border-gray-300 bg-gray-50 rounded-lg pl-10 p-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:bg-white outline-none transition-all text-gray-900">
+                </div>
+                <p id="password-error" class="text-red-500 text-xs font-medium hidden mt-1">Code incorrect. Veuillez réessayer ou effectuer le paiement.</p>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="closePaymentModal()" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 font-medium transition-colors">Annuler</button>
+                <button onclick="verifyAndDownload()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl hover:from-blue-500 hover:to-indigo-500 font-bold transition-colors flex justify-center items-center gap-2 shadow-md">
+                    <i class="fa-solid fa-unlock"></i> Imprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Gestion de la popup de Paiement
+        function openPaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const box = document.getElementById('payment-modal-box');
+            document.getElementById('input-password').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const box = document.getElementById('payment-modal-box');
+            modal.classList.add('opacity-0');
+            box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function verifyAndDownload() {
+            const pwd = document.getElementById('input-password').value;
+            // Mot de passe requis
+            if(pwd === "cv@2026") {
+                closePaymentModal();
+                executeDownload(); 
+            } else {
+                document.getElementById('password-error').classList.remove('hidden');
+            }
+        }
+
+        // Fonction pour imprimer en PDF
+        function executeDownload() {
+            // Déclenche l'impression du navigateur (CSS @media print gère le formatage)
+            window.print();
+        }
+
         // Fonction pour obtenir la date du jour formatée selon la langue
         function getCurrentDate(lang) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -336,12 +428,6 @@
             let finalSignoff = t.signoff.replace('[MANAGER]', manager);
             document.getElementById('outSignoff').innerHTML = finalSignoff;
             document.getElementById('outSignatureName').innerText = name;
-        }
-
-        // Fonction pour imprimer en PDF
-        function downloadPDF() {
-            // Déclenche l'impression du navigateur (CSS @media print gère le formatage)
-            window.print();
         }
 
         // Fonction pour copier le texte brut dans le presse-papier
