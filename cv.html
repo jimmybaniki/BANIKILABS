@@ -102,14 +102,15 @@
     <!-- Navbar -->
     <nav class="bg-gray-900 border-b border-gray-800 px-4 md:px-6 py-3 flex justify-between items-center z-20 shadow-lg no-print">
         <div class="flex items-center gap-2">
-            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-1.5 rounded-lg shadow-sm">
-                <i data-lucide="file-text" class="text-white w-5 h-5"></i>
+            <!-- Logo BL Banikilabs -->
+            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-1.5 rounded-lg shadow-sm flex items-center justify-center">
+                <span class="text-black font-black text-sm sm:text-xl tracking-tighter">BL</span>
             </div>
             <h1 class="text-lg md:text-xl font-bold text-white hidden sm:block tracking-wide">CV MasterPro</h1>
         </div>
         
         <div class="flex gap-2 md:gap-4 items-center flex-1 justify-end">
-            <!-- Sélecteur de couleur (Nouveau) -->
+            <!-- Sélecteur de couleur -->
             <div class="hidden md:flex items-center gap-1 bg-gray-800 p-1 rounded-lg border border-gray-700">
                 <button onclick="setTheme('#eab308')" class="w-6 h-6 rounded-full bg-yellow-500 hover:scale-110 transition-transform shadow-sm"></button>
                 <button onclick="setTheme('#3b82f6')" class="w-6 h-6 rounded-full bg-blue-500 hover:scale-110 transition-transform shadow-sm"></button>
@@ -132,13 +133,13 @@
 
             <!-- Export -->
             <button id="btn-download" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 md:px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-md">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                <span class="hidden md:inline">Exporter PDF</span>
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span class="hidden md:inline">Imprimer / Exporter</span>
             </button>
         </div>
     </nav>
 
-    <!-- Main Content Layout (Responsive Split) -->
+    <!-- Main Content Layout -->
     <div class="flex-1 flex overflow-hidden relative">
         
         <!-- Panneau de gauche : Formulaire -->
@@ -161,7 +162,6 @@
                         <i data-lucide="user" class="w-5 h-5 text-indigo-500"></i> Infos Personnelles
                     </h2>
                     <div class="space-y-4 input-group">
-                        <!-- Photo Upload -->
                         <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border border-gray-200 border-dashed">
                             <div class="w-12 h-12 rounded-full bg-gray-200 border border-gray-300 overflow-hidden flex-shrink-0" id="photo-preview-mini">
                                 <i data-lucide="image" class="w-6 h-6 m-3 text-gray-400"></i>
@@ -288,26 +288,20 @@
                     </div>
                 </section>
                 
-                <div class="pb-20 lg:pb-0"></div> <!-- Espace pour le bouton mobile -->
+                <div class="pb-20 lg:pb-0"></div>
             </div>
         </div>
 
         <!-- Panneau de droite : Prévisualisation -->
         <div id="preview-panel" class="w-full lg:w-7/12 xl:w-2/3 bg-grid overflow-y-auto p-4 md:p-8 flex justify-center hidden lg:flex absolute lg:relative inset-0 z-0">
-            
-            <!-- Scale Wrapper (Gère le zoom pour l'écran) -->
             <div id="cv-scale-wrapper" class="origin-top flex justify-center h-max pb-10">
-                <!-- Conteneur du CV (celui qui sera exporté en PDF) -->
                 <div id="cv-document" class="cv-container cv-fr p-10 md:p-[40mm]">
-                    
                     <!-- En-tête injecté -->
                     <div class="header" id="cv-header"></div>
-
                     <!-- Résumé injecté -->
                     <div class="mb-6" id="cv-summary-section">
                         <p id="cv-summary-text" class="text-sm leading-relaxed"></p>
                     </div>
-
                     <!-- Grille principale -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="cv-main-layout">
                         <!-- Colonne Principale -->
@@ -315,19 +309,16 @@
                             <h3 class="section-title"><i data-lucide="briefcase" class="w-5 h-5 hidden fr-icon"></i> <span id="cv-title-exp">Expérience Professionnelle</span></h3>
                             <div id="cv-experiences-list"></div>
                         </div>
-
                         <!-- Colonne Secondaire -->
                         <div>
                             <div class="mb-6">
                                 <h3 class="section-title"><i data-lucide="graduation-cap" class="w-5 h-5 hidden fr-icon"></i> <span id="cv-title-edu">Formation</span></h3>
                                 <div id="cv-education-list"></div>
                             </div>
-
                             <div class="mb-6">
                                 <h3 class="section-title"><i data-lucide="award" class="w-5 h-5 hidden fr-icon"></i> <span id="cv-title-skills">Compétences</span></h3>
                                 <ul id="cv-skills-list" class="flex flex-wrap gap-2 text-sm"></ul>
                             </div>
-
                             <div class="mt-6">
                                 <h3 class="section-title"><i data-lucide="message-circle" class="w-5 h-5 hidden fr-icon"></i> <span id="cv-title-lang">Langues</span></h3>
                                 <ul id="cv-languages-list" class="space-y-1 text-sm text-gray-700"></ul>
@@ -358,6 +349,54 @@
         </div>
     </div>
 
+    <!-- Modal Paiement / Mot de passe -->
+    <div id="payment-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-[100] p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full transform scale-95 transition-transform duration-300" id="payment-modal-box">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="lock" class="w-6 h-6 text-indigo-600"></i> Code d'accès requis
+                </h3>
+                <button onclick="closePaymentModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <p class="text-sm text-gray-600 mb-5 leading-relaxed">Veuillez entrer votre mot de passe pour imprimer ou exporter votre CV. Si vous n'avez pas de code, suivez les instructions ci-dessous pour payer l'accès indéfini.</p>
+            
+            <div class="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-sm">
+                <p class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="credit-card" class="w-5 h-5"></i> Tarif Accès Indéfini : 0.5$ ou 1000 FC
+                </p>
+                <ul class="space-y-3 text-indigo-800">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="smartphone" class="w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span><strong>M-Pesa :</strong> <br>+243978415814 ou <br>+255793455303 (Jimmy Baniki)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="message-circle" class="w-5 h-5 mt-0.5 flex-shrink-0"></i>
+                        <span><strong>WhatsApp :</strong> <br>Envoyez la capture d'écran du paiement au <a href="https://wa.me/243978415814" target="_blank" class="font-bold underline hover:text-indigo-600">+243978415814</a> pour recevoir votre code d'accès.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-700">Mot de passe :</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="key" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <input type="password" id="input-password" placeholder="Entrez le code de déverrouillage..." class="w-full border border-gray-300 bg-gray-50 rounded-lg pl-10 p-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:bg-white outline-none transition-all">
+                </div>
+                <p id="password-error" class="text-red-500 text-xs font-medium hidden mt-1">Code incorrect. Veuillez réessayer ou effectuer le paiement.</p>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="closePaymentModal()" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-200 font-medium transition-colors">Annuler</button>
+                <button onclick="verifyAndDownload()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl hover:from-blue-500 hover:to-indigo-500 font-bold transition-colors flex justify-center items-center gap-2 shadow-md">
+                    <i data-lucide="unlock" class="w-4 h-4"></i> Imprimer le CV
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Init icones
         lucide.createIcons();
@@ -366,7 +405,7 @@
         let currentStyle = 'fr'; 
         let currentLang = 'fr'; 
         let isPreviewModeMobile = false;
-        let uploadedImageBase64 = null; // Stocke la photo uploadée
+        let uploadedImageBase64 = null; 
 
         // Textes d'interface
         const i18n = {
@@ -374,7 +413,7 @@
                 appTitle: "CV MasterPro",
                 styleFr: "FR Style",
                 styleUs: "US Style",
-                exportPdf: "Exporter PDF",
+                exportPdf: "Imprimer / Exporter",
                 personalInfo: "Infos Personnelles",
                 photoLbl: "Photo de profil",
                 firstName: "Prénom",
@@ -411,7 +450,7 @@
                 appTitle: "Resume Maker",
                 styleFr: "FR Style",
                 styleUs: "US Style",
-                exportPdf: "Export PDF",
+                exportPdf: "Print / Export",
                 personalInfo: "Personal Info",
                 photoLbl: "Profile Photo",
                 firstName: "First Name",
@@ -455,7 +494,6 @@
             
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            // Timeout for animation
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 box.classList.remove('scale-95');
@@ -472,6 +510,49 @@
                 modal.classList.remove('flex');
             }, 300);
         }
+
+        // Gestion de la popup de Paiement
+        function openPaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const box = document.getElementById('payment-modal-box');
+            document.getElementById('input-password').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+            }, 10);
+            lucide.createIcons(); // Assure l'affichage des icones
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const box = document.getElementById('payment-modal-box');
+            modal.classList.add('opacity-0');
+            box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function verifyAndDownload() {
+            const pwd = document.getElementById('input-password').value;
+            // Mot de passe mis à jour : cv@2026
+            if(pwd === "cv@2026") {
+                closePaymentModal();
+                executeDownload(); // Lancement du téléchargement réel
+            } else {
+                document.getElementById('password-error').classList.remove('hidden');
+            }
+        }
+
+        // Intercepter le clic original sur le bouton de téléchargement
+        document.getElementById('btn-download').addEventListener('click', () => {
+            openPaymentModal();
+        });
 
         // --- GESTION COULEURS ---
         function setTheme(colorHex) {
@@ -511,10 +592,7 @@
 
         btnFr.addEventListener('click', () => setStyle('fr'));
         btnUs.addEventListener('click', () => setStyle('us'));
-
-        // --- STREAMING_CHUNK: Traduction, Photo Upload & Mise à l'échelle ---
         
-        // Sélecteur de langue
         document.getElementById('lang-selector').addEventListener('change', (e) => {
             currentLang = e.target.value;
             applyTranslations();
@@ -524,12 +602,10 @@
         function applyTranslations() {
             const t = i18n[currentLang];
             
-            // UI Basics
             document.getElementById('btn-style-fr').textContent = t.styleFr;
             document.getElementById('btn-style-us').textContent = t.styleUs;
             document.querySelector('#btn-download span').textContent = t.exportPdf;
             
-            // Labels
             document.getElementById('lbl-photo').textContent = t.photoLbl;
             document.getElementById('input-firstname').previousElementSibling.textContent = t.firstName;
             document.getElementById('input-lastname').previousElementSibling.textContent = t.lastName;
@@ -546,7 +622,6 @@
             document.getElementById('add-exp-btn').innerHTML = `<i data-lucide="plus" class="w-4 h-4"></i> ${t.addBtn}`;
             document.getElementById('add-edu-btn').innerHTML = `<i data-lucide="plus" class="w-4 h-4"></i> ${t.addBtn}`;
 
-            // Dynamics
             document.querySelectorAll('.exp-item').forEach(item => {
                 const labels = item.querySelectorAll('label');
                 if(labels.length >= 5) {
@@ -565,13 +640,11 @@
                 }
             });
 
-            // CV Titles
             document.getElementById('cv-title-exp').textContent = t.cvExpTitle;
             document.getElementById('cv-title-edu').textContent = t.cvEduTitle;
             document.getElementById('cv-title-skills').textContent = t.cvSkillsTitle;
             document.getElementById('cv-title-lang').textContent = t.cvLangTitle;
 
-            // Mobile Toggle
             const mobileBtn = document.getElementById('mobile-toggle-btn');
             if(isPreviewModeMobile) {
                 mobileBtn.innerHTML = `<i data-lucide="edit-3" class="w-5 h-5"></i><span>${t.editCv}</span>`;
@@ -582,7 +655,6 @@
             lucide.createIcons();
         }
 
-        // Photo Upload Logic
         const photoInput = document.getElementById('input-photo');
         const removePhotoBtn = document.getElementById('btn-remove-photo');
         const miniPreview = document.getElementById('photo-preview-mini');
@@ -610,7 +682,6 @@
             updatePreview();
         });
 
-        // Fonction pour gérer le Zoom automatique sur mobile / petits écrans
         function scaleCV() {
             const previewArea = document.getElementById('preview-panel');
             const cvScaleWrapper = document.getElementById('cv-scale-wrapper');
@@ -618,15 +689,12 @@
             
             if(!previewArea || previewArea.classList.contains('hidden')) return;
 
-            // L'A4 fait 210mm. En pixels avec une densité standard, disons ~794px.
-            // On récupère la largeur exacte en px du rendu.
             const targetWidth = cvDoc.offsetWidth || 794; 
-            const containerWidth = previewArea.clientWidth - 32; // 32px padding sécurisé
+            const containerWidth = previewArea.clientWidth - 32;
 
             if (containerWidth < targetWidth && containerWidth > 0) {
                 const scale = containerWidth / targetWidth;
                 cvScaleWrapper.style.transform = `scale(${scale})`;
-                // Ajustement de la hauteur pour ne pas avoir un scroll géant
                 const scaledHeight = cvDoc.offsetHeight * scale;
                 cvScaleWrapper.style.height = `${scaledHeight}px`;
                 cvScaleWrapper.style.marginBottom = '20px';
@@ -639,7 +707,6 @@
 
         window.addEventListener('resize', scaleCV);
 
-        // Mobile Toggle Bouton Logic
         document.getElementById('mobile-toggle-btn').addEventListener('click', () => {
             const editPanel = document.getElementById('edit-panel');
             const previewPanel = document.getElementById('preview-panel');
@@ -651,9 +718,9 @@
             if (isPreviewModeMobile) {
                 editPanel.classList.add('hidden');
                 previewPanel.classList.remove('hidden');
-                previewPanel.classList.add('flex'); // pour centrer
+                previewPanel.classList.add('flex');
                 btn.innerHTML = `<i data-lucide="edit-3" class="w-5 h-5"></i><span>${t.editCv}</span>`;
-                setTimeout(scaleCV, 50); // Attendre affichage pour scale
+                setTimeout(scaleCV, 50); 
             } else {
                 editPanel.classList.remove('hidden');
                 previewPanel.classList.add('hidden');
@@ -663,9 +730,7 @@
             lucide.createIcons();
         });
 
-        // --- STREAMING_CHUNK: Moteur de rendu du CV (updatePreview) ---
         function updatePreview() {
-            // Récupération des valeurs
             const fname = document.getElementById('input-firstname').value;
             const lname = document.getElementById('input-lastname').value;
             const title = document.getElementById('input-title').value;
@@ -675,10 +740,8 @@
             const linkedin = document.getElementById('input-linkedin').value;
             const summary = document.getElementById('input-summary').value;
 
-            // En-tête
             const headerEl = document.getElementById('cv-header');
             
-            // Image source : uploadée ou placeholder d'initiale
             let imgSrc = uploadedImageBase64;
             if(!imgSrc) {
                 const initials = (fname.charAt(0) + lname.charAt(0)).toUpperCase() || 'CV';
@@ -721,7 +784,6 @@
                 `;
             }
 
-            // Résumé
             const summaryEl = document.getElementById('cv-summary-section');
             if (summary.trim() !== "") {
                 summaryEl.style.display = "block";
@@ -731,7 +793,6 @@
                 summaryEl.style.display = "none";
             }
 
-            // Expériences
             const expListEl = document.getElementById('cv-experiences-list');
             expListEl.innerHTML = '';
             document.querySelectorAll('.exp-item').forEach(item => {
@@ -777,7 +838,6 @@
                 }
             });
 
-            // Formations
             const eduListEl = document.getElementById('cv-education-list');
             eduListEl.innerHTML = '';
             document.querySelectorAll('.edu-item').forEach(item => {
@@ -808,7 +868,6 @@
                 }
             });
 
-            // Compétences
             const skillsStr = document.getElementById('input-skills').value;
             const skillsListEl = document.getElementById('cv-skills-list');
             skillsListEl.innerHTML = '';
@@ -825,7 +884,6 @@
                 }
             }
 
-            // Langues
             const langStr = document.getElementById('input-languages').value;
             const langListEl = document.getElementById('cv-languages-list');
             langListEl.innerHTML = '';
@@ -841,13 +899,11 @@
             }
 
             lucide.createIcons();
-            scaleCV(); // Assurer le scale si le contenu a modifié la taille
+            scaleCV(); 
         }
 
-        // --- STREAMING_CHUNK: Événements, API IA, et Export PDF ---
-        
         function attachInputListeners() {
-            document.querySelectorAll('input, textarea').forEach(input => {
+            document.querySelectorAll('input:not(#input-password), textarea').forEach(input => {
                 input.removeEventListener('input', updatePreview);
                 input.addEventListener('input', updatePreview);
             });
@@ -864,13 +920,11 @@
             });
         }
 
-        // Ajout section dynamique
         document.getElementById('add-exp-btn').addEventListener('click', () => {
             const container = document.getElementById('experiences-container');
             const item = document.createElement('div');
             item.className = 'exp-item bg-white border border-gray-200 p-4 rounded-xl shadow-sm relative group input-group transition-all hover:shadow-md';
-            item.innerHTML = document.querySelector('.exp-item').innerHTML; // Clone structure
-            // Reset values
+            item.innerHTML = document.querySelector('.exp-item').innerHTML;
             item.querySelectorAll('input').forEach(inp => inp.value = "");
             item.querySelector('textarea').value = "- Nouvelle mission";
             container.appendChild(item);
@@ -889,7 +943,6 @@
             attachInputListeners();
         });
 
-        // Amélioration IA (Simulée pour démo si pas d'API KEY, mais fonctionnelle si clé injectée)
         async function improveText(textareaElement, buttonElement) {
             const originalText = textareaElement.value;
             if (originalText.trim() === "") return;
@@ -899,24 +952,13 @@
             buttonElement.disabled = true;
 
             try {
-                // Remplacer par clé API Gemini réelle. Sans clé, je fais un formatage basique simulant l'IA pour l'UX.
                 const apiKey = ""; 
                 if(!apiKey) {
-                    // Simulation
                     await new Promise(r => setTimeout(r, 1000));
                     textareaElement.value = originalText.split('\n').filter(l=>l.trim()).map(l => {
                         let text = l.replace(/^- /, '');
-                        return `- A géré et optimisé : ${text}`; // Fake AI
+                        return `- A géré et optimisé : ${text}`; 
                     }).join('\n');
-                    updatePreview();
-                    buttonElement.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>`;
-                } else {
-                    // Appel Réel API
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-                    const prompt = `Améliore professionnellement ces puces pour un CV, commence par un tiret (-) :\n${originalText}`;
-                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-                    const result = await response.json();
-                    textareaElement.value = result.candidates[0].content.parts[0].text.trim();
                     updatePreview();
                     buttonElement.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>`;
                 }
@@ -929,14 +971,13 @@
             }
         }
 
-        // Export PDF
-        document.getElementById('btn-download').addEventListener('click', () => {
+        // --- Logique d'impression finale ---
+        function executeDownload() {
             const element = document.getElementById('cv-document');
             const wrapper = document.getElementById('cv-scale-wrapper');
             const fname = document.getElementById('input-firstname').value;
             const lname = document.getElementById('input-lastname').value.toUpperCase();
             
-            // Enlever temporairement le zoom pour garantir la qualité du PDF
             const origTransform = wrapper.style.transform;
             const origHeight = wrapper.style.height;
             wrapper.style.transform = 'none';
@@ -956,7 +997,6 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restaurer UI
                 wrapper.style.transform = origTransform;
                 wrapper.style.height = origHeight;
                 btn.innerHTML = originalContent;
@@ -971,7 +1011,7 @@
                 lucide.createIcons();
                 showMessage("Erreur", "Échec de l'exportation PDF.");
             });
-        });
+        }
 
         // Initialisation
         window.onload = () => {
@@ -979,18 +1019,16 @@
             applyTranslations(); 
             setStyle('fr'); 
             
-            // Gestion de l'affichage sur resize pour le panel mobile
             window.addEventListener('resize', () => {
                 const previewPanel = document.getElementById('preview-panel');
                 const editPanel = document.getElementById('edit-panel');
                 const mobileBtn = document.getElementById('mobile-toggle-btn');
                 
-                if (window.innerWidth >= 1024) { // Breakpoint lg de tailwind
+                if (window.innerWidth >= 1024) { 
                     previewPanel.classList.remove('hidden');
                     previewPanel.classList.add('flex');
                     editPanel.classList.remove('hidden');
                     mobileBtn.classList.add('hidden');
-                    // Reset state
                     isPreviewModeMobile = false; 
                 } else {
                     mobileBtn.classList.remove('hidden');
@@ -1004,7 +1042,6 @@
                 scaleCV();
             });
 
-            // Trigger manuel au démarrage
             window.dispatchEvent(new Event('resize'));
             setTimeout(scaleCV, 100); 
         };
