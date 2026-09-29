@@ -17,7 +17,9 @@
             --bg-card: #121212;
             --text-main: #f9fafb;
             --text-dim: #4b5563;
+            --text-correct: #34d399; /* emerald-400 */
             --error: #ef4444;
+            --app-brightness: 100%;
         }
 
         body {
@@ -28,6 +30,88 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            filter: brightness(var(--app-brightness));
+            transition: background-color 0.3s ease, color 0.3s ease, filter 0.15s ease;
+        }
+
+        /* Light Mode Styling Rules */
+        body.light-mode {
+            --bg-dark: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #0f172a; /* Très lisible, presque noir */
+            --text-dim: #475569; /* Gris foncé pour le texte non tapé */
+            --text-correct: #059669; /* Vert émeraude foncé pour une bonne lisibilité */
+        }
+        
+        /* Conversion automatique pour que tous les textes blancs deviennent noirs/foncés */
+        body.light-mode .text-white { color: var(--text-main) !important; }
+        body.light-mode .text-gray-300, 
+        body.light-mode .text-gray-400,
+        body.light-mode .text-gray-500 { color: var(--text-dim) !important; }
+        
+        /* Conversion des contours et bordures blancs vers des tons foncés/noirs */
+        body.light-mode .border-white\/5,
+        body.light-mode .border-white\/10,
+        body.light-mode .border-white\/20,
+        body.light-mode .border-white\/30,
+        body.light-mode .border-white { 
+            border-color: rgba(0, 0, 0, 0.15) !important; 
+        }
+        
+        /* Adaptation des fonds translucides blancs pour le mode clair (deviennent grisés) */
+        body.light-mode .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
+        body.light-mode .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
+        body.light-mode .bg-white\/20 { background-color: rgba(0, 0, 0, 0.12) !important; }
+        
+        /* Inversion des fonds sombres (noirs) vers des fonds clairs (blancs) */
+        body.light-mode .bg-black\/20,
+        body.light-mode .bg-black\/40,
+        body.light-mode .bg-black\/60,
+        body.light-mode .bg-black\/70,
+        body.light-mode .bg-black\/75,
+        body.light-mode .bg-black\/80,
+        body.light-mode .bg-black\/90,
+        body.light-mode .bg-neutral-900\/90,
+        body.light-mode .bg-neutral-900,
+        body.light-mode .bg-black {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: var(--text-main) !important;
+        }
+        
+        body.light-mode .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode nav {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Touches du clavier en mode clair */
+        body.light-mode .key {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a !important;
+            font-weight: 600;
+        }
+        
+        body.light-mode #typing-text { color: var(--text-dim); }
+        
+        body.light-mode #custom-input-field,
+        body.light-mode #student-name,
+        body.light-mode #lesson-select {
+            background-color: #ffffff !important;
+            color: var(--text-main) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
+        }
+
+        body.light-mode #start-overlay {
+            background-color: rgba(255, 255, 255, 0.88) !important;
+        }
+        body.light-mode #start-overlay p {
+            color: var(--text-main) !important;
         }
 
         .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -54,8 +138,9 @@
             border-radius: 2px; padding: 0 1px;
         }
 
-        .letter.correct { color: #34d399; }
+        .letter.correct { color: var(--text-correct); }
         .letter.incorrect { color: var(--error); background-color: rgba(239, 68, 68, 0.2); border-bottom: 2px solid var(--error); }
+        body.light-mode .letter.incorrect { background-color: rgba(239, 68, 68, 0.15); }
 
         .caret {
             position: absolute; left: 0; top: 10%; width: 2.5px; height: 80%;
@@ -83,7 +168,6 @@
             box-shadow: 0 10px 30px -10px var(--gold-glow);
         }
 
-        /* Virtual Keyboard Styles */
         .key {
             transition: all 0.1s ease;
             user-select: none;
@@ -154,13 +238,16 @@
             </a>
             
             <div class="flex items-center gap-3">
-                <!-- Layout selector (AZERTY / QWERTY) -->
+                <button onclick="toggleThemeModal()" id="theme-settings-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 hover:text-[var(--gold)] hover:border-[var(--gold)]/50 transition-all">
+                    <i class="fa-solid fa-palette text-[var(--gold)]"></i>
+                    <span data-translate="nav-theme">Thème</span>
+                </button>
+
                 <button onclick="toggleKeyboardLayout()" id="layout-toggle-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-gray-300 hover:text-[var(--gold)] hover:border-[var(--gold)]/50 transition-all">
                     <i class="fa-solid fa-keyboard text-[var(--gold)]"></i>
                     <span>AZERTY</span>
                 </button>
 
-                <!-- Language Selector -->
                 <div class="relative group">
                     <button class="flex items-center gap-2 text-gray-400 hover:text-[var(--gold)] font-bold text-xs uppercase tracking-widest transition-colors py-2 px-3 bg-white/5 border border-white/10 rounded-xl">
                         <i class="fa-solid fa-globe"></i>
@@ -173,7 +260,6 @@
                     </div>
                 </div>
 
-                <!-- Brand Logo -->
                 <div class="w-9 h-9 bg-[var(--gold)] flex items-center justify-center rounded-xl shadow-[0_0_15px_rgba(255,215,0,0.3)]">
                     <span class="text-black font-black text-sm tracking-tighter">BL</span>
                 </div>
@@ -183,16 +269,14 @@
 
     <main class="flex-grow pt-20 pb-10 px-4 sm:px-6 relative z-10 w-full max-w-7xl mx-auto print-hidden flex flex-col justify-between">
         
-        <!-- Header Controls & Mode Switcher -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
             <div>
                 <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.3em]" data-translate="subtitle">BANIKI LABS TYPING STUDIO</span>
-                <h1 class="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2" data-translate="title">
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2 text-white" data-translate="title">
                     TEST DE FRAPPE & CLAVIER INTERACTIF
                 </h1>
             </div>
 
-            <!-- Modes Buttons -->
             <div class="flex bg-white/5 rounded-xl p-1 border border-white/10 flex-wrap justify-center gap-1">
                 <button onclick="setMode('random')" id="btn-mode-random" class="mode-btn active px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-black bg-[var(--gold)] transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-dice text-xs"></i> <span data-translate="mode-random">Aléatoire</span>
@@ -205,7 +289,6 @@
                 </button>
             </div>
 
-            <!-- Time Selector -->
             <div class="flex bg-white/5 rounded-xl p-1 border border-white/10" id="time-controls">
                 <button class="time-btn active bg-white/10 text-white font-bold px-3 py-1 rounded-lg text-xs transition-all" data-time="15">15s</button>
                 <button class="time-btn text-gray-400 hover:text-white font-bold px-3 py-1 rounded-lg text-xs transition-all" data-time="30">30s</button>
@@ -213,7 +296,6 @@
             </div>
         </div>
 
-        <!-- Course Header Panel (Visible in Lessons Mode) -->
         <div id="lessons-area" class="w-full mb-4 hidden animate-fadeIn glass-panel p-4 rounded-2xl border border-[var(--gold)]/30">
             <div class="flex flex-col sm:flex-row gap-3 items-center mb-3">
                 <div class="w-full sm:w-1/2 relative">
@@ -239,11 +321,8 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            
-            <!-- LEFT COLUMN (8 cols): Text Display Screen + Virtual Keyboard -->
             <div class="lg:col-span-8 flex flex-col gap-4">
                 
-                <!-- Performance Indicators Bar -->
                 <div class="flex justify-between items-center bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
                     <div class="text-[var(--gold)] font-mono text-xl sm:text-2xl font-black flex items-center gap-2">
                         <i class="fa-regular fa-clock text-base"></i>
@@ -269,10 +348,8 @@
                     </div>
                 </div>
 
-                <!-- 1. DISPLAY SCREEN (Text area placed upper section) -->
                 <div class="w-full glass-panel rounded-2xl p-5 sm:p-6 relative overflow-hidden group cursor-text border border-white/10 hover:border-[var(--gold)]/30 transition-all shadow-2xl min-h-[160px] sm:min-h-[180px]" id="typing-container">
                     
-                    <!-- Screen Header Bar / Terminal style -->
                     <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5 text-[10px] text-gray-500 font-mono">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block"></span>
@@ -299,7 +376,6 @@
                     <div id="caret" class="caret"></div>
                 </div>
 
-                <!-- 2. VIRTUAL KEYBOARD (Placed directly beneath the typing display screen) -->
                 <div class="w-full glass-panel rounded-2xl p-3 sm:p-4 border border-white/10 shadow-2xl bg-black/40">
                     <div class="flex justify-between items-center mb-2 px-1">
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
@@ -310,8 +386,6 @@
                             Touche suivante éclairée
                         </span>
                     </div>
-
-                    <!-- Keyboard Container (Dynamically rendered via JavaScript) -->
                     <div id="virtual-keyboard" class="flex flex-col gap-1.5 w-full select-none">
                         <!-- Keys will be injected here -->
                     </div>
@@ -319,10 +393,7 @@
 
             </div>
 
-            <!-- RIGHT COLUMN (4 cols): Paste Custom Text & Quick Tools -->
             <div class="lg:col-span-4 flex flex-col gap-4">
-                
-                <!-- PASTE TEXT BOX (Dedicated area on the right) -->
                 <div class="glass-panel rounded-2xl p-5 border border-white/10 flex flex-col justify-between shadow-2xl bg-black/40">
                     <div>
                         <div class="flex items-center justify-between mb-3">
@@ -354,7 +425,6 @@
                             </button>
                         </div>
 
-                        <!-- Quick Samples presets -->
                         <div class="mt-2 pt-3 border-t border-white/5">
                             <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2" data-translate="quick-samples">Textes rapides :</span>
                             <div class="flex flex-wrap gap-1.5">
@@ -366,7 +436,6 @@
                     </div>
                 </div>
 
-                <!-- Pro Typing Tips Box -->
                 <div class="glass-panel rounded-2xl p-4 border border-white/10 bg-black/20">
                     <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-hand text-[var(--gold)]"></i> <span data-translate="tips-title">Posture & Doigts</span>
@@ -377,12 +446,64 @@
                         <li>Utilisez les pouces pour la barre d'espace.</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </main>
 
+    <div id="theme-modal" class="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300 print-hidden">
+        <div class="glass-panel border border-[var(--gold)]/30 rounded-[2rem] p-6 sm:p-8 max-w-lg w-full relative transform scale-95 transition-transform duration-300 shadow-2xl bg-neutral-900/90" id="theme-modal-content">
+            <button onclick="closeThemeModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2 class="text-xl font-black text-white mb-1 flex items-center gap-2" data-translate="theme-title">
+                <i class="fa-solid fa-sliders text-[var(--gold)]"></i> Personnalisation & Affichage
+            </h2>
+            <p class="text-xs text-gray-400 mb-6">Ajustez le mode d'affichage, la couleur du tableau et la luminosité.</p>
+
+            <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-0.5" data-translate="mode-dark-light">Mode d'affichage</h3>
+                    <p class="text-[11px] text-gray-400" id="current-mode-label">Mode Sombre actif</p>
+                </div>
+                <button onclick="toggleDarkMode()" id="btn-toggle-dark" class="px-4 py-2 rounded-xl bg-[var(--gold)] text-black font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all">
+                    <i class="fa-solid fa-moon" id="dark-icon"></i>
+                    <span id="dark-btn-text">Sombre</span>
+                </button>
             </div>
 
-        </div>
+            <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/10">
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-1" data-translate="board-color">Couleur du Tableau</h3>
+                <p class="text-[11px] text-gray-400 mb-3">Choisissez la couleur principale d'accentuation du tableau.</p>
+                <div class="grid grid-cols-6 gap-2" id="color-swatches">
+                    <button onclick="setBoardColor('#FFD700', 'rgba(255,215,0,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#FFD700] border-2 border-white transition-transform hover:scale-110 shadow-md" title="Or"></button>
+                    <button onclick="setBoardColor('#10B981', 'rgba(16,185,129,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#10B981] border-2 border-transparent transition-transform hover:scale-110 shadow-md" title="Émeraude"></button>
+                    <button onclick="setBoardColor('#06B6D4', 'rgba(6,182,212,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#06B6D4] border-2 border-transparent transition-transform hover:scale-110 shadow-md" title="Cyan"></button>
+                    <button onclick="setBoardColor('#A855F7', 'rgba(168,85,247,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#A855F7] border-2 border-transparent transition-transform hover:scale-110 shadow-md" title="Violet"></button>
+                    <button onclick="setBoardColor('#F43F5E', 'rgba(244,63,94,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#F43F5E] border-2 border-transparent transition-transform hover:scale-110 shadow-md" title="Rose"></button>
+                    <button onclick="setBoardColor('#F97316', 'rgba(249,115,22,0.4)')" class="color-swatch w-full h-9 rounded-xl bg-[#F97316] border-2 border-transparent transition-transform hover:scale-110 shadow-md" title="Orange"></button>
+                </div>
+            </div>
 
-    </main>
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider" data-translate="brightness">Luminosité</h3>
+                    <span id="brightness-val-display" class="font-mono text-xs font-bold text-[var(--gold)]">100%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-sun text-xs text-gray-400"></i>
+                    <input type="range" id="brightness-slider" min="50" max="150" value="100" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[var(--gold)]" oninput="changeBrightness(this.value)">
+                    <i class="fa-solid fa-sun text-lg text-[var(--gold)]"></i>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeThemeModal()" class="w-full bg-[var(--gold)] text-black font-black py-2.5 rounded-xl text-xs uppercase tracking-wider transition-transform hover:scale-[1.02]">
+                    Valider & Fermer
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="result-modal" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 opacity-0 transition-opacity duration-500 print-hidden">
         <div class="glass-panel border border-[var(--gold)]/30 rounded-[2rem] p-6 sm:p-10 max-w-xl w-full text-center relative transform scale-95 transition-transform duration-500 max-h-[90vh] overflow-y-auto shadow-2xl" id="result-content">
@@ -391,7 +512,7 @@
                 <i id="result-icon" class="fa-solid fa-trophy text-3xl text-[var(--gold)]"></i>
             </div>
             
-            <h2 id="result-title" class="text-2xl sm:text-3xl font-black tracking-tighter mb-1" data-translate="result-title">Test Terminé !</h2>
+            <h2 id="result-title" class="text-2xl sm:text-3xl font-black tracking-tighter mb-1 text-white" data-translate="result-title">Test Terminé !</h2>
             <p id="result-desc" class="text-gray-400 text-xs mb-5" data-translate="result-desc">Voici vos statistiques de frappe avec Baniki Labs.</p>
 
             <div id="lesson-tip-area" class="hidden bg-blue-900/20 border border-blue-500/30 rounded-xl p-3 mb-5 text-left">
@@ -486,7 +607,8 @@
                 "btn-restart": "Recommencer", "paste-box-title": "Coller Votre Texte",
                 "paste-box-desc": "Collez ici n'importe quel texte pour vous entraîner immédiatement.",
                 "virtual-kb-title": "Clavier Virtuel Interactif", "tips-title": "Posture & Doigts",
-                "quick-samples": "Textes rapides :"
+                "quick-samples": "Textes rapides :", "nav-theme": "Thème", "theme-title": "Personnalisation & Affichage",
+                "mode-dark-light": "Mode d'affichage", "board-color": "Couleur du Tableau", "brightness": "Luminosité"
             },
             en: {
                 "nav-back": "Back", "subtitle": "BANIKI LABS TYPING STUDIO", "title": "TYPING TEST & INTERACTIVE KEYBOARD",
@@ -497,7 +619,8 @@
                 "btn-restart": "Restart", "paste-box-title": "Paste Your Text",
                 "paste-box-desc": "Paste any custom text or article here to practice.",
                 "virtual-kb-title": "Interactive Virtual Keyboard", "tips-title": "Posture & Fingers",
-                "quick-samples": "Quick samples:"
+                "quick-samples": "Quick samples:", "nav-theme": "Theme", "theme-title": "Customization & Display",
+                "mode-dark-light": "Display Mode", "board-color": "Board Color", "brightness": "Brightness"
             },
             sw: {
                 "nav-back": "Rudi", "subtitle": "BANIKI LABS TYPING STUDIO", "title": "MTAHANI WA CHAPA NA KIBODI",
@@ -508,124 +631,59 @@
                 "btn-restart": "Anza Tena", "paste-box-title": "Bandika Maandishi Yako",
                 "paste-box-desc": "Bandika maandishi yoyote hapa kufanya mazoezi.",
                 "virtual-kb-title": "Kibodi cha Mtandao", "tips-title": "Msimamo wa Vidole",
-                "quick-samples": "Mifano ya haraka:"
+                "quick-samples": "Mifano ya haraka:", "nav-theme": "Maudhui", "theme-title": "Marekebisho na Onyesho",
+                "mode-dark-light": "Aina ya Onyesho", "board-color": "Rangi ya Ubao", "brightness": "Mwangaza wa Skrini"
             }
         };
 
+        const keyboardLayouts = {
+            'AZERTY': [
+                [{key: 'A', code: 'KeyQ'}, {key: 'Z', code: 'KeyW'}, {key: 'E', code: 'KeyE'}, {key: 'R', code: 'KeyR'}, {key: 'T', code: 'KeyT'}, {key: 'Y', code: 'KeyY'}, {key: 'U', code: 'KeyU'}, {key: 'I', code: 'KeyI'}, {key: 'O', code: 'KeyO'}, {key: 'P', code: 'KeyP'}],
+                [{key: 'Q', code: 'KeyA'}, {key: 'S', code: 'KeyS'}, {key: 'D', code: 'KeyD'}, {key: 'F', code: 'KeyF', home: true}, {key: 'G', code: 'KeyG'}, {key: 'H', code: 'KeyH'}, {key: 'J', code: 'KeyJ', home: true}, {key: 'K', code: 'KeyK'}, {key: 'L', code: 'KeyL'}, {key: 'M', code: 'Semicolon'}],
+                [{key: 'W', code: 'KeyZ'}, {key: 'X', code: 'KeyX'}, {key: 'C', code: 'KeyC'}, {key: 'V', code: 'KeyV'}, {key: 'B', code: 'KeyB'}, {key: 'N', code: 'KeyN'}, {key: ',', code: 'KeyM'}, {key: ';', code: 'Comma'}, {key: ':', code: 'Period'}, {key: '!', code: 'Slash'}],
+                [{key: 'ESPACE', code: 'Space', isSpace: true, width: 'w-1/2 sm:w-2/3'}]
+            ],
+            'QWERTY': [
+                [{key: 'Q', code: 'KeyQ'}, {key: 'W', code: 'KeyW'}, {key: 'E', code: 'KeyE'}, {key: 'R', code: 'KeyR'}, {key: 'T', code: 'KeyT'}, {key: 'Y', code: 'KeyY'}, {key: 'U', code: 'KeyU'}, {key: 'I', code: 'KeyI'}, {key: 'O', code: 'KeyO'}, {key: 'P', code: 'KeyP'}],
+                [{key: 'A', code: 'KeyA'}, {key: 'S', code: 'KeyS'}, {key: 'D', code: 'KeyD'}, {key: 'F', code: 'KeyF', home: true}, {key: 'G', code: 'KeyG'}, {key: 'H', code: 'KeyH'}, {key: 'J', code: 'KeyJ', home: true}, {key: 'K', code: 'KeyK'}, {key: 'L', code: 'KeyL'}],
+                [{key: 'Z', code: 'KeyZ'}, {key: 'X', code: 'KeyX'}, {key: 'C', code: 'KeyC'}, {key: 'V', code: 'KeyV'}, {key: 'B', code: 'KeyB'}, {key: 'N', code: 'KeyN'}, {key: 'M', code: 'KeyM'}],
+                [{key: 'SPACE', code: 'Space', isSpace: true, width: 'w-1/2 sm:w-2/3'}]
+            ]
+        };
+
         const wordLists = {
-            fr: ["innovation", "technologie", "futur", "digital", "baniki", "labs", "kinshasa", "projet", "vision", "excellence", "stratégie", "développement", "solution", "entreprise", "internet", "connexion", "réseau", "données", "cloud", "sécurité", "logiciel", "application", "mobile", "design", "interface", "expérience", "code", "vitesse", "précision", "qualité", "service", "client", "marché", "croissance", "succès", "équipe"],
-            en: ["innovation", "technology", "future", "digital", "baniki", "labs", "kinshasa", "project", "vision", "excellence", "strategy", "development", "solution", "business", "internet", "connection", "network", "data", "cloud", "security", "software", "application", "mobile", "design", "interface", "experience", "code", "speed", "accuracy", "quality", "service", "client", "market", "growth"],
-            sw: ["teknolojia", "maendeleo", "mradi", "kasi", "usahihi", "baniki", "labs", "mtandao", "kazi", "elimu", "ujuzi", "mafanikio", "ubora", "huduma", "programu", "kompyuta"]
+            fr: ["le", "la", "les", "un", "une", "des", "et", "ou", "mais", "donc", "pour", "avec", "dans", "sur", "sous", "chien", "chat", "maison", "voiture", "ordinateur", "clavier", "ecran", "souris", "fenetre", "porte", "table", "chaise", "soleil", "lune", "etoile", "ciel", "pluie"],
+            en: ["the", "a", "an", "and", "or", "but", "so", "for", "with", "in", "on", "under", "front", "back", "dog", "cat", "house", "car", "computer", "keyboard", "screen", "mouse", "window", "door", "table", "chair", "sun", "moon", "star", "sky", "rain"],
+            sw: ["na", "au", "lakini", "kwa", "pamoja", "ndani", "juu", "chini", "mbele", "nyuma", "mbwa", "paka", "nyumba", "gari", "kompyuta", "kibodi", "skrini", "panya", "dirisha", "mlango", "meza", "kiti", "jua", "mwezi", "nyota", "anga", "mvua"]
         };
 
         const marketingTexts = {
-            fr: [
-                "Avoir un site web professionnel n'est plus une option de nos jours. C'est la vitrine mondiale de votre entreprise.",
-                "Une image vaut mille mots. La qualité de la photographie de vos produits détermine souvent la décision d'achat du client.",
-                "La vidéo est le contenu le plus consommé sur internet. Raconter l'histoire de votre entreprise capte l'attention."
-            ],
-            en: [
-                "Having a professional website is no longer an option today. It is your business's global storefront.",
-                "A picture is worth a thousand words. The quality of your product photography determines buying decisions.",
-                "Video is the most consumed content on the internet. Telling your company's story captures attention."
-            ],
-            sw: [
-                "Kuwa na tovuti ya kitaalamu sio hiari tena siku hizi. Ni dirisha la biashara yako kwa ulimwengu wote.",
-                "Picha moja ina thamani ya maneno elfu moja. Ubora wa picha za bidhaa zako unaamua uamuzi wa mteja."
-            ]
-        };
-
-        const sampleTexts = {
-            tech: "L'intelligence artificielle et l'apprentissage automatique redéfinissent l'avenir de la technologie. Les développeurs créent des applications plus intelligentes et réactives.",
-            business: "Une stratégie marketing solide repose sur une compréhension approfondie des besoins de vos clients. L'innovation constante garantit une croissance durable.",
-            code: "function calculateSpeed(words, timeInMinutes) { return Math.round(words / timeInMinutes); }"
+            fr: ["Améliorez votre vitesse de frappe dès aujourd'hui.", "Pratiquez régulièrement pour devenir un expert.", "La maîtrise du clavier est essentielle."],
+            en: ["Improve your typing speed today.", "Practice regularly to become an expert.", "Keyboard mastery is essential in the modern era."],
+            sw: ["Boresha kasi yako ya kuchapa leo.", "Fanya mazoezi mara kwa mara ili kuwa mtaalam.", "Ustadi wa kibodi ni muhimu sana."]
         };
 
         const courseLessons = [
-            { id: 1, title: "Leçon 1 : Ligne de base", text: "q s d f j k l m q s d f j k l m q s d f j k l m", instruction: "Placez vos index sur F et J (sentez le repère en relief). Ne regardez pas le clavier !", tip: "Gardez toujours vos doigts sur la ligne de repos. La mémorisation musculaire commence ici.", goalWpm: 10, goalAcc: 80 },
-            { id: 2, title: "Leçon 2 : L'Index", text: "f g f j h j f g f j h j f g h j g h f j", instruction: "Utilisez vos index pour atteindre G et H, puis revenez immédiatement sur F et J.", tip: "L'index est le doigt le plus mobile. Entraînez-le à rebondir vers sa position de base.", goalWpm: 12, goalAcc: 85 },
-            { id: 3, title: "Leçon 3 : Touches supérieures", text: "a z e r t y u i o p a z e r t y u i o p", instruction: "Déplacez vos doigts vers le haut sans bouger vos poignets. Laissez les paumes reposer.", tip: "Ne levez pas les mains. Étirez simplement les doigts vers la rangée du haut.", goalWpm: 15, goalAcc: 85 },
-            { id: 4, title: "Leçon 4 : Rangée du bas", text: "w x c v b n m , ; : w x c v b n m", instruction: "Pliez légèrement les doigts vers le bas. Gardez un rythme régulier, ne vous précipitez pas.", tip: "La rangée du bas demande de la précision. Concentrez-vous sur le rythme.", goalWpm: 15, goalAcc: 85 },
-            { id: 5, title: "Leçon 5 : Les Majuscules", text: "Baniki Labs. Le chat mange. Nous rions.", instruction: "Utilisez le petit doigt (auriculaire) pour appuyer sur 'Shift' du côté opposé à la lettre tapée.", tip: "L'utilisation croisée de 'Shift' empêche vos mains de se contorsionner.", goalWpm: 18, goalAcc: 90 },
-            { id: 6, title: "Leçon 6 : Ponctuation", text: "Bonjour, comment allez-vous ? Je vais bien, merci !", instruction: "La ponctuation est cruciale. Mémorisez l'emplacement de la virgule et du point.", tip: "Ne faites pas de pause avant la ponctuation. Intégrez-la au rythme.", goalWpm: 20, goalAcc: 90 },
-            { id: 7, title: "Leçon 7 : Les Chiffres", text: "1 2 3 4 5 6 7 8 9 0 2024 1990", instruction: "Étirez vos doigts vers la rangée des chiffres en gardant vos repères.", tip: "Visualisez le mouvement avant de frapper.", goalWpm: 15, goalAcc: 90 },
-            { id: 8, title: "Leçon 8 : Mots fréquents", text: "le la les des une dans pour que qui avec sur sous", instruction: "Ces mots représentent 50% de ce que vous tapez. Tapez-les en un seul mouvement fluide.", tip: "Lisez ces petits mots comme un bloc entier, pas lettre par lettre.", goalWpm: 25, goalAcc: 92 },
-            { id: 9, title: "Leçon 9 : Phrases complètes", text: "L'innovation technologique transforme notre façon de travailler au quotidien. Restez concentré.", instruction: "Respirez calmement. Gardez une frappe régulière.", tip: "Lisez toujours un ou deux mots en avance par rapport à ce que vous tapez.", goalWpm: 30, goalAcc: 92 },
-            { id: 10, title: "Leçon 10 : L'Examen Final", text: "Félicitations ! Vous êtes à la dernière étape de ce cours. La frappe rapide est une compétence qui vous fera gagner d'innombrables heures. Montrez ce dont vous êtes capable !", instruction: "Examen final. Donnez tout, mais privilégiez la précision !", tip: "Bravo ! Pratiquez 10 minutes par jour pour maintenir ce niveau.", goalWpm: 35, goalAcc: 95 }
+            {title: "Leçon 1: Ligne de base", goalWpm: 15, goalAcc: 90, instruction: "Placez vos doigts sur F et J.", text: "ffff jjjj fjfj jfjf", tip: "Gardez les poignets levés."},
+            {title: "Leçon 2: Extension", goalWpm: 20, goalAcc: 90, instruction: "Ajoutez G et H.", text: "fgjh ghfj hgjf", tip: "Ne regardez pas le clavier."}
         ];
 
-        const keyboardLayouts = {
-            AZERTY: [
-                [
-                    { key: '²', code: 'Backquote' }, { key: '1', shiftKey: '&', code: 'Digit1' }, { key: '2', shiftKey: 'é', code: 'Digit2' },
-                    { key: '3', shiftKey: '"', code: 'Digit3' }, { key: '4', shiftKey: "'", code: 'Digit4' }, { key: '5', shiftKey: '(', code: 'Digit5' },
-                    { key: '6', shiftKey: '-', code: 'Digit6' }, { key: '7', shiftKey: 'è', code: 'Digit7' }, { key: '8', shiftKey: '_', code: 'Digit8' },
-                    { key: '9', shiftKey: 'ç', code: 'Digit9' }, { key: '0', shiftKey: 'à', code: 'Digit0' }, { key: ')', shiftKey: '°', code: 'Minus' },
-                    { key: '=', shiftKey: '+', code: 'Equal' }, { key: '⌫', code: 'Backspace', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Tab', code: 'Tab', width: 'w-10 sm:w-12' }, { key: 'A', code: 'KeyQ' }, { key: 'Z', code: 'KeyW' },
-                    { key: 'E', code: 'KeyE' }, { key: 'R', code: 'KeyR' }, { key: 'T', code: 'KeyT' }, { key: 'Y', code: 'KeyY' },
-                    { key: 'U', code: 'KeyU' }, { key: 'I', code: 'KeyI' }, { key: 'O', code: 'KeyO' }, { key: 'P', code: 'KeyP' },
-                    { key: '^', code: 'BracketLeft' }, { key: '$', code: 'BracketRight' }, { key: '↵', code: 'Enter', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Caps', code: 'CapsLock', width: 'w-12 sm:w-14' }, { key: 'Q', code: 'KeyA' }, { key: 'S', code: 'KeyS' },
-                    { key: 'D', code: 'KeyD' }, { key: 'F', code: 'KeyF', home: true }, { key: 'G', code: 'KeyG' }, { key: 'H', code: 'KeyH' },
-                    { key: 'J', code: 'KeyJ', home: true }, { key: 'K', code: 'KeyK' }, { key: 'L', code: 'KeyL' }, { key: 'M', code: 'Semicolon' },
-                    { key: '%', code: 'Quote' }, { key: '*', code: 'Backslash' }
-                ],
-                [
-                    { key: 'Shift', code: 'ShiftLeft', width: 'w-14 sm:w-16' }, { key: 'W', code: 'KeyZ' }, { key: 'X', code: 'KeyX' },
-                    { key: 'C', code: 'KeyC' }, { key: 'V', code: 'KeyV' }, { key: 'B', code: 'KeyB' }, { key: 'N', code: 'KeyN' },
-                    { key: ',', code: 'Comma' }, { key: ';', code: 'Period' }, { key: ':', code: 'Slash' }, { key: '!', code: 'IntlBackslash' },
-                    { key: 'Shift', code: 'ShiftRight', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Ctrl', code: 'ControlLeft', width: 'w-10' }, { key: 'Alt', code: 'AltLeft', width: 'w-10' },
-                    { key: 'Espace', code: 'Space', width: 'flex-[5]', isSpace: true },
-                    { key: 'AltGr', code: 'AltRight', width: 'w-10' }, { key: 'Ctrl', code: 'ControlRight', width: 'w-10' }
-                ]
-            ],
-            QWERTY: [
-                [
-                    { key: '`', code: 'Backquote' }, { key: '1', code: 'Digit1' }, { key: '2', code: 'Digit2' }, { key: '3', code: 'Digit3' },
-                    { key: '4', code: 'Digit4' }, { key: '5', code: 'Digit5' }, { key: '6', code: 'Digit6' }, { key: '7', code: 'Digit7' },
-                    { key: '8', code: 'Digit8' }, { key: '9', code: 'Digit9' }, { key: '0', code: 'Digit0' }, { key: '-', code: 'Minus' },
-                    { key: '=', code: 'Equal' }, { key: '⌫', code: 'Backspace', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Tab', code: 'Tab', width: 'w-10 sm:w-12' }, { key: 'Q', code: 'KeyQ' }, { key: 'W', code: 'KeyW' },
-                    { key: 'E', code: 'KeyE' }, { key: 'R', code: 'KeyR' }, { key: 'T', code: 'KeyT' }, { key: 'Y', code: 'KeyY' },
-                    { key: 'U', code: 'KeyU' }, { key: 'I', code: 'KeyI' }, { key: 'O', code: 'KeyO' }, { key: 'P', code: 'KeyP' },
-                    { key: '[', code: 'BracketLeft' }, { key: ']', code: 'BracketRight' }, { key: '↵', code: 'Enter', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Caps', code: 'CapsLock', width: 'w-12 sm:w-14' }, { key: 'A', code: 'KeyA' }, { key: 'S', code: 'KeyS' },
-                    { key: 'D', code: 'KeyD' }, { key: 'F', code: 'KeyF', home: true }, { key: 'G', code: 'KeyG' }, { key: 'H', code: 'KeyH' },
-                    { key: 'J', code: 'KeyJ', home: true }, { key: 'K', code: 'KeyK' }, { key: 'L', code: 'KeyL' }, { key: ';', code: 'Semicolon' },
-                    { key: "'", code: 'Quote' }
-                ],
-                [
-                    { key: 'Shift', code: 'ShiftLeft', width: 'w-14 sm:w-16' }, { key: 'Z', code: 'KeyZ' }, { key: 'X', code: 'KeyX' },
-                    { key: 'C', code: 'KeyC' }, { key: 'V', code: 'KeyV' }, { key: 'B', code: 'KeyB' }, { key: 'N', code: 'KeyN' },
-                    { key: 'M', code: 'KeyM' }, { key: ',', code: 'Comma' }, { key: '.', code: 'Period' }, { key: '/', code: 'Slash' },
-                    { key: 'Shift', code: 'ShiftRight', width: 'flex-1' }
-                ],
-                [
-                    { key: 'Ctrl', code: 'ControlLeft', width: 'w-10' }, { key: 'Alt', code: 'AltLeft', width: 'w-10' },
-                    { key: 'Space', code: 'Space', width: 'flex-[5]', isSpace: true },
-                    { key: 'AltGr', code: 'AltRight', width: 'w-10' }, { key: 'Ctrl', code: 'ControlRight', width: 'w-10' }
-                ]
-            ]
+        const sampleTexts = {
+            tech: "L'intelligence artificielle transforme notre monde.",
+            business: "Le marketing digital est crucial pour la croissance.",
+            code: "function init() { console.log('Ready'); }"
         };
 
-        // State variables
         let currentLayout = localStorage.getItem('baniki-kb-layout') || 'AZERTY';
         let currentLang = localStorage.getItem('baniki-lang') || 'fr';
         let currentMode = 'random'; // random, marketing, custom, lessons
         let currentLessonIndex = parseInt(localStorage.getItem('baniki-lesson-index')) || 0;
         
+        let isDarkMode = localStorage.getItem('baniki-dark-mode') !== 'false';
+        let activeBoardColor = localStorage.getItem('baniki-board-color') || '#FFD700';
+        let activeBoardGlow = localStorage.getItem('baniki-board-glow') || 'rgba(255, 215, 0, 0.4)';
+        let activeBrightness = parseInt(localStorage.getItem('baniki-brightness')) || 100;
+
         let timeLimit = 15;
         let timeLeft = timeLimit;
         let timer = null;
@@ -671,7 +729,7 @@
                 row.forEach(k => {
                     const keyEl = document.createElement('div');
                     const widthClass = k.width ? k.width : 'flex-1 min-w-[20px] sm:min-w-[28px]';
-                    keyEl.className = `key ${widthClass} h-8 sm:h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center font-mono text-[10px] sm:text-xs font-bold text-gray-300 relative shadow-sm cursor-pointer select-none`;
+                    keyEl.className = `key ${widthClass} h-8 sm:h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center font-mono text-[10px] sm:text-xs text-gray-300 relative shadow-sm cursor-pointer select-none`;
                     keyEl.setAttribute('data-code', k.code);
                     keyEl.setAttribute('data-key', k.key.toLowerCase());
                     if (k.shiftKey) keyEl.setAttribute('data-shift-key', k.shiftKey.toLowerCase());
@@ -681,21 +739,15 @@
                     
                     keyEl.innerText = label;
 
-                    // Tactile home row marker for F and J
                     if (k.home) {
                         const dot = document.createElement('span');
                         dot.className = 'absolute bottom-1 w-1 h-1 rounded-full bg-[var(--gold)]/80';
                         keyEl.appendChild(dot);
                     }
 
-                    // Click sound/trigger
-                    keyEl.onclick = () => {
-                        simulateKeyPress(k);
-                    };
-
+                    keyEl.onclick = () => simulateKeyPress(k);
                     rowEl.appendChild(keyEl);
                 });
-
                 virtualKeyboardEl.appendChild(rowEl);
             });
 
@@ -711,7 +763,6 @@
         }
 
         function highlightNextRequiredKey() {
-            // Remove previous active highlights
             document.querySelectorAll('.key.active-key').forEach(el => el.classList.remove('active-key'));
 
             const words = document.querySelectorAll('.word');
@@ -724,21 +775,17 @@
             if (currentCharIndex < letters.length) {
                 requiredChar = letters[currentCharIndex].innerText.toLowerCase();
             } else {
-                // Next char is space
                 requiredChar = " ";
             }
 
-            // Find matching key element
             let targetKeyEl = null;
 
             if (requiredChar === " " || requiredChar === "") {
                 targetKeyEl = document.querySelector('.key[data-code="Space"]');
             } else {
-                // Try direct match
                 targetKeyEl = document.querySelector(`.key[data-key="${CSS.escape(requiredChar)}"]`) || 
                               document.querySelector(`.key[data-shift-key="${CSS.escape(requiredChar)}"]`);
 
-                // Accent mapping helpers for French
                 if (!targetKeyEl) {
                     if (['é', 'è', 'ê', 'ë', 'e'].includes(requiredChar)) {
                         targetKeyEl = document.querySelector('.key[data-code="KeyE"]') || document.querySelector('.key[data-code="Digit2"]');
@@ -750,9 +797,7 @@
                 }
             }
 
-            if (targetKeyEl) {
-                targetKeyEl.classList.add('active-key');
-            }
+            if (targetKeyEl) targetKeyEl.classList.add('active-key');
         }
 
         function simulateKeyPress(keyObj) {
@@ -760,7 +805,6 @@
             let charToType = keyObj.key;
             if(keyObj.isSpace) charToType = " ";
             
-            // Dispatch input
             if(charToType.length === 1) {
                 hiddenInput.value += charToType;
                 const event = new Event('input', { bubbles: true });
@@ -782,15 +826,13 @@
                 }
                 lessonSelect.appendChild(option);
             });
-            lessonSelect.value = Math.min(currentLessonIndex, 9);
+            lessonSelect.value = Math.min(currentLessonIndex, courseLessons.length - 1);
             
             const savedName = localStorage.getItem('baniki-student-name');
             if(savedName) studentNameInput.value = savedName;
         }
 
-        function saveName() {
-            localStorage.setItem('baniki-student-name', studentNameInput.value);
-        }
+        function saveName() { localStorage.setItem('baniki-student-name', studentNameInput.value); }
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -842,7 +884,6 @@
             initTest();
         }
 
-        // Paste Custom Text Handling
         customInputField.addEventListener('input', () => {
             const val = customInputField.value;
             pasteCharCount.innerText = `${val.length} car.`;
@@ -889,7 +930,7 @@
             if (currentMode === 'random') {
                 let arr = [];
                 const list = wordLists[currentLang] || wordLists['fr'];
-                for(let i=0; i<50; i++) arr.push(list[Math.floor(Math.random() * list.length)]);
+                for(let i=0; i<30; i++) arr.push(list[Math.floor(Math.random() * list.length)]);
                 return arr.join(' ');
             } else if (currentMode === 'marketing') {
                 const list = marketingTexts[currentLang] || marketingTexts['fr'];
@@ -897,7 +938,7 @@
                 if(text.length < 150) text += " " + list[Math.floor(Math.random() * list.length)];
                 return text;
             } else if (currentMode === 'custom') {
-                return customTextContent || "Bienvenue dans Baniki Labs. Collez votre texte pour commencer le test de frappe.";
+                return customTextContent || "Bienvenue. Collez votre texte pour commencer le test de frappe.";
             } else if (currentMode === 'lessons') {
                 const index = parseInt(lessonSelect.value);
                 return courseLessons[index].text;
@@ -984,7 +1025,6 @@
             caret.style.top = `${relativeTop}px`;
             caret.style.height = `${rect.height}px`;
 
-            // Auto vertical scrolling inside display screen
             const typingTextRect = typingText.getBoundingClientRect();
             if (rect.bottom > typingTextRect.bottom - 15) {
                 const currentTransform = parseFloat(typingText.style.transform.replace('translateY(', '').replace('px)', '') || 0);
@@ -1069,13 +1109,9 @@
             hiddenInput.value = ''; 
         });
 
-        // Keydown visual illumination feedback
         window.addEventListener('keydown', (e) => {
-            // Flash physical key on virtual keyboard
             const keyEl = document.querySelector(`.key[data-code="${e.code}"]`);
-            if (keyEl) {
-                keyEl.classList.add('pressed-key');
-            }
+            if (keyEl) keyEl.classList.add('pressed-key');
 
             if (e.key === 'Backspace') {
                 const words = document.querySelectorAll('.word');
@@ -1113,9 +1149,7 @@
 
         window.addEventListener('keyup', (e) => {
             const keyEl = document.querySelector(`.key[data-code="${e.code}"]`);
-            if (keyEl) {
-                keyEl.classList.remove('pressed-key');
-            }
+            if (keyEl) keyEl.classList.remove('pressed-key');
         });
 
         typingContainer.addEventListener('click', () => {
@@ -1182,7 +1216,7 @@
                     iconContainer.style.boxShadow = '0 0 30px rgba(34,197,94,0.3)';
                     icon.className = "fa-solid fa-check text-3xl text-green-500";
                     
-                    if (lessonIndex < 9) {
+                    if (lessonIndex < courseLessons.length - 1) {
                         btnNext.classList.remove('hidden');
                         if (currentLessonIndex === lessonIndex) {
                             currentLessonIndex++;
@@ -1211,10 +1245,7 @@
             }, 10);
         }
 
-        function closeResultAndRestart() {
-            closeModal(() => { initTest(); hiddenInput.focus(); });
-        }
-
+        function closeResultAndRestart() { closeModal(() => { initTest(); hiddenInput.focus(); }); }
         function nextLesson() {
             closeModal(() => {
                 initLessonsDropdown();
@@ -1223,7 +1254,6 @@
                 hiddenInput.focus();
             });
         }
-
         function closeModal(callback) {
             const modal = document.getElementById('result-modal');
             const content = document.getElementById('result-content');
@@ -1245,11 +1275,9 @@
             document.getElementById('print-cert-name').innerText = name;
             document.getElementById('print-cert-wpm').innerText = wpm;
             document.getElementById('print-cert-date').innerText = today;
-
             window.print();
         }
 
-        // Time buttons event listeners
         document.querySelectorAll('.time-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 if(currentMode === 'custom' || currentMode === 'lessons') return; 
@@ -1267,13 +1295,75 @@
             });
         });
 
-        document.getElementById('restart-btn').addEventListener('click', () => {
-            initTest();
-            hiddenInput.focus();
-        });
+        document.getElementById('restart-btn').addEventListener('click', () => { initTest(); hiddenInput.focus(); });
 
-        // Initialize application on load
+        function toggleThemeModal() {
+            const modal = document.getElementById('theme-modal');
+            const content = document.getElementById('theme-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeThemeModal() {
+            const modal = document.getElementById('theme-modal');
+            const content = document.getElementById('theme-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('baniki-dark-mode', isDarkMode);
+            applyAppearance();
+        }
+
+        function setBoardColor(hexColor, glowColor) {
+            activeBoardColor = hexColor;
+            activeBoardGlow = glowColor;
+            localStorage.setItem('baniki-board-color', hexColor);
+            localStorage.setItem('baniki-board-glow', glowColor);
+            applyAppearance();
+        }
+
+        function changeBrightness(value) {
+            activeBrightness = parseInt(value);
+            localStorage.setItem('baniki-brightness', activeBrightness);
+            applyAppearance();
+        }
+
+        function applyAppearance() {
+            if (isDarkMode) {
+                document.body.classList.remove('light-mode');
+                document.getElementById('current-mode-label').innerText = 'Mode Sombre actif';
+                document.getElementById('dark-icon').className = 'fa-solid fa-moon';
+                document.getElementById('dark-btn-text').innerText = 'Sombre';
+            } else {
+                document.body.classList.add('light-mode');
+                document.getElementById('current-mode-label').innerText = 'Mode Clair actif';
+                document.getElementById('dark-icon').className = 'fa-solid fa-sun';
+                document.getElementById('dark-btn-text').innerText = 'Clair';
+            }
+
+            document.documentElement.style.setProperty('--gold', activeBoardColor);
+            document.documentElement.style.setProperty('--gold-glow', activeBoardGlow);
+
+            document.documentElement.style.setProperty('--app-brightness', `${activeBrightness}%`);
+            document.getElementById('brightness-val-display').innerText = `${activeBrightness}%`;
+            document.getElementById('brightness-slider').value = activeBrightness;
+        }
+
         window.onload = () => {
+            applyAppearance();
             setLanguage(currentLang);
             renderVirtualKeyboard();
         };
