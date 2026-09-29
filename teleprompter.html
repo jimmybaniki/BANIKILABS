@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Téléprompteur Baniki Labs</title>
+    <title>Téléprompteur Pro - Baniki Labs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -99,80 +99,133 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        /* Surcharges pour le Mode Clair pour adoucir les couleurs et rendre le texte foncé */
-        body.light-mode {
+        /* --- STREAMING_CHUNK:Définition des différents thèmes visuels --- */
+        
+        /* 1. Mode Clair Classique */
+        body.theme-light {
             background-color: #f3f4f6 !important;
             color: #111827 !important;
         }
-        body.light-mode .glass-panel {
-            background: rgba(255, 255, 255, 0.8) !important;
+        body.theme-light .glass-panel {
+            background: rgba(255, 255, 255, 0.85) !important;
             border-color: rgba(0, 0, 0, 0.1) !important;
         }
-        body.light-mode .text-white { color: #111827 !important; }
-        body.light-mode .text-gray-400 { color: #4b5563 !important; }
-        body.light-mode .text-gray-300 { color: #374151 !important; }
-        
-        /* Arrière-plans utilitaires Tailwind */
-        body.light-mode .bg-black { background-color: #ffffff !important; }
-        body.light-mode .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
-        body.light-mode .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
-        body.light-mode .bg-white\/20 { background-color: rgba(0, 0, 0, 0.15) !important; }
-        body.light-mode .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.08) !important; }
-        body.light-mode .hover\:bg-white\/20:hover { background-color: rgba(0, 0, 0, 0.15) !important; }
-        body.light-mode .hover\:bg-white\/30:hover { background-color: rgba(0, 0, 0, 0.22) !important; }
-        
-        /* Bordures utilitaires Tailwind */
-        body.light-mode .border-white\/10,
-        body.light-mode .border-white\/20 { border-color: rgba(0, 0, 0, 0.15) !important; }
-        
-        /* Spécificités du Prompteur */
-        body.light-mode #prompter-mode { background-color: #f3f4f6 !important; }
-        body.light-mode #prompter-text,
-        body.light-mode #mini-prompter-text { color: #000000 !important; }
-        
-        /* Dégradés pour l'aperçu du mini-prompteur (masque d'ombre) */
-        body.light-mode .from-black\/60 { 
-            --tw-gradient-from: rgba(255, 255, 255, 0.9) !important; 
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; 
-        }
-        body.light-mode .to-black\/60 { 
-            --tw-gradient-to: rgba(255, 255, 255, 0.9) !important; 
-        }
-        
-        /* Curseur des Sliders */
-        body.light-mode input[type=range]::-webkit-slider-runnable-track { background: rgba(0, 0, 0, 0.15); }
-        
-        /* Placeholder du Textarea */
-        body.light-mode .placeholder\:text-gray-600::placeholder { color: #9ca3af !important; }
-        
-        /* Boutons avec opacité */
-        body.light-mode .text-white\/50 { color: rgba(0,0,0,0.4) !important; }
-        body.light-mode .text-white\/70 { color: rgba(0,0,0,0.6) !important; }
-        body.light-mode .hover\:text-white:hover { color: #000 !important; }
-        
-        /* Curseur du bouton miroir */
-        body.light-mode #mirror-knob.bg-white { background-color: #111827 !important; }
+        body.theme-light .text-white { color: #111827 !important; }
+        body.theme-light .text-gray-400 { color: #4b5563 !important; }
+        body.theme-light .text-gray-300 { color: #374151 !important; }
+        body.theme-light .bg-black { background-color: #ffffff !important; }
+        body.theme-light .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
+        body.theme-light .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
+        body.theme-light .bg-white\/20 { background-color: rgba(0, 0, 0, 0.15) !important; }
+        body.theme-light .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.08) !important; }
+        body.theme-light .hover\:bg-white\/20:hover { background-color: rgba(0, 0, 0, 0.15) !important; }
+        body.theme-light .hover\:bg-white\/30:hover { background-color: rgba(0, 0, 0, 0.22) !important; }
+        body.theme-light .border-white\/10,
+        body.theme-light .border-white\/20 { border-color: rgba(0, 0, 0, 0.15) !important; }
+        body.theme-light #prompter-mode { background-color: #f3f4f6 !important; }
+        body.theme-light #prompter-text,
+        body.theme-light #mini-prompter-text { color: #000000 !important; }
+        body.theme-light input[type=range]::-webkit-slider-runnable-track { background: rgba(0, 0, 0, 0.15); }
+        body.theme-light .placeholder\:text-gray-600::placeholder { color: #9ca3af !important; }
+        body.theme-light #fs-camera-overlay { background-color: rgba(255, 255, 255, 0.55) !important; }
 
-        /* Masque pour la caméra en mode clair */
-        body.light-mode #fs-camera-overlay { background-color: rgba(255, 255, 255, 0.55) !important; }
+        /* 2. Mode Gris / Confort Visuel (Eye Comfort / Sepia-Gris Doux) */
+        body.theme-comfort {
+            background-color: #1e2229 !important;
+            color: #d1d5db !important;
+        }
+        body.theme-comfort .glass-panel {
+            background: rgba(30, 34, 41, 0.85) !important;
+            border-color: rgba(156, 163, 175, 0.2) !important;
+        }
+        body.theme-comfort .text-white { color: #e5e7eb !important; }
+        body.theme-comfort .text-gray-400 { color: #9ca3af !important; }
+        body.theme-comfort .text-gray-300 { color: #d1d5db !important; }
+        body.theme-comfort .bg-black { background-color: #14171d !important; }
+        body.theme-comfort .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05) !important; }
+        body.theme-comfort .bg-white\/10 { background-color: rgba(255, 255, 255, 0.08) !important; }
+        body.theme-comfort .bg-white\/20 { background-color: rgba(255, 255, 255, 0.15) !important; }
+        body.theme-comfort .hover\:bg-white\/10:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+        body.theme-comfort .hover\:bg-white\/20:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
+        body.theme-comfort .border-white\/10,
+        body.theme-comfort .border-white\/20 { border-color: rgba(255, 255, 255, 0.15) !important; }
+        body.theme-comfort #prompter-mode { background-color: #14171d !important; }
+        body.theme-comfort #prompter-text,
+        body.theme-comfort #mini-prompter-text { color: #f3f4f6 !important; }
+        body.theme-comfort input[type=range]::-webkit-slider-runnable-track { background: rgba(255, 255, 255, 0.2); }
+        body.theme-comfort #fs-camera-overlay { background-color: rgba(20, 23, 29, 0.6) !important; }
+
+        /* 3. Mode Ambre Rétro (Studio Pro Contraste Élevé) */
+        body.theme-amber {
+            background-color: #0d0a00 !important;
+            color: #ffb000 !important;
+        }
+        body.theme-amber .glass-panel {
+            background: rgba(20, 15, 0, 0.85) !important;
+            border-color: rgba(255, 176, 0, 0.3) !important;
+        }
+        body.theme-amber .text-white { color: #ffca28 !important; }
+        body.theme-amber .text-gray-400 { color: #bcaaa4 !important; }
+        body.theme-amber .text-gray-300 { color: #ffe082 !important; }
+        body.theme-amber .bg-black { background-color: #050300 !important; }
+        body.theme-amber .bg-white\/5 { background-color: rgba(255, 176, 0, 0.05) !important; }
+        body.theme-amber .bg-white\/10 { background-color: rgba(255, 176, 0, 0.1) !important; }
+        body.theme-amber .bg-white\/20 { background-color: rgba(255, 176, 0, 0.2) !important; }
+        body.theme-amber .hover\:bg-white\/10:hover { background-color: rgba(255, 176, 0, 0.15) !important; }
+        body.theme-amber .hover\:bg-white\/20:hover { background-color: rgba(255, 176, 0, 0.25) !important; }
+        body.theme-amber .border-white\/10,
+        body.theme-amber .border-white\/20 { border-color: rgba(255, 176, 0, 0.25) !important; }
+        body.theme-amber #prompter-mode { background-color: #050300 !important; }
+        body.theme-amber #prompter-text,
+        body.theme-amber #mini-prompter-text { color: #ffb000 !important; }
+        body.theme-amber input[type=range]::-webkit-slider-runnable-track { background: rgba(255, 176, 0, 0.3); }
+        body.theme-amber #fs-camera-overlay { background-color: rgba(5, 3, 0, 0.7) !important; }
+
+        /* Notification Toast personnalisée */
+        #toast-notification {
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        #toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative p-4 sm:p-8 transition-colors duration-300">
 
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 z-[200] bg-[var(--gold)] text-black px-5 py-3 rounded-xl shadow-2xl font-bold flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-lg" id="toast-icon"></i>
+        <span id="toast-message">Action réussie !</span>
+    </div>
+
     <main id="setup-screen" class="w-full max-w-7xl mx-auto flex flex-col flex-grow">
         
-        <!-- En-tête avec logo, sélection de langue et bascule de thème -->
+        <!-- En-tête avec logo, gestionnaire de thèmes et langue -->
         <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-[var(--gold)] flex items-center justify-center text-black font-black text-xl">B</div>
+                <div class="w-10 h-10 rounded-full bg-[var(--gold)] flex items-center justify-center text-black font-black text-xl shadow-[0_0_15px_rgba(255,215,0,0.4)]">B</div>
                 <span class="font-bold text-xl tracking-widest uppercase text-white transition-colors duration-300">Baniki Labs</span>
             </div>
             
-            <div class="flex items-center gap-3">
-                <!-- Bouton Thème -->
-                <button id="theme-toggle" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-all" title="Changer le thème (Clair/Sombre)">
-                    <i class="fa-solid fa-sun" id="theme-icon"></i>
-                </button>
+            <div class="flex items-center gap-3 flex-wrap justify-center">
+                <!-- Sélecteur de Thèmes Avancé -->
+                <div class="flex items-center bg-white/10 border border-white/20 rounded-xl p-1 transition-colors duration-300">
+                    <button onclick="setTheme('dark')" id="theme-btn-dark" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--gold)] text-black" title="Mode Sombre Studio">
+                        <i class="fa-solid fa-moon"></i> <span class="hidden md:inline">Sombre</span>
+                    </button>
+                    <button onclick="setTheme('comfort')" id="theme-btn-comfort" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-white/10" title="Mode Gris Confort Oculaire">
+                        <i class="fa-solid fa-eye"></i> <span class="hidden md:inline">Gris Confort</span>
+                    </button>
+                    <button onclick="setTheme('light')" id="theme-btn-light" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-white/10" title="Mode Clair">
+                        <i class="fa-solid fa-sun"></i> <span class="hidden md:inline">Clair</span>
+                    </button>
+                    <button onclick="setTheme('amber')" id="theme-btn-amber" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-white/10" title="Mode Ambre Rétro">
+                        <i class="fa-solid fa-bolt"></i> <span class="hidden md:inline">Ambre</span>
+                    </button>
+                </div>
 
                 <select id="lang-select" class="bg-white/10 border border-white/20 text-white text-sm rounded-lg focus:ring-[var(--gold)] focus:border-[var(--gold)] block p-2.5 outline-none cursor-pointer transition-colors duration-300">
                     <option value="fr" class="text-black">Français</option>
@@ -184,19 +237,34 @@
 
         <div class="text-center mb-4">
             <h1 class="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-white mb-2 transition-colors duration-300" data-translate="page-title">Téléprompteur Pro</h1>
-            <p class="text-gray-400 text-sm transition-colors duration-300" data-translate="page-desc">Collez votre discours, configurez vos paramètres et démarrez votre présentation.</p>
+            <p class="text-gray-400 text-sm transition-colors duration-300" data-translate="page-desc">Sélectionnez ou créez votre script de conversion, configurez vos paramètres et démarrez.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow">
             <!-- Zone principale (Prévisualisation + Saisie) -->
             <div class="lg:col-span-2 flex flex-col gap-6">
                 
+                <!-- Gestionnaire de scripts (Présélections conversion & personnalisés) -->
+                <div class="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <i class="fa-solid fa-bullhorn text-[var(--gold)]"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-300" data-translate="script-preset">Modèles de vente :</span>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+                        <button onclick="loadScriptPreset('saas')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white transition-all whitespace-nowrap" data-translate="preset-saas">🚀 Logiciel & SaaS</button>
+                        <button onclick="loadScriptPreset('agency')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white transition-all whitespace-nowrap" data-translate="preset-agency">💼 Agence & Services</button>
+                        <button onclick="loadScriptPreset('ecommerce')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-white transition-all whitespace-nowrap" data-translate="preset-ecommerce">🛍️ E-commerce & Promo</button>
+                        <button onclick="openNewScriptModal()" class="px-3 py-1.5 bg-[var(--gold)] text-black rounded-xl text-xs font-black transition-all hover:scale-105 whitespace-nowrap" title="Créer un nouveau script"><i class="fa-solid fa-plus"></i> <span data-translate="new-script">Nouveau</span></button>
+                    </div>
+                </div>
+
+                <!-- Aperçu Mini du Prompteur -->
                 <div class="flex flex-col gap-2">
                     <label class="text-[var(--gold)] font-bold uppercase tracking-widest text-xs flex items-center justify-between">
                         <span class="flex items-center gap-2"><i class="fa-solid fa-desktop"></i> <span data-translate="preview">Aperçu & Enregistrement</span></span>
                     </label>
                     
-                    <div id="mini-prompter-container" class="relative w-full h-[300px] bg-black border border-white/10 rounded-2xl overflow-hidden group transition-colors duration-300">
+                    <div id="mini-prompter-container" class="relative w-full h-[260px] bg-black border border-white/10 rounded-2xl overflow-hidden group transition-colors duration-300">
                         
                         <!-- Element Video pour la Camera -->
                         <video id="camera-preview" autoplay muted playsinline></video>
@@ -230,18 +298,27 @@
                     </div>
                 </div>
 
+                <!-- Zone de Saisie du Script avec boutons Copier / Coller -->
                 <div class="flex flex-col gap-2 flex-grow">
-                    <label for="script-input" class="text-[var(--gold)] font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                        <i class="fa-solid fa-align-left"></i> <span data-translate="your-script">Votre Script</span>
-                    </label>
-                    <textarea id="script-input" class="w-full flex-grow min-h-[200px] lg:min-h-[300px] bg-white/5 border border-white/10 rounded-2xl p-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]/50 transition-all duration-300 text-base sm:text-lg resize-y" placeholder="Collez le texte de votre discours ici...">Bonjour et bienvenue dans ce nouvel épisode de Baniki Labs.
-Aujourd'hui, nous allons explorer les possibilités offertes par l'intelligence artificielle générative.
-
-La création de contenu n'a jamais été aussi rapide et accessible.
-N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
+                    <div class="flex items-center justify-between">
+                        <label for="script-input" class="text-[var(--gold)] font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-align-left"></i> <span data-translate="your-script">Votre Script de Vente</span>
+                        </label>
+                        <!-- Boutons Copier / Coller rapides -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyScriptToClipboard()" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Copier le script">
+                                <i class="fa-regular fa-copy"></i> <span data-translate="btn-copy">Copier</span>
+                            </button>
+                            <button onclick="pasteScriptFromClipboard()" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Coller depuis le presse-papier">
+                                <i class="fa-regular fa-paste"></i> <span data-translate="btn-paste">Coller</span>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="script-input" class="w-full flex-grow min-h-[180px] lg:min-h-[220px] bg-white/5 border border-white/10 rounded-2xl p-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]/50 transition-all duration-300 text-base sm:text-lg resize-y" placeholder="Collez ou rédigez votre script ici..."></textarea>
                 </div>
             </div>
 
+            <!-- Panneau Latéral de Configuration -->
             <div class="glass-panel rounded-2xl p-6 flex flex-col gap-6 h-fit sticky top-28">
                 <div>
                     <label class="text-gray-300 text-xs font-bold uppercase tracking-wider block mb-3 flex justify-between transition-colors duration-300">
@@ -296,21 +373,15 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
         </div>
     </main>
 
+    <!-- Modal Plein Écran Téléprompteur -->
     <div id="prompter-mode" class="fixed inset-0 bg-black z-[100] hidden flex-col transition-colors duration-300">
-        <!-- Clone Video for Fullscreen if active -->
         <video id="fs-camera-preview" autoplay muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0.8;display:none;"></video>
-        
-        <!-- Masque sombre pour le plein écran si caméra active -->
         <div id="fs-camera-overlay" class="absolute inset-0 bg-black/40 z-[2] hidden pointer-events-none transition-colors duration-300"></div>
 
-        <!-- Zone d'affichage du texte défilant -->
         <div id="prompter-display" class="flex-grow overflow-y-auto no-scrollbar w-full px-4 sm:px-12 md:px-24 scroll-smooth relative z-10" tabindex="0">
-            <!-- Espace vide au dessus pour que le texte commence en bas -->
             <div id="prompter-padding-top" class="w-full"></div>
-            <!-- Le conteneur du texte -->
             <div id="prompter-text-wrapper" class="w-full max-w-6xl mx-auto pb-[80vh]">
                 <div id="prompter-text" class="text-white font-bold leading-relaxed text-center transition-colors duration-300">
-                    <!-- Le texte sera injecté ici via JS -->
                 </div>
             </div>
         </div>
@@ -332,7 +403,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- Record button in fullscreen (syncs with preview) -->
             <div class="h-6 w-px bg-white/20 hidden fs-record-element transition-colors duration-300"></div>
             <button id="fsRecordBtn" class="w-10 h-10 rounded-full bg-red-500/20 text-red-500 border border-red-500/50 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all hidden fs-record-element" title="Enregistrer">
                 <i class="fa-solid fa-circle"></i>
@@ -344,44 +414,95 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
         </div>
     </div>
 
+    <!-- Modal Nouveau / Gestion de Script -->
+    <div id="script-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[250] hidden items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 flex flex-col gap-4 border border-[var(--gold)]/30">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-black text-white uppercase tracking-wider" data-translate="modal-title">Enregistrer / Gérer ce script</h3>
+                <button onclick="closeScriptModal()" class="text-white/60 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-gray-400" data-translate="modal-desc">Donnez un titre à votre script pour le sauvegarder dans vos favoris locaux.</p>
+            <input type="text" id="script-title-input" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder:text-gray-500 outline-none focus:border-[var(--gold)] text-sm" placeholder="Ex : Pitch SaaS Q3 2026">
+            
+            <div class="flex flex-col gap-2 max-h-40 overflow-y-auto no-scrollbar pt-2 border-t border-white/10" id="saved-scripts-list">
+                <!-- Liste des scripts sauvegardés injectée dynamiquement -->
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="saveCurrentScript()" class="flex-1 bg-[var(--gold)] text-black font-black py-3 rounded-xl uppercase text-xs tracking-widest hover:scale-[1.02] transition-transform" data-translate="modal-save">Sauvegarder</button>
+                <button onclick="closeScriptModal()" class="px-4 py-3 bg-white/10 text-white font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-white/20 transition-all" data-translate="modal-close">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- 1. Traductions ---
+        // --- STREAMING_CHUNK:Traductions multilingues ---
         const translations = {
             fr: {
                 "page-title": "Téléprompteur Pro",
-                "page-desc": "Collez votre discours, configurez vos paramètres et démarrez votre présentation.",
-                "your-script": "Votre Script",
+                "page-desc": "Sélectionnez ou créez votre script de conversion, configurez vos paramètres et démarrez.",
+                "your-script": "Votre Script de Vente & Conversion",
                 "font-size": "Taille du texte",
                 "speed": "Vitesse de défilement",
                 "mirror-mode": "Mode Miroir (Inversé)",
                 "alignment": "Alignement",
                 "start-prompter": "Prompteur Plein Écran",
-                "speed-lbl": "Vitesse",
-                "preview": "Aperçu & Enregistrement"
+                "preview": "Aperçu & Enregistrement",
+                "script-preset": "Modèles de vente :",
+                "preset-saas": "🚀 Logiciel & SaaS",
+                "preset-agency": "💼 Agence & Services",
+                "preset-ecommerce": "🛍️ E-commerce & Promo",
+                "new-script": "Sauvegarder",
+                "btn-copy": "Copier",
+                "btn-paste": "Coller",
+                "modal-title": "Gestionnaire de Scripts",
+                "modal-desc": "Sauvegardez vos scripts de vente favoris pour y accéder à tout moment.",
+                "modal-save": "Enregistrer",
+                "modal-close": "Fermer"
             },
             en: {
                 "page-title": "Pro Teleprompter",
-                "page-desc": "Paste your speech, configure your settings and start your presentation.",
-                "your-script": "Your Script",
+                "page-desc": "Select or create your conversion script, configure settings and start.",
+                "your-script": "Your Sales & Conversion Script",
                 "font-size": "Font Size",
                 "speed": "Scroll Speed",
                 "mirror-mode": "Mirror Mode (Flipped)",
                 "alignment": "Alignment",
                 "start-prompter": "Fullscreen Prompter",
-                "speed-lbl": "Speed",
-                "preview": "Preview & Record"
+                "preview": "Preview & Record",
+                "script-preset": "Sales Templates:",
+                "preset-saas": "🚀 Software & SaaS",
+                "preset-agency": "💼 Agency & Services",
+                "preset-ecommerce": "🛍️ E-commerce & Promo",
+                "new-script": "Save",
+                "btn-copy": "Copy",
+                "btn-paste": "Paste",
+                "modal-title": "Script Manager",
+                "modal-desc": "Save your favorite sales scripts to access them anytime.",
+                "modal-save": "Save",
+                "modal-close": "Close"
             },
             sw: {
                 "page-title": "Prompter ya Pro",
-                "page-desc": "Bandika hotuba yako, sanidi mipangilio yako na uanze uwasilishaji wako.",
-                "your-script": "Hati Yako",
+                "page-desc": "Chagua au unda hati yako ya mauzo, sanidi mipangilio na uanze.",
+                "your-script": "Hati Yako ya Mauzo na Ubadilishaji",
                 "font-size": "Ukubwa wa herufi",
                 "speed": "Kasi ya kusogeza",
                 "mirror-mode": "Hali ya Kioo (Imegeuzwa)",
                 "alignment": "Mpangilio",
                 "start-prompter": "Prompter ya Skrini Nzima",
-                "speed-lbl": "Kasi",
-                "preview": "Hakiki na Urekodi"
+                "preview": "Hakiki na Urekodi",
+                "script-preset": "Sampuli za Mauzo:",
+                "preset-saas": "🚀 Programu & SaaS",
+                "preset-agency": "💼 Wakala & Huduma",
+                "preset-ecommerce": "🛍️ Biashara & Promo",
+                "new-script": "Hifadhi",
+                "btn-copy": "Nakili",
+                "btn-paste": "Bandika",
+                "modal-title": "Msimamizi wa Hati",
+                "modal-desc": "Hifadhi hati zako za mauzo uzipendazo ili uzipate wakati wowote.",
+                "modal-save": "Hifadhi",
+                "modal-close": "Funga"
             }
         };
 
@@ -396,8 +517,172 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             });
         });
 
-        // --- 2. Configuration & DOM Elements ---
+        // --- STREAMING_CHUNK:Modèles de scripts incitant à la souscription ---
+        const salesPresets = {
+            saas: "Vous en avez assez de perdre des heures sur des tâches répétitives ?\n\nChez Baniki Labs, nous avons conçu la solution ultime pour automatiser votre croissance en un clic.\n\nRejoignez dès aujourd'hui les plus de 5 000 entrepreneurs qui font confiance à notre plateforme.\n\nCliquez sur le lien ci-dessous pour démarrer votre essai gratuit de 14 jours dès maintenant !",
+            agency: "Vous souhaitez scaler votre chiffre d'affaires et attirer des clients haut de gamme chaque semaine ?\n\nNotre équipe d'experts chez Baniki Labs déploie pour vous des stratégies sur-mesure à fort ROI.\n\nNe laissez pas vos concurrents prendre une longueur d'avance.\n\nRéservez votre audit stratégique offert dès maintenant et passez au niveau supérieur !",
+            ecommerce: "Attention ! Offre exclusive limitée aux 100 prochaines commandes seulement !\n\nProfitez de réductions exceptionnelles sur notre collection exclusive grâce aux solutions d'accélération Baniki Labs.\n\nStock limité, livraison express offerte.\n\nAjoutez au panier dès maintenant avant qu'il ne soit trop tard !"
+        };
+
         const scriptInput = document.getElementById('script-input');
+        scriptInput.value = salesPresets.saas;
+
+        function loadScriptPreset(type) {
+            if(salesPresets[type]) {
+                scriptInput.value = salesPresets[type];
+                updatePreviewContent();
+                showToast("Modèle de script chargé avec succès !");
+            }
+        }
+
+        // --- STREAMING_CHUNK:Gestion des thèmes multiples (Sombre, Gris Confort, Clair, Ambre) ---
+        function setTheme(themeName) {
+            document.body.classList.remove('theme-light', 'theme-comfort', 'theme-amber');
+            
+            // Réinitialiser les boutons de thème
+            ['dark', 'comfort', 'light', 'amber'].forEach(t => {
+                const btn = document.getElementById(`theme-btn-${t}`);
+                if(btn) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-white/10";
+                }
+            });
+
+            if(themeName !== 'dark') {
+                document.body.classList.add(`theme-${themeName}`);
+            }
+
+            const activeBtn = document.getElementById(`theme-btn-${themeName}`);
+            if(activeBtn) {
+                activeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[var(--gold)] text-black";
+            }
+
+            localStorage.setItem('baniki-teleprompter-theme', themeName);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('baniki-teleprompter-theme') || 'dark';
+            setTheme(savedTheme);
+            updatePreviewContent();
+        });
+
+        // --- STREAMING_CHUNK:Fonctions Copier / Coller avec Toast de notification ---
+        function copyScriptToClipboard() {
+            const textToCopy = scriptInput.value;
+            if (!textToCopy.trim()) return;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast("Script copié dans le presse-papier !");
+                }).catch(() => {
+                    fallbackCopy(textToCopy);
+                });
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        }
+
+        function fallbackCopy(text) {
+            scriptInput.select();
+            try {
+                document.execCommand('copy');
+                showToast("Script copié !");
+            } catch (err) {
+                showToast("Erreur lors de la copie.");
+            }
+        }
+
+        async function pasteScriptFromClipboard() {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    scriptInput.value = text;
+                    updatePreviewContent();
+                    showToast("Script collé avec succès !");
+                } else {
+                    showToast("Veuillez utiliser Ctrl+V pour coller.");
+                }
+            } catch (err) {
+                showToast("Permission de presse-papier refusée.");
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // --- STREAMING_CHUNK:Gestionnaire de Scripts Sauvegardés (LocalStorage) ---
+        const scriptModal = document.getElementById('script-modal');
+        const scriptTitleInput = document.getElementById('script-title-input');
+
+        function openNewScriptModal() {
+            scriptModal.classList.remove('hidden');
+            scriptModal.classList.add('flex');
+            renderSavedScriptsList();
+        }
+
+        function closeScriptModal() {
+            scriptModal.classList.add('hidden');
+            scriptModal.classList.remove('flex');
+        }
+
+        function saveCurrentScript() {
+            const title = scriptTitleInput.value.trim() || `Script du ${new Date().toLocaleDateString()}`;
+            const content = scriptInput.value;
+            if(!content.trim()) return;
+
+            let saved = JSON.parse(localStorage.getItem('baniki_saved_scripts') || '[]');
+            saved.push({ title, content, date: new Date().toISOString() });
+            localStorage.setItem('baniki_saved_scripts', JSON.stringify(saved));
+            
+            scriptTitleInput.value = '';
+            showToast("Script sauvegardé dans vos favoris !");
+            renderSavedScriptsList();
+        }
+
+        function renderSavedScriptsList() {
+            const container = document.getElementById('saved-scripts-list');
+            let saved = JSON.parse(localStorage.getItem('baniki_saved_scripts') || '[]');
+            
+            if(saved.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 italic text-center py-2">Aucun script personnel enregistré.</p>';
+                return;
+            }
+
+            container.innerHTML = saved.map((item, index) => `
+                <div class="flex items-center justify-between bg-white/5 p-2.5 rounded-xl hover:bg-white/10 transition-all">
+                    <button onclick="loadSavedScript(${index})" class="text-left flex-grow truncate mr-2">
+                        <span class="text-xs font-bold text-white block truncate">${item.title}</span>
+                        <span class="text-[10px] text-gray-400 block truncate">${item.content.substring(0, 40)}...</span>
+                    </button>
+                    <button onclick="deleteSavedScript(${index})" class="text-red-400 hover:text-red-300 p-1.5" title="Supprimer"><i class="fa-solid fa-trash text-xs"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function loadSavedScript(index) {
+            let saved = JSON.parse(localStorage.getItem('baniki_saved_scripts') || '[]');
+            if(saved[index]) {
+                scriptInput.value = saved[index].content;
+                updatePreviewContent();
+                closeScriptModal();
+                showToast(`Script "${saved[index].title}" chargé !`);
+            }
+        }
+
+        function deleteSavedScript(index) {
+            let saved = JSON.parse(localStorage.getItem('baniki_saved_scripts') || '[]');
+            saved.splice(index, 1);
+            localStorage.setItem('baniki_saved_scripts', JSON.stringify(saved));
+            renderSavedScriptsList();
+            showToast("Script supprimé.");
+        }
+
+        // --- STREAMING_CHUNK:Configuration des sliders et paramètres ---
         const fontSizeSlider = document.getElementById('font-size-slider');
         const speedSlider = document.getElementById('speed-slider');
         const fontVal = document.getElementById('font-val');
@@ -410,13 +695,11 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             textAlign: 'center' 
         };
 
-        // Sliders
         fontSizeSlider.addEventListener('input', (e) => {
             settings.fontSize = e.target.value;
             fontVal.innerText = `${settings.fontSize}px`;
-            // Prévisualisation instantanée (Fullscreen)
             document.getElementById('prompter-text').style.fontSize = `${settings.fontSize}px`;
-            updatePreviewContent(); // Update mini preview
+            updatePreviewContent();
         });
 
         speedSlider.addEventListener('input', (e) => {
@@ -424,42 +707,14 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             speedVal.innerText = `x${settings.speed.toFixed(1)}`;
         });
 
-        // Script input real-time update
         scriptInput.addEventListener('input', updatePreviewContent);
 
-        // Update content function for both mini and full
         function updatePreviewContent() {
             const rawText = scriptInput.value.replace(/\n/g, '<br>');
             document.getElementById('prompter-text').innerHTML = rawText;
             document.getElementById('mini-prompter-text').innerHTML = rawText;
         }
 
-        // --- STREAMING_CHUNK:Logique du Thème (Clair/Sombre) ---
-        const themeIcon = document.getElementById('theme-icon');
-        let isLightMode = false;
-
-        function toggleTheme() {
-            isLightMode = !isLightMode;
-            if (isLightMode) {
-                document.body.classList.add('light-mode');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('teleprompter-theme', 'light');
-            } else {
-                document.body.classList.remove('light-mode');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('teleprompter-theme', 'dark');
-            }
-        }
-
-        // Charger le thème au démarrage
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('teleprompter-theme');
-            if (savedTheme === 'light') {
-                toggleTheme();
-            }
-        });
-
-        // --- STREAMING_CHUNK:Logique des paramètres (Miroir et Alignement) ---
         // Toggle Miroir
         const mirrorToggle = document.getElementById('mirror-toggle');
         const mirrorKnob = document.getElementById('mirror-knob');
@@ -505,10 +760,7 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             document.getElementById('mini-prompter-text').style.textAlign = align;
         }
 
-        // Init initial content
-        updatePreviewContent();
-
-        // --- STREAMING_CHUNK:Logique de la Caméra et Enregistrement ---
+        // --- STREAMING_CHUNK:Logique Caméra & Enregistrement Vidéo ---
         const videoElement = document.getElementById('camera-preview');
         const fsVideoElement = document.getElementById('fs-camera-preview');
         const toggleCameraBtn = document.getElementById('toggleCameraBtn');
@@ -527,7 +779,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
 
         async function toggleCamera() {
             if (isCameraActive) {
-                // Stop camera
                 if (mediaStream) {
                     mediaStream.getTracks().forEach(track => track.stop());
                 }
@@ -547,12 +798,10 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
                 isCameraActive = false;
                 if(isRecording) stopRecording();
             } else {
-                // Start camera
                 try {
                     mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                     videoElement.srcObject = mediaStream;
-                    fsVideoElement.srcObject = mediaStream; // Sync streams
-                    
+                    fsVideoElement.srcObject = mediaStream;
                     videoElement.style.display = 'block';
                     
                     toggleCameraBtn.innerHTML = '<i class="fa-solid fa-video"></i>';
@@ -568,15 +817,14 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
 
                     isCameraActive = true;
                 } catch (err) {
-                    console.error("Erreur d'accès à la caméra: ", err);
-                    alert("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+                    console.error("Erreur caméra: ", err);
+                    showToast("Impossible d'accéder à la caméra.");
                 }
             }
         }
 
         function toggleRecording() {
             if (!isCameraActive) return;
-
             if (isRecording) {
                 stopRecording();
             } else {
@@ -586,8 +834,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
 
         function startRecording() {
             recordedChunks = [];
-            
-            // Choose format
             let options = { mimeType: 'video/webm; codecs=vp9,opus' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
                 options = { mimeType: 'video/webm; codecs=vp8,opus' };
@@ -599,21 +845,17 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             try {
                 mediaRecorder = new MediaRecorder(mediaStream, options);
             } catch (e) {
-                console.error('Exception while creating MediaRecorder:', e);
                 return;
             }
 
             mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
+                if (event.data.size > 0) recordedChunks.push(event.data);
             };
 
-            mediaRecorder.onstop = saveRecording;
+            mediaRecorder.onstop = saveRecordingFile;
             mediaRecorder.start();
             isRecording = true;
 
-            // UI Updates
             recordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
             recordBtn.classList.add('recording-indicator');
             fsRecordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
@@ -626,29 +868,27 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }
             isRecording = false;
             
-            // UI Updates
             recordBtn.innerHTML = '<i class="fa-solid fa-circle"></i>';
             recordBtn.classList.remove('recording-indicator');
             fsRecordBtn.innerHTML = '<i class="fa-solid fa-circle"></i>';
             fsRecordBtn.classList.remove('recording-indicator');
         }
 
-        function saveRecording() {
+        function saveRecordingFile() {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            
             document.body.appendChild(a);
             a.style.display = 'none';
             a.href = url;
             a.download = `baniki_teleprompter_${new Date().getTime()}.webm`;
             a.click();
-            
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
+            showToast("Vidéo enregistrée et téléchargée avec succès !");
         }
 
-        // --- STREAMING_CHUNK:Logique du lecteur Téléprompteur (Mini et Fullscreen) ---
+        // --- STREAMING_CHUNK:Lecteur Téléprompteur Plein Écran & Aperçu ---
         const setupScreen = document.getElementById('setup-screen');
         const prompterMode = document.getElementById('prompter-mode');
         const prompterDisplay = document.getElementById('prompter-display');
@@ -658,7 +898,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
         const prompterControls = document.getElementById('prompter-controls');
         const speedFeedback = document.getElementById('speed-feedback');
         
-        // Variables Mini Preview
         const miniDisplay = document.getElementById('mini-prompter-display');
         const miniPaddingTop = document.getElementById('mini-prompter-padding-top');
         const playPreviewIcon = document.getElementById('playPreviewIcon');
@@ -672,7 +911,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
         let currentScrollYMini = 0;
         let baseSpeedMultiplier = 2; 
 
-        // Init function handles Fullscreen mode
         function initPrompter(isFullscreen = true) {
             if(!scriptInput.value.trim()) {
                 scriptInput.classList.add('border-red-500');
@@ -681,12 +919,11 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }
 
             if (isFullscreen) {
-                // Prepare Fullscreen
                 prompterText.style.fontSize = `${settings.fontSize}px`;
                 
                 if(settings.isMirrored) {
                     prompterText.parentElement.classList.add('mirrored-text');
-                    if(isCameraActive) fsVideoElement.classList.add('mirrored-text'); // Miroir camera si texte inversé
+                    if(isCameraActive) fsVideoElement.classList.add('mirrored-text');
                 } else {
                     prompterText.parentElement.classList.remove('mirrored-text');
                     fsVideoElement.classList.remove('mirrored-text');
@@ -694,7 +931,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
 
                 paddingTop.style.height = `${window.innerHeight * 0.6}px`;
 
-                // Handle Camera display in Fullscreen
                 if(isCameraActive) {
                     fsVideoElement.style.display = 'block';
                     document.getElementById('fs-camera-overlay').style.display = 'block';
@@ -719,9 +955,7 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
                 updatePlayIconFull();
                 prompterDisplay.focus();
                 
-                // Pause mini if playing
                 if(isPlayingMini) togglePlayPreview();
-
             }
         }
 
@@ -736,7 +970,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }
         }
 
-        // Boucle de défilement Plein Écran
         function scrollLoopFull() {
             if (isPlayingFull) {
                 currentScrollYFull += (settings.speed * baseSpeedMultiplier);
@@ -751,10 +984,8 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }
         }
 
-        // Boucle de défilement Mini Aperçu
         function scrollLoopMini() {
             if (isPlayingMini) {
-                // Vitesse ajustée pour la taille de l'aperçu (divisée)
                 currentScrollYMini += (settings.speed * baseSpeedMultiplier * 0.5); 
                 miniDisplay.scrollTop = currentScrollYMini;
                 
@@ -786,7 +1017,7 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             updatePlayIconMini();
             
             if (isPlayingMini) {
-                miniPaddingTop.style.height = `150px`; // Half height
+                miniPaddingTop.style.height = `130px`;
                 if(currentScrollYMini === 0) miniDisplay.scrollTop = 0;
                 currentScrollYMini = miniDisplay.scrollTop;
                 animationFrameIdMini = requestAnimationFrame(scrollLoopMini);
@@ -846,7 +1077,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }
         }
 
-        // --- STREAMING_CHUNK:Améliorations UX (Contrôles flottants, Raccourcis clavier) ---
         let controlsTimeout;
         function showControls() {
             prompterControls.style.opacity = '1';
@@ -876,7 +1106,6 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             }, 1500);
         }
 
-        // Si l'utilisateur scroll manuellement avec la molette ou le doigt, on met en pause
         prompterDisplay.addEventListener('wheel', () => {
             if(isPlayingFull) togglePlayPause();
             currentScrollYFull = prompterDisplay.scrollTop;
@@ -887,10 +1116,8 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
             currentScrollYFull = prompterDisplay.scrollTop;
         }, {passive: true});
 
-        // Raccourcis clavier
         window.addEventListener('keydown', (e) => {
             if(!prompterMode.classList.contains('hidden')) {
-                // Commandes en plein écran
                 if(e.code === 'Space') {
                     e.preventDefault();
                     togglePlayPause();
@@ -903,15 +1130,13 @@ N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
                     e.preventDefault();
                     adjustSpeed(-0.1);
                 } else if(e.code === 'KeyR' && isCameraActive) {
-                    // R pour Record
                     e.preventDefault();
                     toggleRecording();
                 }
             }
         });
         
-        // Initialiser l'espacement du mini prompteur
-        miniPaddingTop.style.height = `150px`;
+        miniPaddingTop.style.height = `130px`;
 
     </script>
 </body>
