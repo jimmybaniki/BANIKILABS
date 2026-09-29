@@ -227,8 +227,8 @@
                     </button>
                     <div id="mobileNavMenu" class="hidden absolute top-full right-0 mt-4 w-48 bg-black/95 backdrop-blur-2xl border border-[var(--gold)]/30 rounded-2xl overflow-hidden shadow-2xl z-[110]">
                         <a href="#" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav(); toggleAboutModal();" data-translate="about">À Propos</a>
-                        <a href="news.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()">Actualités</a>
-                        <a href="#" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav(); toggleJobsModal();">Jobs</a>
+                        <a href="news.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="news">Actualités</a>
+                        <a href="#" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav(); toggleJobsModal();" data-translate="jobs-nav">Travail</a>
                         <a href="#expertises" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="expertises">Expertises</a>
                         <a href="#footer" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="contact">Infos & Contact</a>
                     </div>
@@ -237,8 +237,8 @@
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex items-center gap-6 lg:gap-8 mr-4">
                     <a href="#" onclick="toggleAboutModal();" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="about">À Propos</a>
-                    <a href="news.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Actualités</a>
-                    <a href="#" onclick="toggleJobsModal();" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors">Jobs</a>
+                    <a href="news.html" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="news">Actualités</a>
+                    <a href="#" onclick="toggleJobsModal();" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="jobs-nav">Travail</a>
                     <a href="#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="expertises">Expertises</a>
                     <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="contact">Infos & Contact</a>
                 </div>
@@ -385,19 +385,19 @@
                         <span>banikilabs@gmail.com</span>
                     </p>
                     <div class="pt-4 border-t border-white/5 space-y-2">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Informations Légales</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-translate="legal-info">Informations Légales</p>
                         <div class="flex flex-col gap-1 text-xs">
-                            <span>N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span data-translate="tax-id">N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
                             <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
-                            <span>ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
-                            <a href="admin.html" class="text-[var(--gold)] hover:underline mt-2 inline-block">Accès Admin</a>
+                            <span data-translate="nat-id">ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                            <a href="admin.html" class="text-[var(--gold)] hover:underline mt-2 inline-block" data-translate="admin-access">Accès Admin</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="space-y-6 sm:space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Suivez l'innovation</h4>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="follow-innovation">Suivez l'innovation</h4>
                 <div class="flex flex-wrap gap-4">
                     <!-- Facebook -->
                     <a href="https://www.facebook.com/share/1F56UtSKoT/" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5">
@@ -427,13 +427,13 @@
             </div>
 
             <div class="space-y-6 sm:space-y-8">
-                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Vision</h4>
-                <p class="text-gray-500 text-sm italic">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="vision-title">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-translate="vision-text">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
                 <div class="pt-4 border-t border-white/5">
-                    <span class="text-xs text-gray-400">Heures d'opération : 24/7 Innovation</span>
+                    <span class="text-xs text-gray-400" data-translate="op-hours">Heures d'opération : 24/7 Innovation</span>
                 </div>
                 <div class="pt-8 border-t border-white/5 mt-8">
-                    <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm">Méthodes de Paiement</h4>
+                    <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="payment-methods">Méthodes de Paiement</h4>
                     <div class="space-y-4 text-gray-400 text-sm sm:text-base">
                         <p class="flex items-center gap-3">
                             <i class="fa-solid fa-money-bill-transfer text-[var(--gold)]"></i>
@@ -459,7 +459,7 @@
 
         </div>
 
-        <div class="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-gray-600 font-bold uppercase tracking-[0.2em] px-4">
+        <div class="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-gray-600 font-bold uppercase tracking-[0.2em] px-4" data-translate="copyright">
             &copy; 2026. TOUS DROITS RÉSERVÉS BANIKI LABS.
         </div>
     </footer>
@@ -521,9 +521,9 @@
             
             <div class="p-8 sm:p-12 overflow-y-auto max-h-[85vh] w-full">
                 <div class="text-center mb-10">
-                    <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Carrières & Outils</span>
-                    <h3 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 text-white">Espace Emploi</h3>
-                    <p class="text-gray-400 text-sm mt-4">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
+                    <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]" data-translate="jobs-modal-subtitle">Carrières & Outils</span>
+                    <h3 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 text-white" data-translate="jobs-modal-title">Espace Emploi</h3>
+                    <p class="text-gray-400 text-sm mt-4" data-translate="jobs-modal-desc">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
                 </div>
 
                 <!-- Grille étendue pour s'adapter à 6 éléments sur 3 colonnes pour les écrans de taille moyenne et grande -->
@@ -532,24 +532,24 @@
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-file-pdf text-xl"></i>
                         </div>
-                        <h4 class="text-white font-bold mb-2">Générateur de CV</h4>
-                        <p class="text-xs text-gray-400">Créez un CV professionnel moderne et attractif en quelques clics.</p>
+                        <h4 class="text-white font-bold mb-2" data-translate="cv-gen-title">Générateur de CV</h4>
+                        <p class="text-xs text-gray-400" data-translate="cv-gen-desc">Créez un CV professionnel moderne et attractif en quelques clics.</p>
                     </a>
                     
                     <a href="coverletter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-envelope-open-text text-xl"></i>
                         </div>
-                        <h4 class="text-white font-bold mb-2">Lettre de Motivation</h4>
-                        <p class="text-xs text-gray-400">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
+                        <h4 class="text-white font-bold mb-2" data-translate="cover-letter-title">Lettre de Motivation</h4>
+                        <p class="text-xs text-gray-400" data-translate="cover-letter-desc">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
                     </a>
 
                     <a href="interview.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-user-tie text-xl"></i>
                         </div>
-                        <h4 class="text-white font-bold mb-2">Astuces Entretien</h4>
-                        <p class="text-xs text-gray-400">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
+                        <h4 class="text-white font-bold mb-2" data-translate="interview-tips-title">Astuces Entretien</h4>
+                        <p class="text-xs text-gray-400" data-translate="interview-tips-desc">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
                     </a>
 
                     <!-- NOUVEAU OUTIL : TÉLÉPROMPTEUR -->
@@ -557,8 +557,8 @@
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-tv text-xl"></i>
                         </div>
-                        <h4 class="text-white font-bold mb-2">Téléprompteur</h4>
-                        <p class="text-xs text-gray-400">Lisez vos scripts de manière fluide et professionnelle.</p>
+                        <h4 class="text-white font-bold mb-2" data-translate="teleprompter-title">Téléprompteur</h4>
+                        <p class="text-xs text-gray-400" data-translate="teleprompter-desc">Lisez vos scripts de manière fluide et professionnelle.</p>
                     </a>
 
                     <!-- NOUVEAU OUTIL : TYPING SPEED -->
@@ -566,16 +566,16 @@
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-keyboard text-xl"></i>
                         </div>
-                        <h4 class="text-white font-bold mb-2">Test de Frappe</h4>
-                        <p class="text-xs text-gray-400">Mesurez et améliorez votre vitesse de frappe au clavier.</p>
+                        <h4 class="text-white font-bold mb-2" data-translate="typing-test-title">Test de Frappe</h4>
+                        <p class="text-xs text-gray-400" data-translate="typing-test-desc">Mesurez et améliorez votre vitesse de frappe au clavier.</p>
                     </a>
 
                     <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)] text-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-briefcase text-xl"></i>
                         </div>
-                        <h4 class="font-bold mb-2 text-white group-hover:text-black transition-colors">Offres Baniki Labs</h4>
-                        <p class="text-xs text-gray-400 group-hover:text-black/70 transition-colors">Rejoignez notre équipe d'innovateurs.</p>
+                        <h4 class="font-bold mb-2 text-white group-hover:text-black transition-colors" data-translate="offers-title">Offres Baniki Labs</h4>
+                        <p class="text-xs text-gray-400 group-hover:text-black/70 transition-colors" data-translate="offers-desc">Rejoignez notre équipe d'innovateurs.</p>
                     </a>
                 </div>
             </div>
@@ -603,7 +603,34 @@
                 "all-categories": "TOUTES LES CATÉGORIES",
                 "about": "À Propos",
                 "expertises": "Expertises",
-                "contact": "Infos & Contact"
+                "contact": "Infos & Contact",
+                "news": "Actualités",
+                "jobs-nav": "Travail",
+                "legal-info": "Informations Légales",
+                "tax-id": "N° Impôt : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "ID National : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>",
+                "admin-access": "Accès Admin",
+                "follow-innovation": "Suivez l'innovation",
+                "vision-title": "Vision",
+                "vision-text": "\"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.\"",
+                "op-hours": "Heures d'opération : 24/7 Innovation",
+                "payment-methods": "Méthodes de Paiement",
+                "copyright": "&copy; 2026. TOUS DROITS RÉSERVÉS BANIKI LABS.",
+                "jobs-modal-subtitle": "Carrières & Outils",
+                "jobs-modal-title": "Espace Emploi",
+                "jobs-modal-desc": "Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.",
+                "cv-gen-title": "Générateur de CV",
+                "cv-gen-desc": "Créez un CV professionnel moderne et attractif en quelques clics.",
+                "cover-letter-title": "Lettre de Motivation",
+                "cover-letter-desc": "Rédigez une lettre impactante grâce à nos modèles assistés.",
+                "interview-tips-title": "Astuces Entretien",
+                "interview-tips-desc": "Préparez-vous avec les questions fréquentes et conseils de pros.",
+                "teleprompter-title": "Téléprompteur",
+                "teleprompter-desc": "Lisez vos scripts de manière fluide et professionnelle.",
+                "typing-test-title": "Test de Frappe",
+                "typing-test-desc": "Mesurez et améliorez votre vitesse de frappe au clavier.",
+                "offers-title": "Offres Baniki Labs",
+                "offers-desc": "Rejoignez notre équipe d'innovateurs."
             },
             en: {
                 "hero-subtitle": "innovation without limits",
@@ -613,7 +640,34 @@
                 "all-categories": "ALL CATEGORIES",
                 "about": "About",
                 "expertises": "Expertise",
-                "contact": "Info & Contact"
+                "contact": "Info & Contact",
+                "news": "News",
+                "jobs-nav": "Jobs",
+                "legal-info": "Legal Information",
+                "tax-id": "Tax ID : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "National ID : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>",
+                "admin-access": "Admin Access",
+                "follow-innovation": "Follow Innovation",
+                "vision-title": "Vision",
+                "vision-text": "\"Building the future, one project at a time, from the heart of Kinshasa.\"",
+                "op-hours": "Operating Hours : 24/7 Innovation",
+                "payment-methods": "Payment Methods",
+                "copyright": "&copy; 2026. ALL RIGHTS RESERVED BANIKI LABS.",
+                "jobs-modal-subtitle": "Careers & Tools",
+                "jobs-modal-title": "Job Board",
+                "jobs-modal-desc": "Powerful tools to support your professional success and land the ideal job.",
+                "cv-gen-title": "Resume Builder",
+                "cv-gen-desc": "Create a modern and attractive professional resume in just a few clicks.",
+                "cover-letter-title": "Cover Letter",
+                "cover-letter-desc": "Write an impactful letter using our assisted templates.",
+                "interview-tips-title": "Interview Tips",
+                "interview-tips-desc": "Prepare with frequently asked questions and pro tips.",
+                "teleprompter-title": "Teleprompter",
+                "teleprompter-desc": "Read your scripts fluently and professionally.",
+                "typing-test-title": "Typing Test",
+                "typing-test-desc": "Measure and improve your keyboard typing speed.",
+                "offers-title": "Baniki Labs Offers",
+                "offers-desc": "Join our team of innovators."
             },
             sw: {
                 "hero-subtitle": "ubunifu bila mipaka",
@@ -623,7 +677,34 @@
                 "all-categories": "KATEGORIA ZOTE",
                 "about": "Kuhusu",
                 "expertises": "Utaalam",
-                "contact": "Mawasiliano"
+                "contact": "Mawasiliano",
+                "news": "Habari",
+                "jobs-nav": "Kazi",
+                "legal-info": "Maelezo ya Kisheria",
+                "tax-id": "Namba ya Kodi : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "Kitambulisho cha Taifa : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>",
+                "admin-access": "Ufikiaji wa Admin",
+                "follow-innovation": "Fuata Ubunifu",
+                "vision-title": "Dira",
+                "vision-text": "\"Kujenga siku zijazo, mradi mmoja kwa wakati, kutoka moyoni mwa Kinshasa.\"",
+                "op-hours": "Saa za Kazi : Ubunifu wa 24/7",
+                "payment-methods": "Njia za Malipo",
+                "copyright": "&copy; 2026. HAKI ZOTE ZIMEHIFADHIWA BANIKI LABS.",
+                "jobs-modal-subtitle": "Kazi & Zana",
+                "jobs-modal-title": "Nafasi za Kazi",
+                "jobs-modal-desc": "Zana zenye nguvu za kusaidia mafanikio yako ya kitaalam na kupata kazi bora.",
+                "cv-gen-title": "Kutengeneza CV",
+                "cv-gen-desc": "Unda CV ya kisasa na ya kuvutia ya kitaalam kwa kubofya chache.",
+                "cover-letter-title": "Barua ya Maombi",
+                "cover-letter-desc": "Andika barua yenye athari ukitumia violezo vyetu.",
+                "interview-tips-title": "Vidokezo vya Usaili",
+                "interview-tips-desc": "Jitayarishe na maswali yanayoulizwa mara kwa mara na vidokezo vya wataalamu.",
+                "teleprompter-title": "Teleprompter",
+                "teleprompter-desc": "Soma maandishi yako kwa ufasaha na kitaalamu.",
+                "typing-test-title": "Jaribio la Kuandika",
+                "typing-test-desc": "Pima na uboreshe kasi yako ya kuandika kwenye kibodi.",
+                "offers-title": "Ofa za Baniki Labs",
+                "offers-desc": "Jiunge na timu yetu ya wabunifu."
             }
         };
 
