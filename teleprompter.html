@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Téléprompteur Baniki Labs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #ffd700;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Styles spécifiques au prompteur */
+        .mirrored-text {
+            transform: scaleX(-1);
+        }
+
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        /* Curseur personnalisé pour les inputs range (sliders) */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+            margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+        
+        #prompter-display:focus {
+            outline: none;
+        }
+
+        /* Video / Camera styles */
+        #camera-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1; /* Derrière le texte */
+            opacity: 0.8; /* Légèrement transparent pour que le texte soit lisible */
+            display: none;
+        }
+        
+        #prompter-text-wrapper {
+            position: relative;
+            z-index: 2; /* Au-dessus de la caméra */
+        }
+
+        .camera-active #prompter-display {
+           background-color: transparent;
+        }
+        
+        .recording-indicator {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative p-4 sm:p-8">
+
+    <main id="setup-screen" class="w-full max-w-7xl mx-auto flex flex-col flex-grow">
+        
+        <!-- En-tête -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[var(--gold)] flex items-center justify-center text-black font-black text-xl">B</div>
+                <span class="font-bold text-xl tracking-widest uppercase text-white">Baniki Labs</span>
+            </div>
+            
+            <select id="lang-select" class="bg-white/10 border border-white/20 text-white text-sm rounded-lg focus:ring-[var(--gold)] focus:border-[var(--gold)] block p-2.5 outline-none cursor-pointer">
+                <option value="fr" class="text-black">Français</option>
+                <option value="en" class="text-black">English</option>
+                <option value="sw" class="text-black">Kiswahili</option>
+            </select>
+        </div>
+
+        <div class="text-center mb-4">
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-white mb-2" data-translate="page-title">Téléprompteur Pro</h1>
+            <p class="text-gray-400 text-sm" data-translate="page-desc">Collez votre discours, configurez vos paramètres et démarrez votre présentation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow">
+            <!-- Zone principale (Prévisualisation + Saisie) -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                
+                <div class="flex flex-col gap-2">
+                    <label class="text-[var(--gold)] font-bold uppercase tracking-widest text-xs flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-desktop"></i> <span data-translate="preview">Aperçu & Enregistrement</span></span>
+                    </label>
+                    
+                    <div id="mini-prompter-container" class="relative w-full h-[300px] bg-black border border-white/10 rounded-2xl overflow-hidden group">
+                        
+                        <!-- Element Video pour la Camera -->
+                        <video id="camera-preview" autoplay muted playsinline></video>
+
+                        <!-- Zone de défilement (Mini) -->
+                        <div id="mini-prompter-display" class="absolute inset-0 overflow-hidden no-scrollbar w-full px-8 pointer-events-none z-10">
+                             <div id="mini-prompter-padding-top" class="w-full"></div>
+                             <div id="mini-prompter-text" class="w-full max-w-4xl mx-auto text-white font-bold leading-relaxed pb-[50vh] text-center text-3xl">
+                                <!-- Le texte sera mis à jour en temps réel -->
+                             </div>
+                        </div>
+
+                        <!-- Masque d'ombre pour lisibilité -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none z-[5]"></div>
+                        
+                        <!-- Contrôles flottants sur l'aperçu -->
+                        <div class="absolute top-4 right-4 flex gap-2 z-20">
+                            <!-- Toggle Camera -->
+                            <button id="toggleCameraBtn" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur text-white flex items-center justify-center hover:bg-white/20 transition-colors" title="Activer/Désactiver la caméra">
+                                <i class="fa-solid fa-video-slash"></i>
+                            </button>
+                            <!-- Start Recording -->
+                            <button id="recordBtn" class="w-10 h-10 rounded-full bg-red-500/20 text-red-500 border border-red-500/50 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors hidden" title="Enregistrer Vidéo/Audio">
+                                <i class="fa-solid fa-circle"></i>
+                            </button>
+                            <!-- Plein Ecran -->
+                            <button onclick="initPrompter(true)" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur text-white flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-colors" title="Mode Plein Écran">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 flex-grow">
+                    <label for="script-input" class="text-[var(--gold)] font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-align-left"></i> <span data-translate="your-script">Votre Script</span>
+                    </label>
+                    <textarea id="script-input" class="w-full flex-grow min-h-[200px] lg:min-h-[300px] bg-white/5 border border-white/10 rounded-2xl p-6 text-white placeholder:text-gray-600 focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]/50 transition-all text-base sm:text-lg resize-y" placeholder="Collez le texte de votre discours ici...">Bonjour et bienvenue dans ce nouvel épisode de Baniki Labs.
+Aujourd'hui, nous allons explorer les possibilités offertes par l'intelligence artificielle générative.
+
+La création de contenu n'a jamais été aussi rapide et accessible.
+N'hésitez pas à vous abonner pour plus d'astuces !</textarea>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-6 flex flex-col gap-6 h-fit sticky top-28">
+                <div>
+                    <label class="text-gray-300 text-xs font-bold uppercase tracking-wider block mb-3 flex justify-between">
+                        <span data-translate="font-size">Taille du texte</span>
+                        <span id="font-val" class="text-[var(--gold)]">64px</span>
+                    </label>
+                    <input type="range" id="font-size-slider" min="20" max="150" value="64">
+                </div>
+
+                <div>
+                    <label class="text-gray-300 text-xs font-bold uppercase tracking-wider block mb-3 flex justify-between">
+                        <span data-translate="speed">Vitesse de défilement</span>
+                        <span id="speed-val" class="text-[var(--gold)]">x1.0</span>
+                    </label>
+                    <input type="range" id="speed-slider" min="0.1" max="5" step="0.1" value="1.0">
+                </div>
+
+                <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                    <label class="text-gray-300 text-xs font-bold uppercase tracking-wider" data-translate="mirror-mode">Mode Miroir (Inversé)</label>
+                    <button id="mirror-toggle" onclick="toggleMirrorSetting()" class="w-12 h-6 bg-white/20 rounded-full relative transition-colors">
+                        <div id="mirror-knob" class="w-4 h-4 bg-white rounded-full absolute left-1 top-1 transition-transform"></div>
+                    </button>
+                </div>
+
+                <div class="pt-2 border-t border-white/10">
+                    <label class="text-gray-300 text-xs font-bold uppercase tracking-wider block mb-3" data-translate="alignment">Alignement</label>
+                    <div class="flex gap-2 bg-white/5 p-1 rounded-xl">
+                        <button onclick="setAlignment('left')" id="align-left" class="flex-1 py-2 rounded-lg text-white hover:bg-white/10 transition-colors"><i class="fa-solid fa-align-left"></i></button>
+                        <button onclick="setAlignment('center')" id="align-center" class="flex-1 py-2 rounded-lg bg-[var(--gold)] text-black transition-colors"><i class="fa-solid fa-align-center"></i></button>
+                        <button onclick="setAlignment('right')" id="align-right" class="flex-1 py-2 rounded-lg text-white hover:bg-white/10 transition-colors"><i class="fa-solid fa-align-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/10 mt-auto flex flex-col gap-3">
+                    <button id="startPrompterBtn" onclick="initPrompter(true)" class="w-full bg-[var(--gold)] text-black font-black uppercase tracking-widest py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(255,215,0,0.3)] flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-expand"></i> <span data-translate="start-prompter">Prompteur Plein Écran</span>
+                    </button>
+                    <!-- Mini play controls pour l'aperçu -->
+                    <div class="flex justify-between items-center bg-white/5 p-2 rounded-xl">
+                         <span class="text-xs text-gray-400 font-bold uppercase ml-2" data-translate="preview">Aperçu:</span>
+                         <div class="flex gap-2">
+                             <button onclick="restartPreview()" class="w-10 h-10 rounded-full text-white/50 hover:text-white transition-colors" title="Recommencer">
+                                 <i class="fa-solid fa-rotate-left"></i>
+                             </button>
+                             <button id="playPreviewBtn" onclick="togglePlayPreview()" class="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition-colors">
+                                 <i class="fa-solid fa-play ml-0.5" id="playPreviewIcon"></i>
+                             </button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="prompter-mode" class="fixed inset-0 bg-black z-[100] hidden flex-col">
+        <!-- Clone Video for Fullscreen if active -->
+        <video id="fs-camera-preview" autoplay muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0.8;display:none;"></video>
+        
+        <!-- Masque sombre pour le plein écran si caméra active -->
+        <div id="fs-camera-overlay" class="absolute inset-0 bg-black/40 z-[2] hidden pointer-events-none"></div>
+
+        <!-- Zone d'affichage du texte défilant -->
+        <div id="prompter-display" class="flex-grow overflow-y-auto no-scrollbar w-full px-4 sm:px-12 md:px-24 scroll-smooth relative z-10" tabindex="0">
+            <!-- Espace vide au dessus pour que le texte commence en bas -->
+            <div id="prompter-padding-top" class="w-full"></div>
+            <!-- Le conteneur du texte -->
+            <div id="prompter-text-wrapper" class="w-full max-w-6xl mx-auto pb-[80vh]">
+                <div id="prompter-text" class="text-white font-bold leading-relaxed text-center">
+                    <!-- Le texte sera injecté ici via JS -->
+                </div>
+            </div>
+        </div>
+
+        <div id="prompter-controls" class="absolute bottom-6 left-1/2 -translate-x-1/2 glass-panel rounded-full px-6 py-3 flex items-center gap-6 shadow-2xl transition-opacity duration-500 opacity-100 hover:opacity-100 z-20">
+            <button onclick="adjustSpeed(-0.2)" class="text-white/70 hover:text-[var(--gold)] transition-colors" title="Ralentir">
+                <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button id="playPauseBtn" onclick="togglePlayPause()" class="w-14 h-14 rounded-full bg-[var(--gold)] text-black flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:scale-110 transition-transform">
+                <i class="fa-solid fa-play ml-1" id="playIcon"></i>
+            </button>
+            <button onclick="adjustSpeed(0.2)" class="text-white/70 hover:text-[var(--gold)] transition-colors" title="Accélérer">
+                <i class="fa-solid fa-forward-step"></i>
+            </button>
+            <button onclick="restartPrompter()" class="text-white/50 hover:text-white transition-colors" title="Recommencer">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button onclick="exitPrompter()" class="text-white/50 hover:text-white transition-colors" title="Quitter">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Record button in fullscreen (syncs with preview) -->
+            <div class="h-6 w-px bg-white/20 hidden fs-record-element"></div>
+            <button id="fsRecordBtn" class="w-10 h-10 rounded-full bg-red-500/20 text-red-500 border border-red-500/50 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors hidden fs-record-element" title="Enregistrer">
+                <i class="fa-solid fa-circle"></i>
+            </button>
+
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 px-3 py-1 rounded-lg text-xs font-bold text-[var(--gold)] whitespace-nowrap opacity-0 transition-opacity" id="speed-feedback">
+                Vitesse : x1.0
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Traductions ---
+        const translations = {
+            fr: {
+                "page-title": "Téléprompteur Pro",
+                "page-desc": "Collez votre discours, configurez vos paramètres et démarrez votre présentation.",
+                "your-script": "Votre Script",
+                "font-size": "Taille du texte",
+                "speed": "Vitesse de défilement",
+                "mirror-mode": "Mode Miroir (Inversé)",
+                "alignment": "Alignement",
+                "start-prompter": "Prompteur Plein Écran",
+                "speed-lbl": "Vitesse",
+                "preview": "Aperçu & Enregistrement"
+            },
+            en: {
+                "page-title": "Pro Teleprompter",
+                "page-desc": "Paste your speech, configure your settings and start your presentation.",
+                "your-script": "Your Script",
+                "font-size": "Font Size",
+                "speed": "Scroll Speed",
+                "mirror-mode": "Mirror Mode (Flipped)",
+                "alignment": "Alignment",
+                "start-prompter": "Fullscreen Prompter",
+                "speed-lbl": "Speed",
+                "preview": "Preview & Record"
+            },
+            sw: {
+                "page-title": "Prompter ya Pro",
+                "page-desc": "Bandika hotuba yako, sanidi mipangilio yako na uanze uwasilishaji wako.",
+                "your-script": "Hati Yako",
+                "font-size": "Ukubwa wa herufi",
+                "speed": "Kasi ya kusogeza",
+                "mirror-mode": "Hali ya Kioo (Imegeuzwa)",
+                "alignment": "Mpangilio",
+                "start-prompter": "Prompter ya Skrini Nzima",
+                "speed-lbl": "Kasi",
+                "preview": "Hakiki na Urekodi"
+            }
+        };
+
+        const langSelect = document.getElementById('lang-select');
+        langSelect.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if(translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        });
+
+        // --- 2. Configuration & DOM Elements ---
+        const scriptInput = document.getElementById('script-input');
+        const fontSizeSlider = document.getElementById('font-size-slider');
+        const speedSlider = document.getElementById('speed-slider');
+        const fontVal = document.getElementById('font-val');
+        const speedVal = document.getElementById('speed-val');
+        
+        let settings = {
+            fontSize: 64,
+            speed: 1.0,
+            isMirrored: false,
+            textAlign: 'center' 
+        };
+
+        // Sliders
+        fontSizeSlider.addEventListener('input', (e) => {
+            settings.fontSize = e.target.value;
+            fontVal.innerText = `${settings.fontSize}px`;
+            // Prévisualisation instantanée (Fullscreen)
+            document.getElementById('prompter-text').style.fontSize = `${settings.fontSize}px`;
+            updatePreviewContent(); // Update mini preview
+        });
+
+        speedSlider.addEventListener('input', (e) => {
+            settings.speed = parseFloat(e.target.value);
+            speedVal.innerText = `x${settings.speed.toFixed(1)}`;
+        });
+
+        // Script input real-time update
+        scriptInput.addEventListener('input', updatePreviewContent);
+
+        // Update content function for both mini and full
+        function updatePreviewContent() {
+            const rawText = scriptInput.value.replace(/\n/g, '<br>');
+            document.getElementById('prompter-text').innerHTML = rawText;
+            document.getElementById('mini-prompter-text').innerHTML = rawText;
+        }
+
+        // --- STREAMING_CHUNK:Logique des paramètres (Miroir et Alignement) ---
+        // Toggle Miroir
+        const mirrorToggle = document.getElementById('mirror-toggle');
+        const mirrorKnob = document.getElementById('mirror-knob');
+        function toggleMirrorSetting() {
+            settings.isMirrored = !settings.isMirrored;
+            if (settings.isMirrored) {
+                mirrorToggle.classList.replace('bg-white/20', 'bg-[var(--gold)]');
+                mirrorKnob.classList.add('translate-x-6');
+                mirrorKnob.classList.replace('bg-white', 'bg-black');
+            } else {
+                mirrorToggle.classList.replace('bg-[var(--gold)]', 'bg-white/20');
+                mirrorKnob.classList.remove('translate-x-6');
+                mirrorKnob.classList.replace('bg-black', 'bg-white');
+            }
+            
+            if (settings.isMirrored) {
+                document.getElementById('mini-prompter-text').parentElement.classList.add('mirrored-text');
+                if (isCameraActive) videoElement.classList.add('mirrored-text');
+            } else {
+                document.getElementById('mini-prompter-text').parentElement.classList.remove('mirrored-text');
+                if (isCameraActive) videoElement.classList.remove('mirrored-text');
+            }
+        }
+
+        // Alignement
+        const alignLeftBtn = document.getElementById('align-left');
+        const alignCenterBtn = document.getElementById('align-center');
+        const alignRightBtn = document.getElementById('align-right');
+        
+        function setAlignment(align) {
+            settings.textAlign = align;
+            [alignLeftBtn, alignCenterBtn, alignRightBtn].forEach(btn => {
+                btn.classList.remove('bg-[var(--gold)]', 'text-black');
+                btn.classList.add('text-white', 'hover:bg-white/10');
+            });
+            const activeBtn = document.getElementById(`align-${align}`);
+            activeBtn.classList.remove('text-white', 'hover:bg-white/10');
+            activeBtn.classList.add('bg-[var(--gold)]', 'text-black');
+            
+            document.getElementById('prompter-text').style.textAlign = align;
+            document.getElementById('mini-prompter-text').style.textAlign = align;
+        }
+
+        // Init initial content
+        updatePreviewContent();
+
+        // --- STREAMING_CHUNK:Logique de la Caméra et Enregistrement ---
+        const videoElement = document.getElementById('camera-preview');
+        const fsVideoElement = document.getElementById('fs-camera-preview');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        const fsRecordBtn = document.getElementById('fsRecordBtn');
+        
+        let mediaStream = null;
+        let isCameraActive = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        toggleCameraBtn.addEventListener('click', toggleCamera);
+        recordBtn.addEventListener('click', toggleRecording);
+        fsRecordBtn.addEventListener('click', toggleRecording);
+
+        async function toggleCamera() {
+            if (isCameraActive) {
+                // Stop camera
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                }
+                videoElement.srcObject = null;
+                fsVideoElement.srcObject = null;
+                videoElement.style.display = 'none';
+                fsVideoElement.style.display = 'none';
+                document.getElementById('fs-camera-overlay').style.display = 'none';
+                
+                toggleCameraBtn.innerHTML = '<i class="fa-solid fa-video-slash"></i>';
+                toggleCameraBtn.classList.remove('bg-green-500/20', 'text-green-500');
+                toggleCameraBtn.classList.add('bg-white/10', 'text-white');
+                
+                recordBtn.classList.add('hidden');
+                document.querySelectorAll('.fs-record-element').forEach(el => el.classList.add('hidden'));
+                
+                isCameraActive = false;
+                if(isRecording) stopRecording();
+            } else {
+                // Start camera
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    videoElement.srcObject = mediaStream;
+                    fsVideoElement.srcObject = mediaStream; // Sync streams
+                    
+                    videoElement.style.display = 'block';
+                    
+                    toggleCameraBtn.innerHTML = '<i class="fa-solid fa-video"></i>';
+                    toggleCameraBtn.classList.remove('bg-white/10', 'text-white');
+                    toggleCameraBtn.classList.add('bg-green-500/20', 'text-green-500');
+                    
+                    recordBtn.classList.remove('hidden');
+                    document.querySelectorAll('.fs-record-element').forEach(el => el.classList.remove('hidden'));
+                    
+                    if(settings.isMirrored) {
+                        videoElement.classList.add('mirrored-text');
+                    }
+
+                    isCameraActive = true;
+                } catch (err) {
+                    console.error("Erreur d'accès à la caméra: ", err);
+                    alert("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+                }
+            }
+        }
+
+        function toggleRecording() {
+            if (!isCameraActive) return;
+
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            recordedChunks = [];
+            
+            // Choose format
+            let options = { mimeType: 'video/webm; codecs=vp9,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm; codecs=vp8,opus' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                     options = { mimeType: 'video/webm' };
+                }
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(mediaStream, options);
+            } catch (e) {
+                console.error('Exception while creating MediaRecorder:', e);
+                return;
+            }
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = saveRecording;
+            mediaRecorder.start();
+            isRecording = true;
+
+            // UI Updates
+            recordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
+            recordBtn.classList.add('recording-indicator');
+            fsRecordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
+            fsRecordBtn.classList.add('recording-indicator');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            isRecording = false;
+            
+            // UI Updates
+            recordBtn.innerHTML = '<i class="fa-solid fa-circle"></i>';
+            recordBtn.classList.remove('recording-indicator');
+            fsRecordBtn.innerHTML = '<i class="fa-solid fa-circle"></i>';
+            fsRecordBtn.classList.remove('recording-indicator');
+        }
+
+        function saveRecording() {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `baniki_teleprompter_${new Date().getTime()}.webm`;
+            a.click();
+            
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // --- STREAMING_CHUNK:Logique du lecteur Téléprompteur (Mini et Fullscreen) ---
+        const setupScreen = document.getElementById('setup-screen');
+        const prompterMode = document.getElementById('prompter-mode');
+        const prompterDisplay = document.getElementById('prompter-display');
+        const prompterText = document.getElementById('prompter-text');
+        const paddingTop = document.getElementById('prompter-padding-top');
+        const playIcon = document.getElementById('playIcon');
+        const prompterControls = document.getElementById('prompter-controls');
+        const speedFeedback = document.getElementById('speed-feedback');
+        
+        // Variables Mini Preview
+        const miniDisplay = document.getElementById('mini-prompter-display');
+        const miniPaddingTop = document.getElementById('mini-prompter-padding-top');
+        const playPreviewIcon = document.getElementById('playPreviewIcon');
+        
+        let isPlayingFull = false;
+        let isPlayingMini = false;
+        let animationFrameIdFull = null;
+        let animationFrameIdMini = null;
+        
+        let currentScrollYFull = 0;
+        let currentScrollYMini = 0;
+        let baseSpeedMultiplier = 2; 
+
+        // Init function handles Fullscreen mode
+        function initPrompter(isFullscreen = true) {
+            if(!scriptInput.value.trim()) {
+                scriptInput.classList.add('border-red-500');
+                setTimeout(() => scriptInput.classList.remove('border-red-500'), 500);
+                return;
+            }
+
+            if (isFullscreen) {
+                // Prepare Fullscreen
+                prompterText.style.fontSize = `${settings.fontSize}px`;
+                
+                if(settings.isMirrored) {
+                    prompterText.parentElement.classList.add('mirrored-text');
+                    if(isCameraActive) fsVideoElement.classList.add('mirrored-text'); // Miroir camera si texte inversé
+                } else {
+                    prompterText.parentElement.classList.remove('mirrored-text');
+                    fsVideoElement.classList.remove('mirrored-text');
+                }
+
+                paddingTop.style.height = `${window.innerHeight * 0.6}px`;
+
+                // Handle Camera display in Fullscreen
+                if(isCameraActive) {
+                    fsVideoElement.style.display = 'block';
+                    document.getElementById('fs-camera-overlay').style.display = 'block';
+                } else {
+                    fsVideoElement.style.display = 'none';
+                    document.getElementById('fs-camera-overlay').style.display = 'none';
+                }
+
+                setupScreen.classList.add('hidden');
+                prompterMode.classList.remove('hidden');
+                prompterMode.classList.add('flex');
+                
+                try {
+                    if (prompterMode.requestFullscreen) {
+                        prompterMode.requestFullscreen().catch(()=>{});
+                    }
+                } catch(e){}
+
+                prompterDisplay.scrollTop = 0;
+                currentScrollYFull = 0;
+                isPlayingFull = false;
+                updatePlayIconFull();
+                prompterDisplay.focus();
+                
+                // Pause mini if playing
+                if(isPlayingMini) togglePlayPreview();
+
+            }
+        }
+
+        function exitPrompter() {
+            stopScrollFull();
+            prompterMode.classList.add('hidden');
+            prompterMode.classList.remove('flex');
+            setupScreen.classList.remove('hidden');
+            
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(()=>{});
+            }
+        }
+
+        // Boucle de défilement Plein Écran
+        function scrollLoopFull() {
+            if (isPlayingFull) {
+                currentScrollYFull += (settings.speed * baseSpeedMultiplier);
+                prompterDisplay.scrollTop = currentScrollYFull;
+                
+                if (prompterDisplay.scrollTop + prompterDisplay.clientHeight >= prompterDisplay.scrollHeight - 2) {
+                    isPlayingFull = false;
+                    updatePlayIconFull();
+                } else {
+                    animationFrameIdFull = requestAnimationFrame(scrollLoopFull);
+                }
+            }
+        }
+
+        // Boucle de défilement Mini Aperçu
+        function scrollLoopMini() {
+            if (isPlayingMini) {
+                // Vitesse ajustée pour la taille de l'aperçu (divisée)
+                currentScrollYMini += (settings.speed * baseSpeedMultiplier * 0.5); 
+                miniDisplay.scrollTop = currentScrollYMini;
+                
+                if (miniDisplay.scrollTop + miniDisplay.clientHeight >= miniDisplay.scrollHeight - 2) {
+                    isPlayingMini = false;
+                    updatePlayIconMini();
+                } else {
+                    animationFrameIdMini = requestAnimationFrame(scrollLoopMini);
+                }
+            }
+        }
+
+        function togglePlayPause() {
+            isPlayingFull = !isPlayingFull;
+            updatePlayIconFull();
+            
+            if (isPlayingFull) {
+                currentScrollYFull = prompterDisplay.scrollTop;
+                animationFrameIdFull = requestAnimationFrame(scrollLoopFull);
+                hideControlsAuto();
+            } else {
+                stopScrollFull();
+                showControls();
+            }
+        }
+
+        function togglePlayPreview() {
+            isPlayingMini = !isPlayingMini;
+            updatePlayIconMini();
+            
+            if (isPlayingMini) {
+                miniPaddingTop.style.height = `150px`; // Half height
+                if(currentScrollYMini === 0) miniDisplay.scrollTop = 0;
+                currentScrollYMini = miniDisplay.scrollTop;
+                animationFrameIdMini = requestAnimationFrame(scrollLoopMini);
+            } else {
+                if (animationFrameIdMini) {
+                    cancelAnimationFrame(animationFrameIdMini);
+                    animationFrameIdMini = null;
+                }
+            }
+        }
+
+        function stopScrollFull() {
+            if (animationFrameIdFull) {
+                cancelAnimationFrame(animationFrameIdFull);
+                animationFrameIdFull = null;
+            }
+        }
+
+        function restartPrompter() {
+            prompterDisplay.scrollTo({ top: 0, behavior: 'smooth' });
+            currentScrollYFull = 0;
+            if(!isPlayingFull) showControls();
+        }
+
+        function restartPreview() {
+            miniDisplay.scrollTo({ top: 0, behavior: 'smooth' });
+            currentScrollYMini = 0;
+        }
+
+        function adjustSpeed(delta) {
+            let newSpeed = parseFloat(settings.speed) + delta;
+            if(newSpeed < 0.1) newSpeed = 0.1;
+            if(newSpeed > 10.0) newSpeed = 10.0;
+            settings.speed = parseFloat(newSpeed.toFixed(1));
+            speedSlider.value = settings.speed;
+            speedVal.innerText = `x${settings.speed.toFixed(1)}`;
+            showSpeedFeedback();
+        }
+
+        function updatePlayIconFull() {
+            if(isPlayingFull) {
+                playIcon.classList.replace('fa-play', 'fa-pause');
+                playIcon.classList.remove('ml-1');
+            } else {
+                playIcon.classList.replace('fa-pause', 'fa-play');
+                playIcon.classList.add('ml-1');
+            }
+        }
+
+        function updatePlayIconMini() {
+            if(isPlayingMini) {
+                playPreviewIcon.classList.replace('fa-play', 'fa-pause');
+                playPreviewIcon.classList.remove('ml-0.5');
+            } else {
+                playPreviewIcon.classList.replace('fa-pause', 'fa-play');
+                playPreviewIcon.classList.add('ml-0.5');
+            }
+        }
+
+        // --- STREAMING_CHUNK:Améliorations UX (Contrôles flottants, Raccourcis clavier) ---
+        let controlsTimeout;
+        function showControls() {
+            prompterControls.style.opacity = '1';
+            prompterControls.style.pointerEvents = 'auto';
+            hideControlsAuto();
+        }
+
+        function hideControlsAuto() {
+            clearTimeout(controlsTimeout);
+            if(isPlayingFull) {
+                controlsTimeout = setTimeout(() => {
+                    prompterControls.style.opacity = '0';
+                    prompterControls.style.pointerEvents = 'none';
+                }, 2500);
+            }
+        }
+        
+        document.getElementById('prompter-mode').addEventListener('mousemove', showControls);
+
+        let speedFeedbackTimeout;
+        function showSpeedFeedback() {
+            speedFeedback.innerText = `Vitesse : x${settings.speed.toFixed(1)}`;
+            speedFeedback.style.opacity = '1';
+            clearTimeout(speedFeedbackTimeout);
+            speedFeedbackTimeout = setTimeout(() => {
+                speedFeedback.style.opacity = '0';
+            }, 1500);
+        }
+
+        // Si l'utilisateur scroll manuellement avec la molette ou le doigt, on met en pause
+        prompterDisplay.addEventListener('wheel', () => {
+            if(isPlayingFull) togglePlayPause();
+            currentScrollYFull = prompterDisplay.scrollTop;
+        }, {passive: true});
+        
+        prompterDisplay.addEventListener('touchmove', () => {
+            if(isPlayingFull) togglePlayPause();
+            currentScrollYFull = prompterDisplay.scrollTop;
+        }, {passive: true});
+
+        // Raccourcis clavier
+        window.addEventListener('keydown', (e) => {
+            if(!prompterMode.classList.contains('hidden')) {
+                // Commandes en plein écran
+                if(e.code === 'Space') {
+                    e.preventDefault();
+                    togglePlayPause();
+                } else if(e.code === 'Escape') {
+                    exitPrompter();
+                } else if(e.code === 'ArrowUp') {
+                    e.preventDefault();
+                    adjustSpeed(0.1);
+                } else if(e.code === 'ArrowDown') {
+                    e.preventDefault();
+                    adjustSpeed(-0.1);
+                } else if(e.code === 'KeyR' && isCameraActive) {
+                    // R pour Record
+                    e.preventDefault();
+                    toggleRecording();
+                }
+            }
+        });
+        
+        // Initialiser l'espacement du mini prompteur
+        miniPaddingTop.style.height = `150px`;
+
+    </script>
+</body>
+</html>
