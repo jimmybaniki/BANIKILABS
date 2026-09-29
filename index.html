@@ -439,6 +439,16 @@
                             <i class="fa-solid fa-money-bill-transfer text-[var(--gold)]"></i>
                             <span>M-Pesa : +243 822 409 702 (Jimmy Baniki)</span>
                         </p>
+                        <!-- NOUVEAU NUMÉRO MPESA TANZANIE -->
+                        <p class="flex items-center gap-3">
+                            <i class="fa-solid fa-money-bill-transfer text-[var(--gold)]"></i>
+                            <span>M-Pesa (TZ) : +255 793 455 303</span>
+                        </p>
+                        <!-- NOUVEAU COMPTE PAYPAL -->
+                        <p class="flex items-center gap-3">
+                            <i class="fa-brands fa-paypal text-[var(--gold)]"></i>
+                            <span>PayPal : banikilabs@gmail.com</span>
+                        </p>
                         <p class="flex items-center gap-3">
                             <i class="fa-solid fa-building-columns text-[var(--gold)]"></i>
                             <span>Equity BCDC : 266200286723221 (Jimmy Baniki)</span>
@@ -503,7 +513,8 @@
 
     <!-- Pop-up Jobs / Outils Emploi -->
     <div id="jobsModal" class="custom-modal">
-        <div class="bg-[var(--bg-card)] max-w-3xl w-full rounded-[2rem] border border-[var(--gold)]/30 overflow-hidden shadow-2xl relative flex flex-col">
+        <!-- Ajout d'une largeur maximale (max-w-4xl) pour accueillir les 3 colonnes de manière optimale -->
+        <div class="bg-[var(--bg-card)] max-w-4xl w-full rounded-[2rem] border border-[var(--gold)]/30 overflow-hidden shadow-2xl relative flex flex-col">
             <button onclick="toggleJobsModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/80 p-2 rounded-full backdrop-blur-md">
                 <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
@@ -515,7 +526,8 @@
                     <p class="text-gray-400 text-sm mt-4">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Grille étendue pour s'adapter à 6 éléments sur 3 colonnes pour les écrans de taille moyenne et grande -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <a href="cv.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-file-pdf text-xl"></i>
@@ -538,6 +550,24 @@
                         </div>
                         <h4 class="text-white font-bold mb-2">Astuces Entretien</h4>
                         <p class="text-xs text-gray-400">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
+                    </a>
+
+                    <!-- NOUVEAU OUTIL : TÉLÉPROMPTEUR -->
+                    <a href="teleprompter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-tv text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2">Téléprompteur</h4>
+                        <p class="text-xs text-gray-400">Lisez vos scripts de manière fluide et professionnelle.</p>
+                    </a>
+
+                    <!-- NOUVEAU OUTIL : TYPING SPEED -->
+                    <a href="typing.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-keyboard text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2">Test de Frappe</h4>
+                        <p class="text-xs text-gray-400">Mesurez et améliorez votre vitesse de frappe au clavier.</p>
                     </a>
 
                     <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
