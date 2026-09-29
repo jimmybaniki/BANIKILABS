@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BANIKI LABS | Test de Frappe & Cours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+        
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+            --text-dim: #4b5563;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        .bg-animate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            opacity: 0.15; overflow: hidden; pointer-events: none;
+        }
+        .bg-animate::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-dark) 80%);
+        }
+
+        #typing-area { position: relative; outline: none; }
+
+        .word {
+            margin-right: 0.5em; margin-bottom: 0.5em;
+            display: inline-block; transition: all 0.1s;
+        }
+
+        .letter {
+            color: var(--text-dim); transition: color 0.1s; position: relative;
+        }
+
+        .letter.correct { color: var(--text-main); }
+        .letter.incorrect { color: var(--error); border-bottom: 2px solid var(--error); }
+
+        .caret {
+            position: absolute; left: 0; top: 10%; width: 2px; height: 80%;
+            background-color: var(--gold); animation: blink 1s infinite;
+            transition: all 0.1s ease; z-index: 10; display: none;
+        }
+        .caret.active { display: block; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        #hidden-input {
+            position: absolute; opacity: 0; top: 0; left: 0;
+            height: 100%; width: 100%; z-index: -1; cursor: default;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .stat-box { transition: all 0.3s ease; }
+        .stat-box:hover {
+            transform: translateY(-5px); border-color: var(--gold);
+            box-shadow: 0 10px 30px -10px rgba(255,215,0,0.2);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+        @media print {
+            @page { size: landscape; margin: 0; }
+            body * { visibility: hidden; }
+            #certificate-print-area, #certificate-print-area * { visibility: visible; }
+            #certificate-print-area {
+                position: absolute;
+                left: 0; top: 0;
+                width: 100%; height: 100vh;
+                display: flex !important;
+                background-color: #fff !important;
+                color: #000 !important;
+                padding: 40px;
+                box-sizing: border-box;
+                align-items: center;
+                justify-content: center;
+            }
+            .cert-border { border: 10px solid #FFD700 !important; outline: 4px solid #080808 !important; outline-offset: -20px; }
+            .print-hidden { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animate print-hidden">
+        <div class="absolute w-[500px] h-[500px] bg-[var(--gold)]/20 rounded-full blur-[120px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-xl print-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center rounded-full transition-all group-hover:bg-[var(--gold)] group-hover:text-black">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </div>
+                <span class="font-bold text-sm tracking-widest uppercase text-gray-400 group-hover:text-white transition-colors" data-translate="nav-back">Retour</span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <div class="relative group">
+                    <button class="flex items-center gap-1 text-gray-400 hover:text-[var(--gold)] font-bold text-xs uppercase tracking-widest transition-colors py-2">
+                        <i class="fa-solid fa-globe"></i>
+                        <span id="current-lang-display">FR</span>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-32 rounded-xl shadow-2xl bg-neutral-900 border border-white/10 z-20 hidden group-hover:block overflow-hidden">
+                        <button onclick="setLanguage('fr')" class="w-full text-left px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black transition-colors">FRANÇAIS</button>
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black transition-colors">ENGLISH</button>
+                        <button onclick="setLanguage('sw')" class="w-full text-left px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black transition-colors">KISWAHILI</button>
+                    </div>
+                </div>
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+                    <span class="text-black font-black text-sm sm:text-base tracking-tighter">BL</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center pt-24 pb-12 px-4 sm:px-6 relative z-10 w-full max-w-5xl mx-auto print-hidden">
+        
+        <div class="text-center mb-6 sm:mb-10 animate-fadeIn">
+            <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-[0.4em]" data-translate="subtitle">Performance</span>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 mb-4" data-translate="title">TEST DE FRAPPE</h1>
+            <p class="text-gray-400 text-sm max-w-xl mx-auto" data-translate="description">Mesurez votre vitesse, ou suivez notre cours pour apprendre à taper rapidement.</p>
+        </div>
+
+        <div class="w-full flex flex-col lg:flex-row justify-center items-center gap-4 mb-6 flex-wrap">
+            <div class="flex bg-white/5 rounded-xl p-1 border border-white/10 flex-wrap justify-center">
+                <button onclick="setMode('random')" id="btn-mode-random" class="mode-btn active px-3 py-2 sm:px-4 rounded-lg text-xs font-bold uppercase tracking-widest text-black bg-[var(--gold)] transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-dice"></i> <span data-translate="mode-random" class="hidden sm:inline">Aléatoire</span>
+                </button>
+                <button onclick="setMode('marketing')" id="btn-mode-marketing" class="mode-btn px-3 py-2 sm:px-4 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb"></i> <span data-translate="mode-advice" class="hidden sm:inline">Conseils Pro</span>
+                </button>
+                <button onclick="setMode('custom')" id="btn-mode-custom" class="mode-btn px-3 py-2 sm:px-4 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-paste"></i> <span data-translate="mode-custom" class="hidden sm:inline">Coller Texte</span>
+                </button>
+                <!-- Nouveau Mode: Cours -->
+                <button onclick="setMode('lessons')" id="btn-mode-lessons" class="mode-btn px-3 py-2 sm:px-4 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2 border border-[var(--gold)]/30">
+                    <i class="fa-solid fa-graduation-cap text-[var(--gold)]"></i> <span data-translate="mode-lessons">Cours (10)</span>
+                </button>
+            </div>
+
+            <div class="flex bg-white/5 rounded-xl p-1 border border-white/10" id="time-controls">
+                <button class="time-btn active bg-white/10 text-white font-bold px-3 py-2 rounded-lg text-xs uppercase tracking-widest transition-all" data-time="15">15s</button>
+                <button class="time-btn text-gray-400 hover:text-white font-bold px-3 py-2 rounded-lg text-xs uppercase tracking-widest transition-all" data-time="30">30s</button>
+                <button class="time-btn text-gray-400 hover:text-white font-bold px-3 py-2 rounded-lg text-xs uppercase tracking-widest transition-all" data-time="60">60s</button>
+            </div>
+        </div>
+
+        <!-- Zone Texte Personnalisé -->
+        <div id="custom-text-area" class="w-full max-w-2xl mb-6 hidden animate-fadeIn">
+            <textarea id="custom-input-field" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-sm font-mono placeholder:text-gray-600 focus:outline-none focus:border-[var(--gold)] transition-colors h-24 resize-none" placeholder="Collez votre texte ici..."></textarea>
+            <button onclick="applyCustomText()" class="mt-2 w-full bg-white/10 hover:bg-[var(--gold)] text-white hover:text-black font-bold py-3 rounded-xl text-xs uppercase tracking-widest transition-all">
+                <i class="fa-solid fa-check mr-2"></i> <span data-translate="btn-apply">Appliquer le texte</span>
+            </button>
+        </div>
+
+        <!-- Zone du Cours (Leçons) -->
+        <div id="lessons-area" class="w-full max-w-3xl mb-6 hidden animate-fadeIn glass-panel p-4 sm:p-6 rounded-2xl">
+            <div class="flex flex-col sm:flex-row gap-4 items-center mb-4">
+                <div class="w-full sm:w-1/2 relative">
+                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" id="student-name" class="w-full bg-black/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-[var(--gold)] transition-colors" placeholder="Entrez votre nom pour le certificat..." onchange="saveName()">
+                </div>
+                <div class="w-full sm:w-1/2 relative">
+                    <select id="lesson-select" class="w-full bg-black/50 border border-[var(--gold)]/50 rounded-xl p-3 text-[var(--gold)] text-sm font-bold focus:outline-none appearance-none cursor-pointer" onchange="loadSelectedLesson()">
+                        <!-- Rempli en JS -->
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)] pointer-events-none"></i>
+                </div>
+            </div>
+            <div class="bg-black/40 rounded-xl p-4 border border-white/5">
+                <h3 id="lesson-title" class="text-white font-bold text-sm mb-1">Leçon 1</h3>
+                <p id="lesson-desc" class="text-gray-400 text-xs mb-3">Objectif : 10 MPM | 80% Précision</p>
+                <div class="flex items-start gap-3 text-xs bg-[var(--gold)]/10 text-[var(--gold)] p-3 rounded-lg border border-[var(--gold)]/20">
+                    <i class="fa-solid fa-circle-info mt-0.5"></i>
+                    <span id="lesson-instruction">Placez vos doigts sur la ligne de repos.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between items-end mb-4 px-2">
+            <div class="text-[var(--gold)] font-mono text-2xl sm:text-4xl font-bold flex items-center gap-2">
+                <i class="fa-regular fa-clock text-lg sm:text-xl"></i>
+                <span id="time-display">15</span>
+            </div>
+            
+            <div class="flex gap-4 sm:gap-8">
+                <div class="text-right">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-1">MPM</span>
+                    <span id="wpm-display" class="text-white font-mono text-xl sm:text-3xl font-bold">0</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-1" data-translate="stat-acc">Précision</span>
+                    <span id="acc-display" class="text-white font-mono text-xl sm:text-3xl font-bold">100%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full glass-panel rounded-3xl p-6 sm:p-10 relative overflow-hidden group cursor-text min-h-[220px]" id="typing-container">
+            <div id="start-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+                <p class="text-white font-bold tracking-widest uppercase text-sm sm:text-base animate-pulse flex items-center gap-3">
+                    <i class="fa-solid fa-keyboard text-[var(--gold)]"></i> <span data-translate="start-overlay">Cliquez pour commencer</span>
+                </p>
+            </div>
+
+            <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            
+            <div id="typing-text" class="text-xl sm:text-2xl md:text-3xl font-mono leading-relaxed sm:leading-loose select-none relative z-10 w-full h-[140px] sm:h-[180px] overflow-hidden break-words">
+            </div>
+            <div id="caret" class="caret"></div>
+        </div>
+
+        <div class="mt-8 flex justify-center gap-4">
+            <button id="restart-btn" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-[var(--gold)] hover:border-[var(--gold)] hover:bg-[var(--gold)]/10 transition-all focus:outline-none" title="Recommencer">
+                <i class="fa-solid fa-rotate-right text-xl"></i>
+            </button>
+        </div>
+    </main>
+
+    <div id="result-modal" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 opacity-0 transition-opacity duration-500 print-hidden">
+        <div class="glass-panel border border-[var(--gold)]/30 rounded-[2rem] p-8 sm:p-12 max-w-2xl w-full text-center relative transform scale-95 transition-transform duration-500 max-h-[90vh] overflow-y-auto" id="result-content">
+            
+            <div id="result-icon-container" class="w-20 h-20 bg-[var(--gold)]/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-colors">
+                <i id="result-icon" class="fa-solid fa-trophy text-4xl text-[var(--gold)]"></i>
+            </div>
+            
+            <h2 id="result-title" class="text-3xl sm:text-4xl font-black tracking-tighter mb-2" data-translate="result-title">Test Terminé !</h2>
+            <p id="result-desc" class="text-gray-400 text-sm mb-6" data-translate="result-desc">Voici vos statistiques de frappe avec Baniki Labs.</p>
+
+            <!-- Zone de Conseil après leçon -->
+            <div id="lesson-tip-area" class="hidden bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 mb-6 text-left">
+                <h4 class="text-blue-400 font-bold text-xs uppercase tracking-widest mb-1 flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Conseil Rapide</h4>
+                <p id="lesson-tip-text" class="text-white text-sm"></p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                <div class="stat-box bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-2" data-translate="stat-speed">Vitesse</span>
+                    <span id="final-wpm" class="text-3xl font-mono font-bold text-[var(--gold)]">0</span>
+                    <span class="text-xs text-gray-400 ml-1">MPM</span>
+                </div>
+                <div class="stat-box bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-2" data-translate="stat-acc">Précision</span>
+                    <span id="final-acc" class="text-3xl font-mono font-bold text-white">0</span>
+                    <span class="text-xs text-gray-400 ml-1">%</span>
+                </div>
+                <div class="stat-box bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-2" data-translate="stat-chars">Caractères</span>
+                    <span id="final-chars" class="text-2xl font-mono font-bold text-white">0</span>
+                    <span class="text-xs text-gray-400 ml-1">tot.</span>
+                </div>
+                <div class="stat-box bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold block mb-2" data-translate="stat-errors">Erreurs</span>
+                    <span id="final-errors" class="text-2xl font-mono font-bold text-red-400">0</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4" id="modal-buttons">
+                <button onclick="closeResultAndRestart()" id="btn-restart-modal" class="w-full sm:w-auto bg-[var(--gold)] text-black font-bold px-8 py-4 rounded-xl text-xs uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-rotate-right"></i> <span data-translate="btn-restart">Recommencer</span>
+                </button>
+                <button onclick="nextLesson()" id="btn-next-lesson" class="hidden w-full sm:w-auto bg-green-500 text-black font-bold px-8 py-4 rounded-xl text-xs uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-forward-step"></i> Leçon Suivante
+                </button>
+                <button onclick="triggerPrintCertificate()" id="btn-print-cert" class="hidden w-full sm:w-auto bg-gradient-to-r from-[var(--gold)] to-yellow-600 text-black font-black px-8 py-4 rounded-xl text-xs uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,215,0,0.5)]">
+                    <i class="fa-solid fa-certificate"></i> Imprimer Certificat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="certificate-print-area" class="hidden">
+        <div class="cert-border w-full h-full p-10 flex flex-col items-center justify-center text-center relative bg-white">
+            <!-- Décoration bg -->
+            <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 10px);"></div>
+            
+            <div class="mb-6 flex flex-col items-center">
+                <div class="w-16 h-16 bg-black flex items-center justify-center rounded-full mb-4">
+                    <span class="text-[var(--gold)] font-black text-xl">BL</span>
+                </div>
+                <h3 class="text-black text-xl font-bold tracking-[0.3em] uppercase">Baniki Labs</h3>
+            </div>
+
+            <h1 class="font-serif text-5xl md:text-6xl text-black font-bold mb-4">Certificat d'Excellence</h1>
+            <p class="text-gray-600 text-lg mb-8 italic">Ce certificat atteste que</p>
+            
+            <h2 id="print-cert-name" class="font-serif text-4xl md:text-5xl text-black border-b-2 border-[var(--gold)] pb-2 mb-8 min-w-[300px] inline-block">Nom de l'Étudiant</h2>
+            
+            <p class="text-gray-800 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+                A complété avec succès le cours intensif de frappe rapide de 10 leçons.<br>
+                Faisant preuve d'une vitesse exceptionnelle de <strong id="print-cert-wpm" class="text-black text-2xl">0</strong> <span class="font-bold">MPM</span> 
+                et d'une précision remarquable.
+            </p>
+
+            <div class="flex justify-between w-full max-w-3xl mt-auto pt-10 border-t border-gray-300">
+                <div class="text-left">
+                    <p class="text-black font-bold text-lg mb-1" id="print-cert-date">Date</p>
+                    <p class="text-gray-500 text-sm uppercase tracking-widest">Date d'obtention</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-24 h-24 rounded-full border-4 border-[var(--gold)] flex items-center justify-center mx-auto mb-2 relative">
+                        <i class="fa-solid fa-medal text-4xl text-[var(--gold)]"></i>
+                        <div class="absolute -bottom-2 bg-black text-white text-[10px] px-2 py-1 uppercase tracking-wider font-bold rounded">Vérifié</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-black font-serif italic text-2xl mb-1">Baniki Labs</p>
+                    <p class="text-gray-500 text-sm uppercase tracking-widest">Direction</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            fr: {
+                "nav-back": "Retour", "subtitle": "Performance", "title": "TEST DE FRAPPE",
+                "description": "Mesurez votre vitesse, ou suivez notre cours pour apprendre à taper rapidement.",
+                "mode-random": "Aléatoire", "mode-advice": "Conseils Pro", "mode-custom": "Coller Texte", "mode-lessons": "Cours (10)",
+                "btn-apply": "Appliquer le texte", "start-overlay": "Cliquez / Touchez pour commencer",
+                "stat-acc": "Précision", "stat-speed": "Vitesse", "stat-chars": "Caractères", "stat-errors": "Erreurs",
+                "result-title": "Test Terminé !", "result-desc": "Voici vos statistiques.",
+                "btn-restart": "Recommencer"
+            },
+            en: {
+                "nav-back": "Back", "subtitle": "Performance", "title": "TYPING TEST",
+                "description": "Measure your speed, or follow our course to learn fast typing.",
+                "mode-random": "Random", "mode-advice": "Pro Advice", "mode-custom": "Paste Text", "mode-lessons": "Lessons (10)",
+                "btn-apply": "Apply Text", "start-overlay": "Click / Tap to start",
+                "stat-acc": "Accuracy", "stat-speed": "Speed", "stat-chars": "Characters", "stat-errors": "Errors",
+                "result-title": "Test Complete!", "result-desc": "Here are your stats.",
+                "btn-restart": "Restart"
+            }
+        };
+
+        const wordLists = {
+            fr: ["innovation", "technologie", "futur", "digital", "baniki", "labs", "kinshasa", "projet", "vision", "excellence", "stratégie", "développement", "solution", "entreprise", "internet", "connexion", "réseau", "données", "cloud", "sécurité", "logiciel", "application", "mobile", "design", "interface", "expérience", "code", "vitesse", "précision", "qualité", "service", "client", "marché", "croissance", "succès", "équipe"],
+            en: ["innovation", "technology", "future", "digital", "baniki", "labs", "kinshasa", "project", "vision", "excellence", "strategy", "development", "solution", "business", "internet", "connection", "network", "data", "cloud", "security", "software", "application", "mobile", "design", "interface", "experience", "code", "speed", "accuracy", "quality", "service", "client", "market", "growth"]
+        };
+
+        const marketingTexts = {
+            fr: [
+                "Avoir un site web professionnel n'est plus une option de nos jours. C'est la vitrine mondiale de votre entreprise.",
+                "Une image vaut mille mots. La qualité de la photographie de vos produits détermine souvent la décision d'achat du client.",
+                "La vidéo est le contenu le plus consommé sur internet. Raconter l'histoire de votre entreprise capte l'attention."
+            ],
+            en: [
+                "Having a professional website is no longer an option today. It is your business's global storefront.",
+                "A picture is worth a thousand words. The quality of your product photography determines buying decisions.",
+                "Video is the most consumed content on the internet. Telling your company's story captures attention."
+            ]
+        };
+
+        // Données du cours de frappe
+        const courseLessons = [
+            { id: 1, title: "Leçon 1 : Ligne de base", text: "q s d f j k l m q s d f j k l m q s d f j k l m", instruction: "Placez vos index sur F et J (sentez le repère en relief). Ne regardez pas le clavier !", tip: "Gardez toujours vos doigts sur la ligne de repos. La mémorisation musculaire commence ici.", goalWpm: 10, goalAcc: 80 },
+            { id: 2, title: "Leçon 2 : L'Index", text: "f g f j h j f g f j h j f g h j g h f j", instruction: "Utilisez vos index pour atteindre G et H, puis revenez immédiatement sur F et J.", tip: "L'index est le doigt le plus mobile. Entraînez-le à rebondir vers sa position de base après chaque frappe.", goalWpm: 12, goalAcc: 85 },
+            { id: 3, title: "Leçon 3 : Touches supérieures", text: "a z e r t y u i o p a z e r t y u i o p", instruction: "Déplacez vos doigts vers le haut sans bouger vos poignets. Laissez les paumes reposer.", tip: "Ne levez pas les mains. Étirez simplement les doigts vers la rangée du haut.", goalWpm: 15, goalAcc: 85 },
+            { id: 4, title: "Leçon 4 : Rangée du bas", text: "w x c v b n m , ; : w x c v b n m", instruction: "Pliez légèrement les doigts vers le bas. Gardez un rythme régulier, ne vous précipitez pas.", tip: "La rangée du bas est souvent la plus difficile au début. Concentrez-vous sur la précision plutôt que la vitesse.", goalWpm: 15, goalAcc: 85 },
+            { id: 5, title: "Leçon 5 : Les Majuscules", text: "Baniki Labs. Le chat mange. Nous rions.", instruction: "Utilisez le petit doigt (auriculaire) pour appuyer sur 'Shift' du côté opposé à la lettre tapée.", tip: "L'utilisation croisée de la touche 'Shift' empêche vos mains de se contorsionner.", goalWpm: 18, goalAcc: 90 },
+            { id: 6, title: "Leçon 6 : Ponctuation", text: "Bonjour, comment allez-vous ? Je vais bien, merci !", instruction: "La ponctuation est cruciale. Mémorisez l'emplacement de la virgule et du point d'interrogation.", tip: "Ne faites pas de pause avant la ponctuation. Elle doit faire partie intégrante du rythme du mot.", goalWpm: 20, goalAcc: 90 },
+            { id: 7, title: "Leçon 7 : Les Chiffres", text: "1 2 3 4 5 6 7 8 9 0 2024 1990", instruction: "Étirez vos doigts vers la rangée des chiffres en gardant au moins un petit doigt en bas comme repère.", tip: "Regardez l'écran. Si vous devez chercher les chiffres, visualisez d'abord le mouvement dans votre tête.", goalWpm: 15, goalAcc: 90 },
+            { id: 8, title: "Leçon 8 : Mots fréquents", text: "le la les des une dans pour que qui avec sur sous", instruction: "Ces mots représentent 50% de ce que vous tapez. Tapez-les comme un seul mouvement.", tip: "Lisez ces petits mots comme un bloc entier, pas lettre par lettre. Votre vitesse va exploser.", goalWpm: 25, goalAcc: 92 },
+            { id: 9, title: "Leçon 9 : Phrases complètes", text: "L'innovation technologique transforme notre façon de travailler au quotidien. Restez concentré.", instruction: "Respirez calmement. Si vous faites une erreur, ne paniquez pas, corrigez doucement.", tip: "Lisez toujours un ou deux mots en avance par rapport à ce que vous êtes en train de taper.", goalWpm: 30, goalAcc: 92 },
+            { id: 10, title: "Leçon 10 : L'Examen Final", text: "Félicitations ! Vous êtes à la dernière étape de ce cours. La frappe rapide est une compétence qui vous fera gagner d'innombrables heures. Montrez ce dont vous êtes capable maintenant !", instruction: "C'est l'examen final. Donnez tout, mais gardez une haute précision !", tip: "Bravo ! La pratique régulière de 10 minutes par jour maintiendra votre niveau de maître.", goalWpm: 35, goalAcc: 95 }
+        ];
+
+        let currentLang = localStorage.getItem('baniki-lang') || 'fr';
+        let currentMode = 'random'; // random, marketing, custom, lessons
+        let currentLessonIndex = parseInt(localStorage.getItem('baniki-lesson-index')) || 0;
+        
+        let timeLimit = 15;
+        let timeLeft = timeLimit;
+        let timer = null;
+        let isTyping = false;
+        
+        let totalKeystrokes = 0;
+        let correctKeystrokes = 0;
+        let mistakes = 0;
+        
+        let currentWordIndex = 0;
+        let currentCharIndex = 0;
+        let customTextContent = "";
+
+        const typingContainer = document.getElementById('typing-container');
+        const typingText = document.getElementById('typing-text');
+        const hiddenInput = document.getElementById('hidden-input');
+        const caret = document.getElementById('caret');
+        const startOverlay = document.getElementById('start-overlay');
+        
+        const timeDisplay = document.getElementById('time-display');
+        const wpmDisplay = document.getElementById('wpm-display');
+        const accDisplay = document.getElementById('acc-display');
+        
+        const customTextArea = document.getElementById('custom-text-area');
+        const lessonsArea = document.getElementById('lessons-area');
+        const timeControls = document.getElementById('time-controls');
+        
+        const lessonSelect = document.getElementById('lesson-select');
+        const studentNameInput = document.getElementById('student-name');
+
+        function initLessonsDropdown() {
+            lessonSelect.innerHTML = '';
+            courseLessons.forEach((lesson, index) => {
+                let option = document.createElement('option');
+                option.value = index;
+                option.text = lesson.title;
+                if (index > currentLessonIndex) {
+                    option.text = `🔒 ${lesson.title}`;
+                    option.disabled = true; // Empêche de sauter les leçons non débloquées
+                } else if (index < currentLessonIndex) {
+                    option.text = `✅ ${lesson.title}`;
+                }
+                lessonSelect.appendChild(option);
+            });
+            lessonSelect.value = Math.min(currentLessonIndex, 9);
+            
+            // Récupérer le nom
+            const savedName = localStorage.getItem('baniki-student-name');
+            if(savedName) studentNameInput.value = savedName;
+        }
+
+        function saveName() {
+            localStorage.setItem('baniki-student-name', studentNameInput.value);
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('current-lang-display').textContent = lang.toUpperCase();
+            
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            localStorage.setItem('baniki-lang', lang);
+            if (currentMode !== 'custom' && currentMode !== 'lessons') initTest();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('bg-[var(--gold)]', 'text-black', 'active', 'border-transparent');
+                btn.classList.add('text-gray-400', 'border-transparent');
+                if(btn.id === 'btn-mode-lessons') btn.classList.add('border-[var(--gold)]/30');
+            });
+            
+            const activeBtn = document.getElementById(`btn-mode-${mode}`);
+            activeBtn.classList.remove('text-gray-400', 'border-[var(--gold)]/30');
+            activeBtn.classList.add('bg-[var(--gold)]', 'text-black', 'active');
+
+            customTextArea.classList.add('hidden');
+            lessonsArea.classList.add('hidden');
+            timeControls.classList.remove('opacity-50', 'pointer-events-none');
+
+            if (mode === 'custom') {
+                customTextArea.classList.remove('hidden');
+                timeControls.classList.add('opacity-50', 'pointer-events-none');
+            } else if (mode === 'lessons') {
+                lessonsArea.classList.remove('hidden');
+                timeControls.classList.add('opacity-50', 'pointer-events-none');
+                initLessonsDropdown();
+                loadSelectedLesson();
+            } else {
+                initTest();
+            }
+        }
+
+        function loadSelectedLesson() {
+            const index = parseInt(lessonSelect.value);
+            const lesson = courseLessons[index];
+            document.getElementById('lesson-title').innerText = lesson.title;
+            document.getElementById('lesson-desc').innerText = `Objectif : ${lesson.goalWpm} MPM | ${lesson.goalAcc}% Précision minimum`;
+            document.getElementById('lesson-instruction').innerText = lesson.instruction;
+            initTest();
+        }
+
+        function applyCustomText() {
+            const text = customInputField.value.trim();
+            if (text.length > 0) {
+                customTextContent = text;
+                initTest();
+                customTextArea.classList.add('hidden');
+            }
+        }
+
+        function getActiveText() {
+            if (currentMode === 'random') {
+                let arr = [];
+                const list = wordLists[currentLang] || wordLists['fr'];
+                for(let i=0; i<60; i++) arr.push(list[Math.floor(Math.random() * list.length)]);
+                return arr.join(' ');
+            } else if (currentMode === 'marketing') {
+                const list = marketingTexts[currentLang] || marketingTexts['fr'];
+                let text = list[Math.floor(Math.random() * list.length)];
+                if(text.length < 200) text += " " + list[Math.floor(Math.random() * list.length)];
+                return text;
+            } else if (currentMode === 'custom') {
+                return customTextContent || "Test personnalisé vide.";
+            } else if (currentMode === 'lessons') {
+                const index = parseInt(lessonSelect.value);
+                return courseLessons[index].text;
+            }
+            return "";
+        }
+
+        function initTest() {
+            clearInterval(timer);
+            isTyping = false;
+            
+            // Pour les modes avec limite (random, marketing), on compte à rebours
+            // Pour custom et lessons, on compte à l'endroit à partir de 0.
+            if(currentMode === 'custom' || currentMode === 'lessons') {
+                timeLeft = 0;
+            } else {
+                timeLeft = timeLimit;
+            }
+
+            totalKeystrokes = 0;
+            correctKeystrokes = 0;
+            mistakes = 0;
+            currentWordIndex = 0;
+            currentCharIndex = 0;
+            
+            timeDisplay.innerText = timeLeft;
+            wpmDisplay.innerText = 0;
+            accDisplay.innerText = '100%';
+            hiddenInput.value = '';
+            
+            let textToType = getActiveText();
+
+            typingText.innerHTML = '';
+            const words = textToType.split(/\s+/);
+            
+            words.forEach(word => {
+                const wordEl = document.createElement('div');
+                wordEl.classList.add('word');
+                word.split('').forEach(char => {
+                    const charEl = document.createElement('span');
+                    charEl.classList.add('letter');
+                    charEl.innerText = char;
+                    wordEl.appendChild(charEl);
+                });
+                typingText.appendChild(wordEl);
+            });
+
+            updateCaretPosition();
+            caret.classList.add('active');
+            typingText.style.transform = `translateY(0px)`;
+            startOverlay.style.display = 'flex';
+            startOverlay.style.opacity = '1';
+        }
+
+        function updateCaretPosition() {
+            const words = document.querySelectorAll('.word');
+            if(currentWordIndex >= words.length) {
+                endTest();
+                return;
+            }
+            
+            const currentWord = words[currentWordIndex];
+            const letters = currentWord.querySelectorAll('.letter');
+            
+            let rect;
+            if(currentCharIndex < letters.length) {
+                rect = letters[currentCharIndex].getBoundingClientRect();
+            } else {
+                rect = letters[letters.length - 1].getBoundingClientRect();
+                rect = { ...rect, left: rect.right, x: rect.right };
+            }
+
+            const containerRect = typingContainer.getBoundingClientRect();
+            let relativeLeft = rect.left - containerRect.left;
+            let relativeTop = rect.top - containerRect.top;
+            
+            if (currentCharIndex >= letters.length) {
+                caret.style.left = `${rect.right - containerRect.left}px`;
+            } else {
+                caret.style.left = `${relativeLeft}px`;
+            }
+            
+            caret.style.top = `${relativeTop}px`;
+            caret.style.height = `${rect.height}px`;
+
+            const typingTextRect = typingText.getBoundingClientRect();
+            if (rect.bottom > typingTextRect.bottom - 20) {
+                const currentTransform = parseFloat(typingText.style.transform.replace('translateY(', '').replace('px)', '') || 0);
+                typingText.style.transform = `translateY(${currentTransform - rect.height - 8}px)`;
+            }
+        }
+
+        function startTimer() {
+            if(!isTyping) {
+                isTyping = true;
+                timer = setInterval(() => {
+                    if (currentMode === 'custom' || currentMode === 'lessons') {
+                        timeLeft++; 
+                        timeDisplay.innerText = timeLeft;
+                        calculateStats(true);
+                    } else {
+                        if(timeLeft > 0) {
+                            timeLeft--;
+                            timeDisplay.innerText = timeLeft;
+                            calculateStats(false);
+                        } else {
+                            endTest();
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function calculateStats(isAscending = false) {
+            let accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 100;
+            let timeElapsed = isAscending ? timeLeft : timeLimit - timeLeft;
+            let wpm = timeElapsed > 0 ? Math.round(((correctKeystrokes / 5) / (timeElapsed / 60))) : 0;
+            
+            wpmDisplay.innerText = wpm;
+            accDisplay.innerText = `${accuracy}%`;
+        }
+
+        hiddenInput.addEventListener('input', (e) => {
+            if((timeLeft === 0 && currentMode !== 'custom' && currentMode !== 'lessons') && isTyping) return;
+            startTimer();
+
+            const words = document.querySelectorAll('.word');
+            if(currentWordIndex >= words.length) return;
+            
+            const currentWordEl = words[currentWordIndex];
+            const letters = currentWordEl.querySelectorAll('.letter');
+            const typedChar = hiddenInput.value.slice(-1);
+            
+            if(typedChar === ' ') {
+                if(currentCharIndex > 0) {
+                    for(let i = currentCharIndex; i < letters.length; i++) {
+                        letters[i].classList.add('incorrect');
+                        mistakes++;
+                    }
+                    currentWordIndex++;
+                    currentCharIndex = 0;
+                }
+                hiddenInput.value = '';
+                updateCaretPosition();
+                return;
+            }
+
+            if(currentCharIndex < letters.length) {
+                totalKeystrokes++;
+                const expectedChar = letters[currentCharIndex].innerText;
+                
+                if(typedChar === expectedChar) {
+                    letters[currentCharIndex].classList.add('correct');
+                    correctKeystrokes++;
+                } else {
+                    letters[currentCharIndex].classList.add('incorrect');
+                    mistakes++;
+                }
+                currentCharIndex++;
+                updateCaretPosition();
+            } else {
+                mistakes++;
+            }
+            hiddenInput.value = ''; 
+        });
+
+        hiddenInput.addEventListener('keydown', (e) => {
+            if(e.key === 'Backspace') {
+                const words = document.querySelectorAll('.word');
+                if(currentWordIndex >= words.length) return;
+                const currentWordEl = words[currentWordIndex];
+                const letters = currentWordEl.querySelectorAll('.letter');
+
+                if (currentCharIndex > 0) {
+                    currentCharIndex--;
+                    const charEl = letters[currentCharIndex];
+                    if(charEl.classList.contains('correct')) correctKeystrokes--;
+                    if(charEl.classList.contains('incorrect')) mistakes--;
+                    charEl.classList.remove('correct', 'incorrect');
+                    updateCaretPosition();
+                } else if (currentWordIndex > 0) {
+                    const prevWordEl = words[currentWordIndex - 1];
+                    const prevLetters = prevWordEl.querySelectorAll('.letter');
+                    let hasError = false;
+                    prevLetters.forEach(l => { if(l.classList.contains('incorrect') || (!l.classList.contains('correct') && !l.classList.contains('incorrect'))) hasError = true; });
+                    
+                    if(hasError) {
+                        currentWordIndex--;
+                        currentCharIndex = prevLetters.length;
+                        updateCaretPosition();
+                    }
+                }
+            }
+        });
+
+        typingContainer.addEventListener('click', () => {
+            if(currentMode === 'lessons' && studentNameInput.value.trim() === '') {
+                studentNameInput.focus();
+                studentNameInput.classList.add('border-red-500');
+                setTimeout(() => studentNameInput.classList.remove('border-red-500'), 1000);
+                return; // Empêche de commencer si pas de nom
+            }
+            hiddenInput.focus();
+            startOverlay.style.opacity = '0';
+            setTimeout(() => { startOverlay.style.display = 'none'; }, 300);
+            caret.classList.add('active');
+        });
+
+        hiddenInput.addEventListener('blur', () => {
+            if(isTyping) caret.classList.remove('active');
+        });
+
+        function endTest() {
+            clearInterval(timer);
+            isTyping = false;
+            hiddenInput.blur();
+            caret.classList.remove('active');
+            
+            let accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+            let finalTime = (currentMode === 'custom' || currentMode === 'lessons') ? timeLeft : timeLimit;
+            let wpm = finalTime > 0 ? Math.round(((correctKeystrokes / 5) / (finalTime / 60))) : 0;
+
+            document.getElementById('final-wpm').innerText = wpm;
+            document.getElementById('final-acc').innerText = accuracy;
+            document.getElementById('final-chars').innerText = totalKeystrokes;
+            document.getElementById('final-errors').innerText = mistakes;
+
+            const modal = document.getElementById('result-modal');
+            const content = document.getElementById('result-content');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            const icon = document.getElementById('result-icon');
+            const iconContainer = document.getElementById('result-icon-container');
+            const btnRestart = document.getElementById('btn-restart-modal');
+            const btnNext = document.getElementById('btn-next-lesson');
+            const btnPrint = document.getElementById('btn-print-cert');
+            const tipArea = document.getElementById('lesson-tip-area');
+            
+            // Reset UI
+            btnNext.classList.add('hidden');
+            btnPrint.classList.add('hidden');
+            tipArea.classList.add('hidden');
+            iconContainer.className = "w-20 h-20 bg-[var(--gold)]/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-colors";
+            icon.className = "fa-solid fa-trophy text-4xl text-[var(--gold)]";
+            title.innerText = "Test Terminé !";
+            desc.innerText = "Voici vos statistiques de frappe avec Baniki Labs.";
+
+            if (currentMode === 'lessons') {
+                const lessonIndex = parseInt(lessonSelect.value);
+                const lesson = courseLessons[lessonIndex];
+                
+                tipArea.classList.remove('hidden');
+                document.getElementById('lesson-tip-text').innerText = lesson.tip;
+
+                if (wpm >= lesson.goalWpm && accuracy >= lesson.goalAcc) {
+                    // Succès de la leçon
+                    title.innerText = "Leçon Réussie !";
+                    desc.innerText = "Félicitations, vous avez atteint l'objectif.";
+                    iconContainer.classList.replace('bg-[var(--gold)]/20', 'bg-green-500/20');
+                    iconContainer.style.boxShadow = '0 0 30px rgba(34,197,94,0.3)';
+                    icon.className = "fa-solid fa-check text-4xl text-green-500";
+                    
+                    if (lessonIndex < 9) {
+                        btnNext.classList.remove('hidden');
+                        if (currentLessonIndex === lessonIndex) {
+                            currentLessonIndex++;
+                            localStorage.setItem('baniki-lesson-index', currentLessonIndex);
+                        }
+                    } else {
+                        // Leçon 10 passée !
+                        title.innerText = "Cours Terminé !";
+                        desc.innerText = "Vous êtes désormais un expert de la frappe rapide !";
+                        btnPrint.classList.remove('hidden');
+                    }
+                } else {
+                    // Échec
+                    title.innerText = "Objectif Non Atteint";
+                    desc.innerText = `Vous aviez besoin de ${lesson.goalWpm} MPM et ${lesson.goalAcc}% de précision. Essayez encore !`;
+                    iconContainer.classList.replace('bg-[var(--gold)]/20', 'bg-red-500/20');
+                    iconContainer.style.boxShadow = '0 0 30px rgba(239,68,68,0.3)';
+                    icon.className = "fa-solid fa-xmark text-4xl text-red-500";
+                }
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeResultAndRestart() {
+            closeModal(() => { initTest(); hiddenInput.focus(); });
+        }
+
+        function nextLesson() {
+            closeModal(() => {
+                initLessonsDropdown();
+                lessonSelect.value = parseInt(lessonSelect.value) + 1;
+                loadSelectedLesson();
+                hiddenInput.focus();
+            });
+        }
+
+        function closeModal(callback) {
+            const modal = document.getElementById('result-modal');
+            const content = document.getElementById('result-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                if(callback) callback();
+            }, 500);
+        }
+
+        // Impression du certificat
+        function triggerPrintCertificate() {
+            const name = studentNameInput.value || "Étudiant Baniki";
+            const wpm = document.getElementById('final-wpm').innerText;
+            const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            document.getElementById('print-cert-name').innerText = name;
+            document.getElementById('print-cert-wpm').innerText = wpm;
+            document.getElementById('print-cert-date').innerText = today;
+
+            window.print();
+        }
+
+        // Events Buttons
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(currentMode === 'custom' || currentMode === 'lessons') return; 
+                
+                document.querySelectorAll('.time-btn').forEach(b => {
+                    b.classList.remove('bg-white/10', 'text-white');
+                    b.classList.add('text-gray-400');
+                });
+                btn.classList.remove('text-gray-400');
+                btn.classList.add('bg-white/10', 'text-white');
+                
+                timeLimit = parseInt(btn.getAttribute('data-time'));
+                initTest();
+                hiddenInput.focus();
+            });
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            initTest();
+            hiddenInput.focus();
+        });
+
+        window.onload = () => {
+            setLanguage(currentLang);
+        };
+
+        window.addEventListener('keydown', function(e) {
+            if(e.keyCode == 32 && e.target == document.body) e.preventDefault();
+        });
+    </script>
+</body>
+</html>
