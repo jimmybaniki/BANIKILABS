@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-P84YDX128F"></script>
     <script>
@@ -12,70 +10,654 @@
     
       gtag('config', 'G-P84YDX128F');
     </script>
-    <title>Actualités - BANIKI LABS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>BANIKI LABS | Actualités & Mises à jour</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        :root { --gold: #FFD700; --bg-dark: #080808; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #fff; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+        
+        :root {
+            --gold: #FFD700;
+            --gold-soft: rgba(255, 215, 0, 0.15);
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #f9fafb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            transition: background-color 0.4s ease;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Custom Scrollbar Hide --- */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- Background Animation for Hero --- */
+        .bg-animate {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            opacity: 0.25; overflow: hidden;
+        }
+
+        .bg-animate::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 10%, var(--bg-dark) 90%); z-index: 1;
+        }
+
+        .bg-animate img {
+            width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.7);
+        }
+
+        /* --- Modals and Animations --- */
+        .custom-modal {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .custom-modal.active {
+            display: flex; animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+
+        /* News Card Styling */
+        .news-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .news-card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(255, 215, 0, 0.1);
+        }
+
+        .news-card:hover .news-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .news-img-wrapper {
+            overflow: hidden;
+        }
+
+        .news-img-wrapper img {
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .news-tag {
+            background: var(--gold-soft);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(4px);
+        }
     </style>
 </head>
-<body class="pt-32">
+<body class="overflow-x-hidden">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXGJV97F"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
     <nav class="fixed top-0 w-full z-[100] border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-[var(--gold)] flex items-center justify-center rounded-full">
-                    <span class="text-black font-black text-lg">BL</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 sm:gap-3 group cursor-pointer" onclick="window.location.href='baniki_labs_accueil.html'">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-[var(--gold)] flex items-center justify-center rounded-full transition-all duration-500 shadow-[0_0_20px_rgba(255,215,0,0.5)] group-hover:shadow-[0_0_35px_rgba(255,215,0,0.8)] group-hover:scale-110">
+                    <span class="text-black font-black text-sm sm:text-xl tracking-tighter">BL</span>
                 </div>
-                <span class="font-extrabold text-lg uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="jobs.html" class="text-[10px] font-black uppercase tracking-widest hover:text-[var(--gold)] transition-colors">Jobs</a>
-                <a href="index.html" class="text-[10px] font-black uppercase tracking-widest hover:text-[var(--gold)] transition-colors">Retour à l'accueil</a>
+                <span class="font-extrabold text-lg sm:text-xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-6">
+                <!-- Mobile Navigation Menu -->
+                <div class="md:hidden relative" id="mobileNavWrapper">
+                    <button onclick="toggleMobileNav()" class="flex items-center gap-2 bg-white/5 border border-[var(--gold)]/20 text-[var(--gold)] font-bold py-2 px-2.5 rounded-xl hover:bg-white/10 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <div id="mobileNavMenu" class="hidden absolute top-full right-0 mt-4 w-48 bg-black/95 backdrop-blur-2xl border border-[var(--gold)]/30 rounded-2xl overflow-hidden shadow-2xl z-[110]">
+                        <a href="#" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav(); toggleAboutModal();" data-translate="about">À Propos</a>
+                        <a href="news.html" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--gold)] bg-white/5" onclick="toggleMobileNav()" data-translate="news">Actualités</a>
+                        <a href="#" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav(); toggleJobsModal();" data-translate="jobs-nav">Travail</a>
+                        <a href="baniki_labs_accueil.html#expertises" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="expertises">Expertises</a>
+                        <a href="#footer" class="block px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white hover:bg-[var(--gold)] hover:text-black transition-colors" onclick="toggleMobileNav()" data-translate="contact">Infos & Contact</a>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center gap-6 lg:gap-8 mr-4">
+                    <a href="#" onclick="toggleAboutModal();" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="about">À Propos</a>
+                    <a href="news.html" class="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)] transition-colors" data-translate="news">Actualités</a>
+                    <a href="#" onclick="toggleJobsModal();" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="jobs-nav">Travail</a>
+                    <a href="baniki_labs_accueil.html#expertises" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="expertises">Expertises</a>
+                    <a href="#footer" class="text-[10px] font-black uppercase tracking-[0.2em] hover:text-[var(--gold)] transition-colors" data-translate="contact">Infos & Contact</a>
+                </div>
+
+                <button id="audioToggle" onclick="playClick()" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors" title="Ambiance Sonore">
+                    <i id="audioIcon" class="fa-solid fa-volume-xmark text-[var(--gold)] text-sm sm:text-base"></i>
+                </button>
+
+                <!-- Lang Selector -->
+                <div class="relative">
+                    <button id="langBtn" class="flex items-center text-gray-400 hover:text-[var(--gold)] font-bold text-[9px] sm:text-[10px] uppercase tracking-widest transition duration-150">
+                        <span id="currentLangDisplay">FR</span>
+                        <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
+                    </button>
+                    <div id="langMenu" class="absolute right-0 mt-2 w-32 rounded-xl shadow-2xl bg-neutral-900 border border-white/10 z-20 hidden overflow-hidden">
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="fr">FRANÇAIS</a>
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="en">ENGLISH</a>
+                        <a href="#" class="lang-option block px-4 py-2 text-xs font-bold text-gray-400 hover:bg-[var(--gold)] hover:text-black" data-lang="sw">KISWAHILI</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 pb-24">
-        <header class="mb-20">
-            <h1 class="text-5xl font-black tracking-tighter mb-4">L'ACTUALITÉ <span class="text-[var(--gold)]">LABS.</span></h1>
-            <p class="text-gray-500">Suivez les aventures et les moments précieux de notre équipe.</p>
-        </header>
+    <!-- Hero Section pour Actualités -->
+    <section class="relative pt-32 sm:pt-40 pb-12 sm:pb-20 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden min-h-[40vh]">
+        <div class="bg-animate">
+            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=2070" alt="News Background">
+        </div>
 
-        <div class="space-y-12">
-            <!-- Article Mariage -->
-            <article class="glass-card rounded-[3rem] overflow-hidden flex flex-col md:flex-row border-white/5">
-                <div class="md:w-1/2 bg-[var(--gold)] flex items-center justify-center p-12">
-                    <i class="fas fa-heart text-8xl text-black/20"></i>
-                </div>
-                <div class="p-10 md:w-1/2 flex flex-col">
-                    <span class="text-[var(--gold)] text-[10px] font-black uppercase tracking-widest mb-4 block">Célébration Spéciale</span>
-                    <h2 class="text-3xl font-black tracking-tight mb-6">Le Fondateur de Baniki Labs dit "Oui"</h2>
-                    <p class="text-gray-400 mb-8 leading-relaxed italic">
-                        "Une nouvelle alliance pour un avenir radieux. Nous célébrons l'amour au cœur de notre aventure technologique."
-                    </p>
-                    
-                    <!-- Affiche simulée -->
-                    <div class="mb-10 rounded-2xl overflow-hidden border-2 border-[var(--gold)]/20 grayscale hover:grayscale-0 transition-all">
-                        <img src="https://placehold.co/600x400/000/FFD700?text=Affiche+Officielle+du+Mariage" alt="Affiche Mariage" class="w-full">
+        <div class="max-w-4xl mx-auto text-center relative z-10 w-full animate-fadeIn">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-[var(--gold)]/30 backdrop-blur-md mb-6">
+                <span class="w-2 h-2 rounded-full bg-[var(--gold)] animate-pulse"></span>
+                <span class="text-[var(--gold)] text-[10px] sm:text-xs font-bold uppercase tracking-widest" data-translate="news-badge">En direct de l'écosystème</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-tight mb-6 drop-shadow-2xl" data-translate="news-title">
+                ACTUALITÉS &<br/><span class="text-[var(--gold)]">MISES À JOUR</span>
+            </h1>
+            
+            <p class="text-gray-300 text-sm sm:text-lg max-w-2xl mx-auto font-medium tracking-tight leading-relaxed drop-shadow-lg" data-translate="news-desc">
+                Restez connecté avec l'innovation. Découvrez les dernières annonces, les lancements d'outils, et les événements qui façonnent l'avenir de Baniki Labs.
+            </p>
+        </div>
+    </section>
+
+    <!-- Grille des Actualités -->
+    <section class="py-12 sm:py-20 px-4 sm:px-6 bg-[var(--bg-dark)] relative z-20">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Barre de filtre des actus (optionnel, pour l'esthétique) -->
+            <div class="flex flex-wrap items-center gap-4 mb-12 border-b border-white/10 pb-6">
+                <button class="text-sm font-bold uppercase tracking-widest text-black bg-[var(--gold)] px-5 py-2 rounded-full transition-colors" data-translate="filter-all">Tout voir</button>
+                <button class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] px-5 py-2 transition-colors" data-translate="filter-tech">Technologie</button>
+                <button class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] px-5 py-2 transition-colors" data-translate="filter-events">Événements</button>
+                <button class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-[var(--gold)] px-5 py-2 transition-colors" data-translate="filter-jobs">Emplois & Outils</button>
+            </div>
+
+            <!-- News Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                
+                <!-- Article 1: Lancement des outils -->
+                <article class="news-card rounded-[2rem] overflow-hidden flex flex-col h-full cursor-pointer group animate-fadeIn" style="animation-delay: 0.1s" onclick="window.location.href='cv.html'">
+                    <div class="relative h-56 sm:h-64 news-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=800" alt="Nouveaux Outils" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 news-tag px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest" data-translate="tag-launch">Lancement</div>
                     </div>
+                    <div class="p-6 sm:p-8 flex-grow flex flex-col">
+                        <div class="text-gray-500 text-xs font-medium mb-3 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar"></i> <span data-translate="date-1">Octobre 2026</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white group-hover:text-[var(--gold)] transition-colors" data-translate="news-1-title">Lancement des nouveaux Outils Emploi Pro</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow" data-translate="news-1-desc">Baniki Labs dévoile sa nouvelle suite d'outils professionnels gratuits comprenant un générateur de CV interactif, un téléprompteur, et un module de test de frappe pour accompagner les talents.</p>
+                        <div class="mt-auto inline-flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
+                            <span data-translate="read-more">En savoir plus</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
 
-                    <a href="invitation.html" class="w-full py-4 bg-[var(--gold)] text-black text-center font-black text-[10px] uppercase tracking-widest rounded-2xl hover:scale-105 transition-transform mt-auto">
-                        Découvrir l'invitation officielle
+                <!-- Article 2: Expansion Tanzanie -->
+                <article class="news-card rounded-[2rem] overflow-hidden flex flex-col h-full cursor-pointer group animate-fadeIn" style="animation-delay: 0.2s" onclick="window.location.href='baniki_labs_accueil.html#expertises'">
+                    <div class="relative h-56 sm:h-64 news-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1547471080-7fc2caa7bab4?auto=format&fit=crop&q=80&w=800" alt="Tanzanie" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 news-tag px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest" data-translate="tag-expansion">Expansion</div>
+                    </div>
+                    <div class="p-6 sm:p-8 flex-grow flex flex-col">
+                        <div class="text-gray-500 text-xs font-medium mb-3 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar"></i> <span data-translate="date-2">Septembre 2026</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white group-hover:text-[var(--gold)] transition-colors" data-translate="news-2-title">Baniki Labs étend ses services financiers vers la Tanzanie</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow" data-translate="news-2-desc">Afin de faciliter les transactions régionales, nous intégrons désormais M-Pesa Tanzanie dans nos méthodes de paiement, simplifiant les échanges pour nos partenaires en Afrique de l'Est.</p>
+                        <div class="mt-auto inline-flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
+                            <span data-translate="read-more">En savoir plus</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 3: E-commerce Mlimani -->
+                <article class="news-card rounded-[2rem] overflow-hidden flex flex-col h-full cursor-pointer group animate-fadeIn" style="animation-delay: 0.3s" onclick="window.location.href='mlimanicity.html'">
+                    <div class="relative h-56 sm:h-64 news-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800" alt="E-commerce" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 news-tag px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest" data-translate="tag-update">Mise à jour</div>
+                    </div>
+                    <div class="p-6 sm:p-8 flex-grow flex flex-col">
+                        <div class="text-gray-500 text-xs font-medium mb-3 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar"></i> <span data-translate="date-3">Août 2026</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white group-hover:text-[var(--gold)] transition-colors" data-translate="news-3-title">Déploiement de la version 2.0 pour E-commerce Mlimani</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow" data-translate="news-3-desc">Notre plateforme d'e-commerce Mlimani se dote d'une nouvelle interface ultra-rapide et sécurisée, offrant une expérience utilisateur sans précédent pour les achats en ligne en RDC.</p>
+                        <div class="mt-auto inline-flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
+                            <span data-translate="read-more">En savoir plus</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 4: Partenariat Média -->
+                <article class="news-card rounded-[2rem] overflow-hidden flex flex-col h-full cursor-pointer group animate-fadeIn" style="animation-delay: 0.4s" onclick="window.location.href='baniki_labs_accueil.html#expertises'">
+                    <div class="relative h-56 sm:h-64 news-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800" alt="Podcast Studio" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 news-tag px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest" data-translate="tag-event">Studio</div>
+                    </div>
+                    <div class="p-6 sm:p-8 flex-grow flex flex-col">
+                        <div class="text-gray-500 text-xs font-medium mb-3 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar"></i> <span data-translate="date-4">Juillet 2026</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-white group-hover:text-[var(--gold)] transition-colors" data-translate="news-4-title">Inauguration du nouveau Studio Podcast Haute Définition</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-grow" data-translate="news-4-desc">Baniki Labs ouvre ses portes aux créateurs de contenu avec un studio d'enregistrement à la pointe de la technologie pour propulser les podcasts africains sur la scène mondiale.</p>
+                        <div class="mt-auto inline-flex items-center gap-2 text-[var(--gold)] text-xs font-bold uppercase tracking-widest">
+                            <span data-translate="read-more">En savoir plus</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+            
+            <!-- Load More (Visual only) -->
+            <div class="mt-16 text-center">
+                <button class="bg-white/5 border border-white/10 hover:border-[var(--gold)] text-white px-8 py-3 rounded-xl font-bold text-sm tracking-widest uppercase transition-all hover:bg-white/10" data-translate="load-more">
+                    Charger plus d'actualités
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="footer" class="pt-20 sm:pt-32 pb-12 px-4 sm:px-6 border-t border-white/5 bg-[var(--bg-dark)] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 sm:gap-16 mb-16 sm:mb-24">
+            <div class="space-y-6 sm:space-y-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 bg-[var(--gold)] flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                        <span class="text-black font-black text-lg sm:text-xl tracking-tighter">BL</span>
+                    </div>
+                    <span class="font-extrabold text-xl sm:text-2xl tracking-tight uppercase">Baniki <span class="text-[var(--gold)]">Labs</span></span>
+                </div>
+                <div class="space-y-4 text-gray-400 text-sm sm:text-base">
+                    <p class="flex items-start gap-3">
+                        <i class="fa-solid fa-location-dot mt-1 text-[var(--gold)]"></i>
+                        <span>N°18, Avenue Salongo,<br>Comm. Bandalungwa, Kinshasa, RD Congo</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i class="fa-solid fa-phone text-[var(--gold)]"></i>
+                        <span>+243 978 415 814</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <i class="fa-solid fa-envelope text-[var(--gold)]"></i>
+                        <span>banikilabs@gmail.com</span>
+                    </p>
+                    <div class="pt-4 border-t border-white/5 space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500" data-translate="legal-info">Informations Légales</p>
+                        <div class="flex flex-col gap-1 text-xs">
+                            <span data-translate="tax-id">N° Impôt : <span class="text-white font-mono uppercase tracking-widest">A2645236E</span></span>
+                            <span>RCCM : <span class="text-white font-mono uppercase tracking-widest">CD/KNG/RCCM/26-A-00220</span></span>
+                            <span data-translate="nat-id">ID National : <span class="text-white font-mono uppercase tracking-widest">01-G4701-N72051U</span></span>
+                            <a href="admin.html" class="text-[var(--gold)] hover:underline mt-2 inline-block" data-translate="admin-access">Accès Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 sm:space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="follow-innovation">Suivez l'innovation</h4>
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://www.facebook.com/share/1F56UtSKoT/" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/banikilabs?stkn=MTZpc2dpdHY2ajk1" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.linkedin.com/company/banikilabs/" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-linkedin-in text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@banikilabs?_r=1&_t=ZS-9A0IB4ftzKT" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://youtube.com/@banikilabs?si=cmXIpqVlRAihfwug" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-youtube text-xl"></i></a>
+                    <a href="https://whatsapp.com/channel/0029VbCiRDyDDmFQ4Q8p462j" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-[var(--gold)] hover:text-black transition-all border border-white/5"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                </div>
+            </div>
+
+            <div class="space-y-6 sm:space-y-8">
+                <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="vision-title">Vision</h4>
+                <p class="text-gray-500 text-sm italic" data-translate="vision-text">"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa."</p>
+                <div class="pt-4 border-t border-white/5">
+                    <span class="text-xs text-gray-400" data-translate="op-hours">Heures d'opération : 24/7 Innovation</span>
+                </div>
+                <div class="pt-8 border-t border-white/5 mt-8">
+                    <h4 class="text-[var(--gold)] font-black uppercase tracking-widest text-sm" data-translate="payment-methods">Méthodes de Paiement</h4>
+                    <div class="space-y-4 text-gray-400 text-sm sm:text-base">
+                        <p class="flex items-center gap-3"><i class="fa-solid fa-money-bill-transfer text-[var(--gold)]"></i><span>M-Pesa : +243 822 409 702 (Jimmy Baniki)</span></p>
+                        <p class="flex items-center gap-3"><i class="fa-solid fa-money-bill-transfer text-[var(--gold)]"></i><span>M-Pesa (TZ) : +255 793 455 303</span></p>
+                        <p class="flex items-center gap-3"><i class="fa-brands fa-paypal text-[var(--gold)]"></i><span>PayPal : banikilabs@gmail.com</span></p>
+                        <p class="flex items-center gap-3"><i class="fa-solid fa-building-columns text-[var(--gold)]"></i><span>Equity BCDC : 266200286723221 (Jimmy Baniki)</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-gray-600 font-bold uppercase tracking-[0.2em] px-4" data-translate="copyright">
+            &copy; 2026. TOUS DROITS RÉSERVÉS BANIKI LABS.
+        </div>
+    </footer>
+
+    <!-- Pop-up À Propos (Entreprise + Jimmy Baniki) -->
+    <div id="aboutModal" class="custom-modal">
+        <div class="bg-[var(--bg-card)] max-w-4xl w-full rounded-[2rem] sm:rounded-[3rem] border border-[var(--gold)]/30 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative flex flex-col">
+            
+            <button onclick="toggleAboutModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/80 p-2 rounded-full backdrop-blur-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <div class="flex flex-col md:flex-row overflow-y-auto max-h-[85vh] w-full">
+                <!-- Partie Entreprise -->
+                <div class="md:w-1/2 p-8 sm:p-12 space-y-6 bg-gradient-to-br from-black/50 to-transparent">
+                    <div>
+                        <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Notre Histoire</span>
+                        <h3 class="text-3xl sm:text-4xl font-black tracking-tighter mt-2">BANIKI LABS</h3>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Baniki Labs n'est pas seulement une entreprise multiservices ; c'est un écosystème d'innovation implanté au cœur de Kinshasa. Nous accompagnons la transformation digitale et opérationnelle des leaders de demain en alliant rigueur professionnelle et créativité sans limite.
+                    </p>
+                    <p class="text-gray-400 text-xs italic">"L'Excellence comme seul standard."</p>
+                </div>
+
+                <!-- Partie Profil Jimmy Baniki -->
+                <div class="md:w-1/2 relative bg-neutral-900/50 p-8 sm:p-12 border-t md:border-t-0 md:border-l border-white/5 flex flex-col justify-center">
+                    <div class="flex items-center gap-6 mb-6">
+                        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[var(--gold)] shadow-xl shrink-0">
+                            <a href="https://ibb.co/q32nvNYm"><img src="https://i.ibb.co/Hf92jtTG/jimmy-baniki.jpg" alt="jimmy-baniki" border="0" class="w-full h-full object-cover" /></a>
+                        </div>
+                        <div>
+                            <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]">Le Visionnaire</span>
+                            <h4 class="text-2xl sm:text-3xl font-black tracking-tighter text-white mt-1">Jimmy Baniki</h4>
+                            <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Fondateur & CEO</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                        Entrepreneur passionné et stratège visionnaire, je suis le moteur derrière l'innovation chez Baniki Labs. Ma mission est de bâtir un futur numérique et structurel ambitieux pour nos clients, en misant sur l'audace et la performance.
+                    </p>
+                    <a href="https://www.linkedin.com/in/jimmy-baniki-mukishi-241b771ba" target="_blank" class="inline-flex items-center justify-center gap-3 bg-[#0077b5] text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#005582] transition-colors shadow-lg">
+                        <i class="fa-brands fa-linkedin text-lg"></i>
+                        Connecter sur LinkedIn
                     </a>
                 </div>
-            </article>
-
-            <!-- Article Futur -->
-            <article class="glass-card p-10 rounded-[3rem] border-white/5 opacity-50">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xl font-bold uppercase tracking-widest">Plus de news à venir...</h3>
-                    <i class="fas fa-ellipsis-h text-[var(--gold)]"></i>
-                </div>
-            </article>
+            </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Pop-up Jobs / Outils Emploi -->
+    <div id="jobsModal" class="custom-modal">
+        <div class="bg-[var(--bg-card)] max-w-4xl w-full rounded-[2rem] border border-[var(--gold)]/30 overflow-hidden shadow-2xl relative flex flex-col">
+            <button onclick="toggleJobsModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-white transition-colors z-[210] bg-black/80 p-2 rounded-full backdrop-blur-md">
+                <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <div class="p-8 sm:p-12 overflow-y-auto max-h-[85vh] w-full">
+                <div class="text-center mb-10">
+                    <span class="text-[var(--gold)] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em]" data-translate="jobs-modal-subtitle">Carrières & Outils</span>
+                    <h3 class="text-3xl sm:text-5xl font-black tracking-tighter mt-2 text-white" data-translate="jobs-modal-title">Espace Emploi</h3>
+                    <p class="text-gray-400 text-sm mt-4" data-translate="jobs-modal-desc">Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <a href="cv.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-file-pdf text-xl"></i></div>
+                        <h4 class="text-white font-bold mb-2" data-translate="cv-gen-title">Générateur de CV</h4>
+                        <p class="text-xs text-gray-400" data-translate="cv-gen-desc">Créez un CV professionnel moderne et attractif en quelques clics.</p>
+                    </a>
+                    
+                    <a href="coverletter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-envelope-open-text text-xl"></i></div>
+                        <h4 class="text-white font-bold mb-2" data-translate="cover-letter-title">Lettre de Motivation</h4>
+                        <p class="text-xs text-gray-400" data-translate="cover-letter-desc">Rédigez une lettre impactante grâce à nos modèles assistés.</p>
+                    </a>
+
+                    <a href="interview.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-tie text-xl"></i></div>
+                        <h4 class="text-white font-bold mb-2" data-translate="interview-tips-title">Astuces Entretien</h4>
+                        <p class="text-xs text-gray-400" data-translate="interview-tips-desc">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
+                    </a>
+
+                    <a href="teleprompter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-tv text-xl"></i></div>
+                        <h4 class="text-white font-bold mb-2" data-translate="teleprompter-title">Téléprompteur</h4>
+                        <p class="text-xs text-gray-400" data-translate="teleprompter-desc">Lisez vos scripts de manière fluide et professionnelle.</p>
+                    </a>
+
+                    <a href="typing.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-keyboard text-xl"></i></div>
+                        <h4 class="text-white font-bold mb-2" data-translate="typing-test-title">Test de Frappe</h4>
+                        <p class="text-xs text-gray-400" data-translate="typing-test-desc">Mesurez et améliorez votre vitesse de frappe au clavier.</p>
+                    </a>
+
+                    <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)] text-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-briefcase text-xl"></i></div>
+                        <h4 class="font-bold mb-2 text-white group-hover:text-black transition-colors" data-translate="offers-title">Offres Baniki Labs</h4>
+                        <p class="text-xs text-gray-400 group-hover:text-black/70 transition-colors" data-translate="offers-desc">Rejoignez notre équipe d'innovateurs.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bgAmbient" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <script>
+        // --- SYSTEME DE SONS PREMIUM ---
+        const clickSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_783cf29965.mp3');
+        clickSound.preload = 'auto';
+        function playClick() {
+            clickSound.currentTime = 0; 
+            clickSound.play().catch(() => {});
+        }
+
+        const translations = {
+            fr: {
+                "about": "À Propos", "news": "Actualités", "jobs-nav": "Travail", "expertises": "Expertises", "contact": "Infos & Contact",
+                "legal-info": "Informations Légales", "tax-id": "N° Impôt : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "ID National : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>", "admin-access": "Accès Admin",
+                "follow-innovation": "Suivez l'innovation", "vision-title": "Vision", "vision-text": "\"Construire l'avenir, un projet à la fois, depuis le cœur de Kinshasa.\"",
+                "op-hours": "Heures d'opération : 24/7 Innovation", "payment-methods": "Méthodes de Paiement", "copyright": "&copy; 2026. TOUS DROITS RÉSERVÉS BANIKI LABS.",
+                "jobs-modal-subtitle": "Carrières & Outils", "jobs-modal-title": "Espace Emploi", "jobs-modal-desc": "Des outils puissants pour vous accompagner dans votre réussite professionnelle et décrocher le job idéal.",
+                "cv-gen-title": "Générateur de CV", "cv-gen-desc": "Créez un CV professionnel moderne et attractif en quelques clics.", "cover-letter-title": "Lettre de Motivation",
+                "cover-letter-desc": "Rédigez une lettre impactante grâce à nos modèles assistés.", "interview-tips-title": "Astuces Entretien", "interview-tips-desc": "Préparez-vous avec les questions fréquentes et conseils de pros.",
+                "teleprompter-title": "Téléprompteur", "teleprompter-desc": "Lisez vos scripts de manière fluide et professionnelle.", "typing-test-title": "Test de Frappe",
+                "typing-test-desc": "Mesurez et améliorez votre vitesse de frappe au clavier.", "offers-title": "Offres Baniki Labs", "offers-desc": "Rejoignez notre équipe d'innovateurs.",
+                
+                // News specific
+                "news-badge": "En direct de l'écosystème",
+                "news-title": "ACTUALITÉS &<br/><span class=\"text-[var(--gold)]\">MISES À JOUR</span>",
+                "news-desc": "Restez connecté avec l'innovation. Découvrez les dernières annonces, les lancements d'outils, et les événements qui façonnent l'avenir de Baniki Labs.",
+                "filter-all": "Tout voir", "filter-tech": "Technologie", "filter-events": "Événements", "filter-jobs": "Emplois & Outils",
+                "tag-launch": "Lancement", "tag-expansion": "Expansion", "tag-update": "Mise à jour", "tag-event": "Studio",
+                "date-1": "Octobre 2026", "date-2": "Septembre 2026", "date-3": "Août 2026", "date-4": "Juillet 2026",
+                "news-1-title": "Lancement des nouveaux Outils Emploi Pro",
+                "news-1-desc": "Baniki Labs dévoile sa nouvelle suite d'outils professionnels gratuits comprenant un générateur de CV interactif, un téléprompteur, et un module de test de frappe pour accompagner les talents.",
+                "news-2-title": "Baniki Labs étend ses services financiers vers la Tanzanie",
+                "news-2-desc": "Afin de faciliter les transactions régionales, nous intégrons désormais M-Pesa Tanzanie dans nos méthodes de paiement, simplifiant les échanges pour nos partenaires en Afrique de l'Est.",
+                "news-3-title": "Déploiement de la version 2.0 pour E-commerce Mlimani",
+                "news-3-desc": "Notre plateforme d'e-commerce Mlimani se dote d'une nouvelle interface ultra-rapide et sécurisée, offrant une expérience utilisateur sans précédent pour les achats en ligne en RDC.",
+                "news-4-title": "Inauguration du nouveau Studio Podcast Haute Définition",
+                "news-4-desc": "Baniki Labs ouvre ses portes aux créateurs de contenu avec un studio d'enregistrement à la pointe de la technologie pour propulser les podcasts africains sur la scène mondiale.",
+                "read-more": "En savoir plus",
+                "load-more": "Charger plus d'actualités"
+            },
+            en: {
+                "about": "About", "news": "News", "jobs-nav": "Jobs", "expertises": "Expertise", "contact": "Info & Contact",
+                "legal-info": "Legal Information", "tax-id": "Tax ID : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "National ID : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>", "admin-access": "Admin Access",
+                "follow-innovation": "Follow Innovation", "vision-title": "Vision", "vision-text": "\"Building the future, one project at a time, from the heart of Kinshasa.\"",
+                "op-hours": "Operating Hours : 24/7 Innovation", "payment-methods": "Payment Methods", "copyright": "&copy; 2026. ALL RIGHTS RESERVED BANIKI LABS.",
+                "jobs-modal-subtitle": "Careers & Tools", "jobs-modal-title": "Job Board", "jobs-modal-desc": "Powerful tools to support your professional success and land the ideal job.",
+                "cv-gen-title": "Resume Builder", "cv-gen-desc": "Create a modern and attractive professional resume in just a few clicks.", "cover-letter-title": "Cover Letter",
+                "cover-letter-desc": "Write an impactful letter using our assisted templates.", "interview-tips-title": "Interview Tips", "interview-tips-desc": "Prepare with frequently asked questions and pro tips.",
+                "teleprompter-title": "Teleprompter", "teleprompter-desc": "Read your scripts fluently and professionally.", "typing-test-title": "Typing Test",
+                "typing-test-desc": "Measure and improve your keyboard typing speed.", "offers-title": "Baniki Labs Offers", "offers-desc": "Join our team of innovators.",
+
+                // News specific
+                "news-badge": "Live from the ecosystem",
+                "news-title": "NEWS &<br/><span class=\"text-[var(--gold)]\">UPDATES</span>",
+                "news-desc": "Stay connected with innovation. Discover the latest announcements, tool launches, and events shaping the future of Baniki Labs.",
+                "filter-all": "View All", "filter-tech": "Technology", "filter-events": "Events", "filter-jobs": "Jobs & Tools",
+                "tag-launch": "Launch", "tag-expansion": "Expansion", "tag-update": "Update", "tag-event": "Studio",
+                "date-1": "October 2026", "date-2": "September 2026", "date-3": "August 2026", "date-4": "July 2026",
+                "news-1-title": "Launch of New Pro Job Tools",
+                "news-1-desc": "Baniki Labs unveils its new suite of free professional tools including an interactive resume builder, teleprompter, and typing test module to support talents.",
+                "news-2-title": "Baniki Labs expands financial services to Tanzania",
+                "news-2-desc": "To facilitate regional transactions, we are now integrating M-Pesa Tanzania into our payment methods, simplifying exchanges for our partners in East Africa.",
+                "news-3-title": "Deployment of version 2.0 for Mlimani E-commerce",
+                "news-3-desc": "Our Mlimani e-commerce platform gets a new ultra-fast and secure interface, offering an unprecedented user experience for online shopping in the DRC.",
+                "news-4-title": "Inauguration of the new High-Definition Podcast Studio",
+                "news-4-desc": "Baniki Labs opens its doors to content creators with a state-of-the-art recording studio to propel African podcasts onto the global stage.",
+                "read-more": "Read more",
+                "load-more": "Load more news"
+            },
+            sw: {
+                "about": "Kuhusu", "news": "Habari", "jobs-nav": "Kazi", "expertises": "Utaalam", "contact": "Mawasiliano",
+                "legal-info": "Maelezo ya Kisheria", "tax-id": "Namba ya Kodi : <span class=\"text-white font-mono uppercase tracking-widest\">A2645236E</span>",
+                "nat-id": "Kitambulisho cha Taifa : <span class=\"text-white font-mono uppercase tracking-widest\">01-G4701-N72051U</span>", "admin-access": "Ufikiaji wa Admin",
+                "follow-innovation": "Fuata Ubunifu", "vision-title": "Dira", "vision-text": "\"Kujenga siku zijazo, mradi mmoja kwa wakati, kutoka moyoni mwa Kinshasa.\"",
+                "op-hours": "Saa za Kazi : Ubunifu wa 24/7", "payment-methods": "Njia za Malipo", "copyright": "&copy; 2026. HAKI ZOTE ZIMEHIFADHIWA BANIKI LABS.",
+                "jobs-modal-subtitle": "Kazi & Zana", "jobs-modal-title": "Nafasi za Kazi", "jobs-modal-desc": "Zana zenye nguvu za kusaidia mafanikio yako ya kitaalam na kupata kazi bora.",
+                "cv-gen-title": "Kutengeneza CV", "cv-gen-desc": "Unda CV ya kisasa na ya kuvutia ya kitaalam kwa kubofya chache.", "cover-letter-title": "Barua ya Maombi",
+                "cover-letter-desc": "Andika barua yenye athari ukitumia violezo vyetu.", "interview-tips-title": "Vidokezo vya Usaili", "interview-tips-desc": "Jitayarishe na maswali yanayoulizwa mara kwa mara na vidokezo vya wataalamu.",
+                "teleprompter-title": "Teleprompter", "teleprompter-desc": "Soma maandishi yako kwa ufasaha na kitaalamu.", "typing-test-title": "Jaribio la Kuandika",
+                "typing-test-desc": "Pima na uboreshe kasi yako ya kuandika kwenye kibodi.", "offers-title": "Ofa za Baniki Labs", "offers-desc": "Jiunge na timu yetu ya wabunifu.",
+
+                // News specific
+                "news-badge": "Moja kwa moja kutoka kwa mfumo",
+                "news-title": "HABARI &<br/><span class=\"text-[var(--gold)]\">MASASISHO</span>",
+                "news-desc": "Kaa ukiwasiliana na uvumbuzi. Gundua matangazo ya hivi punde, uzinduzi wa zana, na matukio yanayounda mustakabali wa Baniki Labs.",
+                "filter-all": "Tazama Zote", "filter-tech": "Teknolojia", "filter-events": "Matukio", "filter-jobs": "Kazi na Zana",
+                "tag-launch": "Uzinduzi", "tag-expansion": "Upanuzi", "tag-update": "Sasisho", "tag-event": "Studio",
+                "date-1": "Oktoba 2026", "date-2": "Septemba 2026", "date-3": "Agosti 2026", "date-4": "Julai 2026",
+                "news-1-title": "Uzinduzi wa Zana Mpya za Kitaalamu za Kazi",
+                "news-1-desc": "Baniki Labs inafichua safu yake mpya ya zana za kitaalam za bure ikiwa ni pamoja na jenereta ya CV inayoingiliana, teleprompter, na moduli ya mtihani wa kuandika ili kusaidia vipaji.",
+                "news-2-title": "Baniki Labs inapanua huduma za kifedha hadi Tanzania",
+                "news-2-desc": "Ili kuwezesha miamala ya kikanda, sasa tunaunganisha M-Pesa Tanzania katika mbinu zetu za malipo, kurahisisha ubadilishanaji wa washirika wetu Afrika Mashariki.",
+                "news-3-title": "Usambazaji wa toleo la 2.0 la Mlimani E-commerce",
+                "news-3-desc": "Jukwaa letu la biashara ya mtandaoni la Mlimani linapata kiolesura kipya chenye kasi zaidi na salama, kinachotoa uzoefu ambao haujawahi kufanywa kwa watumiaji kwa ununuzi mtandaoni nchini DRC.",
+                "news-4-title": "Uzinduzi wa Studio mpya ya Podcast ya Ufafanuzi wa Juu",
+                "news-4-desc": "Baniki Labs inafungua milango yake kwa waundaji maudhui kwa studio ya kurekodi ya hali ya juu ili kusukuma podcast za Kiafrika kwenye jukwaa la kimataifa.",
+                "read-more": "Soma zaidi",
+                "load-more": "Pakia habari zaidi"
+            }
+        };
+
+        let currentLang = 'fr';
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('currentLangDisplay').textContent = lang.toUpperCase();
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            localStorage.setItem('lang', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const langBtn = document.getElementById('langBtn');
+            const langMenu = document.getElementById('langMenu');
+            if (langBtn && langMenu) {
+                langBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    langMenu.classList.toggle('hidden');
+                });
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    option.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        setLanguage(this.getAttribute('data-lang'));
+                        langMenu.classList.add('hidden');
+                    });
+                });
+                document.addEventListener('click', function(event) {
+                    if (!langBtn.contains(event.target) && !langMenu.contains(event.target)) {
+                        langMenu.classList.add('hidden');
+                    }
+                });
+            }
+            const savedLang = localStorage.getItem('lang') || 'fr';
+            setLanguage(savedLang);
+        });
+
+        function toggleAboutModal() {
+            playClick();
+            document.getElementById('aboutModal').classList.toggle('active');
+        }
+
+        function toggleJobsModal() {
+            playClick();
+            document.getElementById('jobsModal').classList.toggle('active');
+        }
+
+        function toggleMobileNav() {
+            document.getElementById('mobileNavMenu').classList.toggle('hidden');
+        }
+
+        window.onclick = (e) => {
+            const aboutModal = document.getElementById('aboutModal');
+            const jobsModal = document.getElementById('jobsModal');
+            if (e.target == aboutModal) aboutModal.classList.remove('active');
+            if (e.target == jobsModal) jobsModal.classList.remove('active');
+        };
+
+        const bgAmbient = document.getElementById('bgAmbient');
+        const audioToggle = document.getElementById('audioToggle');
+        const audioIcon = document.getElementById('audioIcon');
+        let audioStarted = false;
+
+        audioToggle.onclick = () => {
+            if (bgAmbient.paused) {
+                bgAmbient.play().then(() => {
+                    audioIcon.classList.replace('fa-volume-xmark', 'fa-volume-high');
+                    audioIcon.classList.add('animate-pulse');
+                    localStorage.setItem('baniki-audio', 'on');
+                }).catch(()=>{});
+            } else {
+                bgAmbient.pause();
+                audioIcon.classList.replace('fa-volume-high', 'fa-volume-xmark');
+                audioIcon.classList.remove('animate-pulse');
+                localStorage.setItem('baniki-audio', 'off');
+            }
+        };
+
+        window.addEventListener('click', () => {
+            if(!audioStarted && localStorage.getItem('baniki-audio') === 'on') {
+                bgAmbient.play().then(() => {
+                    audioIcon.classList.replace('fa-volume-xmark', 'fa-volume-high');
+                    audioIcon.classList.add('animate-pulse');
+                }).catch(() => {});
+                audioStarted = true;
+            }
+        }, { once: true });
+    </script>
 </body>
 </html>
