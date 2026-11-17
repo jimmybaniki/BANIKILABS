@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANIKILABS - PDF Studio (Combiner & Diviser)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            yellow: '#FFE600',
+                            yellowHover: '#E6CF00',
+                            dark: '#121212',
+                            card: '#1E1E1E',
+                            border: '#2E2E2E',
+                            light: '#F8F9FA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- pdf-lib for merging & splitting PDFs -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- pdf.js for rendering PDF page previews -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JSZip for bundling unmerged PDFs into a ZIP archive -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SortableJS for smooth drag and drop reordering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFE600;
+        }
+
+        .ghost-card {
+            opacity: 0.4;
+            border: 2px dashed #FFE600 !important;
+        }
+
+        .yellow-glow {
+            box-shadow: 0 0 15px rgba(255, 230, 0, 0.25);
+        }
+
+        .yellow-glow-hover:hover {
+            box-shadow: 0 0 20px rgba(255, 230, 0, 0.4);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-enter {
+            animation: slideIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white font-sans min-h-screen flex flex-col justify-between selection:bg-brand-yellow selection:text-black">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- Navbar Header -->
+    <header class="border-b border-brand-border bg-black/70 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[80px] py-3 flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-yellow rounded-lg flex items-center justify-center text-black font-extrabold text-xl shadow-md shrink-0">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-wider uppercase text-white flex items-center gap-1.5">
+                        PDF <span class="text-brand-yellow">&</span> STUDIO
+                    </h1>
+                    <p data-i18n="appSubtitle" class="text-xs text-gray-400">Combinez & divisez vos documents</p>
+                </div>
+            </div>
+
+            <!-- Right Controls: Mode Switcher + Language Selector -->
+            <div class="flex items-center gap-3 sm:gap-5 flex-wrap">
+                <!-- Security Badge (Desktop) -->
+                <div class="hidden xl:flex items-center gap-4 text-xs font-semibold text-gray-400 mr-2">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-brand-yellow"></i> <span data-i18n="badgeSecure">100% Local & Sécurisé</span></span>
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="flex items-center bg-brand-card border border-brand-border rounded-lg p-1" role="group" aria-label="Language selector">
+                    <button onclick="setLanguage('fr')" id="lang-fr" class="lang-btn px-2.5 py-1 rounded text-xs font-extrabold transition bg-brand-yellow text-black">FR</button>
+                    <button onclick="setLanguage('en')" id="lang-en" class="lang-btn px-2.5 py-1 rounded text-xs font-extrabold transition text-gray-400 hover:text-white">EN</button>
+                    <button onclick="setLanguage('sw')" id="lang-sw" class="lang-btn px-2.5 py-1 rounded text-xs font-extrabold transition text-gray-400 hover:text-white">SW</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow w-full">
+
+        <!-- Mode Navigation Tabs (Combiner vs Diviser) -->
+        <div class="flex justify-center mb-8">
+            <div class="inline-flex bg-black border border-brand-border rounded-xl p-1.5 shadow-lg w-full sm:w-auto">
+                <button id="tabMerge" onclick="switchMode('merge')" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-yellow text-black shadow">
+                    <i class="fa-solid fa-object-group"></i>
+                    <span data-i18n="tabMerge">Combiner (PDF & Images)</span>
+                </button>
+                <button id="tabSplit" onclick="switchMode('split')" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-scissors"></i>
+                    <span data-i18n="tabSplit">Diviser un PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1 : MERGE MODE (COMBINER PDF & IMAGES)            -->
+        <!-- ========================================================= -->
+        <section id="mergeSection">
+            <!-- Controls & Action Toolbar -->
+            <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+                <div>
+                    <h2 data-i18n="mergeTitle" class="text-2xl font-bold">Vos Fichiers & Pages</h2>
+                    <p data-i18n="mergeDesc" class="text-sm text-gray-400">Ajoutez des fichiers, faites glisser pour réordonner les pages avant la fusion.</p>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="clearAllBtn" onclick="clearMergeAll()" class="px-4 py-2.5 rounded-lg border border-brand-border bg-brand-card hover:border-red-500 hover:text-red-400 transition text-sm font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> <span data-i18n="btnClear">Tout effacer</span>
+                    </button>
+                    
+                    <label for="mergeFileInput" class="cursor-pointer px-5 py-2.5 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition text-sm flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-plus text-brand-dark"></i> <span data-i18n="btnAddFiles">Ajouter Fichiers</span>
+                        <input type="file" id="mergeFileInput" multiple accept="application/pdf, image/png, image/jpeg, image/webp" class="hidden">
+                    </label>
+                    
+                    <button id="mergeBtn" onclick="mergeFiles()" disabled class="px-6 py-2.5 rounded-lg bg-brand-yellow text-black font-extrabold hover:bg-brand-yellowHover disabled:opacity-40 disabled:cursor-not-allowed transition text-sm flex items-center gap-2 yellow-glow">
+                        <i class="fa-solid fa-file-export"></i> <span data-i18n="btnDownloadMerged">Télécharger le PDF Fusionné</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dropzone Layer -->
+            <div id="mergeDropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-8 sm:p-12 text-center bg-brand-card/40 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[260px] mb-8"
+                 onclick="document.getElementById('mergeFileInput').click()">
+                <div class="w-20 h-20 bg-brand-dark rounded-full flex items-center justify-center text-brand-yellow text-3xl mb-4 border border-brand-border yellow-glow">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h3 data-i18n="mergeDropTitle" class="text-lg font-bold mb-1">Déposez vos fichiers PDF ou Images ici</h3>
+                <p data-i18n="mergeDropSub" class="text-gray-400 text-sm max-w-md mb-4">Formats pris en charge : PDF, JPG, PNG, WEBP. Combinez-les en un unique document PDF instantanément.</p>
+                <span class="inline-flex items-center px-4 py-2 rounded-md bg-brand-dark border border-brand-border text-xs text-brand-yellow font-semibold">
+                    <i class="fa-solid fa-mouse-pointer mr-2"></i> <span data-i18n="browseFolders">Cliquez pour parcourir vos dossiers</span>
+                </span>
+            </div>
+
+            <!-- Files & Pages Grid Container -->
+            <div id="mergePagesContainer" class="hidden">
+                <div id="mergePagesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2 : SPLIT / UNMERGE MODE (DIVISER UN PDF)         -->
+        <!-- ========================================================= -->
+        <section id="splitSection" class="hidden">
+            <!-- Header & Actions -->
+            <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+                <div>
+                    <h2 data-i18n="splitTitle" class="text-2xl font-bold">Diviser / Extraire un PDF</h2>
+                    <p data-i18n="splitDesc" class="text-sm text-gray-400">Importez un PDF pour extraire chaque page séparément ou sélectionner des pages précises.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="splitClearBtn" onclick="clearSplit()" class="hidden px-4 py-2.5 rounded-lg border border-brand-border bg-brand-card hover:border-red-500 hover:text-red-400 transition text-sm font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btnChangePdf">Changer de PDF</span>
+                    </button>
+
+                    <label for="splitFileInput" class="cursor-pointer px-5 py-2.5 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition text-sm flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-file-arrow-up text-brand-dark"></i> <span data-i18n="btnSelectPdf">Choisir un PDF</span>
+                        <input type="file" id="splitFileInput" accept="application/pdf" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Split Dropzone -->
+            <div id="splitDropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-8 sm:p-12 text-center bg-brand-card/40 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[260px] mb-8"
+                 onclick="document.getElementById('splitFileInput').click()">
+                <div class="w-20 h-20 bg-brand-dark rounded-full flex items-center justify-center text-brand-yellow text-3xl mb-4 border border-brand-border yellow-glow">
+                    <i class="fa-solid fa-scissors"></i>
+                </div>
+                <h3 data-i18n="splitDropTitle" class="text-lg font-bold mb-1">Déposez le fichier PDF à diviser ici</h3>
+                <p data-i18n="splitDropSub" class="text-gray-400 text-sm max-w-md mb-4">Séparez toutes les pages en fichiers PDF individuels (ZIP) ou extrayez une sélection personnalisée.</p>
+                <span class="inline-flex items-center px-4 py-2 rounded-md bg-brand-dark border border-brand-border text-xs text-brand-yellow font-semibold">
+                    <i class="fa-solid fa-mouse-pointer mr-2"></i> <span data-i18n="browsePdf">Cliquez pour sélectionner un PDF</span>
+                </span>
+            </div>
+
+            <!-- Split Workspace (Visible after loading a PDF) -->
+            <div id="splitWorkspace" class="hidden space-y-6">
+                <!-- Control Bar for Selection & Export -->
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="bg-black/60 border border-brand-border px-3.5 py-2 rounded-lg text-xs">
+                            <span class="text-gray-400" data-i18n="loadedFileLabel">Fichier :</span>
+                            <span id="splitFileName" class="font-bold text-white ml-1">document.pdf</span>
+                            <span class="ml-2 px-2 py-0.5 rounded bg-brand-yellow/20 text-brand-yellow font-bold" id="splitTotalBadge">0 pages</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="selectAllSplitPages(true)" class="px-3 py-2 rounded-lg bg-brand-dark hover:bg-white hover:text-black border border-brand-border text-xs font-bold transition">
+                                <i class="fa-solid fa-check-double mr-1"></i> <span data-i18n="btnSelectAll">Tout sélectionner</span>
+                            </button>
+                            <button onclick="selectAllSplitPages(false)" class="px-3 py-2 rounded-lg bg-brand-dark hover:bg-white hover:text-black border border-brand-border text-xs font-bold transition">
+                                <i class="fa-solid fa-xmark mr-1"></i> <span data-i18n="btnDeselectAll">Tout désélectionner</span>
+                            </button>
+                        </div>
+
+                        <!-- Range quick selector -->
+                        <div class="flex items-center gap-1.5">
+                            <input type="text" id="pageRangeInput" placeholder="ex: 1-3, 5" class="bg-black border border-brand-border focus:border-brand-yellow outline-none rounded-lg px-3 py-1.5 text-xs text-white w-28 sm:w-36" />
+                            <button onclick="applyPageRange()" class="px-3 py-1.5 rounded-lg bg-brand-dark hover:border-brand-yellow border border-brand-border text-xs font-bold text-brand-yellow transition">
+                                <span data-i18n="btnApplyRange">Appliquer</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Export Buttons -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button id="downloadExtractedPdfBtn" onclick="exportSelectedAsSinglePdf()" class="px-4 py-2.5 rounded-lg bg-white text-black font-extrabold hover:bg-gray-200 transition text-xs sm:text-sm flex items-center gap-2 shadow">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span data-i18n="btnExtractSinglePdf">Extraire en 1 PDF</span>
+                        </button>
+
+                        <button id="downloadSplitZipBtn" onclick="exportSelectedAsZip()" class="px-5 py-2.5 rounded-lg bg-brand-yellow text-black font-extrabold hover:bg-brand-yellowHover transition text-xs sm:text-sm flex items-center gap-2 yellow-glow">
+                            <i class="fa-solid fa-file-zipper"></i>
+                            <span data-i18n="btnDownloadZip">Télécharger séparés (ZIP)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid of Split Pages -->
+                <div id="splitPagesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- Processing Loader Overlay -->
+        <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+            <div class="w-16 h-16 border-4 border-brand-border border-t-brand-yellow rounded-full animate-spin mb-4"></div>
+            <h3 id="loadingText" class="text-xl font-bold text-white">Traitement en cours...</h3>
+            <p id="loadingSubtext" class="text-sm text-gray-400 mt-1">Veuillez patienter pendant la préparation de vos pages.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-border bg-black py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm font-semibold tracking-wide text-gray-400">
+                POWERED BY <span class="text-brand-yellow font-black tracking-widest text-base ml-1 uppercase">BANIKILABS</span>
+            </p>
+            <p class="text-xs text-gray-600 mt-1"><span data-i18n="footerRights">Tous droits réservés</span> &copy; <span id="year"></span></p>
+        </div>
+    </footer>
+
+    <!-- Application Script Logic -->
+    <script>
+        // Configure PDF.js Worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // =========================================================
+        // MULTILINGUAL DICTIONARY (FR, EN, SW)
+        // =========================================================
+        const translations = {
+            fr: {
+                appSubtitle: "Combinez & divisez vos documents",
+                badgeSecure: "100% Local & Sécurisé",
+                tabMerge: "Combiner (PDF & Images)",
+                tabSplit: "Diviser un PDF",
+                mergeTitle: "Vos Fichiers & Pages",
+                mergeDesc: "Ajoutez des fichiers, faites glisser pour réordonner les pages avant la fusion.",
+                btnClear: "Tout effacer",
+                btnAddFiles: "Ajouter Fichiers",
+                btnDownloadMerged: "Télécharger le PDF Fusionné",
+                mergeDropTitle: "Déposez vos fichiers PDF ou Images ici",
+                mergeDropSub: "Formats pris en charge : PDF, JPG, PNG, WEBP. Combinez-les en un unique document PDF instantanément.",
+                browseFolders: "Cliquez pour parcourir vos dossiers",
+                splitTitle: "Diviser / Extraire un PDF",
+                splitDesc: "Importez un PDF pour extraire chaque page séparément ou sélectionner des pages précises.",
+                btnChangePdf: "Changer de PDF",
+                btnSelectPdf: "Choisir un PDF",
+                splitDropTitle: "Déposez le fichier PDF à diviser ici",
+                splitDropSub: "Séparez toutes les pages en fichiers PDF individuels (ZIP) ou extrayez une sélection personnalisée.",
+                browsePdf: "Cliquez pour sélectionner un PDF",
+                loadedFileLabel: "Fichier :",
+                btnSelectAll: "Tout sélectionner",
+                btnDeselectAll: "Tout désélectionner",
+                btnApplyRange: "Appliquer",
+                btnExtractSinglePdf: "Extraire en 1 PDF",
+                btnDownloadZip: "Télécharger séparés (ZIP)",
+                footerRights: "Tous droits réservés",
+                loadingFilesTitle: "Chargement des fichiers...",
+                loadingFilesSub: "Extraction et préparation des aperçus...",
+                loadingMergeTitle: "Création du document PDF...",
+                loadingMergeSub: "Combinaison des images et pages sélectionnées...",
+                loadingSplitTitle: "Découpage du PDF...",
+                loadingSplitSub: "Génération des fichiers individuels...",
+                toastNoSelection: "Veuillez sélectionner au moins une page.",
+                toastInvalidPdf: "Veuillez importer un fichier PDF valide.",
+                toastErrorFile: "Erreur lors de la lecture du fichier.",
+                toastSuccessMerge: "PDF fusionné téléchargé avec succès !",
+                toastSuccessSplitZip: "Archive ZIP téléchargée avec succès !",
+                toastSuccessSplitSingle: "PDF extrait téléchargé avec succès !",
+                toastSuccessPage: "Page téléchargée !",
+                toastRangeApplied: "Plage de pages sélectionnée.",
+                btnDownloadSinglePage: "Télécharger cette page",
+                rotateTooltip: "Pivoter",
+                deleteTooltip: "Supprimer",
+                pageLabel: "Page"
+            },
+            en: {
+                appSubtitle: "Merge & split your documents",
+                badgeSecure: "100% Local & Secure",
+                tabMerge: "Merge (PDF & Images)",
+                tabSplit: "Split / Unmerge PDF",
+                mergeTitle: "Your Files & Pages",
+                mergeDesc: "Add files, drag and drop to reorder pages before merging.",
+                btnClear: "Clear All",
+                btnAddFiles: "Add Files",
+                btnDownloadMerged: "Download Merged PDF",
+                mergeDropTitle: "Drop your PDF or Image files here",
+                mergeDropSub: "Supported formats: PDF, JPG, PNG, WEBP. Combine them into a single PDF document instantly.",
+                browseFolders: "Click to browse your folders",
+                splitTitle: "Split / Extract a PDF",
+                splitDesc: "Upload a PDF to extract each page separately or select specific pages.",
+                btnChangePdf: "Change PDF",
+                btnSelectPdf: "Select a PDF",
+                splitDropTitle: "Drop the PDF file to split here",
+                splitDropSub: "Separate all pages into individual PDF files (ZIP) or extract a custom page selection.",
+                browsePdf: "Click to select a PDF",
+                loadedFileLabel: "File:",
+                btnSelectAll: "Select All",
+                btnDeselectAll: "Deselect All",
+                btnApplyRange: "Apply",
+                btnExtractSinglePdf: "Extract as 1 PDF",
+                btnDownloadZip: "Download Separated (ZIP)",
+                footerRights: "All rights reserved",
+                loadingFilesTitle: "Loading files...",
+                loadingFilesSub: "Extracting and generating previews...",
+                loadingMergeTitle: "Building PDF document...",
+                loadingMergeSub: "Combining selected images and pages...",
+                loadingSplitTitle: "Splitting PDF...",
+                loadingSplitSub: "Generating individual PDF files...",
+                toastNoSelection: "Please select at least one page.",
+                toastInvalidPdf: "Please upload a valid PDF file.",
+                toastErrorFile: "An error occurred while reading the file.",
+                toastSuccessMerge: "Merged PDF downloaded successfully!",
+                toastSuccessSplitZip: "ZIP archive downloaded successfully!",
+                toastSuccessSplitSingle: "Extracted PDF downloaded successfully!",
+                toastSuccessPage: "Page downloaded!",
+                toastRangeApplied: "Page range selected.",
+                btnDownloadSinglePage: "Download this page",
+                rotateTooltip: "Rotate",
+                deleteTooltip: "Delete",
+                pageLabel: "Page"
+            },
+            sw: {
+                appSubtitle: "Unganisha na gawanya nyaraka zako",
+                badgeSecure: "100% Salama Kwenye Kifaa Chako",
+                tabMerge: "Unganisha (PDF na Picha)",
+                tabSplit: "Gawanya PDF",
+                mergeTitle: "Faili na Kurasa Zako",
+                mergeDesc: "Ongeza faili, buruta ili kupanga upya kurasa kabla ya kuunganisha.",
+                btnClear: "Futa Zote",
+                btnAddFiles: "Ongeza Faili",
+                btnDownloadMerged: "Pakua PDF Iliyounganishwa",
+                mergeDropTitle: "Weka faili zako za PDF au Picha hapa",
+                mergeDropSub: "Miundo inayokubaliwa: PDF, JPG, PNG, WEBP. Ziunganishe kuwa hati moja ya PDF papo hapo.",
+                browseFolders: "Bofya kuchagua kutoka kwenye folda zako",
+                splitTitle: "Gawanya / Toa Kurasa za PDF",
+                splitDesc: "Pakia PDF ili kutoa kila ukurasa kando au kuchagua kurasa maalum.",
+                btnChangePdf: "Badilisha PDF",
+                btnSelectPdf: "Chagua PDF",
+                splitDropTitle: "Weka faili ya PDF unayotaka kugawanya hapa",
+                splitDropSub: "Tenganisha kurasa zote kuwa faili za PDF za kibinafsi (ZIP) au toa kurasa ulizochagua.",
+                browsePdf: "Bofya kuchagua faili ya PDF",
+                loadedFileLabel: "Faili:",
+                btnSelectAll: "Chagua Zote",
+                btnDeselectAll: "Ondoa Uchaguzi",
+                btnApplyRange: "Tekeleza",
+                btnExtractSinglePdf: "Toa kama PDF 1",
+                btnDownloadZip: "Pakua Zilizotengwa (ZIP)",
+                footerRights: "Haki zote zimehifadhiwa",
+                loadingFilesTitle: "Inapakia faili...",
+                loadingFilesSub: "Inatayarisha mwonekano wa kurasa...",
+                loadingMergeTitle: "Inaunda hati ya PDF...",
+                loadingMergeSub: "Inaunganisha picha na kurasa ulizochagua...",
+                loadingSplitTitle: "Inagawanya PDF...",
+                loadingSplitSub: "Inatengeneza faili za kibinafsi...",
+                toastNoSelection: "Tafadhali chagua angalau ukurasa mmoja.",
+                toastInvalidPdf: "Tafadhali pakia faili sahihi ya PDF.",
+                toastErrorFile: "Hitilafu imetokea wakati wa kusoma faili.",
+                toastSuccessMerge: "PDF iliyounganishwa imepakuliwa!",
+                toastSuccessSplitZip: "Faili ya ZIP imepakuliwa!",
+                toastSuccessSplitSingle: "PDF iliyotolewa imepakuliwa!",
+                toastSuccessPage: "Ukurasa umepakuliwa!",
+                toastRangeApplied: "Kurasa ulizochagua zimetekelezwa.",
+                btnDownloadSinglePage: "Pakua ukurasa huu",
+                rotateTooltip: "Zungusha",
+                deleteTooltip: "Futa",
+                pageLabel: "Ukurasa"
+            }
+        };
+
+        let currentLang = 'fr';
+
+        function t(key) {
+            return translations[currentLang][key] || translations['fr'][key] || key;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+
+            // Update active styling on language buttons
+            ['fr', 'en', 'sw'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}`);
+                if (l === lang) {
+                    btn.className = "lang-btn px-2.5 py-1 rounded text-xs font-extrabold transition bg-brand-yellow text-black";
+                } else {
+                    btn.className = "lang-btn px-2.5 py-1 rounded text-xs font-extrabold transition text-gray-400 hover:text-white";
+                }
+            });
+
+            // Update all static elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Re-render dynamic grids so tooltips/labels reflect new language
+            updateMergeUI();
+            updateSplitUI();
+        }
+
+        // =========================================================
+        // TOAST NOTIFICATIONS (REPLACES alert())
+        // =========================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const colors = {
+                success: 'border-brand-yellow bg-brand-card text-white',
+                error: 'border-red-500 bg-brand-card text-red-200',
+                info: 'border-brand-border bg-brand-card text-white'
+            };
+
+            const icons = {
+                success: '<i class="fa-solid fa-circle-check text-brand-yellow"></i>',
+                error: '<i class="fa-solid fa-circle-exclamation text-red-500"></i>',
+                info: '<i class="fa-solid fa-circle-info text-brand-yellow"></i>'
+            };
+
+            toast.className = `pointer-events-auto border-l-4 ${colors[type]} p-3.5 rounded-lg shadow-2xl flex items-center gap-3 text-xs sm:text-sm font-medium toast-enter border border-brand-border`;
+            toast.innerHTML = `
+                <div class="text-base shrink-0">${icons[type]}</div>
+                <div class="flex-grow">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.25s ease';
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // =========================================================
+        // MODE SWITCHER (MERGE vs SPLIT)
+        // =========================================================
+        let currentMode = 'merge';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const mergeSection = document.getElementById('mergeSection');
+            const splitSection = document.getElementById('splitSection');
+            const tabMerge = document.getElementById('tabMerge');
+            const tabSplit = document.getElementById('tabSplit');
+
+            if (mode === 'merge') {
+                mergeSection.classList.remove('hidden');
+                splitSection.classList.add('hidden');
+                tabMerge.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-yellow text-black shadow";
+                tabSplit.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-white";
+            } else {
+                mergeSection.classList.add('hidden');
+                splitSection.classList.remove('hidden');
+                tabSplit.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-brand-yellow text-black shadow";
+                tabMerge.className = "flex-1 sm:flex-initial px-6 py-2.5 rounded-lg text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-white";
+            }
+        }
+
+        // Dynamic Current Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Loading Overlay Helpers
+        function showLoading(text, subtext) {
+            document.getElementById('loadingText').innerText = text;
+            document.getElementById('loadingSubtext').innerText = subtext;
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('loadingOverlay').classList.add('flex');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('loadingOverlay').classList.remove('flex');
+        }
+
+        // =========================================================
+        // 1. MERGE LOGIC (PDF & IMAGES)
+        // =========================================================
+        let mergePageItems = [];
+        const mergeDropzone = document.getElementById('mergeDropzone');
+        const mergeFileInput = document.getElementById('mergeFileInput');
+        const mergePagesGrid = document.getElementById('mergePagesGrid');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            mergeDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                mergeDropzone.classList.add('border-brand-yellow', 'bg-brand-card');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            mergeDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                mergeDropzone.classList.remove('border-brand-yellow', 'bg-brand-card');
+            });
+        });
+
+        mergeDropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleMergeFiles(files);
+        });
+
+        mergeFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleMergeFiles(e.target.files);
+        });
+
+        new Sortable(mergePagesGrid, {
+            animation: 200,
+            ghostClass: 'ghost-card',
+            onEnd: () => {
+                const newOrderIds = Array.from(mergePagesGrid.children).map(el => el.getAttribute('data-id'));
+                mergePageItems = newOrderIds.map(id => mergePageItems.find(item => item.id === id)).filter(Boolean);
+                updateMergeUI();
+            }
+        });
+
+        async function handleMergeFiles(files) {
+            showLoading(t('loadingFilesTitle'), t('loadingFilesSub'));
+            try {
+                for (let file of files) {
+                    if (file.type === 'application/pdf') {
+                        await processMergePDF(file);
+                    } else if (file.type.startsWith('image/')) {
+                        await processMergeImage(file);
+                    }
+                }
+                updateMergeUI();
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+                mergeFileInput.value = '';
+            }
+        }
+
+        async function processMergePDF(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const numPages = pdfDoc.numPages;
+
+            for (let i = 1; i <= numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: 0.4 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                mergePageItems.push({
+                    id: 'page_' + Math.random().toString(36).substr(2, 9),
+                    type: 'pdf',
+                    file: file,
+                    fileName: file.name,
+                    pageIndex: i - 1,
+                    previewUrl: canvas.toDataURL('image/png'),
+                    rotation: 0
+                });
+            }
+        }
+
+        async function processMergeImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    mergePageItems.push({
+                        id: 'page_' + Math.random().toString(36).substr(2, 9),
+                        type: 'image',
+                        file: file,
+                        fileName: file.name,
+                        previewUrl: e.target.result,
+                        rotation: 0
+                    });
+                    resolve();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateMergeUI() {
+            const container = document.getElementById('mergePagesContainer');
+            const mergeBtn = document.getElementById('mergeBtn');
+            mergePagesGrid.innerHTML = '';
+
+            if (mergePageItems.length === 0) {
+                container.classList.add('hidden');
+                mergeDropzone.classList.remove('hidden');
+                mergeBtn.disabled = true;
+                return;
+            }
+
+            mergeDropzone.classList.add('hidden');
+            container.classList.remove('hidden');
+            mergeBtn.disabled = false;
+
+            mergePageItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-card border border-brand-border rounded-xl p-3 flex flex-col justify-between group hover:border-brand-yellow transition-all relative shadow-md cursor-grab active:cursor-grabbing";
+                card.setAttribute('data-id', item.id);
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden rounded-lg bg-black/40 h-44 flex items-center justify-center p-2 mb-2 border border-brand-border/50">
+                        <img src="${item.previewUrl}" alt="Preview" class="max-h-full max-w-full object-contain transition-transform duration-300 pointer-events-none" style="transform: rotate(${item.rotation}deg);" />
+                        <span class="absolute top-2 left-2 bg-black/80 text-brand-yellow text-[10px] font-bold px-2 py-0.5 rounded border border-brand-yellow/30">
+                            #${index + 1}
+                        </span>
+                        <span class="absolute top-2 right-2 bg-brand-dark/80 text-gray-300 text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase">
+                            ${item.type}
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between gap-1 text-xs text-gray-400">
+                        <span class="truncate font-medium max-w-[100px] text-gray-300" title="${item.fileName}">
+                            ${item.fileName}
+                        </span>
+                        
+                        <div class="flex items-center gap-1">
+                            <button onclick="rotateMergeItem('${item.id}')" title="${t('rotateTooltip')}" class="w-7 h-7 rounded bg-brand-dark hover:bg-brand-yellow hover:text-black text-gray-300 flex items-center justify-center transition border border-brand-border">
+                                <i class="fa-solid fa-rotate-right text-[11px]"></i>
+                            </button>
+                            <button onclick="removeMergeItem('${item.id}')" title="${t('deleteTooltip')}" class="w-7 h-7 rounded bg-brand-dark hover:bg-red-500 hover:text-white text-gray-300 flex items-center justify-center transition border border-brand-border">
+                                <i class="fa-solid fa-trash-can text-[11px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                mergePagesGrid.appendChild(card);
+            });
+        }
+
+        function rotateMergeItem(id) {
+            const item = mergePageItems.find(p => p.id === id);
+            if (item) {
+                item.rotation = (item.rotation + 90) % 360;
+                updateMergeUI();
+            }
+        }
+
+        function removeMergeItem(id) {
+            mergePageItems = mergePageItems.filter(p => p.id !== id);
+            updateMergeUI();
+        }
+
+        function clearMergeAll() {
+            if (mergePageItems.length === 0) return;
+            mergePageItems = [];
+            updateMergeUI();
+        }
+
+        // Helper to convert WebP or any image to PNG bytes via Canvas if needed
+        async function getPngBytesFromImageFile(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) return reject(new Error("Canvas conversion failed"));
+                        resolve(await blob.arrayBuffer());
+                    }, 'image/png');
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        async function mergeFiles() {
+            if (mergePageItems.length === 0) return;
+
+            showLoading(t('loadingMergeTitle'), t('loadingMergeSub'));
+
+            try {
+                const mergedPdf = await PDFLib.PDFDocument.create();
+
+                for (let item of mergePageItems) {
+                    if (item.type === 'pdf') {
+                        const fileBytes = await item.file.arrayBuffer();
+                        const srcDoc = await PDFLib.PDFDocument.load(fileBytes);
+                        const [copiedPage] = await mergedPdf.copyPages(srcDoc, [item.pageIndex]);
+                        
+                        if (item.rotation !== 0) {
+                            const currentRot = copiedPage.getRotation().angle;
+                            copiedPage.setRotation(PDFLib.degrees((currentRot + item.rotation) % 360));
+                        }
+                        mergedPdf.addPage(copiedPage);
+
+                    } else if (item.type === 'image') {
+                        let embeddedImage;
+                        if (item.file.type === 'image/jpeg' || item.file.type === 'image/jpg') {
+                            const imageBytes = await item.file.arrayBuffer();
+                            embeddedImage = await mergedPdf.embedJpg(imageBytes);
+                        } else if (item.file.type === 'image/png') {
+                            const imageBytes = await item.file.arrayBuffer();
+                            embeddedImage = await mergedPdf.embedPng(imageBytes);
+                        } else {
+                            // Convert WebP or other image formats to PNG bytes cleanly
+                            const pngBytes = await getPngBytesFromImageFile(item.file);
+                            embeddedImage = await mergedPdf.embedPng(pngBytes);
+                        }
+
+                        const { width, height } = embeddedImage;
+                        const page = mergedPdf.addPage([width, height]);
+
+                        page.drawImage(embeddedImage, {
+                            x: 0,
+                            y: 0,
+                            width: width,
+                            height: height,
+                        });
+
+                        if (item.rotation !== 0) {
+                            page.setRotation(PDFLib.degrees(item.rotation));
+                        }
+                    }
+                }
+
+                const pdfBytes = await mergedPdf.save();
+                triggerDownload(new Blob([pdfBytes], { type: 'application/pdf' }), `BANIKILABS_Merged_${Date.now()}.pdf`);
+                showToast(t('toastSuccessMerge'), 'success');
+
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // =========================================================
+        // 2. SPLIT / UNMERGE LOGIC (DIVISER UN PDF)
+        // =========================================================
+        let splitSourceFile = null;
+        let splitSourceBytes = null;
+        let splitPages = []; // { pageNumber (1-based), pageIndex (0-based), previewUrl, selected }
+
+        const splitDropzone = document.getElementById('splitDropzone');
+        const splitFileInput = document.getElementById('splitFileInput');
+        const splitPagesGrid = document.getElementById('splitPagesGrid');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            splitDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                splitDropzone.classList.add('border-brand-yellow', 'bg-brand-card');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            splitDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                splitDropzone.classList.remove('border-brand-yellow', 'bg-brand-card');
+            });
+        });
+
+        splitDropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleSplitFile(files[0]);
+        });
+
+        splitFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleSplitFile(e.target.files[0]);
+        });
+
+        async function handleSplitFile(file) {
+            if (!file || file.type !== 'application/pdf') {
+                showToast(t('toastInvalidPdf'), 'error');
+                return;
+            }
+
+            showLoading(t('loadingFilesTitle'), t('loadingFilesSub'));
+            try {
+                splitSourceFile = file;
+                splitSourceBytes = await file.arrayBuffer();
+                // Clone buffer for pdf.js so pdf-lib keeps a clean detached-free copy
+                const pdfJsData = splitSourceBytes.slice(0);
+                const pdfDoc = await pdfjsLib.getDocument({ data: pdfJsData }).promise;
+                const numPages = pdfDoc.numPages;
+
+                splitPages = [];
+                for (let i = 1; i <= numPages; i++) {
+                    const page = await pdfDoc.getPage(i);
+                    const viewport = page.getViewport({ scale: 0.4 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                    splitPages.push({
+                        pageNumber: i,
+                        pageIndex: i - 1,
+                        previewUrl: canvas.toDataURL('image/png'),
+                        selected: true
+                    });
+                }
+
+                document.getElementById('splitFileName').textContent = file.name;
+                document.getElementById('splitTotalBadge').textContent = `${numPages} pages`;
+                updateSplitUI();
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+                splitFileInput.value = '';
+            }
+        }
+
+        function updateSplitUI() {
+            const workspace = document.getElementById('splitWorkspace');
+            const clearBtn = document.getElementById('splitClearBtn');
+            splitPagesGrid.innerHTML = '';
+
+            if (splitPages.length === 0) {
+                workspace.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                splitDropzone.classList.remove('hidden');
+                return;
+            }
+
+            splitDropzone.classList.add('hidden');
+            workspace.classList.remove('hidden');
+            clearBtn.classList.remove('hidden');
+
+            splitPages.forEach((p, idx) => {
+                const card = document.createElement('div');
+                const borderClass = p.selected ? 'border-brand-yellow yellow-glow' : 'border-brand-border opacity-60';
+                card.className = `bg-brand-card border-2 ${borderClass} rounded-xl p-3 flex flex-col justify-between transition-all relative shadow-md cursor-pointer`;
+                
+                card.onclick = (e) => {
+                    // Prevent toggle if clicking single download button
+                    if (e.target.closest('button')) return;
+                    toggleSplitPageSelection(idx);
+                };
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden rounded-lg bg-black/40 h-44 flex items-center justify-center p-2 mb-2 border border-brand-border/50">
+                        <img src="${p.previewUrl}" alt="Page ${p.pageNumber}" class="max-h-full max-w-full object-contain pointer-events-none" />
+                        
+                        <span class="absolute top-2 left-2 bg-black/85 text-brand-yellow text-[10px] font-bold px-2 py-0.5 rounded border border-brand-yellow/30">
+                            ${t('pageLabel')} ${p.pageNumber}
+                        </span>
+
+                        <div class="absolute top-2 right-2 w-6 h-6 rounded-md flex items-center justify-center ${p.selected ? 'bg-brand-yellow text-black' : 'bg-black/70 text-gray-500 border border-brand-border'}">
+                            <i class="fa-solid fa-check text-xs"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                        <span class="text-xs font-bold ${p.selected ? 'text-white' : 'text-gray-500'}">
+                            #${p.pageNumber}
+                        </span>
+                        <button onclick="downloadSingleSplitPage(${p.pageIndex})" title="${t('btnDownloadSinglePage')}" class="px-2.5 py-1.5 rounded bg-brand-dark hover:bg-brand-yellow hover:text-black text-brand-yellow text-xs font-bold flex items-center gap-1.5 transition border border-brand-border">
+                            <i class="fa-solid fa-download text-[11px]"></i> PDF
+                        </button>
+                    </div>
+                `;
+                splitPagesGrid.appendChild(card);
+            });
+        }
+
+        function toggleSplitPageSelection(idx) {
+            splitPages[idx].selected = !splitPages[idx].selected;
+            updateSplitUI();
+        }
+
+        function selectAllSplitPages(state) {
+            splitPages.forEach(p => p.selected = state);
+            updateSplitUI();
+        }
+
+        function applyPageRange() {
+            const input = document.getElementById('pageRangeInput').value.trim();
+            if (!input) return;
+
+            const selectedSet = new Set();
+            const parts = input.split(',');
+
+            parts.forEach(part => {
+                const trimmed = part.trim();
+                if (trimmed.includes('-')) {
+                    const [startStr, endStr] = trimmed.split('-');
+                    const start = parseInt(startStr, 10);
+                    const end = parseInt(endStr, 10);
+                    if (!isNaN(start) && !isNaN(end)) {
+                        for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+                            if (i >= 1 && i <= splitPages.length) selectedSet.add(i);
+                        }
+                    }
+                } else {
+                    const num = parseInt(trimmed, 10);
+                    if (!isNaN(num) && num >= 1 && num <= splitPages.length) {
+                        selectedSet.add(num);
+                    }
+                }
+            });
+
+            if (selectedSet.size > 0) {
+                splitPages.forEach(p => p.selected = selectedSet.has(p.pageNumber));
+                updateSplitUI();
+                showToast(t('toastRangeApplied'), 'info');
+            }
+        }
+
+        function clearSplit() {
+            splitSourceFile = null;
+            splitSourceBytes = null;
+            splitPages = [];
+            document.getElementById('pageRangeInput').value = '';
+            updateSplitUI();
+        }
+
+        // Download a single page immediately as a 1-page PDF
+        async function downloadSingleSplitPage(pageIndex) {
+            if (!splitSourceBytes) return;
+            showLoading(t('loadingSplitTitle'), t('loadingSplitSub'));
+            try {
+                const srcDoc = await PDFLib.PDFDocument.load(splitSourceBytes);
+                const newDoc = await PDFLib.PDFDocument.create();
+                const [copiedPage] = await newDoc.copyPages(srcDoc, [pageIndex]);
+                newDoc.addPage(copiedPage);
+
+                const pdfBytes = await newDoc.save();
+                const baseName = splitSourceFile.name.replace(/\.pdf$/i, '');
+                triggerDownload(new Blob([pdfBytes], { type: 'application/pdf' }), `${baseName}_page_${pageIndex + 1}_BANIKILABS.pdf`);
+                showToast(t('toastSuccessPage'), 'success');
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Export all selected pages into a single extracted PDF
+        async function exportSelectedAsSinglePdf() {
+            const selected = splitPages.filter(p => p.selected);
+            if (selected.length === 0) {
+                showToast(t('toastNoSelection'), 'error');
+                return;
+            }
+
+            showLoading(t('loadingSplitTitle'), t('loadingSplitSub'));
+            try {
+                const srcDoc = await PDFLib.PDFDocument.load(splitSourceBytes);
+                const newDoc = await PDFLib.PDFDocument.create();
+                const indices = selected.map(p => p.pageIndex);
+                const copiedPages = await newDoc.copyPages(srcDoc, indices);
+
+                copiedPages.forEach(page => newDoc.addPage(page));
+
+                const pdfBytes = await newDoc.save();
+                const baseName = splitSourceFile.name.replace(/\.pdf$/i, '');
+                triggerDownload(new Blob([pdfBytes], { type: 'application/pdf' }), `${baseName}_extracted_BANIKILABS.pdf`);
+                showToast(t('toastSuccessSplitSingle'), 'success');
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Export each selected page as a separate PDF inside a ZIP archive
+        async function exportSelectedAsZip() {
+            const selected = splitPages.filter(p => p.selected);
+            if (selected.length === 0) {
+                showToast(t('toastNoSelection'), 'error');
+                return;
+            }
+
+            showLoading(t('loadingSplitTitle'), t('loadingSplitSub'));
+            try {
+                const srcDoc = await PDFLib.PDFDocument.load(splitSourceBytes);
+                const zip = new JSZip();
+                const baseName = splitSourceFile.name.replace(/\.pdf$/i, '');
+
+                for (let item of selected) {
+                    const singleDoc = await PDFLib.PDFDocument.create();
+                    const [copiedPage] = await singleDoc.copyPages(srcDoc, [item.pageIndex]);
+                    singleDoc.addPage(copiedPage);
+                    const singleBytes = await singleDoc.save();
+
+                    const paddedNum = String(item.pageNumber).padStart(3, '0');
+                    zip.file(`${baseName}_page_${paddedNum}.pdf`, singleBytes);
+                }
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                triggerDownload(zipBlob, `${baseName}_split_BANIKILABS.zip`);
+                showToast(t('toastSuccessSplitZip'), 'success');
+            } catch (err) {
+                console.error(err);
+                showToast(t('toastErrorFile'), 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Utility Download Trigger
+        function triggerDownload(blob, filename) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        }
+    </script>
+</body>
+</html>
