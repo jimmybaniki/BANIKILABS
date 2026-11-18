@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BanikiLabs Media Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#0A0A0A',
+                            dark: '#141414',
+                            card: '#1C1C1C',
+                            border: '#2E2E2E',
+                            yellow: '#FACC15',
+                            yellowHover: '#EAB308',
+                            white: '#FFFFFF',
+                            muted: '#A3A3A3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar & Utility Tweaks */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2E2E2E;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FACC15;
+        }
+        .drop-zone-active {
+            border-color: #FACC15 !important;
+            background-color: rgba(250, 204, 21, 0.08) !important;
+        }
+    </style>
+</head>
+<body class="bg-brand-black text-brand-white min-h-screen flex flex-col justify-between selection:bg-brand-yellow selection:text-brand-black">
+
+    <!-- Header -->
+    <header class="border-b border-brand-border bg-brand-dark/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-yellow text-brand-black flex items-center justify-center font-display font-bold text-xl shadow-lg shadow-brand-yellow/20">
+                    BL
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight text-brand-white">MEDIA STUDIO</h1>
+                    <p class="text-xs text-brand-muted">Client-Side Audio & Video Suite</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full bg-brand-card border border-brand-border text-brand-yellow">
+                <span class="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
+                <span>100% Local Processing</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
+        
+        <!-- Navigation Tabs -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 bg-brand-dark p-2 rounded-2xl border border-brand-border">
+            <button onclick="switchTab('separate')" id="tab-separate" class="tab-btn flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-200 bg-brand-yellow text-brand-black shadow-md">
+                <i data-lucide="scissors" class="w-4 h-4"></i>
+                <span>Separate Video & Audio</span>
+            </button>
+            <button onclick="switchTab('mp3tomp4')" id="tab-mp3tomp4" class="tab-btn flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-200 text-brand-muted hover:text-brand-white hover:bg-brand-card">
+                <i data-lucide="film" class="w-4 h-4"></i>
+                <span>MP3 + Image to Video</span>
+            </button>
+            <button onclick="switchTab('mp3towav')" id="tab-mp3towav" class="tab-btn flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-200 text-brand-muted hover:text-brand-white hover:bg-brand-card">
+                <i data-lucide="file-audio" class="w-4 h-4"></i>
+                <span>MP3 to WAV Converter</span>
+            </button>
+        </div>
+
+        <!-- Global Toast Notification -->
+        <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+        <!-- ========================================== -->
+        <!-- TOOL 1: SEPARATE VIDEO & AUDIO             -->
+        <!-- ========================================== -->
+        <section id="panel-separate" class="tool-panel bg-brand-dark border border-brand-border rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <h2 class="font-display text-2xl font-bold text-brand-white mb-1">Separate Video & Audio</h2>
+                <p class="text-sm text-brand-muted">Extract a pure high-quality WAV audio track and a silent video track from any video file.</p>
+            </div>
+
+            <!-- Upload Zone -->
+            <div id="sep-dropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-8 text-center transition-all cursor-pointer bg-brand-card/50 mb-6" onclick="document.getElementById('sep-file-input').click()">
+                <input type="file" id="sep-file-input" accept="video/*" class="hidden">
+                <div class="w-14 h-14 rounded-2xl bg-brand-card border border-brand-border flex items-center justify-center mx-auto mb-4 text-brand-yellow">
+                    <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                </div>
+                <p class="font-semibold text-brand-white mb-1" id="sep-file-name">Click or drag a video file here</p>
+                <p class="text-xs text-brand-muted">Supports MP4, WEBM, MOV, MKV</p>
+            </div>
+
+            <!-- Video Preview & Actions -->
+            <div id="sep-workspace" class="hidden space-y-6">
+                <div class="bg-brand-black rounded-2xl overflow-hidden border border-brand-border">
+                    <video id="sep-video-preview" controls class="w-full max-h-72 object-contain mx-auto"></video>
+                </div>
+
+                <!-- Progress Bar -->
+                <div id="sep-progress-wrap" class="hidden space-y-2">
+                    <div class="flex justify-between text-xs font-medium">
+                        <span id="sep-progress-label" class="text-brand-yellow">Processing...</span>
+                        <span id="sep-progress-pct" class="text-brand-white">0%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-brand-card rounded-full overflow-hidden border border-brand-border">
+                        <div id="sep-progress-bar" class="h-full bg-brand-yellow transition-all duration-150" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button id="btn-extract-audio" onclick="extractAudioFromVideo()" class="flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-brand-white text-brand-black font-bold text-sm hover:bg-gray-200 transition active:scale-[0.99]">
+                        <i data-lucide="music" class="w-4 h-4"></i>
+                        <span>Extract Audio Only (WAV)</span>
+                    </button>
+                    <button id="btn-extract-video" onclick="extractMutedVideo()" class="flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm hover:bg-brand-yellowHover transition active:scale-[0.99]">
+                        <i data-lucide="video-off" class="w-4 h-4"></i>
+                        <span>Extract Muted Video</span>
+                    </button>
+                </div>
+
+                <!-- Outputs Container -->
+                <div id="sep-results" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2"></div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TOOL 2: MP3 + IMAGE TO MP4/VIDEO           -->
+        <!-- ========================================== -->
+        <section id="panel-mp3tomp4" class="tool-panel hidden bg-brand-dark border border-brand-border rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <h2 class="font-display text-2xl font-bold text-brand-white mb-1">MP3 + Picture to Video</h2>
+                <p class="text-sm text-brand-muted">Combine an MP3 audio track with any cover picture to generate a shareable video file.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Audio Input -->
+                <div id="vid-audio-dropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-6 text-center transition-all cursor-pointer bg-brand-card/50 flex flex-col items-center justify-center min-h-[180px]" onclick="document.getElementById('vid-audio-input').click()">
+                    <input type="file" id="vid-audio-input" accept="audio/*" class="hidden">
+                    <div class="w-12 h-12 rounded-xl bg-brand-card border border-brand-border flex items-center justify-center mb-3 text-brand-yellow">
+                        <i data-lucide="music" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm text-brand-white mb-1" id="vid-audio-name">1. Select Audio (MP3/WAV)</p>
+                    <p class="text-xs text-brand-muted" id="vid-audio-meta">Click to browse audio file</p>
+                </div>
+
+                <!-- Image Input -->
+                <div id="vid-image-dropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-6 text-center transition-all cursor-pointer bg-brand-card/50 flex flex-col items-center justify-center min-h-[180px]" onclick="document.getElementById('vid-image-input').click()">
+                    <input type="file" id="vid-image-input" accept="image/*" class="hidden">
+                    <div class="w-12 h-12 rounded-xl bg-brand-card border border-brand-border flex items-center justify-center mb-3 text-brand-yellow">
+                        <i data-lucide="image" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm text-brand-white mb-1" id="vid-image-name">2. Select Cover Picture</p>
+                    <p class="text-xs text-brand-muted" id="vid-image-meta">JPG, PNG, WEBP supported</p>
+                </div>
+            </div>
+
+            <!-- Live Canvas Preview -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-brand-muted">Video Frame Preview (1280×720 HD)</span>
+                    <select id="vid-fit-mode" onchange="drawVideoPreviewFrame()" class="bg-brand-card border border-brand-border text-brand-white text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-brand-yellow">
+                        <option value="contain">Fit Image (Black Bars)</option>
+                        <option value="cover">Fill Screen (Crop)</option>
+                    </select>
+                </div>
+                <div class="bg-brand-black rounded-2xl overflow-hidden border border-brand-border aspect-video flex items-center justify-center relative">
+                    <canvas id="vid-canvas" width="1280" height="720" class="w-full h-full object-contain"></canvas>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="vid-progress-wrap" class="hidden space-y-2 mb-6">
+                <div class="flex justify-between text-xs font-medium">
+                    <span id="vid-progress-label" class="text-brand-yellow">Rendering video in real-time...</span>
+                    <span id="vid-progress-pct" class="text-brand-white">0%</span>
+                </div>
+                <div class="w-full h-2.5 bg-brand-card rounded-full overflow-hidden border border-brand-border">
+                    <div id="vid-progress-bar" class="h-full bg-brand-yellow transition-all duration-150" style="width: 0%"></div>
+                </div>
+                <p class="text-[11px] text-brand-muted">Note: Browser encoding runs in real-time with audio playback muted during capture.</p>
+            </div>
+
+            <!-- Render Button -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button id="btn-render-video" onclick="generateVideoFromMp3AndImage()" class="flex-1 flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm hover:bg-brand-yellowHover transition active:scale-[0.99]">
+                    <i data-lucide="clapperboard" class="w-4 h-4"></i>
+                    <span>Create Video File</span>
+                </button>
+                <button id="btn-cancel-video" onclick="cancelVideoRender()" class="hidden py-4 px-6 rounded-xl bg-brand-card border border-brand-border text-brand-white font-semibold text-sm hover:bg-red-950 hover:border-red-700 transition">
+                    Cancel
+                </button>
+            </div>
+
+            <!-- Output Result -->
+            <div id="vid-result" class="mt-6"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TOOL 3: MP3 TO WAV CONVERTER               -->
+        <!-- ========================================== -->
+        <section id="panel-mp3towav" class="tool-panel hidden bg-brand-dark border border-brand-border rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <h2 class="font-display text-2xl font-bold text-brand-white mb-1">MP3 to WAV Converter</h2>
+                <p class="text-sm text-brand-muted">Convert compressed MP3 audio into uncompressed, lossless PCM WAV format instantaneously.</p>
+            </div>
+
+            <!-- Upload Zone -->
+            <div id="wav-dropzone" class="border-2 border-dashed border-brand-border hover:border-brand-yellow rounded-2xl p-8 text-center transition-all cursor-pointer bg-brand-card/50 mb-6" onclick="document.getElementById('wav-file-input').click()">
+                <input type="file" id="wav-file-input" accept="audio/mp3,audio/mpeg,audio/*" class="hidden">
+                <div class="w-14 h-14 rounded-2xl bg-brand-card border border-brand-border flex items-center justify-center mx-auto mb-4 text-brand-yellow">
+                    <i data-lucide="waves" class="w-7 h-7"></i>
+                </div>
+                <p class="font-semibold text-brand-white mb-1" id="wav-file-name">Click or drag an MP3 file here</p>
+                <p class="text-xs text-brand-muted">Outputs 16-bit PCM Stereo/Mono WAV</p>
+            </div>
+
+            <!-- Sample Rate Option & Convert -->
+            <div id="wav-controls" class="hidden space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-brand-card p-4 rounded-2xl border border-brand-border">
+                    <div>
+                        <label class="block text-xs font-medium text-brand-muted mb-1.5">Sample Rate</label>
+                        <select id="wav-sample-rate" class="w-full bg-brand-black border border-brand-border text-brand-white text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-yellow">
+                            <option value="original">Keep Original Sample Rate</option>
+                            <option value="44100">44.1 kHz (CD Quality)</option>
+                            <option value="48000">48.0 kHz (Studio / Video)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-brand-muted mb-1.5">Channels</label>
+                        <select id="wav-channels" class="w-full bg-brand-black border border-brand-border text-brand-white text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-yellow">
+                            <option value="original">Keep Original Channels</option>
+                            <option value="2">Stereo (2 Channels)</option>
+                            <option value="1">Mono (1 Channel)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="btn-convert-wav" onclick="convertMp3ToWav()" class="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm hover:bg-brand-yellowHover transition active:scale-[0.99]">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    <span>Convert to WAV Now</span>
+                </button>
+
+                <div id="wav-result"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-border bg-brand-dark py-6 px-4 mt-12">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs text-brand-muted">
+                All media processing happens securely in your browser. No files are uploaded to any server.
+            </div>
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-black border border-brand-border">
+                <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                <span class="font-display font-bold text-xs tracking-widest uppercase text-brand-white">
+                    powereb py <span class="text-brand-yellow">banikilabs</span>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ==========================================
+        // UI & NAVIGATION HELPERS
+        // ==========================================
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-yellow', 'text-brand-black', 'shadow-md');
+                btn.classList.add('text-brand-muted', 'hover:text-brand-white', 'hover:bg-brand-card');
+            });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('text-brand-muted', 'hover:text-brand-white', 'hover:bg-brand-card');
+            activeBtn.classList.add('bg-brand-yellow', 'text-brand-black', 'shadow-md');
+
+            // Update panels
+            document.querySelectorAll('.tool-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const borderClass = type === 'error' ? 'border-red-500' : 'border-brand-yellow';
+            const iconColor = type === 'error' ? 'text-red-400' : 'text-brand-yellow';
+            const iconName = type === 'error' ? 'alert-circle' : 'check-circle-2';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 bg-brand-card border ${borderClass} text-brand-white px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0`;
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-5 h-5 ${iconColor} shrink-0"></i>
+                <span class="text-xs font-medium">${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons({ root: toast });
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function setupDragAndDrop(dropzoneId, inputId, onFileSelected) {
+            const zone = document.getElementById(dropzoneId);
+            const input = document.getElementById(inputId);
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                zone.addEventListener(evt, e => {
+                    e.preventDefault();
+                    zone.classList.add('drop-zone-active');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                zone.addEventListener(evt, e => {
+                    e.preventDefault();
+                    zone.classList.remove('drop-zone-active');
+                });
+            });
+
+            zone.addEventListener('drop', e => {
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    onFileSelected(e.dataTransfer.files[0]);
+                }
+            });
+
+            input.addEventListener('change', e => {
+                if (e.target.files && e.target.files[0]) {
+                    onFileSelected(e.target.files[0]);
+                }
+            });
+        }
+
+        // ==========================================
+        // WAV ENCODER UTILITY (AudioBuffer -> WAV Blob)
+        // ==========================================
+        function audioBufferToWavBlob(audioBuffer) {
+            const numChannels = audioBuffer.numberOfChannels;
+            const sampleRate = audioBuffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+            const numSamples = audioBuffer.length;
+            const dataSize = numSamples * blockAlign;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            // RIFF identifier
+            writeString(view, 0, 'RIFF');
+            // file length
+            view.setUint32(4, 36 + dataSize, true);
+            // RIFF type
+            writeString(view, 8, 'WAVE');
+            // format chunk identifier
+            writeString(view, 12, 'fmt ');
+            // format chunk length
+            view.setUint32(16, 16, true);
+            // sample format (raw)
+            view.setUint16(20, format, true);
+            // channel count
+            view.setUint16(22, numChannels, true);
+            // sample rate
+            view.setUint32(24, sampleRate, true);
+            // byte rate (sample rate * block align)
+            view.setUint32(28, sampleRate * blockAlign, true);
+            // block align (channel count * bytes per sample)
+            view.setUint16(32, blockAlign, true);
+            // bits per sample
+            view.setUint16(34, bitDepth, true);
+            // data chunk identifier
+            writeString(view, 36, 'data');
+            // data chunk length
+            view.setUint32(40, dataSize, true);
+
+            // Interleave and write PCM samples
+            const channels = [];
+            for (let i = 0; i < numChannels; i++) {
+                channels.push(audioBuffer.getChannelData(i));
+            }
+
+            let offset = 44;
+            for (let i = 0; i < numSamples; i++) {
+                for (let ch = 0; ch < numChannels; ch++) {
+                    let sample = Math.max(-1, Math.min(1, channels[ch][i]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(offset, sample, true);
+                    offset += 2;
+                }
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        // ==========================================
+        // TOOL 1: SEPARATE VIDEO & AUDIO LOGIC
+        // ==========================================
+        let sepVideoFile = null;
+
+        setupDragAndDrop('sep-dropzone', 'sep-file-input', file => {
+            if (!file.type.startsWith('video/')) {
+                showToast('Please select a valid video file.', 'error');
+                return;
+            }
+            sepVideoFile = file;
+            document.getElementById('sep-file-name').textContent = `${file.name} (${formatBytes(file.size)})`;
+            const preview = document.getElementById('sep-video-preview');
+            preview.src = URL.createObjectURL(file);
+            document.getElementById('sep-workspace').classList.remove('hidden');
+            document.getElementById('sep-results').innerHTML = '';
+            showToast('Video loaded successfully.');
+        });
+
+        async function extractAudioFromVideo() {
+            if (!sepVideoFile) return;
+            const progressWrap = document.getElementById('sep-progress-wrap');
+            const progressLabel = document.getElementById('sep-progress-label');
+            const progressPct = document.getElementById('sep-progress-pct');
+            const progressBar = document.getElementById('sep-progress-bar');
+
+            progressWrap.classList.remove('hidden');
+            progressLabel.textContent = 'Decoding audio track from video...';
+            progressPct.textContent = '35%';
+            progressBar.style.width = '35%';
+
+            try {
+                const arrayBuffer = await sepVideoFile.arrayBuffer();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                progressPct.textContent = '70%';
+                progressBar.style.width = '70%';
+
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                progressLabel.textContent = 'Encoding WAV file...';
+                progressPct.textContent = '95%';
+                progressBar.style.width = '95%';
+
+                const wavBlob = audioBufferToWavBlob(audioBuffer);
+                const wavUrl = URL.createObjectURL(wavBlob);
+                const baseName = sepVideoFile.name.replace(/\.[^/.]+$/, '');
+
+                progressPct.textContent = '100%';
+                progressBar.style.width = '100%';
+                setTimeout(() => progressWrap.classList.add('hidden'), 800);
+
+                addSeparationResultCard(
+                    'audio',
+                    `${baseName}_audio.wav`,
+                    wavUrl,
+                    wavBlob.size,
+                    'Extracted Audio (WAV)'
+                );
+                showToast('Audio track extracted!');
+            } catch (err) {
+                console.error(err);
+                progressWrap.classList.add('hidden');
+                showToast('Could not extract audio. Ensure the video has an audio track.', 'error');
+            }
+        }
+
+        async function extractMutedVideo() {
+            if (!sepVideoFile) return;
+            const progressWrap = document.getElementById('sep-progress-wrap');
+            const progressLabel = document.getElementById('sep-progress-label');
+            const progressPct = document.getElementById('sep-progress-pct');
+            const progressBar = document.getElementById('sep-progress-bar');
+            const btn = document.getElementById('btn-extract-video');
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            progressWrap.classList.remove('hidden');
+            progressLabel.textContent = 'Stripping audio & recording silent video...';
+            progressPct.textContent = '0%';
+            progressBar.style.width = '0%';
+
+            try {
+                const tempVideo = document.createElement('video');
+                tempVideo.src = URL.createObjectURL(sepVideoFile);
+                tempVideo.muted = true;
+                tempVideo.playsInline = true;
+
+                await new Promise((resolve, reject) => {
+                    tempVideo.onloadedmetadata = resolve;
+                    tempVideo.onerror = reject;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = tempVideo.videoWidth || 1280;
+                canvas.height = tempVideo.videoHeight || 720;
+                const ctx = canvas.getContext('2d');
+
+                const stream = canvas.captureStream(30);
+                const mimeType = MediaRecorder.isTypeSupported('video/mp4')
+                    ? 'video/mp4'
+                    : (MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm');
+
+                const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5000000 });
+                const chunks = [];
+
+                recorder.ondataavailable = e => {
+                    if (e.data.size > 0) chunks.push(e.data);
+                };
+
+                recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: mimeType });
+                    const url = URL.createObjectURL(blob);
+                    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+                    const baseName = sepVideoFile.name.replace(/\.[^/.]+$/, '');
+
+                    progressWrap.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    addSeparationResultCard(
+                        'video',
+                        `${baseName}_silent.${ext}`,
+                        url,
+                        blob.size,
+                        `Muted Video (${ext.toUpperCase()})`
+                    );
+                    showToast('Muted video track created!');
+                };
+
+                recorder.start();
+                await tempVideo.play();
+
+                function drawFrame() {
+                    if (tempVideo.paused || tempVideo.ended) {
+                        if (recorder.state !== 'inactive') recorder.stop();
+                        return;
+                    }
+                    ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+                    const pct = Math.min(100, Math.round((tempVideo.currentTime / tempVideo.duration) * 100));
+                    progressPct.textContent = `${pct}%`;
+                    progressBar.style.width = `${pct}%`;
+                    requestAnimationFrame(drawFrame);
+                }
+                drawFrame();
+
+                tempVideo.onended = () => {
+                    if (recorder.state !== 'inactive') recorder.stop();
+                };
+            } catch (err) {
+                console.error(err);
+                progressWrap.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                showToast('Error separating video track.', 'error');
+            }
+        }
+
+        function addSeparationResultCard(type, filename, url, size, label) {
+            const container = document.getElementById('sep-results');
+            const existing = document.getElementById(`sep-card-${type}`);
+            if (existing) existing.remove();
+
+            const card = document.createElement('div');
+            card.id = `sep-card-${type}`;
+            card.className = 'bg-brand-card border border-brand-border rounded-2xl p-4 flex flex-col justify-between gap-4';
+
+            const mediaPreview = type === 'audio'
+                ? `<audio controls src="${url}" class="w-full h-10"></audio>`
+                : `<video controls src="${url}" class="w-full max-h-36 rounded-lg bg-brand-black"></video>`;
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-yellow">${label}</span>
+                        <span class="text-xs text-brand-muted">${formatBytes(size)}</span>
+                    </div>
+                    <p class="text-xs text-brand-white truncate mb-3">${filename}</p>
+                    ${mediaPreview}
+                </div>
+                <a href="${url}" download="${filename}" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-brand-yellow text-brand-black font-bold text-xs hover:bg-brand-yellowHover transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download ${type === 'audio' ? 'Audio' : 'Video'}</span>
+                </a>
+            `;
+            container.appendChild(card);
+            lucide.createIcons({ root: card });
+        }
+
+        // ==========================================
+        // TOOL 2: MP3 + PICTURE TO VIDEO LOGIC
+        // ==========================================
+        let vidAudioFile = null;
+        let vidImageObj = null;
+        let activeVideoRecorder = null;
+        let activeVideoAudioEl = null;
+        let isRenderingVideo = false;
+
+        // Initialize blank canvas preview
+        function initVideoCanvas() {
+            const canvas = document.getElementById('vid-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0A0A0A';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#2E2E2E';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+            ctx.fillStyle = '#FACC15';
+            ctx.font = 'bold 36px "Space Grotesk", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BANIKILABS VIDEO PREVIEW', canvas.width / 2, canvas.height / 2 - 10);
+
+            ctx.fillStyle = '#A3A3A3';
+            ctx.font = '22px "Inter", sans-serif';
+            ctx.fillText('Upload an audio file and a cover image to preview', canvas.width / 2, canvas.height / 2 + 35);
+        }
+        initVideoCanvas();
+
+        setupDragAndDrop('vid-audio-dropzone', 'vid-audio-input', file => {
+            if (!file.type.startsWith('audio/')) {
+                showToast('Please select a valid audio file.', 'error');
+                return;
+            }
+            vidAudioFile = file;
+            document.getElementById('vid-audio-name').textContent = file.name;
+            document.getElementById('vid-audio-meta').textContent = formatBytes(file.size);
+            showToast('Audio selected for video.');
+        });
+
+        setupDragAndDrop('vid-image-dropzone', 'vid-image-input', file => {
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    vidImageObj = img;
+                    document.getElementById('vid-image-name').textContent = file.name;
+                    document.getElementById('vid-image-meta').textContent = `${img.width}×${img.height} • ${formatBytes(file.size)}`;
+                    drawVideoPreviewFrame();
+                    showToast('Cover picture loaded.');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function drawVideoPreviewFrame() {
+            const canvas = document.getElementById('vid-canvas');
+            const ctx = canvas.getContext('2d');
+            const fitMode = document.getElementById('vid-fit-mode').value;
+
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (!vidImageObj) {
+                initVideoCanvas();
+                return;
+            }
+
+            const cw = canvas.width;
+            const ch = canvas.height;
+            const iw = vidImageObj.width;
+            const ih = vidImageObj.height;
+
+            const scale = fitMode === 'cover'
+                ? Math.max(cw / iw, ch / ih)
+                : Math.min(cw / iw, ch / ih);
+
+            const nw = iw * scale;
+            const nh = ih * scale;
+            const nx = (cw - nw) / 2;
+            const ny = (ch - nh) / 2;
+
+            ctx.drawImage(vidImageObj, nx, ny, nw, nh);
+        }
+
+        async function generateVideoFromMp3AndImage() {
+            if (!vidAudioFile || !vidImageObj) {
+                showToast('Please select both an audio file and a cover image first.', 'error');
+                return;
+            }
+            if (isRenderingVideo) return;
+
+            isRenderingVideo = true;
+            const btnRender = document.getElementById('btn-render-video');
+            const btnCancel = document.getElementById('btn-cancel-video');
+            const progressWrap = document.getElementById('vid-progress-wrap');
+            const progressPct = document.getElementById('vid-progress-pct');
+            const progressBar = document.getElementById('vid-progress-bar');
+
+            btnRender.disabled = true;
+            btnRender.classList.add('opacity-50', 'cursor-not-allowed');
+            btnCancel.classList.remove('hidden');
+            progressWrap.classList.remove('hidden');
+            progressPct.textContent = '0%';
+            progressBar.style.width = '0%';
+            document.getElementById('vid-result').innerHTML = '';
+
+            try {
+                drawVideoPreviewFrame();
+                const canvas = document.getElementById('vid-canvas');
+
+                // Setup Audio Element & Web Audio Routing (silent to speakers, captured to stream)
+                const audioEl = new Audio();
+                audioEl.src = URL.createObjectURL(vidAudioFile);
+                activeVideoAudioEl = audioEl;
+
+                await new Promise((resolve, reject) => {
+                    audioEl.onloadedmetadata = resolve;
+                    audioEl.onerror = reject;
+                });
+
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const sourceNode = audioCtx.createMediaElementSource(audioEl);
+                const destNode = audioCtx.createMediaStreamDestination();
+                sourceNode.connect(destNode);
+                // Note: Not connecting to audioCtx.destination keeps rendering silent for the user
+
+                // Combine Canvas video stream + Audio stream
+                const canvasStream = canvas.captureStream(24);
+                const combinedStream = new MediaStream([
+                    ...canvasStream.getVideoTracks(),
+                    ...destNode.stream.getAudioTracks()
+                ]);
+
+                // Prefer MP4 if supported by browser (Chrome 126+ / Safari), fallback to WebM
+                let mimeType = 'video/webm';
+                if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1,mp4a.40.2')) {
+                    mimeType = 'video/mp4;codecs=avc1,mp4a.40.2';
+                } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+                    mimeType = 'video/mp4';
+                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+                    mimeType = 'video/webm;codecs=vp9,opus';
+                }
+
+                const recorder = new MediaRecorder(combinedStream, {
+                    mimeType,
+                    videoBitsPerSecond: 3500000,
+                    audioBitsPerSecond: 192000
+                });
+                activeVideoRecorder = recorder;
+
+                const chunks = [];
+                recorder.ondataavailable = e => {
+                    if (e.data && e.data.size > 0) chunks.push(e.data);
+                };
+
+                recorder.onstop = () => {
+                    audioCtx.close();
+                    const wasCancelled = !isRenderingVideo;
+                    isRenderingVideo = false;
+                    btnRender.disabled = false;
+                    btnRender.classList.remove('opacity-50', 'cursor-not-allowed');
+                    btnCancel.classList.add('hidden');
+                    progressWrap.classList.add('hidden');
+
+                    if (wasCancelled) return;
+
+                    const finalBlob = new Blob(chunks, { type: mimeType });
+                    const videoUrl = URL.createObjectURL(finalBlob);
+                    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+                    const baseName = vidAudioFile.name.replace(/\.[^/.]+$/, '');
+                    const outName = `${baseName}_banikilabs.${ext}`;
+
+                    document.getElementById('vid-result').innerHTML = `
+                        <div class="bg-brand-card border border-brand-yellow rounded-2xl p-5 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Video Ready (${ext.toUpperCase()})</span>
+                                <span class="text-xs text-brand-muted">${formatBytes(finalBlob.size)}</span>
+                            </div>
+                            <video controls src="${videoUrl}" class="w-full max-h-72 rounded-xl bg-brand-black"></video>
+                            <a href="${videoUrl}" download="${outName}" class="w-full flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm hover:bg-brand-yellowHover transition">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Download ${outName}</span>
+                            </a>
+                        </div>
+                    `;
+                    lucide.createIcons({ root: document.getElementById('vid-result') });
+                    showToast('Video created successfully!');
+                };
+
+                // Keep canvas active during playback so captureStream emits continuous frames
+                function keepAliveDraw() {
+                    if (!isRenderingVideo || audioEl.paused || audioEl.ended) return;
+                    drawVideoPreviewFrame();
+                    const pct = Math.min(100, Math.round((audioEl.currentTime / audioEl.duration) * 100));
+                    progressPct.textContent = `${pct}%`;
+                    progressBar.style.width = `${pct}%`;
+                    requestAnimationFrame(keepAliveDraw);
+                }
+
+                recorder.start(250);
+                await audioEl.play();
+                keepAliveDraw();
+
+                audioEl.onended = () => {
+                    if (recorder.state !== 'inactive') recorder.stop();
+                };
+
+            } catch (err) {
+                console.error(err);
+                isRenderingVideo = false;
+                btnRender.disabled = false;
+                btnRender.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnCancel.classList.add('hidden');
+                progressWrap.classList.add('hidden');
+                showToast('Failed to generate video. Try another audio format.', 'error');
+            }
+        }
+
+        function cancelVideoRender() {
+            isRenderingVideo = false;
+            if (activeVideoAudioEl) {
+                activeVideoAudioEl.pause();
+            }
+            if (activeVideoRecorder && activeVideoRecorder.state !== 'inactive') {
+                activeVideoRecorder.stop();
+            }
+            showToast('Video rendering cancelled.');
+        }
+
+        // ==========================================
+        // TOOL 3: MP3 TO WAV CONVERTER LOGIC
+        // ==========================================
+        let wavSourceFile = null;
+
+        setupDragAndDrop('wav-dropzone', 'wav-file-input', file => {
+            if (!file.type.startsWith('audio/') && !file.name.toLowerCase().endsWith('.mp3')) {
+                showToast('Please select a valid MP3 or audio file.', 'error');
+                return;
+            }
+            wavSourceFile = file;
+            document.getElementById('wav-file-name').textContent = `${file.name} (${formatBytes(file.size)})`;
+            document.getElementById('wav-controls').classList.remove('hidden');
+            document.getElementById('wav-result').innerHTML = '';
+            showToast('Audio file ready for WAV conversion.');
+        });
+
+        async function convertMp3ToWav() {
+            if (!wavSourceFile) return;
+            const btn = document.getElementById('btn-convert-wav');
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Converting to Lossless WAV...</span>`;
+            lucide.createIcons({ root: btn });
+
+            try {
+                const arrayBuffer = await wavSourceFile.arrayBuffer();
+                const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const decodedBuffer = await tempCtx.decodeAudioData(arrayBuffer);
+
+                const targetRateSetting = document.getElementById('wav-sample-rate').value;
+                const targetChannelsSetting = document.getElementById('wav-channels').value;
+
+                const targetRate = targetRateSetting === 'original' ? decodedBuffer.sampleRate : parseInt(targetRateSetting, 10);
+                const targetChannels = targetChannelsSetting === 'original' ? decodedBuffer.numberOfChannels : parseInt(targetChannelsSetting, 10);
+
+                // Resample / Remix via OfflineAudioContext
+                const frameCount = Math.ceil(decodedBuffer.duration * targetRate);
+                const offlineCtx = new OfflineAudioContext(targetChannels, frameCount, targetRate);
+                const source = offlineCtx.createBufferSource();
+                source.buffer = decodedBuffer;
+                source.connect(offlineCtx.destination);
+                source.start(0);
+
+                const renderedBuffer = await offlineCtx.startRendering();
+                const wavBlob = audioBufferToWavBlob(renderedBuffer);
+                const wavUrl = URL.createObjectURL(wavBlob);
+                const baseName = wavSourceFile.name.replace(/\.[^/.]+$/, '');
+                const outFilename = `${baseName}.wav`;
+
+                document.getElementById('wav-result').innerHTML = `
+                    <div class="bg-brand-card border border-brand-yellow rounded-2xl p-5 space-y-4 mt-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-brand-yellow block">Conversion Complete</span>
+                                <span class="text-sm font-semibold text-brand-white">${outFilename}</span>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-lg bg-brand-black border border-brand-border text-brand-muted">
+                                ${targetRate / 1000} kHz • ${targetChannels === 1 ? 'Mono' : 'Stereo'} • ${formatBytes(wavBlob.size)}
+                            </span>
+                        </div>
+                        <audio controls src="${wavUrl}" class="w-full"></audio>
+                        <a href="${wavUrl}" download="${outFilename}" class="w-full flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-brand-yellow text-brand-black font-bold text-sm hover:bg-brand-yellowHover transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download WAV File</span>
+                        </a>
+                    </div>
+                `;
+                lucide.createIcons({ root: document.getElementById('wav-result') });
+                showToast('Converted to WAV successfully!');
+            } catch (err) {
+                console.error(err);
+                showToast('Error decoding MP3 file. Please ensure it is a valid audio file.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i><span>Convert to WAV Now</span>`;
+                lucide.createIcons({ root: btn });
+            }
+        }
+    </script>
+</body>
+</html>
