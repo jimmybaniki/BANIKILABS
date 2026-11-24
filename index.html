@@ -103,7 +103,7 @@
 
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- Styling the service rows and UI elements... --- */
+        /* --- Styling the service rows and UI elements --- */
         .service-row {
             border-bottom: 1px solid rgba(255, 215, 0, 0.05);
             transition: all 0.5s ease;
@@ -111,11 +111,13 @@
 
         .service-image-container {
             border-radius: 1.5rem;
-            @media (min-width: 768px) { border-radius: 2.5rem; }
             overflow: hidden;
             position: relative;
             transform: perspective(1000px) rotateY(-3deg);
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @media (min-width: 768px) {
+            .service-image-container { border-radius: 2.5rem; }
         }
 
         .service-row:hover .service-image-container {
@@ -129,11 +131,13 @@
             background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(60px);
-            @media (min-width: 768px) { filter: blur(80px); }
             opacity: 0.2;
             position: absolute;
             animation: pulse 4s infinite alternate;
             pointer-events: none;
+        }
+        @media (min-width: 768px) {
+            .main-orb { filter: blur(80px); }
         }
 
         @keyframes pulse {
@@ -155,7 +159,7 @@
             width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.8);
         }
 
-        /* --- Defining Modals and specific animations... --- */
+        /* --- Defining Modals and specific animations --- */
         .custom-modal {
             display: none; position: fixed; inset: 0; z-index: 200;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
@@ -343,7 +347,7 @@
                     </div>
                 </div>
                 
-                <div id="filterDropdown" class="w-full lg:max-w-xs">
+                <div id="filterDropdown" class="w-full lg:max-w-xs relative">
                     <button onclick="toggleDropdown()" class="w-full flex justify-between items-center bg-white/5 border border-[var(--gold)]/30 text-white font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-2xl hover:border-[var(--gold)] transition-all text-xs sm:text-sm">
                         <span id="currentFilterLabel" class="truncate" data-translate="all-categories">TOUTES LES CATÉGORIES</span>
                         <svg class="w-4 h-4 sm:w-5 h-5 text-[var(--gold)] shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg>
@@ -552,7 +556,7 @@
                         <p class="text-xs text-gray-400" data-translate="interview-tips-desc">Préparez-vous avec les questions fréquentes et conseils de pros.</p>
                     </a>
 
-                    <!-- NOUVEAU OUTIL : TÉLÉPROMPTEUR -->
+                    <!-- TÉLÉPROMPTEUR -->
                     <a href="teleprompter.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-tv text-xl"></i>
@@ -561,7 +565,7 @@
                         <p class="text-xs text-gray-400" data-translate="teleprompter-desc">Lisez vos scripts de manière fluide et professionnelle.</p>
                     </a>
 
-                    <!-- NOUVEAU OUTIL : TYPING SPEED -->
+                    <!-- TYPING SPEED -->
                     <a href="typing.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-keyboard text-xl"></i>
@@ -570,7 +574,7 @@
                         <p class="text-xs text-gray-400" data-translate="typing-test-desc">Mesurez et améliorez votre vitesse de frappe au clavier.</p>
                     </a>
 
-                    <!-- NOUVEAU OUTIL : PDF MERGE & SPLIT -->
+                    <!-- PDF MERGE & SPLIT -->
                     <a href="pdf.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-file-zipper text-xl"></i>
@@ -579,13 +583,22 @@
                         <p class="text-xs text-gray-400" data-translate="pdf-tools-desc">Fusionnez et divisez facilement vos fichiers PDF en quelques clics.</p>
                     </a>
 
-                    <!-- NOUVEAU OUTIL : AUDIO CHANGER -->
+                    <!-- AUDIO CHANGER -->
                     <a href="audio.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
                         <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-waveform-lines fa-sliders text-xl"></i>
+                            <i class="fa-solid fa-sliders text-xl"></i>
                         </div>
                         <h4 class="text-white font-bold mb-2" data-translate="audio-changer-title">Audio Changer</h4>
                         <p class="text-xs text-gray-400" data-translate="audio-changer-desc">Convertissez une vidéo en MP3, MP3 en WAV, ou mixez un MP3 avec une image pour créer une vidéo.</p>
+                    </a>
+
+                    <!-- NOUVEAU OUTIL : TEXT TO VOICE / TEXT OUTLOUD -->
+                    <a href="banikilabs_voice_reader.html" class="group bg-white/5 border border-white/10 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-white/10">
+                        <div class="w-12 h-12 rounded-full bg-[var(--gold)]/10 text-[var(--gold)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-volume-high text-xl"></i>
+                        </div>
+                        <h4 class="text-white font-bold mb-2" data-translate="text-to-voice-title">Text to Voice</h4>
+                        <p class="text-xs text-gray-400" data-translate="text-to-voice-desc">Écoutez vos textes lus à voix haute avec une synthèse vocale naturelle.</p>
                     </a>
 
                     <a href="emploi.html" class="group bg-[var(--gold)]/10 border border-[var(--gold)]/30 hover:border-[var(--gold)] rounded-2xl p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--gold)] hover:text-black">
@@ -651,6 +664,8 @@
                 "pdf-tools-desc": "Fusionnez et divisez facilement vos fichiers PDF en quelques clics.",
                 "audio-changer-title": "Audio Changer",
                 "audio-changer-desc": "Convertissez une vidéo en MP3, MP3 en WAV, ou mixez un MP3 avec une image pour créer une vidéo.",
+                "text-to-voice-title": "Text to Voice",
+                "text-to-voice-desc": "Écoutez vos textes lus à voix haute avec une synthèse vocale naturelle.",
                 "offers-title": "Offres Baniki Labs",
                 "offers-desc": "Rejoignez notre équipe d'innovateurs.",
                 "about-history-subtitle": "Notre Histoire",
@@ -699,6 +714,8 @@
                 "pdf-tools-desc": "Merge and split your PDF files easily in just a few clicks.",
                 "audio-changer-title": "Audio Changer",
                 "audio-changer-desc": "Convert video to MP3, MP3 to WAV, or mix an MP3 with an image to create a video.",
+                "text-to-voice-title": "Text to Voice",
+                "text-to-voice-desc": "Listen to your text read out loud with natural voice synthesis.",
                 "offers-title": "Baniki Labs Offers",
                 "offers-desc": "Join our team of innovators.",
                 "about-history-subtitle": "Our Story",
@@ -747,6 +764,8 @@
                 "pdf-tools-desc": "Unganisha na ugawanye faili zako za PDF kwa urahisi kwa kubofya chache.",
                 "audio-changer-title": "Audio Changer",
                 "audio-changer-desc": "Badilisha video kuwa MP3, MP3 kuwa WAV, au changanya MP3 na picha kutengeneza video.",
+                "text-to-voice-title": "Text to Voice",
+                "text-to-voice-desc": "Sikiliza maandishi yako yakisomwa kwa sauti ya asili.",
                 "offers-title": "Ofa za Baniki Labs",
                 "offers-desc": "Jiunge na timu yetu ya wabunifu.",
                 "about-history-subtitle": "Historia Yetu",
