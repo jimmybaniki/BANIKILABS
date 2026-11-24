@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BanikiLabs | PDF & Text-to-Speech Reader</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PDF.js for client-side PDF text extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#0A0A0A',
+                            dark: '#141414',
+                            card: '#1C1C1C',
+                            yellow: '#FACC15',
+                            yellowHover: '#EAB308',
+                            white: '#FFFFFF',
+                            muted: '#A3A3A3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0A0A0A] text-white min-h-screen flex flex-col justify-between selection:bg-[#FACC15] selection:text-black">
+
+    <!-- Toast Notification Container (Replaces alert()) -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- Header -->
+    <header class="border-b border-neutral-800 bg-[#141414]/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#FACC15] text-black flex items-center justify-center shadow-lg shadow-[#FACC15]/20">
+                    <i data-lucide="audio-waveform" class="w-6 h-6 stroke-[2.5]"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-xl tracking-tight text-white">VOX<span class="text-[#FACC15]">READER</span></h1>
+                    <p class="text-xs text-neutral-400">PDF & Text-to-Speech Studio</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-neutral-900 border border-neutral-800 text-neutral-300">
+                    <span id="status-dot" class="w-2 h-2 rounded-full bg-neutral-500"></span>
+                    <span id="status-text">Ready</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6">
+
+        <!-- PDF Upload Zone -->
+        <section aria-label="PDF Upload">
+            <div id="drop-zone" class="relative group border-2 border-dashed border-neutral-700 hover:border-[#FACC15] bg-[#141414] hover:bg-[#1C1C1C] rounded-2xl p-6 sm:p-8 text-center transition-all duration-200 cursor-pointer">
+                <input type="file" id="pdf-input" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" aria-label="Upload PDF file">
+                <div class="flex flex-col items-center justify-center gap-3 pointer-events-none">
+                    <div class="w-12 h-12 rounded-full bg-neutral-900 group-hover:bg-[#FACC15] text-[#FACC15] group-hover:text-black flex items-center justify-center transition-colors duration-200">
+                        <i data-lucide="file-up" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-base sm:text-lg font-semibold text-white">
+                            Drop your <span class="text-[#FACC15]">PDF</span> here, or <span class="underline decoration-[#FACC15] underline-offset-4">browse</span>
+                        </p>
+                        <p id="file-info" class="text-xs sm:text-sm text-neutral-400 mt-1">Supports multi-page PDFs • Text is extracted locally in your browser</p>
+                    </div>
+                </div>
+                <!-- Loading Progress Bar for PDF extraction -->
+                <div id="pdf-progress-container" class="hidden mt-4 max-w-md mx-auto">
+                    <div class="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
+                        <div id="pdf-progress-bar" class="bg-[#FACC15] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="pdf-progress-text" class="text-xs text-[#FACC15] mt-1.5 font-medium">Extracting text...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Text Editor & Reader Area -->
+        <section class="bg-[#141414] border border-neutral-800 rounded-2xl p-4 sm:p-6 flex flex-col gap-4 shadow-xl">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-4 h-4 text-[#FACC15]"></i>
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-300">Document Content</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="word-count" class="text-xs text-neutral-400 bg-neutral-900 px-2.5 py-1 rounded-lg border border-neutral-800">0 words</span>
+                    <button id="copy-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 transition-colors">
+                        <i data-lucide="copy" class="w-3.5 h-3.5 text-[#FACC15]"></i>
+                        <span>Copy</span>
+                    </button>
+                    <button id="clear-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-neutral-900 hover:bg-red-950/50 text-neutral-300 hover:text-red-400 border border-neutral-700 hover:border-red-900 transition-colors">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Textarea for typing or pasting -->
+            <div class="relative">
+                <textarea id="text-input" rows="9" placeholder="Write or paste your text here, or upload a PDF above to start listening..." class="w-full bg-[#0A0A0A] text-white placeholder-neutral-600 border border-neutral-800 focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15] rounded-xl p-4 text-base leading-relaxed resize-y outline-none transition-all"></textarea>
+            </div>
+
+            <!-- Live Reading Progress & Highlight Banner -->
+            <div id="active-reader-banner" class="hidden bg-[#0A0A0A] border border-[#FACC15]/40 rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-[#FACC15] font-semibold flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-[#FACC15] animate-ping"></span>
+                        Now Speaking
+                    </span>
+                    <div class="flex items-center gap-2 font-mono text-neutral-400">
+                        <span id="time-elapsed">0:00</span>
+                        <span>/</span>
+                        <span id="time-total">0:00</span>
+                        <span class="text-[#FACC15] ml-1" id="reading-percentage">0%</span>
+                    </div>
+                </div>
+                <!-- Interactive Scrubber Slider -->
+                <div class="relative flex items-center">
+                    <input id="speech-scrubber" type="range" min="0" max="100" value="0" step="1" aria-label="Seek reading progress" class="w-full accent-[#FACC15] bg-neutral-800 h-2 rounded-lg cursor-pointer">
+                </div>
+                <p id="current-sentence-preview" class="text-sm text-neutral-200 italic truncate">"..."</p>
+            </div>
+
+            <!-- Voice & Playback Controls -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2 items-end">
+                
+                <!-- Voice Selection -->
+                <div class="lg:col-span-5 flex flex-col gap-1.5">
+                    <label for="voice-select" class="text-xs font-medium text-neutral-400 flex items-center gap-1.5">
+                        <i data-lucide="mic" class="w-3.5 h-3.5 text-[#FACC15]"></i>
+                        Select Voice & Language
+                    </label>
+                    <select id="voice-select" class="w-full bg-[#0A0A0A] text-white border border-neutral-800 focus:border-[#FACC15] rounded-xl px-3.5 py-2.5 text-sm outline-none cursor-pointer">
+                        <option value="">Loading system voices...</option>
+                    </select>
+                </div>
+
+                <!-- Speed (Rate) Control -->
+                <div class="lg:col-span-3 flex flex-col gap-1.5">
+                    <div class="flex justify-between text-xs font-medium">
+                        <label for="rate-slider" class="text-neutral-400 flex items-center gap-1.5">
+                            <i data-lucide="gauge" class="w-3.5 h-3.5 text-[#FACC15]"></i>
+                            Speed
+                        </label>
+                        <span id="rate-value" class="text-[#FACC15] font-mono">1.0x</span>
+                    </div>
+                    <input id="rate-slider" type="range" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full accent-[#FACC15] bg-neutral-800 h-2 rounded-lg cursor-pointer my-2">
+                </div>
+
+                <!-- Pitch Control -->
+                <div class="lg:col-span-4 flex flex-col gap-1.5">
+                    <div class="flex justify-between text-xs font-medium">
+                        <label for="pitch-slider" class="text-neutral-400 flex items-center gap-1.5">
+                            <i data-lucide="sliders" class="w-3.5 h-3.5 text-[#FACC15]"></i>
+                            Pitch
+                        </label>
+                        <span id="pitch-value" class="text-[#FACC15] font-mono">1.0</span>
+                    </div>
+                    <input id="pitch-slider" type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="w-full accent-[#FACC15] bg-neutral-800 h-2 rounded-lg cursor-pointer my-2">
+                </div>
+            </div>
+
+            <!-- Primary Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center sm:justify-between gap-3 pt-3 border-t border-neutral-800">
+                <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                    <button id="play-btn" type="button" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-[#FACC15] hover:bg-[#EAB308] active:scale-[0.99] text-black font-bold px-5 py-3 rounded-xl shadow-lg shadow-[#FACC15]/15 transition-all cursor-pointer">
+                        <i data-lucide="play" class="w-5 h-5 fill-black"></i>
+                        <span id="play-btn-text">Read Out Loud</span>
+                    </button>
+
+                    <button id="rewind-btn" type="button" title="Back 10 seconds" class="inline-flex items-center justify-center gap-1 bg-neutral-900 hover:bg-neutral-800 active:scale-[0.98] text-white font-semibold px-3.5 py-3 rounded-xl border border-neutral-700 hover:border-[#FACC15] transition-all cursor-pointer">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4 text-[#FACC15]"></i>
+                        <span class="text-xs font-mono">-10s</span>
+                    </button>
+
+                    <button id="forward-btn" type="button" title="Forward 10 seconds" class="inline-flex items-center justify-center gap-1 bg-neutral-900 hover:bg-neutral-800 active:scale-[0.98] text-white font-semibold px-3.5 py-3 rounded-xl border border-neutral-700 hover:border-[#FACC15] transition-all cursor-pointer">
+                        <span class="text-xs font-mono">+10s</span>
+                        <i data-lucide="rotate-cw" class="w-4 h-4 text-[#FACC15]"></i>
+                    </button>
+
+                    <button id="pause-btn" type="button" disabled class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-neutral-200 disabled:bg-neutral-900 disabled:text-neutral-600 disabled:border-neutral-800 text-black font-semibold px-4 py-3 rounded-xl border border-transparent transition-all cursor-pointer disabled:cursor-not-allowed">
+                        <i data-lucide="pause" class="w-5 h-5"></i>
+                        <span>Pause</span>
+                    </button>
+
+                    <button id="stop-btn" type="button" disabled class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-neutral-800 disabled:opacity-40 text-white font-semibold px-4 py-3 rounded-xl border border-neutral-700 transition-all cursor-pointer disabled:cursor-not-allowed">
+                        <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                        <span>Stop</span>
+                    </button>
+                </div>
+
+                <!-- Download Audio Button -->
+                <button id="download-btn" type="button" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#1C1C1C] hover:bg-neutral-800 active:scale-[0.99] text-[#FACC15] font-semibold px-5 py-3 rounded-xl border border-[#FACC15]/50 hover:border-[#FACC15] transition-all cursor-pointer">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span id="download-btn-text">Download Audio (.WAV)</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-900 bg-[#0A0A0A] py-5 px-4 text-center">
+        <p class="text-sm text-neutral-400 tracking-wide">
+            powered by <span class="font-display font-bold text-[#FACC15] tracking-wider">banikilabs</span>
+        </p>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Configure PDF.js Worker
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        // DOM Elements
+        const dropZone = document.getElementById('drop-zone');
+        const pdfInput = document.getElementById('pdf-input');
+        const fileInfo = document.getElementById('file-info');
+        const pdfProgressContainer = document.getElementById('pdf-progress-container');
+        const pdfProgressBar = document.getElementById('pdf-progress-bar');
+        const pdfProgressText = document.getElementById('pdf-progress-text');
+
+        const textInput = document.getElementById('text-input');
+        const wordCountEl = document.getElementById('word-count');
+        const copyBtn = document.getElementById('copy-btn');
+        const clearBtn = document.getElementById('clear-btn');
+
+        const voiceSelect = document.getElementById('voice-select');
+        const rateSlider = document.getElementById('rate-slider');
+        const rateValue = document.getElementById('rate-value');
+        const pitchSlider = document.getElementById('pitch-slider');
+        const pitchValue = document.getElementById('pitch-value');
+
+        const playBtn = document.getElementById('play-btn');
+        const playBtnText = document.getElementById('play-btn-text');
+        const rewindBtn = document.getElementById('rewind-btn');
+        const forwardBtn = document.getElementById('forward-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const downloadBtnText = document.getElementById('download-btn-text');
+
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const activeReaderBanner = document.getElementById('active-reader-banner');
+        const speechScrubber = document.getElementById('speech-scrubber');
+        const timeElapsedEl = document.getElementById('time-elapsed');
+        const timeTotalEl = document.getElementById('time-total');
+        const readingPercentage = document.getElementById('reading-percentage');
+        const currentSentencePreview = document.getElementById('current-sentence-preview');
+
+        // Speech Synthesis State
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let chunks = [];
+        let currentChunkIndex = 0;
+        let isSpeaking = false;
+        let isPaused = false;
+        let isScrubbing = false;
+        let currentUtterance = null;
+
+        /**
+         * Custom Toast Notification (replaces alert())
+         */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const borderColors = {
+                success: 'border-[#FACC15] text-white',
+                error: 'border-red-500 text-red-200',
+                info: 'border-neutral-700 text-neutral-200'
+            };
+
+            toast.className = `pointer-events-auto bg-[#141414] border ${borderColors[type] || borderColors.info} px-4 py-3 rounded-xl shadow-2xl text-sm font-medium flex items-center justify-between gap-3 transition-all duration-300 opacity-0 translate-y-2`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('opacity-0', 'translate-y-2');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        /**
+         * Populate System Voices into Dropdown (including Swahili support)
+         */
+        function populateVoices() {
+            voices = synth.getVoices();
+            const previousSelection = voiceSelect.value;
+            voiceSelect.innerHTML = '';
+
+            // Always ensure Swahili options are available at the top of the list
+            const hasNativeSwahili = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('sw'));
+            if (!hasNativeSwahili) {
+                const swTzOption = document.createElement('option');
+                swTzOption.value = 'sw-TZ';
+                swTzOption.textContent = 'Swahili - Tanzania (sw-TZ)';
+                voiceSelect.appendChild(swTzOption);
+
+                const swKeOption = document.createElement('option');
+                swKeOption.value = 'sw-KE';
+                swKeOption.textContent = 'Swahili - Kenya (sw-KE)';
+                voiceSelect.appendChild(swKeOption);
+            }
+
+            voices.forEach((voice) => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.default && !previousSelection && hasNativeSwahili) {
+                    option.selected = true;
+                }
+                voiceSelect.appendChild(option);
+            });
+
+            if (previousSelection && Array.from(voiceSelect.options).some(opt => opt.value === previousSelection)) {
+                voiceSelect.value = previousSelection;
+            }
+        }
+
+        populateVoices();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = populateVoices;
+        }
+
+        /**
+         * Split long text into natural sentence chunks for smooth playback & scrubbing
+         */
+        function splitTextIntoChunks(text) {
+            const cleaned = text.replace(/\s+/g, ' ').trim();
+            if (!cleaned) return [];
+            const sentences = cleaned.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [cleaned];
+            const result = [];
+
+            sentences.forEach((sentence) => {
+                const trimmed = sentence.trim();
+                if (!trimmed) return;
+                if (trimmed.length <= 220) {
+                    result.push(trimmed);
+                } else {
+                    const subParts = trimmed.match(/.{1,200}(\s|$)/g) || [trimmed];
+                    subParts.forEach(part => {
+                        if (part.trim()) result.push(part.trim());
+                    });
+                }
+            });
+
+            return result;
+        }
+
+        /**
+         * Extract text from an uploaded PDF file using PDF.js
+         */
+        async function extractTextFromPDF(file) {
+            if (!file || file.type !== 'application/pdf') {
+                showToast('Please select a valid PDF file.', 'error');
+                return;
+            }
+
+            if (!window.pdfjsLib) {
+                showToast('PDF engine is still loading. Please try again in a moment.', 'error');
+                return;
+            }
+
+            handleStop();
+            fileInfo.textContent = `Selected: ${file.name}`;
+            pdfProgressContainer.classList.remove('hidden');
+            pdfProgressBar.style.width = '5%';
+            pdfProgressText.textContent = 'Reading PDF document...';
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages = pdf.numPages;
+                let extractedText = '';
+
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    extractedText += pageText + '\n\n';
+
+                    const percent = Math.round((pageNum / totalPages) * 100);
+                    pdfProgressBar.style.width = `${percent}%`;
+                    pdfProgressText.textContent = `Extracting page ${pageNum} of ${totalPages} (${percent}%)...`;
+                }
+
+                const finalCleanText = extractedText.trim();
+                if (!finalCleanText) {
+                    showToast('No selectable text found in this PDF (it may be a scanned image).', 'error');
+                } else {
+                    textInput.value = finalCleanText;
+                    updateWordCount();
+                    showToast(`Extracted ${totalPages} page${totalPages > 1 ? 's' : ''} successfully!`, 'success');
+                }
+            } catch (error) {
+                console.error('PDF extraction error:', error);
+                showToast('Failed to extract text from the PDF.', 'error');
+            } finally {
+                setTimeout(() => {
+                    pdfProgressContainer.classList.add('hidden');
+                    pdfProgressBar.style.width = '0%';
+                }, 800);
+            }
+        }
+
+        /**
+         * Format seconds into M:SS
+         */
+        function formatTime(seconds) {
+            const secs = Math.max(0, Math.round(seconds));
+            const mins = Math.floor(secs / 60);
+            const remSecs = secs % 60;
+            return `${mins}:${remSecs < 10 ? '0' : ''}${remSecs}`;
+        }
+
+        /**
+         * Estimate total reading duration in seconds based on word count and speed
+         */
+        function estimateTotalDuration(text) {
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const rate = parseFloat(rateSlider.value) || 1.0;
+            // Average speech is ~150 words per minute (2.5 words/sec) at 1.0x
+            return (words / 2.5) / rate;
+        }
+
+        /**
+         * Update UI Status Badge & Controls
+         */
+        function updatePlaybackState(state) {
+            if (state === 'playing') {
+                isSpeaking = true;
+                isPaused = false;
+                statusDot.className = 'w-2 h-2 rounded-full bg-[#FACC15] animate-pulse';
+                statusText.textContent = 'Speaking';
+                playBtnText.textContent = 'Restart';
+                pauseBtn.disabled = false;
+                stopBtn.disabled = false;
+                activeReaderBanner.classList.remove('hidden');
+            } else if (state === 'paused') {
+                isSpeaking = true;
+                isPaused = true;
+                statusDot.className = 'w-2 h-2 rounded-full bg-white';
+                statusText.textContent = 'Paused';
+                playBtnText.textContent = 'Resume';
+                pauseBtn.disabled = true;
+                stopBtn.disabled = false;
+            } else {
+                isSpeaking = false;
+                isPaused = false;
+                statusDot.className = 'w-2 h-2 rounded-full bg-neutral-500';
+                statusText.textContent = 'Ready';
+                playBtnText.textContent = 'Read Out Loud';
+                pauseBtn.disabled = true;
+                stopBtn.disabled = true;
+                activeReaderBanner.classList.add('hidden');
+                speechScrubber.value = 0;
+                readingPercentage.textContent = '0%';
+                timeElapsedEl.textContent = '0:00';
+            }
+        }
+
+        /**
+         * Update Progress Scrubber & Timestamps
+         */
+        function updateProgressDisplay(index) {
+            if (!chunks.length) return;
+            const safeIndex = Math.max(0, Math.min(index, chunks.length - 1));
+            const totalDuration = estimateTotalDuration(textInput.value);
+            const ratio = chunks.length > 1 ? safeIndex / (chunks.length - 1) : 1;
+            const progressPercent = Math.round(((safeIndex + 1) / chunks.length) * 100);
+
+            if (!isScrubbing) {
+                speechScrubber.max = Math.max(0, chunks.length - 1);
+                speechScrubber.value = safeIndex;
+            }
+            readingPercentage.textContent = `${progressPercent}%`;
+            timeTotalEl.textContent = formatTime(totalDuration);
+            timeElapsedEl.textContent = formatTime(totalDuration * (safeIndex / chunks.length));
+            currentSentencePreview.textContent = `"${chunks[safeIndex]}"`;
+        }
+
+        /**
+         * Jump directly to a specific chunk index
+         */
+        function jumpToChunk(targetIndex) {
+            const rawText = textInput.value.trim();
+            if (!rawText) {
+                showToast('Please enter some text or upload a PDF first.', 'error');
+                return;
+            }
+
+            if (!chunks.length) {
+                chunks = splitTextIntoChunks(rawText);
+            }
+            if (!chunks.length) return;
+
+            const clampedIndex = Math.max(0, Math.min(targetIndex, chunks.length - 1));
+            currentChunkIndex = clampedIndex;
+            updateProgressDisplay(clampedIndex);
+
+            synth.cancel();
+            updatePlaybackState('playing');
+            speakNextChunk();
+        }
+
+        /**
+         * Skip backward or forward by ~10 seconds
+         */
+        function skipSeconds(deltaSeconds) {
+            const rawText = textInput.value.trim();
+            if (!rawText) {
+                showToast('Please enter some text or upload a PDF first.', 'error');
+                return;
+            }
+
+            if (!chunks.length) {
+                chunks = splitTextIntoChunks(rawText);
+            }
+            if (!chunks.length) return;
+
+            const totalDuration = Math.max(1, estimateTotalDuration(rawText));
+            const secondsPerChunk = totalDuration / chunks.length;
+            const chunkOffset = Math.max(1, Math.round(Math.abs(deltaSeconds) / secondsPerChunk));
+            const direction = deltaSeconds < 0 ? -1 : 1;
+
+            const newIndex = Math.max(0, Math.min(chunks.length - 1, currentChunkIndex + (direction * chunkOffset)));
+            jumpToChunk(newIndex);
+        }
+
+        /**
+         * Speak Chunk Sequentially
+         */
+        function speakNextChunk() {
+            if (currentChunkIndex >= chunks.length) {
+                updatePlaybackState('idle');
+                showToast('Finished reading document.', 'success');
+                return;
+            }
+
+            const chunkText = chunks[currentChunkIndex];
+            updateProgressDisplay(currentChunkIndex);
+
+            currentUtterance = new SpeechSynthesisUtterance(chunkText);
+            
+            const selectedVal = voiceSelect.value;
+            const selectedVoice = voices.find(v => v.name === selectedVal);
+            if (selectedVoice) {
+                currentUtterance.voice = selectedVoice;
+                currentUtterance.lang = selectedVoice.lang;
+            } else if (selectedVal === 'sw-TZ' || selectedVal === 'sw-KE') {
+                currentUtterance.lang = selectedVal;
+                const fallbackSwahili = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('sw'));
+                if (fallbackSwahili) currentUtterance.voice = fallbackSwahili;
+            }
+            
+            currentUtterance.rate = parseFloat(rateSlider.value);
+            currentUtterance.pitch = parseFloat(pitchSlider.value);
+
+            currentUtterance.onend = () => {
+                if (isSpeaking && !isPaused) {
+                    currentChunkIndex++;
+                    speakNextChunk();
+                }
+            };
+
+            currentUtterance.onerror = (event) => {
+                if (event.error !== 'interrupted' && event.error !== 'canceled') {
+                    console.error('SpeechSynthesis error:', event);
+                    updatePlaybackState('idle');
+                    showToast('Audio playback interrupted.', 'error');
+                }
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        /**
+         * Start / Resume Playback
+         */
+        function handlePlay() {
+            if (!('speechSynthesis' in window)) {
+                showToast('Text-to-speech is not supported in this browser.', 'error');
+                return;
+            }
+
+            const rawText = textInput.value.trim();
+            if (!rawText) {
+                showToast('Please enter some text or upload a PDF first.', 'error');
+                textInput.focus();
+                return;
+            }
+
+            // Resume if currently paused
+            if (isPaused && synth.paused) {
+                synth.resume();
+                updatePlaybackState('playing');
+                return;
+            }
+
+            // Otherwise start fresh
+            synth.cancel();
+            chunks = splitTextIntoChunks(rawText);
+            currentChunkIndex = 0;
+
+            if (chunks.length === 0) return;
+
+            updatePlaybackState('playing');
+            speakNextChunk();
+        }
+
+        /**
+         * Pause Playback
+         */
+        function handlePause() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                updatePlaybackState('paused');
+            }
+        }
+
+        /**
+         * Stop Playback
+         */
+        function handleStop() {
+            synth.cancel();
+            currentChunkIndex = 0;
+            updatePlaybackState('idle');
+        }
+
+        /**
+         * Convert Base64 string to Uint8Array
+         */
+        function base64ToUint8Array(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        /**
+         * Wrap raw 16-bit signed PCM audio data into a standard WAV container
+         */
+        function pcmToWavBlob(pcmBytes, sampleRate = 24000, numChannels = 1) {
+            const byteRate = sampleRate * numChannels * 2;
+            const blockAlign = numChannels * 2;
+            const dataSize = pcmBytes.byteLength;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            const writeString = (offset, str) => {
+                for (let i = 0; i < str.length; i++) {
+                    view.setUint8(offset + i, str.charCodeAt(i));
+                }
+            };
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true); // PCM format chunk size
+            view.setUint16(20, 1, true);  // AudioFormat 1 = PCM
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, 16, true); // BitsPerSample
+            writeString(36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            new Uint8Array(buffer, 44).set(pcmBytes);
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        /**
+         * Fetch TTS audio chunk from Gemini 2.5 Flash TTS with exponential backoff
+         */
+        async function fetchTtsChunkWithRetry(textChunk, voiceName, maxRetries = 4) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: textChunk }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            let delay = 1000;
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType || 'audio/L16;rate=24000';
+
+                    if (!audioData) {
+                        throw new Error('No audio data returned');
+                    }
+
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+                    const pcmBytes = base64ToUint8Array(audioData);
+                    return { pcmBytes, sampleRate };
+                } catch (err) {
+                    if (attempt === maxRetries) throw err;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        /**
+         * Convert pasted/uploaded text directly into a downloadable .WAV voice file
+         */
+        async function handleDownloadAudio() {
+            const rawText = textInput.value.trim();
+            if (!rawText) {
+                showToast('Please enter some text or upload a PDF first.', 'error');
+                textInput.focus();
+                return;
+            }
+
+            // Choose an expressive voice matching the selected system voice gender/tone or Swahili language
+            const selectedOptionText = (voiceSelect.value || '').toLowerCase();
+            const isSwahiliSelected = selectedOptionText.startsWith('sw-') || selectedOptionText.includes('swahili');
+            const ttsVoice = (selectedOptionText.includes('female') || selectedOptionText.includes('zira') || selectedOptionText.includes('samantha') || selectedOptionText.includes('amelie') || selectedOptionText.includes('julie'))
+                ? 'Kore'
+                : 'Puck';
+
+            downloadBtn.disabled = true;
+            downloadBtnText.textContent = 'Converting text...';
+            showToast('Converting your text into a downloadable audio file...', 'info');
+
+            try {
+                // Split long texts into ~1200-character natural paragraph/sentence segments
+                const cleaned = rawText.replace(/\s+/g, ' ').trim();
+                const textSegments = cleaned.match(/.{1,1200}(\s|$)/g) || [cleaned];
+
+                const pcmParts = [];
+                let totalLength = 0;
+                let finalSampleRate = 24000;
+
+                for (let i = 0; i < textSegments.length; i++) {
+                    const segment = textSegments[i].trim();
+                    if (!segment) continue;
+
+                    if (textSegments.length > 1) {
+                        downloadBtnText.textContent = `Converting (${i + 1}/${textSegments.length})...`;
+                    }
+
+                    const promptSegment = isSwahiliSelected
+                        ? `Speak naturally in Swahili: ${segment}`
+                        : segment;
+
+                    const { pcmBytes, sampleRate } = await fetchTtsChunkWithRetry(promptSegment, ttsVoice);
+                    finalSampleRate = sampleRate;
+                    pcmParts.push(pcmBytes);
+                    totalLength += pcmBytes.byteLength;
+                }
+
+                if (!pcmParts.length) {
+                    throw new Error('No audio generated');
+                }
+
+                // Merge all PCM chunks into a single continuous audio stream
+                const combinedPcm = new Uint8Array(totalLength);
+                let offset = 0;
+                for (const part of pcmParts) {
+                    combinedPcm.set(part, offset);
+                    offset += part.byteLength;
+                }
+
+                const wavBlob = pcmToWavBlob(combinedPcm, finalSampleRate, 1);
+                const downloadUrl = URL.createObjectURL(wavBlob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `banikilabs-audio-${Date.now()}.wav`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(downloadUrl);
+
+                showToast('Audio file downloaded successfully!', 'success');
+            } catch (err) {
+                console.error('Audio conversion error:', err);
+                showToast('Unable to generate audio file right now. Please try again.', 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtnText.textContent = 'Download Audio (.WAV)';
+            }
+        }
+
+        /**
+         * Update Word Counter
+         */
+        function updateWordCount() {
+            const text = textInput.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            wordCountEl.textContent = `${words.toLocaleString()} ${words === 1 ? 'word' : 'words'}`;
+        }
+
+        // Event Listeners
+        playBtn.addEventListener('click', handlePlay);
+        rewindBtn.addEventListener('click', () => skipSeconds(-10));
+        forwardBtn.addEventListener('click', () => skipSeconds(10));
+        pauseBtn.addEventListener('click', handlePause);
+        stopBtn.addEventListener('click', handleStop);
+        downloadBtn.addEventListener('click', handleDownloadAudio);
+
+        // Interactive Scrubber Events
+        speechScrubber.addEventListener('input', (e) => {
+            isScrubbing = true;
+            const targetIdx = parseInt(e.target.value, 10);
+            updateProgressDisplay(targetIdx);
+        });
+
+        speechScrubber.addEventListener('change', (e) => {
+            isScrubbing = false;
+            const targetIdx = parseInt(e.target.value, 10);
+            jumpToChunk(targetIdx);
+        });
+
+        textInput.addEventListener('input', updateWordCount);
+
+        rateSlider.addEventListener('input', (e) => {
+            rateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            pitchValue.textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        // Copy Text Button
+        copyBtn.addEventListener('click', () => {
+            if (!textInput.value.trim()) {
+                showToast('Nothing to copy.', 'info');
+                return;
+            }
+            textInput.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            showToast('Text copied to clipboard!', 'success');
+        });
+
+        // Clear Text Button
+        clearBtn.addEventListener('click', () => {
+            handleStop();
+            textInput.value = '';
+            pdfInput.value = '';
+            fileInfo.textContent = 'Supports multi-page PDFs • Text is extracted locally in your browser';
+            updateWordCount();
+            showToast('Cleared text editor.', 'info');
+        });
+
+        // PDF File Input & Drag-and-Drop Effects
+        pdfInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                extractTextFromPDF(e.target.files[0]);
+            }
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-[#FACC15]', 'bg-[#1C1C1C]');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-[#FACC15]', 'bg-[#1C1C1C]');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-[#FACC15]', 'bg-[#1C1C1C]');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                extractTextFromPDF(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Stop speech cleanly if user leaves/reloads page
+        window.addEventListener('beforeunload', () => {
+            synth.cancel();
+        });
+    </script>
+</body>
+</html>
